@@ -98,8 +98,6 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.dcs_path = self._config('PATH', parser=parse_dcs_path, namespace='DCS')
         self.dcs_idle_cpu_usage = self._config('IDLE_CPU_USAGE', parser=int, namespace='DCS')
         self.dcs_high_cpu_usage = self._config('HIGH_CPU_USAGE', parser=int, namespace='DCS')
-        self.dcs_center_viewport_width = self._config('CENTER_VIEWPORT_WIDTH', parser=int, namespace='DCS')
-        self.dcs_center_viewport_height = self._config('CENTER_VIEWPORT_HEIGHT', parser=int, namespace='DCS')
         self.dcs_server_password = self._config('SERVER_PASSWORD', parser=str, namespace='DCS')
         self.dcs_server_name = self._config('SERVER_NAME', parser=str, namespace='DCS')
         self.dcs_server_max_players = self._config('SERVER_MAX_PLAYERS', parser=int, namespace='DCS')

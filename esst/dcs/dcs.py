@@ -15,6 +15,7 @@ from esst.core.logger import MAIN_LOGGER
 from esst.core.path import Path
 from esst.core.status import Status
 from esst.dcs.missions_manager import get_latest_mission_from_github
+from esst.dcs.dedicated import setup_config_for_dedicated_run
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -65,8 +66,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         threading.Thread.__init__(self, daemon=True)
         self.app = pywinauto.Application()
         self.window = None
-        self.width = CFG.dcs_center_viewport_width
-        self.height = CFG.dcs_center_viewport_height
         self.process_pid = None
         self._exiting = False
         self.cpu_usage = 'unknown'
@@ -107,18 +106,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         if self.process_pid:
             self.app.connect(process=self.process_pid)
             self._wait_for_dcs_to_start()
-
-    def _try_to_get_window(self):
-        if self.window:
-            return
-        LOGGER.debug(f'trying to get top window')
-        # noinspection PyBroadException
-        try:
-            self.window = self.app.top_window()
-            LOGGER.debug(f'got top window')
-        except:  # pylint: disable=bare-except
-            LOGGER.debug(f'failed to get top window')
-            time.sleep(1)
 
     def _wait_for_dcs_to_start(self):  # noqa: C901
 
@@ -182,19 +169,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         self._execute_cmd_chain(cmd_chain)
         self._update_server_status('running')
 
-    def _start_multiplayer_server(self):
-        LOGGER.debug('starting UI clicks to get a running server')
-        cmd_chain = [
-            self._try_to_get_window,
-            self._try_to_get_window,
-            self._try_to_get_window,
-            self._try_to_get_window,
-            self._ui_select_multiplayer,
-            self._ui_select_new_server,
-            self._ui_start_server,
-        ]
-        self._execute_cmd_chain(cmd_chain)
-
     @staticmethod
     def _update_server_status(status: str):
         if Status.dcs_application != status:
@@ -243,7 +217,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         self.process_pid = None
         cmd_chain = [
             self._start_new_dcs_application_if_needed,
-            self._start_multiplayer_server,
         ]
         self._execute_cmd_chain(cmd_chain)
 
@@ -305,9 +278,9 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         cmd_chain = [
             self._get_dcs_version_from_executable,
             get_latest_mission_from_github,
+            setup_config_for_dedicated_run,
             self._try_to_connect_to_existing_dcs_application,
             self._start_new_dcs_application_if_needed,
-            self._start_multiplayer_server,
         ]
         self._execute_cmd_chain(cmd_chain)
         while True:
@@ -321,32 +294,3 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             self.monitor_cpu_usage()
             time.sleep(0.5)
         LOGGER.debug('closing DCS monitoring thread')
-
-    def _ui_select_multiplayer(self):
-        LOGGER.debug('clicking on "Multiplayer" button')
-        if self._should_exit():
-            LOGGER.debug('interrupted by exit signal')
-            return
-        for offset in range(0, 20, 5):
-            self.window.click_input(coords=(self.width - 192, 450 + offset))
-            if self._should_exit():
-                LOGGER.debug('interrupted by exit signal')
-                break
-
-    def _ui_select_new_server(self):
-        LOGGER.debug('clicking "New server" button')
-        for offset in range(0, 50, 5):
-            self.window.click_input(coords=(int(self.width / 2), self.height - offset + 20))
-            if self._should_exit():
-                LOGGER.debug('interrupted by exit signal')
-                break
-
-    def _ui_start_server(self):
-        LOGGER.debug('clicking "Start" button')
-        for offset in range(0, 100, 5):
-            self.window.click_input(
-                coords=(int(self.width / 2) + 100, int(self.height - (self.height / 9)) - offset + 20)
-            )
-            if self._should_exit():
-                LOGGER.debug('interrupted by exit signal')
-                break
