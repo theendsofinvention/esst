@@ -7,6 +7,14 @@ ESST stands for Etcher's Server Startup Tool.
 * Before running ESST, you need to configure and start a multiplayer server at least once.
 * If you want to deactivate the dedicated server feature, open `Saved Games\DCS\Config\dedicated.lua` and set `["enabled"] = false`
 
+## Modified files
+* The following DCS files are added or modified:
+	* `Saved Games\DCS\Config\dedicated.lua`: used to control the dedicated server behaviour.  Set `["enabled"] = false` to revert to standard DCS behaviour.
+	* `Saved Games\DCS\Scripts\ESSTGameGUI.lua`: this file controls the hooks for the DCS API and runs a UDP socket and is automatically added by ESST.
+	* `C:\DCS World\MissionEditor\modules\me_authorization.lua`: this file is edited to allow DCS to start directly in multiplayer server mode
+
+**NOTE**: all files that are modified by ESST are backed-up before edition.
+
 ## Functionalities
 
 The tool is composed of three main parts:
