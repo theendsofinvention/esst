@@ -44,12 +44,12 @@ def main():
     setup(
         name='esst',
         use_scm_version=True,
-        py_modules=['esst'],
         install_requires=install_requires,
         entry_points=entry_points,
         tests_require=test_requires,
         setup_requires=setup_requires,
         test_suite='pytest',
+        packages=['esst', 'esst.core', 'esst.dcs', 'esst.discord_bot'],
     )
 
 
