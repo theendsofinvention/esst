@@ -12,6 +12,7 @@ install_requires = [
     'path.py',
     'pefile',
     'humanize',
+    'click',
 ]
 
 test_requires = [
