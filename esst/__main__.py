@@ -49,7 +49,7 @@ def main(bot: bool, server: bool, socket: bool):
             dcs.DCSListener()
 
         while True:
-            time.sleep(0.1)
+            time.sleep(0.5)
 
     except KeyboardInterrupt:
 

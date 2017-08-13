@@ -318,6 +318,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
                 LOGGER.debug('DCS has stopped, re-starting')
                 self.restart()
             self.monitor_cpu_usage()
+            time.sleep(0.5)
         LOGGER.debug('closing DCS monitoring thread')
 
     def _ui_select_multiplayer(self):
