@@ -348,6 +348,3 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             if self._should_exit():
                 LOGGER.debug('interrupted by exit signal')
                 break
-            if self.app.cpu_usage() > CFG.dcs_idle_cpu_usage:
-                LOGGER.debug('click registered')
-                break
