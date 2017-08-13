@@ -7,6 +7,7 @@ import asyncio
 import queue
 
 import blinker
+import discord
 
 from esst.core.logger import MAIN_LOGGER
 from .abstract import AbstractDiscordBot
@@ -58,6 +59,7 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
     """
     Abstract class that contains background tasks for :py:class:`esst.discord_bot.DiscordBot`
     """
+
     async def _on_exit(self):
         self._exiting = True  # pylint: disable=attribute-defined-outside-init
         await self.say('Bye bye !')
@@ -73,7 +75,10 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
         if not DISCORD_SEND_QUEUE.empty():
             message = DISCORD_SEND_QUEUE.get_nowait()
             LOGGER.debug(f'received message to say: {message}')
-            await self.say(message)
+            try:
+                await self.say(message)
+            except discord.errors.HTTPException:
+                DISCORD_SEND_QUEUE.put(message)
             LOGGER.debug('message sent')
 
     async def _parse_command(self, command):
