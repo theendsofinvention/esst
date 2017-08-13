@@ -325,7 +325,11 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         if self._should_exit():
             LOGGER.debug('interrupted by exit signal')
             return
-        self.window.click_input(coords=(self.width - 192, 464))
+        for offset in range(0, 20, 5):
+            self.window.click_input(coords=(self.width - 192, 445 + offset))
+            if self._should_exit():
+                LOGGER.debug('interrupted by exit signal')
+                break
 
     def _ui_select_new_server(self):
         LOGGER.debug('clicking "New server" button')
