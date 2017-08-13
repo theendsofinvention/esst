@@ -136,20 +136,21 @@ def get_latest_mission_from_github():
     The repository needs to have releases (tagged)
     The function will download the first MIZ file found in the latest release
     """
-    LOGGER.debug('looking for newer mission file')
-    github = github3.GitHub(token=CFG.auto_mission_github_token)
-    repo = github.repository(CFG.auto_mission_github_owner, CFG.auto_mission_github_repo)
-    rel = repo.latest_release()
-    LOGGER.debug(f'release tag: {rel.tag_name}')
-    assets = list(rel.assets(1))
-    for asset in assets:
-        if asset.name.endswith('.miz'):
-            LOGGER.debug(f'found a mission file: {asset.name}')
-            local_file = _create_mission_path(asset.name)
-            if not os.path.exists(local_file):
-                LOGGER.info(f'downloading new mission: {asset.name}')
-                asset.download(local_file)
-            set_active_mission(local_file)
+    if CFG.auto_mission_github_repo and CFG.auto_mission_github_owner:
+        LOGGER.debug('looking for newer mission file')
+        github = github3.GitHub(token=CFG.auto_mission_github_token)
+        repo = github.repository(CFG.auto_mission_github_owner, CFG.auto_mission_github_repo)
+        rel = repo.latest_release()
+        LOGGER.debug(f'release tag: {rel.tag_name}')
+        assets = list(rel.assets(1))
+        for asset in assets:
+            if asset.name.endswith('.miz'):
+                LOGGER.debug(f'found a mission file: {asset.name}')
+                local_file = _create_mission_path(asset.name)
+                if not os.path.exists(local_file):
+                    LOGGER.info(f'downloading new mission: {asset.name}')
+                    asset.download(local_file)
+                set_active_mission(local_file)
 
 
 def download_mission_from_discord(discord_attachment, overwrite=False, load=False):

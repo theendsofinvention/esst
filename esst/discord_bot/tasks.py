@@ -11,11 +11,14 @@ import discord
 
 from esst.core.logger import MAIN_LOGGER
 from .abstract import AbstractDiscordBot
+from esst.core.config import CFG
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 DISCORD_SEND_QUEUE = queue.Queue()
 DISCORD_CMD_QUEUE = queue.Queue()
+
+DISCORD_SEND_QUEUE.put(CFG.discord_motd)
 
 
 def catch_command_signals(sender, **kwargs):

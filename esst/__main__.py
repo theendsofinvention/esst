@@ -33,16 +33,14 @@ def main(bot: bool, server: bool, socket: bool):
         game_gui.install_game_gui_hooks()
 
         if bot:
-            from esst.discord_bot import DiscordBot
+            from esst import discord_bot
             MAIN_LOGGER.debug('starting Discord bot')
-            DiscordBot()
-            blinker.signal('discord message').send(__name__, msg='Hello!\nType "!help" for a list of available commands')
+            discord_bot.DiscordBot()
 
         if server:
             from esst import dcs
             MAIN_LOGGER.debug('starting DCS monitoring')
-            app = dcs.App()
-            app.start()
+            dcs.App()
 
         if socket:
             from esst import dcs
@@ -50,7 +48,7 @@ def main(bot: bool, server: bool, socket: bool):
             dcs.DCSListener()
 
         while True:
-            time.sleep(0.1)
+            time.sleep(0.5)
 
     except KeyboardInterrupt:
 

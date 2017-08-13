@@ -53,10 +53,10 @@ class DCSListener(threading.Thread):
     """
 
     def __init__(self):
-        threading.Thread.__init__(self)
+        threading.Thread.__init__(self, daemon=True)
         self.monitoring = False
         self.last_ping = None
-        self.run()
+        self.start()
 
     def run(self):
         """
@@ -112,6 +112,9 @@ class DCSListener(threading.Thread):
         cmd_address = ('localhost', 10334)
 
         while True:
+
+            time.sleep(0.5)
+
             try:
                 data, _ = sock.recvfrom(4096)
                 data = json.loads(data.decode().strip())

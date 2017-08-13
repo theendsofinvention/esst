@@ -82,7 +82,11 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                         'DEBUG': 'false',
                         'DCS_IDLE_CPU_USAGE': 5,
                         'DCS_HIGH_CPU_USAGE': 80,
-                        'DISCORD_BOT_NAME': 'ESST'
+                        'DISCORD_BOT_NAME': 'ESST',
+                        'DISCORD_MOTD': 'Hello!\nType "!help" for a list of available commands',
+                        'AUTO_MISSION_GITHUB_TOKEN': '',
+                        'AUTO_MISSION_GITHUB_OWNER': '',
+                        'AUTO_MISSION_GITHUB_REPO': '',
                     }
                 ),
             ]
@@ -94,8 +98,6 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.dcs_path = self._config('PATH', parser=parse_dcs_path, namespace='DCS')
         self.dcs_idle_cpu_usage = self._config('IDLE_CPU_USAGE', parser=int, namespace='DCS')
         self.dcs_high_cpu_usage = self._config('HIGH_CPU_USAGE', parser=int, namespace='DCS')
-        self.dcs_center_viewport_width = self._config('CENTER_VIEWPORT_WIDTH', parser=int, namespace='DCS')
-        self.dcs_center_viewport_height = self._config('CENTER_VIEWPORT_HEIGHT', parser=int, namespace='DCS')
         self.dcs_server_password = self._config('SERVER_PASSWORD', parser=str, namespace='DCS')
         self.dcs_server_name = self._config('SERVER_NAME', parser=str, namespace='DCS')
         self.dcs_server_max_players = self._config('SERVER_MAX_PLAYERS', parser=int, namespace='DCS')
@@ -103,8 +105,9 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.discord_bot_name = self._config('BOT_NAME', parser=str, namespace='DISCORD')
         self.discord_channel = self._config('CHANNEL', parser=str.lower, namespace='DISCORD')
         self.discord_token = self._config('TOKEN', parser=str, namespace='DISCORD')
+        self.discord_motd = self._config('MOTD', parser=str, namespace='DISCORD')
 
-        self.auto_mission_github_token = self._config('GITHUB_TOKEN', default='', parser=str, namespace='AUTO_MISSION')
+        self.auto_mission_github_token = self._config('GITHUB_TOKEN', parser=str, namespace='AUTO_MISSION')
         self.auto_mission_github_owner = self._config('GITHUB_OWNER', parser=str, namespace='AUTO_MISSION')
         self.auto_mission_github_repo = self._config('GITHUB_REPO', parser=str, namespace='AUTO_MISSION')
 
