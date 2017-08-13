@@ -495,5 +495,5 @@ def setup_config_for_dedicated_run():
     LOGGER.debug('setting up dedicated config')
     _backup_auth_file()
     with open(_get_me_auth_path(), 'w') as handle:
-        handle.write(jinja2.Template(ME_AUTH).render(server_name=CFG.dcs_server_name))
+        handle.write(jinja2.Template(ME_AUTH).render(server_name=CFG.discord_bot_name))
     _write_dedi_config()
