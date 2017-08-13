@@ -23,6 +23,10 @@ The tool is composed of three main parts:
 * A UDP socket: this little one is responsible for enabling communication between DCS and ESST. Messages are sent back and forth between the two of them. DCS sends regular updates with the status of the server, the connected players list, etc., while ESST can send command to DCS, for example asking it to exit gracefully before a restart (this is achieved by installing a script in `Saved Games\DCS\Scripts\ESSTGameGUI.lua`).
 * A Discord bot: this is a two communication between ESST and a Discord channel on the Wing's server. ESST publishes updates about the server status, and members of the server are able to send commands to the dedicated server via the same channel.
 
+### Discord bot commands
+
+To see a list of commands available, type `!help` in the Discord channel.
+
 Along with the Discord commands that allow to **upload missions file via drag-and-drop into a Discord channel**, ESST also 
 
 ## Installation
