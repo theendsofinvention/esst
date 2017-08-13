@@ -13,6 +13,8 @@ install_requires = [
     'pefile',
     'humanize',
     'click',
+    'psutil',
+    'github3==1.0.0a4',
 ]
 
 test_requires = [
