@@ -53,10 +53,10 @@ class DCSListener(threading.Thread):
     """
 
     def __init__(self):
-        threading.Thread.__init__(self)
+        threading.Thread.__init__(self, daemon=True)
         self.monitoring = False
         self.last_ping = None
-        self.run()
+        self.start()
 
     def run(self):
         """
