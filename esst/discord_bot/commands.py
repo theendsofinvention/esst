@@ -95,7 +95,7 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
         for var in dir(Status):
             if var.startswith('_'):
                 continue
-            if var in ['Mission time', 'Server age']:
+            if var in ['mission_time', 'server_age']:
                 output.append(f'{str.capitalize(var).replace("_", " ")}: '
                               f'{humanize.naturaltime(getattr(Status, var))}')
             else:
