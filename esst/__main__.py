@@ -33,15 +33,14 @@ def main(bot: bool, server: bool, socket: bool):
         game_gui.install_game_gui_hooks()
 
         if bot:
-            from esst.discord_bot import DiscordBot
+            from esst import discord_bot
             MAIN_LOGGER.debug('starting Discord bot')
-            DiscordBot()
+            discord_bot.DiscordBot()
 
         if server:
             from esst import dcs
             MAIN_LOGGER.debug('starting DCS monitoring')
-            app = dcs.App()
-            app.start()
+            dcs.App()
 
         if socket:
             from esst import dcs

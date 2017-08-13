@@ -71,6 +71,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         self._exiting = False
         self.cpu_usage = 'unknown'
         self._show_cpu_constantly = False
+        self.start()
 
     def _execute_cmd_chain(self, cmd_chain: list):
         while not self._should_exit():
