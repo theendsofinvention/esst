@@ -36,7 +36,6 @@ def main(bot: bool, server: bool, socket: bool):
             from esst.discord_bot import DiscordBot
             MAIN_LOGGER.debug('starting Discord bot')
             DiscordBot()
-            blinker.signal('discord message').send(__name__, msg='Hello!\nType "!help" for a list of available commands')
 
         if server:
             from esst import dcs

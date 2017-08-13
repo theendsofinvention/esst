@@ -82,6 +82,7 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                         'DEBUG': 'false',
                         'DCS_IDLE_CPU_USAGE': 5,
                         'DCS_HIGH_CPU_USAGE': 80,
+                        'DISCORD_MOTD': 'Hello!\nType "!help" for a list of available commands',
                         'DISCORD_BOT_NAME': 'ESST'
                     }
                 ),
@@ -103,6 +104,7 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.discord_bot_name = self._config('BOT_NAME', parser=str, namespace='DISCORD')
         self.discord_channel = self._config('CHANNEL', parser=str.lower, namespace='DISCORD')
         self.discord_token = self._config('TOKEN', parser=str, namespace='DISCORD')
+        self.discord_motd = self._config('MOTD', parser=str, namespace='DISCORD')
 
         self.auto_mission_github_token = self._config('GITHUB_TOKEN', default='', parser=str, namespace='AUTO_MISSION')
         self.auto_mission_github_owner = self._config('GITHUB_OWNER', parser=str, namespace='AUTO_MISSION')
