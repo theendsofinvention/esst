@@ -64,7 +64,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         threading.Thread.__init__(self, daemon=True)
         self.ctx = ctx
         self.app = pywinauto.Application()
-        self.window = None
         self.process_pid = None
         self._exiting = False
         self.cpu_usage = 'unknown'
@@ -217,7 +216,13 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             return
         LOGGER.info('restarting DCS')
         self._kill_running_app()
-        self.window = None
+        Status.metar = 'unknown'
+        Status.mission_file = 'unknown'
+        Status.server_age = 'unknown'
+        Status.mission_time = 'unknown'
+        Status.paused = 'unknown'
+        Status.mission_name = 'unknown'
+        Status.players = []
         self.app = None
         self.process_pid = None
         cmd_chain = [
