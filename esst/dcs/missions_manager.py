@@ -4,6 +4,8 @@ Manages missions for the server
 """
 
 import os
+import sys
+import json
 import shutil
 
 import blinker
@@ -14,6 +16,8 @@ from jinja2 import Template
 
 from esst.core.config import CFG
 from esst.core.logger import MAIN_LOGGER
+from esst.core.status import Status
+from esst.core.run import do_ex
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -55,6 +59,9 @@ LUA_TEMPLATE = Template("""cfg =
 } -- end of cfg
 
 """)
+
+def _mission_not_found(mission_path):
+    LOGGER.error(f'mission not found: {mission_path}')
 
 
 def _sanitize_path(path):
@@ -103,7 +110,7 @@ def set_active_mission_from_name(mission_name: str, load: bool = False):
     """
     mission_path = _get_mission_path(mission_name)
     if not os.path.exists(mission_path):
-        LOGGER.error(f'mission not found: {mission_path}')
+        _mission_not_found(mission_path)
     else:
         set_active_mission(mission_path)
         if load:
@@ -125,8 +132,57 @@ def _get_mission_path(mission_file_name):
     return _sanitize_path(os.path.join(_get_mission_dir(), mission_file_name))
 
 
+def _get_mission_path_with_RL_weather(mission_file_name):
+    mission_path = _get_mission_path(mission_file_name)
+    dirname = os.path.dirname(mission_path)
+    file, ext = os.path.splitext(mission_path)
+    return os.path.join(dirname, f'{file}_RLWX{ext}')
+
+
 def _create_mission_path(mission_name):
     return _sanitize_path(os.path.join(_get_mission_dir(), mission_name))
+
+
+def set_weather(icao_code: str, mission_name: str = None):
+    if mission_name is None:
+        if Status.mission_file != 'unknown':
+            LOGGER.debug(f'using active mission: {Status.mission_file}')
+            mission_path = Status.mission_file
+        else:
+            LOGGER.error('no active mission; please load a mission first')
+            return
+    else:
+        mission_path = _get_mission_path(mission_name)
+    if not os.path.exists(mission_path):
+        _mission_not_found(mission_path)
+        return
+    LOGGER.info(f'setting weather from {icao_code} to {mission_path}')
+    output_path = _get_mission_path_with_RL_weather(mission_path)
+    emft = os.path.join(os.path.dirname(sys.executable), 'Scripts/emft.exe')
+    out, err, ret = do_ex(
+        [
+            emft, '-v', 'set_weather',
+            '-s', icao_code,
+            '-i', mission_path,
+            '-o', output_path,
+        ]
+    )
+    if ret:
+        LOGGER.error('unable to set weather')
+        LOGGER.error(err)
+    else:
+        result = json.loads(out)
+        if result['status'] == 'success':
+            Status.metar = result['metar']
+            LOGGER.info(f'successfully set the weather on mission: {result["to"]}\n'
+                        f'METAR is: {result["metar"].upper()}')
+            set_active_mission(result["to"])
+            blinker.signal('dcs command').send('__name__', cmd='restart')
+        elif result['status'] == 'failed':
+            LOGGER.error(f'setting weather failed:\n{result["error"]}')
+        else:
+            LOGGER.error(f'unknown status: {result["status"]}')
+
 
 
 def get_latest_mission_from_github(ctx):

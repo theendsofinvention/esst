@@ -38,17 +38,17 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
         await self.say(
             f'This is ESST v{__version__}\n'
             f'Available commands are:\n\n'
-            f'!help:            prints this message\n\n'
+            f'!help:                    prints this message\n\n'
 
-            f'DCS commands:\n'
-            f'!dcs status:          print current status of the server\n'
-            f'!dcs version:         print the version of DCS running on the server\n'
-            f'!dcs show missions:   show a list of the available mission on the server\n'
-            f'!dcs show cpu:        show CPU usage of DCS.exe over the last 5 seconds\n'
-            f'!dcs show cpu start:  start printing CPU usage of DCS.exe\n'
-            f'!dcs show cpu stop:   stop printing CPU usage of DCS.exe\n'
-            f'!dcs load [MISSION]:  restart DCS with the specified MISSION\n'
-            f'!dcs restart:         restart DCS with the same mission\n\n'
+            f'DCS commands:\n\n'
+            f'!dcs status:              print current status of the server\n'
+            f'!dcs version:             print the version of DCS running on the server\n'
+            f'!dcs show missions:       show a list of the available mission on the server\n'
+            f'!dcs show cpu:            show CPU usage of DCS.exe over the last 5 seconds\n'
+            f'!dcs show cpu start:      start printing CPU usage of DCS.exe\n'
+            f'!dcs show cpu stop:       stop printing CPU usage of DCS.exe\n'
+            f'!dcs load [MISSION]:      restart DCS with the specified MISSION\n'
+            f'!dcs restart:             restart DCS with the same mission\n\n'
 
             f'Upload a mission to the server:\n'
             f'Simply drag and drop the mission file to this channel on Discord, and type the options in '
@@ -56,7 +56,12 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
             f'\tAvailable options:\n'
             f'\t\t"overwrite": allow overwriting existing files\n'
             f'\t\t"load": immediately restart the server with the new mission\n'
-            f'\t\t(note: options can be combined, for example: "load overwrite")\n'
+            f'\t\t(note: options can be combined, for example: "load overwrite")\n\n'
+            
+            f'Environment:\n\n'
+            f'!wx metar ICAO            updates the weather on the currently running mission\n' 
+            f'!wx metar ICAO MISSION    updates the weather on any mission\n\n'
+            f'Note: those two commands restart the DCS server with the latest mission'
         )
 
     # noinspection PyMethodMayBeStatic
@@ -92,14 +97,16 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
         Prints the status of the DCS server
         """
         output = []
-        for var in dir(Status):
-            if var.startswith('_'):
+        for attr_name in dir(Status):
+            if attr_name.startswith('_'):
                 continue
-            if var in ['mission_time', 'server_age']:
-                output.append(f'{str.capitalize(var).replace("_", " ")}: '
-                              f'{humanize.naturaltime(getattr(Status, var))}')
+            attr_nice_name = attr_name[:1].upper() + attr_name[1:]
+            attr_nice_name = attr_nice_name.replace("_", " ")
+            if attr_name in ['mission_time', 'server_age']:
+                output.append(f'{attr_nice_name}: '
+                              f'{humanize.naturaltime(getattr(Status, attr_name))}')
             else:
-                output.append(f'{str.capitalize(var).replace("_", " ")}: {getattr(Status, var)}')
+                output.append(f'{attr_nice_name}: {getattr(Status, attr_name)}')
         output = '\n'.join(output)
         await self.say(f'{output}')
 
@@ -124,6 +131,15 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
             mission: mission to load
         """
         missions_manager.set_active_mission_from_name(mission, load=True)
+
+    async def set_weather(self, cmd: str):
+        cmd = cmd.split(' ')
+        icao = cmd[0].upper()
+        try:
+            mission_name = cmd[1]
+        except IndexError:
+            mission_name = None
+        missions_manager.set_weather(icao, mission_name)
 
     async def on_message_edit(self, _: discord.Message, after: discord.Message):
         """
@@ -169,8 +185,10 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
                 await self.show_cpu_start()
             elif message.content == '!dcs show cpu stop':
                 await self.show_cpu_stop()
-            elif message.content.startswith('!dcs load'):
+            elif message.content.startswith('!dcs load '):
                 await self.load_mission(message.content.replace('!dcs load ', ''))
+            elif message.content.startswith('!wx metar '):
+                await self.set_weather(message.content.replace('!wx metar ', ''))
             elif message.content.startswith('!dcs restart'):
                 await self.restart_dcs()
             else:

@@ -69,3 +69,4 @@ venv/
 ENV/
 avatar.png
 *.ini
+/emft.debug

@@ -26,7 +26,7 @@ class DiscordLoggingHandler(logging.Handler):
         Args:
             record: logging.record to emit
         """
-        blinker.signal('discord message').send(__name__, msg=str.capitalize(record.msg))
+        blinker.signal('discord message').send(__name__, msg=record.msg[:1].upper() + record.msg[1:])
 
 
 def register_logging_handler():
