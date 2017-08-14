@@ -210,7 +210,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             return
         LOGGER.info('restarting DCS')
         self._kill_running_app()
-        Status.metar = 'unknown'
         Status.mission_file = 'unknown'
         Status.server_age = 'unknown'
         Status.mission_time = 'unknown'
