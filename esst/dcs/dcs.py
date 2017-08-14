@@ -14,9 +14,6 @@ from esst.core.config import CFG
 from esst.core.logger import MAIN_LOGGER
 from esst.core.path import Path
 from esst.core.status import Status
-from esst.dcs.missions_manager import get_latest_mission_from_github
-from esst.dcs.dedicated import setup_config_for_dedicated_run
-from esst.dcs.game_gui import install_game_gui_hooks
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -280,21 +277,24 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         LOGGER.debug('starting DCS monitoring thread')
         cmd_chain = [
             self._get_dcs_version_from_executable,
-            get_latest_mission_from_github,
-            setup_config_for_dedicated_run,
-            install_game_gui_hooks,
-            self._try_to_connect_to_existing_dcs_application,
-            self._start_new_dcs_application_if_needed,
         ]
+        if self.ctx.obj['start_dcs']:
+            cmd_chain.extend(
+                [
+                    self._try_to_connect_to_existing_dcs_application,
+                    self._start_new_dcs_application_if_needed,
+                ]
+            )
         self._execute_cmd_chain(cmd_chain)
         while True:
             if self._should_exit():
                 LOGGER.debug('interrupted by exit signal')
                 break
-            self._check_if_dcs_is_running()
-            if not self.process_pid:
-                LOGGER.debug('DCS has stopped, re-starting')
-                self.restart()
-            self.monitor_cpu_usage()
+            if self.ctx.obj['start_dcs']:
+                self._check_if_dcs_is_running()
+                if not self.process_pid:
+                    LOGGER.debug('DCS has stopped, re-starting')
+                    self.restart()
+                self.monitor_cpu_usage()
             time.sleep(0.5)
         LOGGER.debug('closing DCS monitoring thread')
