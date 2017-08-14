@@ -167,7 +167,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             self._check_if_dcs_is_running,
         ]
         self._execute_cmd_chain(cmd_chain)
-        self._update_server_status('running')
+        self._check_if_dcs_is_running()
 
     @staticmethod
     def _update_server_status(status: str):
