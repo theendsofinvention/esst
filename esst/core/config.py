@@ -87,6 +87,8 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                         'AUTO_MISSION_GITHUB_TOKEN': '',
                         'AUTO_MISSION_GITHUB_OWNER': '',
                         'AUTO_MISSION_GITHUB_REPO': '',
+                        'DCS_SERVER_STARTUP_TIME': 120,
+                        'DCS_PING_INTERVAL': 30,
                     }
                 ),
             ]
@@ -101,6 +103,8 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.dcs_server_password = self._config('SERVER_PASSWORD', parser=str, namespace='DCS')
         self.dcs_server_name = self._config('SERVER_NAME', parser=str, namespace='DCS')
         self.dcs_server_max_players = self._config('SERVER_MAX_PLAYERS', parser=int, namespace='DCS')
+        self.dcs_server_startup_time = self._config('SERVER_STARTUP_TIME', parser=int, namespace='DCS')
+        self.dcs_ping_interval = self._config('PING_INTERVAL', parser=int, namespace='DCS')
 
         self.discord_bot_name = self._config('BOT_NAME', parser=str, namespace='DISCORD')
         self.discord_channel = self._config('CHANNEL', parser=str.lower, namespace='DISCORD')
