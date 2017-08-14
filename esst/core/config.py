@@ -8,6 +8,8 @@ import os
 import everett
 import everett.manager
 
+from esst.core.version import __version__
+
 
 def parse_dcs_path(val: str) -> str:
     """
@@ -83,7 +85,9 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                         'DCS_IDLE_CPU_USAGE': 5,
                         'DCS_HIGH_CPU_USAGE': 80,
                         'DISCORD_BOT_NAME': 'ESST',
-                        'DISCORD_MOTD': 'Hello!\nType "!help" for a list of available commands',
+                        'DISCORD_MOTD': 'Hello!\n'
+                                        'This is ESST v{version}\n'
+                                        'Type "!help" for a list of available commands'.format(version=__version__),
                         'AUTO_MISSION_GITHUB_TOKEN': '',
                         'AUTO_MISSION_GITHUB_OWNER': '',
                         'AUTO_MISSION_GITHUB_REPO': '',
