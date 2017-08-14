@@ -17,6 +17,19 @@ ESST stands for Etcher's Server Startup Tool.
 
 ## Functionalities
 
+The main functionnalities are:
+
+* Auto start and auto-restart DCS
+* Discord bot able to send and receive commands
+	* Upload a Mission file to Discord to send it to the server
+	* Load missions
+	* Restart the server
+	* CPU usage alerts
+	* Server status
+* Automatic download and activation of a mission file from a Github repository latest release
+
+### How it works
+
 The tool is composed of three main parts:
 
 * The DCS server manager: this is responsible for spawning (or connecting to) a DCS.exe process. It will also try it's  best to keep it alive, and restart it in case it crashes. This has been made possible by [Ciribob](https://forums.eagle.ru/member.php?u=112175) and [his method to auto-start a server](https://forums.eagle.ru/showthread.php?t=160829).
