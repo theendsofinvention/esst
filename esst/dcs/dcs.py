@@ -140,12 +140,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
 
         LOGGER.debug('waiting for DCS to spool up')
         _wait_for_process()
-        time.sleep(2)
-
-        LOGGER.debug('process is now running, waiting for CPU usage to drop')
-        _wait_for_cpu()
-        time.sleep(2)
-
         LOGGER.debug('process is ready')
 
     def _start_new_dcs_application_if_needed(self):
