@@ -92,14 +92,16 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
         Prints the status of the DCS server
         """
         output = []
-        for var in dir(Status):
-            if var.startswith('_'):
+        for attr_name in dir(Status):
+            if attr_name.startswith('_'):
                 continue
-            if var in ['mission_time', 'server_age']:
-                output.append(f'{str.capitalize(var).replace("_", " ")}: '
-                              f'{humanize.naturaltime(getattr(Status, var))}')
+            attr_nice_name = attr_name[:1].upper() + attr_name[1:]
+            attr_nice_name = attr_nice_name.replace("_", " ")
+            if attr_name in ['mission_time', 'server_age']:
+                output.append(f'{attr_nice_name}: '
+                              f'{humanize.naturaltime(getattr(Status, attr_name))}')
             else:
-                output.append(f'{str.capitalize(var).replace("_", " ")}: {getattr(Status, var)}')
+                output.append(f'{attr_nice_name}: {getattr(Status, attr_name)}')
         output = '\n'.join(output)
         await self.say(f'{output}')
 
@@ -124,6 +126,15 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
             mission: mission to load
         """
         missions_manager.set_active_mission_from_name(mission, load=True)
+
+    async def set_weather(self, cmd: str):
+        cmd = cmd.split(' ')
+        icao = cmd[0].upper()
+        try:
+            mission_name = cmd[1]
+        except IndexError:
+            mission_name = None
+        missions_manager.set_weather(icao, mission_name)
 
     async def on_message_edit(self, _: discord.Message, after: discord.Message):
         """
@@ -172,7 +183,7 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
             elif message.content.startswith('!dcs load '):
                 await self.load_mission(message.content.replace('!dcs load ', ''))
             elif message.content.startswith('!wx metar '):
-                missions_manager.set_weather(message.content.replace('!wx metar ', ''))
+                await self.set_weather(message.content.replace('!wx metar ', ''))
             elif message.content.startswith('!dcs restart'):
                 await self.restart_dcs()
             else:
