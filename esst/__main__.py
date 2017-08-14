@@ -11,40 +11,75 @@ import click
 
 
 @click.group(invoke_without_command=True)  # noqa: C901
-@click.option('--bot/--no-bot', default=True, help='Starts the Discord bot')
-@click.option('--server/--no-server', default=True, help='Starts the DCS server')
-@click.option('--socket/--no-socket', default=True, help='Starts the socket')
-def main(bot: bool, server: bool, socket: bool):
+@click.pass_context
+@click.option('--bot/--no-bot', default=True, help='Starts the Discord bot', show_default=True)
+@click.option('--server/--no-server', default=True, help='Starts the DCS app', show_default=True)
+@click.option('--socket/--no-socket', default=True, help='Starts the socket', show_default=True)
+@click.option('--start-dcs/--no-start-dcs', help='Spawn DCS.exe process', default=True, show_default=True)
+@click.option('--hooks/--no-hooks', help='Install GameGUI hooks', default=True, show_default=True)
+@click.option('--dedi-config/--no-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
+              show_default=True)
+@click.option('--auto-mission/--no-auto-mission', help='Download latest mission', default=True, show_default=True)
+def main(ctx,
+         bot: bool,
+         server: bool,
+         socket: bool,
+         start_dcs: bool,
+         hooks: bool,
+         dedi_config: bool,
+         auto_mission: bool,
+         ):
     """
     Main entry point
 
     Args:
+        ctx: click context
         bot: whether or not to start the Discord bot
         server: whether or not to start the DCS server
         socket: whether or not to start the DCS socket
+        start_dcs: start the server thread, but not the actual DCS app
+        hooks: install GemGUI hooks
+        dedi_config: setup DCS to run in dedicated mode
+        auto_mission: downloads the latest mission from Github
     """
     from esst.core.logger import MAIN_LOGGER
     from esst.core.version import __version__
+
+    ctx.obj = {
+        'start_dcs': start_dcs
+    }
 
     import ctypes
     ctypes.windll.kernel32.SetConsoleTitleW(f'ESST v{__version__} - Use CTRL+C to exit')
     try:
         MAIN_LOGGER.debug(f'starting ESST {__version__}')
 
+        if auto_mission:
+            from esst.dcs.missions_manager import get_latest_mission_from_github
+            get_latest_mission_from_github(ctx)
+
+        if hooks:
+            from esst.dcs.game_gui import install_game_gui_hooks
+            install_game_gui_hooks(ctx)
+
+        if dedi_config:
+            from esst.dcs.dedicated import setup_config_for_dedicated_run
+            setup_config_for_dedicated_run(ctx)
+
         if bot:
             from esst import discord_bot
             MAIN_LOGGER.debug('starting Discord bot')
-            discord_bot.DiscordBot()
+            discord_bot.DiscordBot(ctx)
 
         if server:
             from esst import dcs
             MAIN_LOGGER.debug('starting DCS monitoring')
-            dcs.App()
+            dcs.App(ctx)
 
         if socket:
             from esst import dcs
             MAIN_LOGGER.debug('starting socket')
-            dcs.DCSListener()
+            dcs.DCSListener(ctx)
 
         while True:
             time.sleep(0.5)

@@ -17,6 +17,19 @@ ESST stands for Etcher's Server Startup Tool.
 
 ## Functionalities
 
+The main functionnalities are:
+
+* Auto start and auto-restart DCS
+* Discord bot able to send and receive commands
+	* Upload a Mission file to Discord to send it to the server
+	* Load missions
+	* Restart the server
+	* CPU usage alerts
+	* Server status
+* Automatic download and activation of a mission file from a Github repository latest release
+
+### How it works
+
 The tool is composed of three main parts:
 
 * The DCS server manager: this is responsible for spawning (or connecting to) a DCS.exe process. It will also try it's  best to keep it alive, and restart it in case it crashes. This has been made possible by [Ciribob](https://forums.eagle.ru/member.php?u=112175) and [his method to auto-start a server](https://forums.eagle.ru/showthread.php?t=160829).
@@ -86,7 +99,7 @@ A standard configuration file looks like this:
 
 ```ini
 [main]
-DEBUG = true (optional, default to false)
+DEBUG = true (optional, default: false)
 SAVED_GAMES_DIR = C:\path\to\Saved Games\DCS
 
 [discord]
@@ -100,6 +113,8 @@ PATH = C:\path\to\DCS World\bin\dcs.exe
 SERVER_NAME = My awesome server
 SERVER_PASSWORD = SERVER_SECRET_PASSWORD
 SERVER_MAX_PLAYERS = 64
+DCS_SERVER_STARTUP_TIME = 60 (optional, defaults: 120)
+DCS_PING_INTERVAL = 20 (optional, default: 30)
 
 [auto_mission] (optional)
 github_owner = 132nd-vWing
@@ -133,6 +148,8 @@ The `[main]` section has no prefix.
 * `server_name`: the name of the DCS multiplayer server
 * `server_password`: the password for the DCS multiplayer server
 * `server_max_players`: maximum amount of players allowed on the server
+* `dcs_server_startup_time`: this is the maximum amount of time allowed between the moment the `DCS.exe` process is running and the moment when an actual multiplayer server is running. If that time is exceeded, an alert will be sent on Discord
+* `dcs_ping_interval`: this is the maximum amount of time between pings over which the server will be considered unresponsive and will be restarted (pings are sent to ESST by DCS every 5 seconds).
 
 #### [auto_mission]
 Those settings are optional. If provided, ESST will automatically download the first `*.miz` asset from the latest release of a Github repository, allowing you to simply upload your missions to Github, and have ESST grab the latest version at startup.

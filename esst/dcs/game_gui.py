@@ -145,7 +145,7 @@ net.log("Loaded - ESST GameGUI")
 """
 
 
-def install_game_gui_hooks():
+def install_game_gui_hooks(ctx):
     """
     Installs the GameGUI hooks in DCS Scripts folder
     """

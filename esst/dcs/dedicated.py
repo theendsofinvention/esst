@@ -488,7 +488,7 @@ def _write_dedi_config():
             handle.write(DEDI_CFG)
 
 
-def setup_config_for_dedicated_run():
+def setup_config_for_dedicated_run(ctx):
     """
     Setup the server to automatically starts in multiplayer mode when DCS starts
     """

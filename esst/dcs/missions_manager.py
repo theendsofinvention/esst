@@ -129,7 +129,7 @@ def _create_mission_path(mission_name):
     return _sanitize_path(os.path.join(_get_mission_dir(), mission_name))
 
 
-def get_latest_mission_from_github():
+def get_latest_mission_from_github(ctx):
     """
     Downloads the latest mission from a Github repository
 

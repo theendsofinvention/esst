@@ -16,11 +16,12 @@ import blinker
 
 from esst.core.logger import MAIN_LOGGER
 from esst.core.status import Status
+from esst.core.config import CFG
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 SOCKET_CMD_QUEUE = queue.Queue()
-KNOWN_COMMANDS = ['exit dcs', 'exit']
+KNOWN_COMMANDS = ['exit dcs', 'exit', 'monitor server start']
 
 PING_TIMEOUT = 30
 
@@ -52,10 +53,13 @@ class DCSListener(threading.Thread):
     This class is a self-starting thread that creates and manages a UDP socket as a two-way communication with DCS
     """
 
-    def __init__(self):
+    def __init__(self, ctx):
+        self.ctx = ctx
         threading.Thread.__init__(self, daemon=True)
         self.monitoring = False
+        self.monitoring_startup = False
         self.last_ping = None
+        self.startup_age = None
         self.start()
 
     def run(self):
@@ -63,22 +67,6 @@ class DCSListener(threading.Thread):
         Starts the thread
         """
         self.listen()
-
-    def start_monitoring(self):
-        """
-        Start measuring the intervals between pings received from the DCS server and triggers a DCS restarts if
-        it gets too high
-        """
-        LOGGER.debug('starting monitoring server pings')
-        self.last_ping = time.time()
-        self.monitoring = True
-
-    def stop_monitoring(self):
-        """
-        Stop measuring the intervals between pings received from the DCS server
-        """
-        LOGGER.debug('stopped monitoring server pings')
-        self.monitoring = False
 
     def _parse_ping(self, data: dict):
         self.last_ping = time.time()
@@ -90,11 +78,67 @@ class DCSListener(threading.Thread):
         Status.players = data.get('players')
 
     def _parse_status(self, data: dict):
-        if data['message'] in ['loaded mission']:
-            self.start_monitoring()
-        if data['message'] in ['stopping simulation']:
-            self.stop_monitoring()
         LOGGER.info(f'DCS server says: {data["message"]}')
+        if data['message'] in ['loaded mission']:
+            LOGGER.debug('starting monitoring server pings')
+            self.last_ping = time.time()
+            self.monitoring = True
+            self.monitoring_startup = False
+        if data['message'] in ['stopping simulation']:
+            LOGGER.debug('stopped monitoring server pings')
+            self.monitoring = False
+
+    def _parse_commands(self, sock, cmd_sock, cmd_address):
+
+        if not SOCKET_CMD_QUEUE.empty():
+            message = SOCKET_CMD_QUEUE.get_nowait()
+            if message == 'exit':
+                sock.close()
+                blinker.signal('socket ready to exit').send(__name__)
+                return False
+            elif message == 'monitor server start':
+                LOGGER.debug('monitoring server startup time')
+                self.monitoring_startup = True
+                self.startup_age = time.time()
+            else:
+                message = {'cmd': message}
+                message = json.dumps(message) + '\n'
+                LOGGER.debug(f'sending command via socket: {message}')
+                cmd_sock.sendto(message.encode(), cmd_address)
+
+        return True
+
+    def _monitor_server(self):
+
+        if self.monitoring:
+            if time.time() - self.last_ping > CFG.dcs_ping_interval:
+                LOGGER.error('It has been 30 seconds since I heard from DCS. '
+                             'It is likely that the server has crashed.')
+                blinker.signal('dcs command').send(__name__, cmd='restart')
+                self.monitoring = False
+
+    def _monitor_server_startup(self):
+        if self.monitoring_startup:
+            if time.time() - self.startup_age > CFG.dcs_server_startup_time:
+                LOGGER.error('DCS is taking more than 2 minutes to start a multiplayer server.\n'
+                             'Something is wrong ...')
+                self.monitoring_startup = False
+
+
+    def _read_socket(self, sock):
+
+        try:
+            data, _ = sock.recvfrom(4096)
+            data = json.loads(data.decode().strip())
+            if data['type'] == 'ping':
+                self._parse_ping(data)
+            if data['type'] == 'status':
+                self._parse_status(data)
+            else:
+                pass
+        except socket.timeout:
+            pass
+
 
     def listen(self):
         """
@@ -115,31 +159,11 @@ class DCSListener(threading.Thread):
 
             time.sleep(0.5)
 
-            try:
-                data, _ = sock.recvfrom(4096)
-                data = json.loads(data.decode().strip())
-                if data['type'] == 'ping':
-                    self._parse_ping(data)
-                if data['type'] == 'status':
-                    self._parse_status(data)
-                else:
-                    pass
-            except socket.timeout:
-                pass
+            self._read_socket(sock)
 
-            if not SOCKET_CMD_QUEUE.empty():
-                message = SOCKET_CMD_QUEUE.get_nowait()
-                if message == 'exit':
-                    sock.close()
-                    blinker.signal('socket ready to exit').send(__name__)
-                    break
-                message = {'cmd': message}
-                message = json.dumps(message) + '\n'
-                LOGGER.debug(f'sending command via socket: {message}')
-                cmd_sock.sendto(message.encode(), cmd_address)
-            if self.monitoring:
-                if time.time() - self.last_ping > 30:
-                    LOGGER.error('It has been 30 seconds since I heard from DCS. '
-                                 'It is likely that the server has crashed.')
-                    blinker.signal('dcs command').send(__name__, cmd='restart')
-                    self.stop_monitoring()
+            if not self._parse_commands(sock, cmd_sock, cmd_address):
+                break
+
+            self._monitor_server()
+
+            self._monitor_server_startup()

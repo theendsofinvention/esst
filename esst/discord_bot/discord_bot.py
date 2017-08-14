@@ -59,8 +59,9 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
     def exiting(self) -> bool:
         return bool(self._exiting)
 
-    def __init__(self):
+    def __init__(self, ctx):
         threading.Thread.__init__(self, daemon=True)
+        self.ctx = ctx
         self.loop = asyncio.get_event_loop()
         self._client = None
         self._server = None
