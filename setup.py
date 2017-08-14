@@ -2,7 +2,7 @@
 
 from setuptools import setup  # type: ignore
 
-dependency_links = [r'https://github.com/132nd-etcher/EMFT.git']
+dependency_links = [r'git+https://github.com/132nd-etcher/EMFT.git#egg=emft-0.5.1']
 
 install_requires = [
     'discord.py',
@@ -17,7 +17,7 @@ install_requires = [
     'click',
     'psutil',
     'github3.py==1.0.0a4',
-    'emft',
+    'emft==0.5.1',
 ]
 
 test_requires = [
