@@ -76,12 +76,17 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
         if self.exiting:
             return
         if not DISCORD_SEND_QUEUE.empty():
-            message = DISCORD_SEND_QUEUE.get_nowait()
-            LOGGER.debug(f'received message to say: {message}')
+            messages = []
+            while not DISCORD_SEND_QUEUE.empty():
+                message = DISCORD_SEND_QUEUE.get_nowait()
+                LOGGER.debug(f'received message to say: {message}')
+                messages.append(message)
+                asyncio.sleep(1)
             try:
-                await self.say(message)
+                await self.say('\n\n'.join(messages))
             except discord.errors.HTTPException:
-                DISCORD_SEND_QUEUE.put(message)
+                for message in messages:
+                    DISCORD_SEND_QUEUE.put(message)
             LOGGER.debug('message sent')
 
     async def _parse_command(self, command):
