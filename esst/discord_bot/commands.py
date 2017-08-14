@@ -38,17 +38,17 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
         await self.say(
             f'This is ESST v{__version__}\n'
             f'Available commands are:\n\n'
-            f'!help:            prints this message\n\n'
+            f'!help:                    prints this message\n\n'
 
-            f'DCS commands:\n'
-            f'!dcs status:          print current status of the server\n'
-            f'!dcs version:         print the version of DCS running on the server\n'
-            f'!dcs show missions:   show a list of the available mission on the server\n'
-            f'!dcs show cpu:        show CPU usage of DCS.exe over the last 5 seconds\n'
-            f'!dcs show cpu start:  start printing CPU usage of DCS.exe\n'
-            f'!dcs show cpu stop:   stop printing CPU usage of DCS.exe\n'
-            f'!dcs load [MISSION]:  restart DCS with the specified MISSION\n'
-            f'!dcs restart:         restart DCS with the same mission\n\n'
+            f'DCS commands:\n\n'
+            f'!dcs status:              print current status of the server\n'
+            f'!dcs version:             print the version of DCS running on the server\n'
+            f'!dcs show missions:       show a list of the available mission on the server\n'
+            f'!dcs show cpu:            show CPU usage of DCS.exe over the last 5 seconds\n'
+            f'!dcs show cpu start:      start printing CPU usage of DCS.exe\n'
+            f'!dcs show cpu stop:       stop printing CPU usage of DCS.exe\n'
+            f'!dcs load [MISSION]:      restart DCS with the specified MISSION\n'
+            f'!dcs restart:             restart DCS with the same mission\n\n'
 
             f'Upload a mission to the server:\n'
             f'Simply drag and drop the mission file to this channel on Discord, and type the options in '
@@ -56,7 +56,12 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
             f'\tAvailable options:\n'
             f'\t\t"overwrite": allow overwriting existing files\n'
             f'\t\t"load": immediately restart the server with the new mission\n'
-            f'\t\t(note: options can be combined, for example: "load overwrite")\n'
+            f'\t\t(note: options can be combined, for example: "load overwrite")\n\n'
+            
+            f'Environment:\n\n'
+            f'!wx metar ICAO            updates the weather on the currently running mission\n' 
+            f'!wx metar ICAO MISSION    updates the weather on any mission\n\n'
+            f'Note: those two commands restart the DCS server with the latest mission'
         )
 
     # noinspection PyMethodMayBeStatic
