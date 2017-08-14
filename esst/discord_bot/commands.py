@@ -42,13 +42,13 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
 
             f'DCS commands:\n'
             f'!dcs status:          print current status of the server\n'
-            f'!dcs version:         prints the version of DCS running on the server\n'
+            f'!dcs version:         print the version of DCS running on the server\n'
             f'!dcs show missions:   show a list of the available mission on the server\n'
             f'!dcs show cpu:        show CPU usage of DCS.exe over the last 5 seconds\n'
             f'!dcs show cpu start:  start printing CPU usage of DCS.exe\n'
             f'!dcs show cpu stop:   stop printing CPU usage of DCS.exe\n'
-            f'!dcs load [MISSION]:  restarts the server with the specified MISSION\n'
-            f'!dcs restart:         restarts the DCS application on the server\n\n'
+            f'!dcs load [MISSION]:  restart DCS with the specified MISSION\n'
+            f'!dcs restart:         restart DCS with the same mission\n\n'
 
             f'Upload a mission to the server:\n'
             f'Simply drag and drop the mission file to this channel on Discord, and type the options in '
