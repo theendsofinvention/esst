@@ -78,7 +78,8 @@ class DCSListener(threading.Thread):
         Status.players = data.get('players')
 
     def _parse_status(self, data: dict):
-        LOGGER.info(f'DCS server says: {data["message"]}')
+        LOGGER.debug(f'DCS server says: {data["message"]}')
+        Status.server_status = data['message']
         if data['message'] in ['loaded mission']:
             LOGGER.debug('starting monitoring server pings')
             self.last_ping = time.time()
