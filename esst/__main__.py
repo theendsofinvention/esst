@@ -11,10 +11,11 @@ import click
 
 
 @click.group(invoke_without_command=True)  # noqa: C901
+@click.pass_context
 @click.option('--bot/--no-bot', default=True, help='Starts the Discord bot')
 @click.option('--server/--no-server', default=True, help='Starts the DCS server')
 @click.option('--socket/--no-socket', default=True, help='Starts the socket')
-def main(bot: bool, server: bool, socket: bool):
+def main(ctx, bot: bool, server: bool, socket: bool):
     """
     Main entry point
 
@@ -34,17 +35,17 @@ def main(bot: bool, server: bool, socket: bool):
         if bot:
             from esst import discord_bot
             MAIN_LOGGER.debug('starting Discord bot')
-            discord_bot.DiscordBot()
+            discord_bot.DiscordBot(ctx)
 
         if server:
             from esst import dcs
             MAIN_LOGGER.debug('starting DCS monitoring')
-            dcs.App()
+            dcs.App(ctx)
 
         if socket:
             from esst import dcs
             MAIN_LOGGER.debug('starting socket')
-            dcs.DCSListener()
+            dcs.DCSListener(ctx)
 
         while True:
             time.sleep(0.5)

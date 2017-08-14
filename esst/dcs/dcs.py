@@ -63,8 +63,9 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
     Manages DCS application Window process
     """
 
-    def __init__(self):
+    def __init__(self, ctx):
         threading.Thread.__init__(self, daemon=True)
+        self.ctx = ctx
         self.app = pywinauto.Application()
         self.window = None
         self.process_pid = None

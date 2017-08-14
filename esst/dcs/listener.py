@@ -52,7 +52,8 @@ class DCSListener(threading.Thread):
     This class is a self-starting thread that creates and manages a UDP socket as a two-way communication with DCS
     """
 
-    def __init__(self):
+    def __init__(self, ctx):
+        self.ctx = ctx
         threading.Thread.__init__(self, daemon=True)
         self.monitoring = False
         self.last_ping = None
