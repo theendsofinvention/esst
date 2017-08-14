@@ -16,6 +16,7 @@ from esst.core.path import Path
 from esst.core.status import Status
 from esst.dcs.missions_manager import get_latest_mission_from_github
 from esst.dcs.dedicated import setup_config_for_dedicated_run
+from esst.dcs.game_gui import install_game_gui_hooks
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -279,6 +280,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             self._get_dcs_version_from_executable,
             get_latest_mission_from_github,
             setup_config_for_dedicated_run,
+            install_game_gui_hooks,
             self._try_to_connect_to_existing_dcs_application,
             self._start_new_dcs_application_if_needed,
         ]

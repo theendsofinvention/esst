@@ -31,9 +31,6 @@ def main(bot: bool, server: bool, socket: bool):
     try:
         MAIN_LOGGER.debug(f'starting ESST {__version__}')
 
-        from esst.dcs import game_gui
-        game_gui.install_game_gui_hooks()
-
         if bot:
             from esst import discord_bot
             MAIN_LOGGER.debug('starting Discord bot')
