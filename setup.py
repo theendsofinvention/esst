@@ -2,6 +2,8 @@
 
 from setuptools import setup  # type: ignore
 
+dependency_links = [r'https://github.com/132nd-etcher/EMFT.git']
+
 install_requires = [
     'discord.py',
     'everett',
@@ -15,6 +17,7 @@ install_requires = [
     'click',
     'psutil',
     'github3.py==1.0.0a4',
+    'emft',
 ]
 
 test_requires = [
@@ -50,6 +53,7 @@ def main():
         entry_points=entry_points,
         tests_require=test_requires,
         setup_requires=setup_requires,
+        dependency_links=dependency_links,
         test_suite='pytest',
         packages=['esst', 'esst.core', 'esst.dcs', 'esst.discord_bot'],
     )
