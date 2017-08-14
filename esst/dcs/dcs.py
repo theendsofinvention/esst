@@ -174,7 +174,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         if Status.dcs_application != status:
             Status.dcs_application = status
             LOGGER.info(f'DCS server is {status}')
-            if status is 'running':
+            if status is 'starting':
                 blinker.signal('socket command').send(__name__, cmd='monitor server start')
 
     def _should_exit(self) -> bool:
