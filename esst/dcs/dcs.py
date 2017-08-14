@@ -180,7 +180,10 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         return self._exiting
 
     def _kill_running_app(self):
-        LOGGER.debug('killing running DCS process')
+        self._check_if_dcs_is_running()
+        if not self.process_pid:
+            LOGGER.debug('DCS process was not running')
+            return
         LOGGER.debug('sending socket command to DCS for graceful exit')
         blinker.signal('socket command').send(__name__, cmd='exit dcs')
         try:
