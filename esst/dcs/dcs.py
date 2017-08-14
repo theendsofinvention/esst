@@ -78,6 +78,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             try:
                 cmd = cmd_chain.pop(0)
                 cmd()
+                time.sleep(0.5)
             except IndexError:
                 return True
 
