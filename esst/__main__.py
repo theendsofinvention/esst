@@ -26,6 +26,8 @@ def main(bot: bool, server: bool, socket: bool):
     from esst.core.logger import MAIN_LOGGER
     from esst.core.version import __version__
 
+    import ctypes
+    ctypes.windll.kernel32.SetConsoleTitleW(f'ESST v{__version__} - Use CTRL+C to exit')
     try:
         MAIN_LOGGER.debug(f'starting ESST {__version__}')
 
