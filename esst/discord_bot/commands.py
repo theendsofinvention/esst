@@ -171,6 +171,8 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
                 await self.show_cpu_stop()
             elif message.content.startswith('!dcs load '):
                 await self.load_mission(message.content.replace('!dcs load ', ''))
+            elif message.content.startswith('!wx metar '):
+                missions_manager.set_weather(message.content.replace('!wx metar ', ''))
             elif message.content.startswith('!dcs restart'):
                 await self.restart_dcs()
             else:
