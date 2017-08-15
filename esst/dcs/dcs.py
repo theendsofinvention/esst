@@ -15,37 +15,14 @@ from esst.core.logger import MAIN_LOGGER
 from esst.core.path import Path
 from esst.core.status import Status
 from .dedicated import setup_config_for_dedicated_run
-from .missions_manager import  get_latest_mission_from_github
 from .game_gui import install_game_gui_hooks
+from .missions_manager import get_latest_mission_from_github
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 DCS_CMD_QUEUE = queue.Queue()
 
-KNOWN_COMMANDS = [
-    'restart', 'show cpu', 'show cpu start', 'show cpu stop', 'kill dcs'
-]
 KNOWN_DCS_VERSIONS = ['1.5.6.5199']
-
-
-def catch_command_signals(sender, **kwargs):
-    """
-    Listens to command signals sent to the DCS server via blinker
-
-    Args:
-        sender: signal's originator
-        **kwargs: command to execute
-    """
-    LOGGER.debug(f'got command signal from {sender}: {kwargs}')
-    if 'cmd' not in kwargs:
-        raise RuntimeError('missing command in signal')
-    cmd = kwargs['cmd']
-    if cmd not in KNOWN_COMMANDS:
-        raise RuntimeError(f'unknown command: {cmd}')
-    DCS_CMD_QUEUE.put(kwargs['cmd'])
-
-
-blinker.signal('dcs command').connect(catch_command_signals)
 
 
 def get_dcs_process_pid():
@@ -195,6 +172,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         return self.ctx.obj['threads']['dcs']['should_exit']
 
     def _kill_running_app(self):
+        self.ctx.obj['dcs_kill'] = False
         self._check_if_dcs_is_running()
         if not self.process_pid:
             LOGGER.debug('DCS process was not running')
@@ -226,6 +204,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         if self._should_exit():
             LOGGER.debug('interrupted by exit signal')
             return
+        self.ctx.obj['dcs_restart'] = False
         LOGGER.info('restarting DCS')
         self._kill_running_app()
         Status.mission_file = 'unknown'
@@ -250,6 +229,9 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         try:
             self.cpu_usage = int(self.app.cpu_usage(interval=5))
             Status.dcs_cpu_usage = f'{self.cpu_usage}%'
+            if self.ctx.obj['dcs_show_cpu_usage'] or self.ctx.obj['dcs_show_cpu_usage_once']:
+                LOGGER.info(f'DCS cpu usage: {self.cpu_usage}%')
+                self.ctx.obj['dcs_show_cpu_usage_once'] = False
         except RuntimeError:
             self._check_if_dcs_is_running()
             if self.process_pid:
@@ -261,34 +243,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             blinker.signal('discord message').send(__name__, msg=f'DCS cpu usage: {self.cpu_usage}%')
         if self.cpu_usage > CFG.dcs_high_cpu_usage:
             LOGGER.warning(f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}% for 5 seconds')
-
-    # noinspection PyMethodMayBeStatic
-    def show_cpu(self):
-        """
-        Sends the last cpu usage of DCS to Discord channel
-        """
-        blinker.signal('discord message').send(__name__, msg=f'DCS cpu usage: {self.cpu_usage}%')
-
-    def parse_commands(self):
-        """
-        Reads the incoming commands queue and execute pending commands
-        """
-        if self._exiting:
-            return
-        if not DCS_CMD_QUEUE.empty():
-            cmd = DCS_CMD_QUEUE.get_nowait()
-            if cmd == 'restart':
-                self.restart()
-            elif cmd == 'show cpu':
-                self.show_cpu()
-            elif cmd == 'show cpu start':
-                self._show_cpu_constantly = True
-            elif cmd == 'show cpu stop':
-                self._show_cpu_constantly = False
-            elif cmd == 'kill dcs':
-                self._kill_running_app()
-            else:
-                raise RuntimeError(f'unknown dcs command: {cmd}')
 
     def run(self):
         """
@@ -316,6 +270,10 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
                     LOGGER.debug('DCS has stopped, re-starting')
                     self.restart()
                 self.monitor_cpu_usage()
+            if self.ctx.obj['dcs_kill']:
+                self._kill_running_app()
+            if self.ctx.obj['dcs_restart']:
+                self.restart()
             time.sleep(0.5)
 
         self._kill_running_app()

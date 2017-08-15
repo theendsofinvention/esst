@@ -47,6 +47,11 @@ def main(ctx,
 
     ctx.obj = {
         'dcs_start_ok': start_dcs,
+        'dcs_show_cpu_usage': False,
+        'dcs_show_cpu_usage_once': False,
+        'dcs_restart_process': False,
+        'dcs_kill': False,
+        'dcs_restart': False,
         'threads': {
             'dcs': {
                 'ready_to_exit': True,
