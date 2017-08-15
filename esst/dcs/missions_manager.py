@@ -170,7 +170,7 @@ def set_weather(ctx: dict, icao_code: str, mission_name: str = None):
     emft = os.path.join(os.path.dirname(sys.executable), 'Scripts/emft.exe')
     out, err, ret = do_ex(
         [
-            emft, '-v', 'set_weather',
+            emft, '-q', 'set_weather',
             '-s', icao_code,
             '-i', mission_path,
             '-o', output_path,
