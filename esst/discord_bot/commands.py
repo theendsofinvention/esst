@@ -139,7 +139,8 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
             mission_name = cmd[1]
         except IndexError:
             mission_name = None
-        missions_manager.set_weather(self.ctx, icao, mission_name)
+        # self.client.loop.create_task(missions_manager.set_weather(self.ctx, icao, mission_name))
+        await missions_manager.set_weather(self.ctx, icao, mission_name)
 
     async def on_message_edit(self, _: discord.Message, after: discord.Message):
         """

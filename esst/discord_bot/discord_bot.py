@@ -93,7 +93,8 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
         self.client.on_message_edit = self.on_message_edit
 
     def _run_bot(self):
-        self.loop = asyncio.new_event_loop()
+        # self.loop = asyncio.new_event_loop()
+        self.loop = asyncio.ProactorEventLoop()
         self._create_client()
         try:
             self.loop.run_until_complete(self.client.start(CFG.discord_token))

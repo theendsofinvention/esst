@@ -18,7 +18,7 @@ from jinja2 import Template
 from esst.core.config import CFG
 from esst.core.logger import MAIN_LOGGER
 from esst.core.status import Status
-from esst.core.run import do_ex
+from esst.core.async_run import do_ex
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -146,7 +146,7 @@ def _create_mission_path(mission_name):
     return _sanitize_path(os.path.join(_get_mission_dir(), mission_name))
 
 
-def set_weather(ctx, icao_code: str, mission_name: str = None):
+async def set_weather(ctx, icao_code: str, mission_name: str = None):
     if mission_name is None:
         if Status.mission_file and Status.mission_file != 'unknown':
             LOGGER.debug(f'using active mission: {Status.mission_file}')
@@ -161,14 +161,14 @@ def set_weather(ctx, icao_code: str, mission_name: str = None):
         return
     LOGGER.info(f'closing DCS')
     ctx.obj['dcs_start_ok'] = False
-    blinker.signal('dcs command').send(__name__, cmd='kill dcs')
+    ctx.obj['dcs_kill'] = True
     while Status.dcs_application != 'not running':
         print('waiting for DCS to exit')
         time.sleep(1)
     LOGGER.info(f'setting weather from {icao_code} to {mission_path}')
     output_path = _get_mission_path_with_RL_weather(mission_path)
     emft = os.path.join(os.path.dirname(sys.executable), 'Scripts/emft.exe')
-    out, err, ret = do_ex(
+    out, err, ret = await do_ex(
         [
             emft, '-q', 'set_weather',
             '-s', icao_code,
