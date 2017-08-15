@@ -14,6 +14,16 @@ class AbstractDiscordBot:
     """
     @property
     @abc.abstractmethod
+    def ctx(self) -> dict:
+        """
+        Contains the click context obj
+
+        Returns: click context object dictionary
+        """
+        pass
+
+    @property
+    @abc.abstractmethod
     def ready(self) -> bool:
         """
         Indicates if the bot is ready to process messages

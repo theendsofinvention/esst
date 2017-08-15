@@ -32,6 +32,10 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
     """
 
     @property
+    def ctx(self) -> dict:
+        return self._ctx.obj
+
+    @property
     def channel(self) -> discord.Channel:
         return self._channel
 
@@ -61,7 +65,7 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
 
     def __init__(self, ctx):
         threading.Thread.__init__(self, daemon=True)
-        self.ctx = ctx
+        self._ctx = ctx
         self.loop = asyncio.get_event_loop()
         self._client = None
         self._server = None
