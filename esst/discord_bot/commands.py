@@ -173,7 +173,7 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
                 await self.set_weather(message.content.replace('!wx metar ', ''))
 
             elif message.content.startswith('!dcs restart'):
-                self.ctx.obj['dcs_restart_process'] = True
+                self.ctx.obj['dcs_restart'] = True
 
             else:
                 await self.say(f'Unknown command: {message.content}\n'
