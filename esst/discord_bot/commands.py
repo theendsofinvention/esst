@@ -102,7 +102,7 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
         Args:
             mission: mission to load
         """
-        missions_manager.set_active_mission_from_name(mission, load=True)
+        missions_manager.set_active_mission_from_name(self.ctx, mission, load=True)
 
     async def set_weather(self, cmd: str):
         cmd = cmd.split(' ')
@@ -141,7 +141,7 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
                 if attach['filename'].endswith('.miz'):
                     overwrite = 'overwrite' in message.content
                     load = 'load' in message.content
-                    missions_manager.download_mission_from_discord(attach, overwrite, load)
+                    missions_manager.download_mission_from_discord(self.ctx, attach, overwrite, load)
         if message.content.startswith('!'):
             LOGGER.debug(f'received "{message.content}" command from: {message.author.display_name}')
 

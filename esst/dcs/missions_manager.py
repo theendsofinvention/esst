@@ -3,22 +3,22 @@
 Manages missions for the server
 """
 
-import os
-import sys
 import json
+import os
 import shutil
+import sys
 import time
 
-import blinker
 import github3
 import humanize
 import requests
 from jinja2 import Template
 
+from esst.core.async_run import do_ex
 from esst.core.config import CFG
 from esst.core.logger import MAIN_LOGGER
 from esst.core.status import Status
-from esst.core.async_run import do_ex
+from .build_metar import build_metar
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -61,6 +61,7 @@ LUA_TEMPLATE = Template("""cfg =
 
 """)
 
+
 def _mission_not_found(mission_path):
     LOGGER.error(f'mission not found: {mission_path}')
 
@@ -80,7 +81,7 @@ def _backup_settings_file():
         shutil.copy(_get_settings_file_path(), backup_file_path)
 
 
-def set_active_mission(mission_file_path: str, metar: str = 'unknown'):
+def set_active_mission(ctx, mission_file_path: str, metar: str = None, load: bool = False):
     """
     Sets the mission as active in "serverSettings.lua"
 
@@ -88,6 +89,10 @@ def set_active_mission(mission_file_path: str, metar: str = 'unknown'):
         mission_file_path: complete path to the MIZ file
         metar: METAR string for this mission
     """
+    if not os.path.exists(mission_file_path):
+        _mission_not_found(mission_file_path)
+        return
+
     LOGGER.info(f'setting active mission to: {os.path.basename(mission_file_path)}')
     mission_file_path = mission_file_path.replace('\\', '/')
     content = LUA_TEMPLATE.render(
@@ -100,10 +105,18 @@ def set_active_mission(mission_file_path: str, metar: str = 'unknown'):
     _backup_settings_file()
     with open(settings_file, 'w') as handle:
         handle.write(content)
+
+    if metar is None:
+        LOGGER.debug(f'building metar for mission: {mission_file_path}')
+        metar = build_metar(mission_file_path, icao='UGTB')
+        LOGGER.info(f'metar for {os.path.basename(mission_file_path)}:\n{metar}')
     Status.metar = metar
 
+    if load:
+        ctx.obj['dcs_restart'] = True
 
-def set_active_mission_from_name(mission_name: str, load: bool = False):
+
+def set_active_mission_from_name(ctx, mission_name: str, load: bool = False):
     """
     Sets the mission as active in serverSettings.lua and optionally restarts the server
 
@@ -111,13 +124,7 @@ def set_active_mission_from_name(mission_name: str, load: bool = False):
         mission_name: mission name as string (not the full path)
         load: whether or not to restart the server
     """
-    mission_path = _get_mission_path(mission_name)
-    if not os.path.exists(mission_path):
-        _mission_not_found(mission_path)
-    else:
-        set_active_mission(mission_path)
-        if load:
-            blinker.signal('dcs command').send('__name__', cmd='restart')
+    set_active_mission(ctx, _get_mission_path(mission_name), load=load)
 
 
 def _get_mission_dir() -> str:
@@ -176,22 +183,25 @@ async def set_weather(ctx, icao_code: str, mission_name: str = None):
             '-o', output_path,
         ]
     )
+
     if ret:
         LOGGER.error('unable to set weather')
         LOGGER.error(err)
+
     else:
         result = json.loads(out)
         if result['status'] == 'success':
             LOGGER.info(f'successfully set the weather on mission: {result["to"]}\n'
                         f'METAR is: {result["metar"].upper()}')
-            set_active_mission(result["to"], metar=result['metar'])
-            blinker.signal('dcs command').send('__name__', cmd='restart')
+            set_active_mission(ctx, result["to"], metar=result['metar'], load=True)
+
         elif result['status'] == 'failed':
             LOGGER.error(f'setting weather failed:\n{result["error"]}')
+
         else:
             LOGGER.error(f'unknown status: {result["status"]}')
-    ctx.obj['dcs_start_ok'] = True
 
+    ctx.obj['dcs_start_ok'] = True
 
 
 def get_latest_mission_from_github(ctx):
@@ -216,14 +226,14 @@ def get_latest_mission_from_github(ctx):
                     if not os.path.exists(local_file):
                         LOGGER.info(f'downloading new mission: {asset.name}')
                         asset.download(local_file)
-                    set_active_mission(local_file)
+                    set_active_mission(ctx, local_file)
         else:
             LOGGER.error('no config values given for [auto mission]')
     else:
         LOGGER.debug('skipping mission update')
 
 
-def download_mission_from_discord(discord_attachment, overwrite=False, load=False):
+def download_mission_from_discord(ctx, discord_attachment, overwrite=False, load=False):
     """
     Downloads a mission from a discord message attachment
 
@@ -239,6 +249,7 @@ def download_mission_from_discord(discord_attachment, overwrite=False, load=Fals
     size = discord_attachment['size']
     filename = discord_attachment['filename']
     local_file = _get_mission_path(filename)
+
     overwriting = ''
     if os.path.exists(local_file):
         if overwrite:
@@ -247,14 +258,15 @@ def download_mission_from_discord(discord_attachment, overwrite=False, load=Fals
             LOGGER.warning(f'this mission already exists: {local_file}\n'
                            f'use "overwrite" to replace it')
             return
+
     LOGGER.info(f'downloading: {filename} ({humanize.naturalsize(size)}) {overwriting}')
     with requests.get(url) as response:
         with open(local_file, 'wb') as out_file:
             out_file.write(response.content)
+
     if load:
         LOGGER.info(f'restarting the server with this mission')
-        set_active_mission(local_file)
-        blinker.signal('dcs command').send('__name__', cmd='restart')
+        set_active_mission(ctx, local_file, load=True)
     else:
         LOGGER.info(f'download successful, mission is now available')
 
