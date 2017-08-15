@@ -62,10 +62,6 @@ def main(ctx,
             from esst.dcs.game_gui import install_game_gui_hooks
             install_game_gui_hooks(ctx)
 
-        if dedi_config:
-            from esst.dcs.dedicated import setup_config_for_dedicated_run
-            setup_config_for_dedicated_run(ctx)
-
         if bot:
             from esst import discord_bot
             MAIN_LOGGER.debug('starting Discord bot')

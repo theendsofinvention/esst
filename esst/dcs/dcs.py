@@ -14,12 +14,14 @@ from esst.core.config import CFG
 from esst.core.logger import MAIN_LOGGER
 from esst.core.path import Path
 from esst.core.status import Status
+from .dedicated import setup_config_for_dedicated_run
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 DCS_CMD_QUEUE = queue.Queue()
 
 KNOWN_COMMANDS = ['restart', 'exit', 'show cpu', 'show cpu start', 'show cpu stop']
+KNOWN_DCS_VERSIONS = ['1.5.6.5199']
 
 
 def catch_command_signals(sender, **kwargs):
@@ -87,6 +89,13 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         # noinspection PyBroadException
         try:
             Status.dcs_version = dcs_exe.get_win32_file_info().file_version
+            if Status.dcs_version not in KNOWN_DCS_VERSIONS:
+                LOGGER.error(f'sorry, but I am unable to manage this version of DCS: {Status.dcs_version}\n'
+                             f'This safety check exists so ESST does not screw your DCS installation '
+                             f'by installing hooks into an unsupported DCS installation.')
+                self._exiting = True
+            else:
+                setup_config_for_dedicated_run(self.ctx)
             LOGGER.debug(f'DCS version: {Status.dcs_version}')
         except:  # pylint: disable=bare-except
             LOGGER.error('unable to retrieve version from dcs.exe')
