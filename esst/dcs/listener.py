@@ -21,7 +21,7 @@ from esst.core.config import CFG
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 SOCKET_CMD_QUEUE = queue.Queue()
-KNOWN_COMMANDS = ['exit dcs', 'exit', 'monitor server start']
+KNOWN_COMMANDS = ['exit dcs', 'monitor server start']
 
 PING_TIMEOUT = 30
 
@@ -54,6 +54,12 @@ class DCSListener(threading.Thread):
     """
 
     def __init__(self, ctx):
+        if not ctx.params['socket']:
+            LOGGER.debug('skipping startup of socket thread')
+            return
+
+        LOGGER.debug('starting socket thread')
+        ctx.obj['threads']['socket']['ready_to_exit'] = False
         self.ctx = ctx
         threading.Thread.__init__(self, daemon=True)
         self.monitoring = False
@@ -93,11 +99,7 @@ class DCSListener(threading.Thread):
 
         if not SOCKET_CMD_QUEUE.empty():
             message = SOCKET_CMD_QUEUE.get_nowait()
-            if message == 'exit':
-                sock.close()
-                blinker.signal('socket ready to exit').send(__name__)
-                return False
-            elif message == 'monitor server start':
+            if message == 'monitor server start':
                 LOGGER.debug('monitoring server startup time')
                 self.monitoring_startup = True
                 self.startup_age = time.time()
@@ -158,6 +160,9 @@ class DCSListener(threading.Thread):
 
         while True:
 
+            if self.ctx.obj['threads']['socket']['should_exit']:
+                break
+
             time.sleep(0.5)
 
             self._read_socket(sock)
@@ -168,3 +173,7 @@ class DCSListener(threading.Thread):
             self._monitor_server()
 
             self._monitor_server_startup()
+
+        sock.close()
+        self.ctx.obj['threads']['socket']['ready_to_exit'] = True
+        LOGGER.debug('closing socket thread')

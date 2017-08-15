@@ -15,13 +15,15 @@ from esst.core.logger import MAIN_LOGGER
 from esst.core.path import Path
 from esst.core.status import Status
 from .dedicated import setup_config_for_dedicated_run
+from .missions_manager import  get_latest_mission_from_github
+from .game_gui import install_game_gui_hooks
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 DCS_CMD_QUEUE = queue.Queue()
 
 KNOWN_COMMANDS = [
-    'restart', 'exit', 'show cpu', 'show cpu start', 'show cpu stop', 'kill dcs'
+    'restart', 'show cpu', 'show cpu start', 'show cpu stop', 'kill dcs'
 ]
 KNOWN_DCS_VERSIONS = ['1.5.6.5199']
 
@@ -65,7 +67,15 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
     """
 
     def __init__(self, ctx):
+        if not ctx.params['server']:
+            LOGGER.debug('skipping startup of DCS application thread')
+            return
+
+        LOGGER.debug('starting DCS application thread')
+        ctx.obj['threads']['dcs']['ready_to_exit'] = False
         threading.Thread.__init__(self, daemon=True)
+        install_game_gui_hooks(ctx)
+        get_latest_mission_from_github(ctx)
         self.ctx = ctx
         self.app = pywinauto.Application()
         self.process_pid = None
@@ -182,14 +192,14 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
                 blinker.signal('socket command').send(__name__, cmd='monitor server start')
 
     def _should_exit(self) -> bool:
-        self.parse_commands()
-        return self._exiting
+        return self.ctx.obj['threads']['dcs']['should_exit']
 
     def _kill_running_app(self):
         self._check_if_dcs_is_running()
         if not self.process_pid:
             LOGGER.debug('DCS process was not running')
             return
+        LOGGER.info('closing DCS')
         LOGGER.debug('sending socket command to DCS for graceful exit')
         blinker.signal('socket command').send(__name__, cmd='exit dcs')
         try:
@@ -208,10 +218,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
                     LOGGER.error('I was not able to kill DCS, something is wrong')
             else:
                 raise
-
-    def _on_exit(self):
-        LOGGER.info('closing DCS')
-        self._kill_running_app()
 
     def restart(self):
         """
@@ -273,9 +279,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             cmd = DCS_CMD_QUEUE.get_nowait()
             if cmd == 'restart':
                 self.restart()
-            elif cmd == 'exit':
-                self._exiting = True
-                self._on_exit()
             elif cmd == 'show cpu':
                 self.show_cpu()
             elif cmd == 'show cpu start':
@@ -315,6 +318,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
                 self.monitor_cpu_usage()
             time.sleep(0.5)
 
-        blinker.signal('dcs ready to exit').send(__name__)
+        self._kill_running_app()
         self.ctx.obj['threads']['dcs']['ready_to_exit'] = True
         LOGGER.debug('closing DCS monitoring thread')

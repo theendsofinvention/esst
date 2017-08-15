@@ -149,6 +149,9 @@ def install_game_gui_hooks(ctx):
     """
     Installs the GameGUI hooks in DCS Scripts folder
     """
-    LOGGER.debug('installing GameGUI hooks')
-    with open(FILE_PATH, 'w') as handle:
-        handle.write(GAMEGUI_CONTENT)
+    if ctx.params['hooks']:
+        LOGGER.debug('installing GameGUI hooks')
+        with open(FILE_PATH, 'w') as handle:
+            handle.write(GAMEGUI_CONTENT)
+    else:
+        LOGGER.debug('skipping installation of GameGUI hooks')

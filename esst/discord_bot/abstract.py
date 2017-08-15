@@ -14,7 +14,7 @@ class AbstractDiscordBot:
     """
     @property
     @abc.abstractmethod
-    def ctx(self) -> dict:
+    def ctx(self):
         """
         Contains the click context obj
 

@@ -146,7 +146,7 @@ def _create_mission_path(mission_name):
     return _sanitize_path(os.path.join(_get_mission_dir(), mission_name))
 
 
-def set_weather(ctx: dict, icao_code: str, mission_name: str = None):
+def set_weather(ctx, icao_code: str, mission_name: str = None):
     if mission_name is None:
         if Status.mission_file and Status.mission_file != 'unknown':
             LOGGER.debug(f'using active mission: {Status.mission_file}')
@@ -160,7 +160,7 @@ def set_weather(ctx: dict, icao_code: str, mission_name: str = None):
         _mission_not_found(mission_path)
         return
     LOGGER.info(f'closing DCS')
-    ctx['dcs_start_ok'] = False
+    ctx.obj['dcs_start_ok'] = False
     blinker.signal('dcs command').send(__name__, cmd='kill dcs')
     while Status.dcs_application != 'not running':
         print('waiting for DCS to exit')
@@ -190,7 +190,7 @@ def set_weather(ctx: dict, icao_code: str, mission_name: str = None):
             LOGGER.error(f'setting weather failed:\n{result["error"]}')
         else:
             LOGGER.error(f'unknown status: {result["status"]}')
-    ctx['dcs_start_ok'] = True
+    ctx.obj['dcs_start_ok'] = True
 
 
 
@@ -201,21 +201,26 @@ def get_latest_mission_from_github(ctx):
     The repository needs to have releases (tagged)
     The function will download the first MIZ file found in the latest release
     """
-    if CFG.auto_mission_github_repo and CFG.auto_mission_github_owner:
-        LOGGER.debug('looking for newer mission file')
-        github = github3.GitHub(token=CFG.auto_mission_github_token)
-        repo = github.repository(CFG.auto_mission_github_owner, CFG.auto_mission_github_repo)
-        rel = repo.latest_release()
-        LOGGER.debug(f'release tag: {rel.tag_name}')
-        assets = list(rel.assets(1))
-        for asset in assets:
-            if asset.name.endswith('.miz'):
-                LOGGER.debug(f'found a mission file: {asset.name}')
-                local_file = _create_mission_path(asset.name)
-                if not os.path.exists(local_file):
-                    LOGGER.info(f'downloading new mission: {asset.name}')
-                    asset.download(local_file)
-                set_active_mission(local_file)
+    if ctx.params['auto_mission']:
+        if CFG.auto_mission_github_repo and CFG.auto_mission_github_owner:
+            LOGGER.debug('looking for newer mission file')
+            github = github3.GitHub(token=CFG.auto_mission_github_token)
+            repo = github.repository(CFG.auto_mission_github_owner, CFG.auto_mission_github_repo)
+            rel = repo.latest_release()
+            LOGGER.debug(f'release tag: {rel.tag_name}')
+            assets = list(rel.assets(1))
+            for asset in assets:
+                if asset.name.endswith('.miz'):
+                    LOGGER.debug(f'found a mission file: {asset.name}')
+                    local_file = _create_mission_path(asset.name)
+                    if not os.path.exists(local_file):
+                        LOGGER.info(f'downloading new mission: {asset.name}')
+                        asset.download(local_file)
+                    set_active_mission(local_file)
+        else:
+            LOGGER.error('no config values given for [auto mission]')
+    else:
+        LOGGER.debug('skipping mission update')
 
 
 def download_mission_from_discord(discord_attachment, overwrite=False, load=False):

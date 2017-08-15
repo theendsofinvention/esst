@@ -16,25 +16,8 @@ from esst.core.config import CFG
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 DISCORD_SEND_QUEUE = queue.Queue()
-DISCORD_CMD_QUEUE = queue.Queue()
 
 DISCORD_SEND_QUEUE.put(CFG.discord_motd)
-
-
-def catch_command_signals(sender, **kwargs):
-    """
-    Listens for blinker.signal('discord command')
-
-    Executes a command on the Discord bot
-
-    Args:
-        sender: name of the sender
-        **kwargs: must contain "cmd" as a string
-    """
-    LOGGER.debug(f'got command signal from {sender}: {kwargs}')
-    if 'cmd' not in kwargs:
-        raise RuntimeError('missing command in signal')
-    DISCORD_CMD_QUEUE.put(kwargs['cmd'])
 
 
 def catch_message_signals(sender, **kwargs):
@@ -53,7 +36,6 @@ def catch_message_signals(sender, **kwargs):
     DISCORD_SEND_QUEUE.put(kwargs['msg'])
 
 
-blinker.signal('discord command').connect(catch_command_signals)
 blinker.signal('discord message').connect(catch_message_signals)
 
 
@@ -65,12 +47,14 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
 
     async def _on_exit(self):
         self._exiting = True  # pylint: disable=attribute-defined-outside-init
-        await self.say('Bye bye !')
-        await self.client.change_presence(status='offline')
+        if self.ready:
+            await self.say('Bye bye !')
+            await self.client.change_presence(status='offline')
         await self.client.logout()
         while not self.client.is_closed:
             await asyncio.sleep(0.1)
-        blinker.signal('discord ready to exit').send('discord')
+        self.ctx.obj['threads']['discord']['ready_to_exit'] = True
+        LOGGER.debug('closing Discord thread')
 
     async def _process_message_queue(self):
         if self.exiting:
@@ -85,17 +69,11 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
                     DISCORD_SEND_QUEUE.put(message)
             LOGGER.debug('message sent')
 
-    async def _parse_command(self, command):
-        if command == 'exit':
-            await self._on_exit()
-        else:
-            raise RuntimeError(f'unknown discord command: {command}')
-
-    async def _process_command_queue(self):
-        if not DISCORD_CMD_QUEUE.empty():
-            command = DISCORD_CMD_QUEUE.get_nowait()
-            LOGGER.debug(f'received command: {command}')
-            await self._parse_command(command)
+    async def monitor_exit_signal(self):
+        while not self.client.is_closed:
+            if self.ctx.obj['threads']['discord']['should_exit']:
+                await self._on_exit()
+            await asyncio.sleep(0.1)
 
     async def monitor_queues(self):
         """
@@ -106,5 +84,4 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
         await self.client.wait_until_ready()
         while not self.client.is_closed:
             await self._process_message_queue()
-            await self._process_command_queue()
             await asyncio.sleep(0.1)
