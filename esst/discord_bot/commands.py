@@ -64,34 +64,6 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
             f'Note: those two commands restart the DCS server with the latest mission'
         )
 
-    # noinspection PyMethodMayBeStatic
-    async def restart_dcs(self):
-        """
-        Sends restart command to the DCS application
-        """
-        blinker.signal('dcs command').send(__name__, cmd='restart')
-
-    # noinspection PyMethodMayBeStatic
-    async def show_cpu(self):
-        """
-        Show cpu usage of DCS once on Discord
-        """
-        blinker.signal('dcs command').send(__name__, cmd='show cpu')
-
-    # noinspection PyMethodMayBeStatic
-    async def show_cpu_start(self):
-        """
-        Starts showing CPU usage of DCS on Discord constantly (every 5 seconds)
-        """
-        blinker.signal('dcs command').send(__name__, cmd='show cpu start')
-
-    # noinspection PyMethodMayBeStatic
-    async def show_cpu_stop(self):
-        """
-        Stops showing CPU usage of DCS on Discord constantly
-        """
-        blinker.signal('dcs command').send(__name__, cmd='show cpu stop')
-
     async def print_dcs_status(self):
         """
         Prints the status of the DCS server
@@ -130,7 +102,7 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
         Args:
             mission: mission to load
         """
-        missions_manager.set_active_mission_from_name(mission, load=True)
+        missions_manager.set_active_mission_from_name(self.ctx, mission, load=True)
 
     async def set_weather(self, cmd: str):
         cmd = cmd.split(' ')
@@ -139,7 +111,8 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
             mission_name = cmd[1]
         except IndexError:
             mission_name = None
-        missions_manager.set_weather(icao, mission_name)
+        # self.client.loop.create_task(missions_manager.set_weather(self.ctx, icao, mission_name))
+        await missions_manager.set_weather(self.ctx, icao, mission_name)
 
     async def on_message_edit(self, _: discord.Message, after: discord.Message):
         """
@@ -168,29 +141,40 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
                 if attach['filename'].endswith('.miz'):
                     overwrite = 'overwrite' in message.content
                     load = 'load' in message.content
-                    missions_manager.download_mission_from_discord(attach, overwrite, load)
+                    missions_manager.download_mission_from_discord(self.ctx, attach, overwrite, load)
         if message.content.startswith('!'):
             LOGGER.debug(f'received "{message.content}" command from: {message.author.display_name}')
+
             if message.content.startswith('!help'):
                 await self.print_help()
+
             elif message.content.startswith('!dcs version'):
                 await self.say(f'\nDCS version: {Status.dcs_version}')
+
             elif message.content.startswith('!dcs status'):
                 await self.print_dcs_status()
+
             elif message.content.startswith('!dcs show missions'):
                 await self.show_missions()
+
             elif message.content == '!dcs show cpu':
-                await self.show_cpu()
+                self.ctx.obj['dcs_show_cpu_usage_once'] = True
+
             elif message.content == '!dcs show cpu start':
-                await self.show_cpu_start()
+                self.ctx.obj['dcs_show_cpu_usage'] = True
+
             elif message.content == '!dcs show cpu stop':
-                await self.show_cpu_stop()
+                self.ctx.obj['dcs_show_cpu_usage'] = False
+
             elif message.content.startswith('!dcs load '):
                 await self.load_mission(message.content.replace('!dcs load ', ''))
+
             elif message.content.startswith('!wx metar '):
                 await self.set_weather(message.content.replace('!wx metar ', ''))
+
             elif message.content.startswith('!dcs restart'):
-                await self.restart_dcs()
+                self.ctx.obj['dcs_restart'] = True
+
             else:
                 await self.say(f'Unknown command: {message.content}\n'
                                f'Type "!help" for a list of the available commands')

@@ -32,6 +32,10 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
     """
 
     @property
+    def ctx(self) -> object:
+        return self._ctx
+
+    @property
     def channel(self) -> discord.Channel:
         return self._channel
 
@@ -60,8 +64,14 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
         return bool(self._exiting)
 
     def __init__(self, ctx):
+        if not ctx.params['bot']:
+            LOGGER.debug('skipping startup of Discord bot thread')
+            return
+
+        LOGGER.debug('starting Discord bot thread')
+        ctx.obj['threads']['discord']['ready_to_exit'] = False
         threading.Thread.__init__(self, daemon=True)
-        self.ctx = ctx
+        self._ctx = ctx
         self.loop = asyncio.get_event_loop()
         self._client = None
         self._server = None
@@ -77,12 +87,14 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
     def _create_client(self):
         self._client = discord.Client(loop=self.loop)
         self.client.loop.create_task(self.monitor_queues())
+        self.client.loop.create_task(self.monitor_exit_signal())
         self.client.on_ready = self.on_ready
         self.client.on_message = self.on_message
         self.client.on_message_edit = self.on_message_edit
 
     def _run_bot(self):
-        self.loop = asyncio.new_event_loop()
+        # self.loop = asyncio.new_event_loop()
+        self.loop = asyncio.ProactorEventLoop()
         self._create_client()
         try:
             self.loop.run_until_complete(self.client.start(CFG.discord_token))
