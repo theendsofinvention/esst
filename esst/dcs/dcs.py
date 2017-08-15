@@ -182,7 +182,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         blinker.signal('socket command').send(__name__, cmd='exit dcs')
         try:
             LOGGER.debug('waiting on DCS to close itself')
-            self.app.wait_for_process_exit(timeout=10)
+            self.app.wait_for_process_exit(timeout=30)
             LOGGER.debug('DCS has gracefully exited, nice')
             self._update_application_status('not running')
         except RuntimeError as exception:
