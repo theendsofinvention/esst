@@ -16,8 +16,8 @@ import click
 @click.option('--server/--no-server', default=True, help='Starts the DCS app', show_default=True)
 @click.option('--socket/--no-socket', default=True, help='Starts the socket', show_default=True)
 @click.option('--start-dcs/--no-start-dcs', help='Spawn DCS.exe process', default=True, show_default=True)
-@click.option('--hooks/--no-hooks', help='Install GameGUI hooks', default=True, show_default=True)
-@click.option('--dedi-config/--no-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
+@click.option('--install-hooks/--no-install-hooks', help='Install GameGUI hooks', default=True, show_default=True)
+@click.option('--install-dedi-config/--no-install-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
               show_default=True)
 @click.option('--auto-mission/--no-auto-mission', help='Download latest mission', default=True, show_default=True)
 def main(ctx,
@@ -25,8 +25,8 @@ def main(ctx,
          server: bool,
          socket: bool,
          start_dcs: bool,
-         hooks: bool,
-         dedi_config: bool,
+         install_hooks: bool,
+         install_dedi_config: bool,
          auto_mission: bool,
          ):
     """

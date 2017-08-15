@@ -483,16 +483,18 @@ def _get_me_auth_path() -> str:
 def _write_dedi_config():
     dedi_cfg_path = os.path.join(CFG.saved_games_dir, 'Config/dedicated.lua')
     if not os.path.exists(dedi_cfg_path):
-        LOGGER.debug('writing dedicated.lua')
+        LOGGER.debug(f'writing {dedi_cfg_path}')
         with open(dedi_cfg_path, 'w') as handle:
             handle.write(DEDI_CFG)
+    else:
+        LOGGER.debug(f'file already exists: {dedi_cfg_path}')
 
 
 def setup_config_for_dedicated_run(ctx):
     """
     Setup the server to automatically starts in multiplayer mode when DCS starts
     """
-    if ctx.params['dedi_config']:
+    if ctx.params['install_dedi_config']:
         LOGGER.debug('setting up dedicated config')
         _backup_auth_file()
         with open(_get_me_auth_path(), 'w') as handle:
