@@ -20,7 +20,9 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 DCS_CMD_QUEUE = queue.Queue()
 
-KNOWN_COMMANDS = ['restart', 'exit', 'show cpu', 'show cpu start', 'show cpu stop']
+KNOWN_COMMANDS = [
+    'restart', 'exit', 'show cpu', 'show cpu start', 'show cpu stop', 'kill dcs'
+]
 KNOWN_DCS_VERSIONS = ['1.5.6.5199']
 
 
@@ -70,6 +72,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         self._exiting = False
         self.cpu_usage = 'unknown'
         self._show_cpu_constantly = False
+        self._restart_ok = True
         self.start()
 
     def _execute_cmd_chain(self, cmd_chain: list):
@@ -81,8 +84,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             except IndexError:
                 return True
 
-    @staticmethod
-    def _get_dcs_version_from_executable():
+    def _get_dcs_version_from_executable(self):
         dcs_exe = Path(CFG.dcs_path)
         if not dcs_exe.exists():
             raise RuntimeError(f'dcs.exe not found: {dcs_exe}')
@@ -104,9 +106,9 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
     def _check_if_dcs_is_running(self):
         self.process_pid = get_dcs_process_pid()
         if self.process_pid:
-            self._update_server_status('running')
+            self._update_application_status('running')
         else:
-            self._update_server_status('not running')
+            self._update_application_status('not running')
 
     def _try_to_connect_to_existing_dcs_application(self):
         LOGGER.debug('connecting to existing DCS application')
@@ -160,7 +162,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         if self.process_pid:
             return
         LOGGER.debug('starting new DCS application')
-        self._update_server_status('starting')
+        self._update_application_status('starting')
         if self.app is None:
             self.app = pywinauto.Application()
         cmd_chain = [
@@ -172,7 +174,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         self._check_if_dcs_is_running()
 
     @staticmethod
-    def _update_server_status(status: str):
+    def _update_application_status(status: str):
         if Status.dcs_application != status:
             Status.dcs_application = status
             LOGGER.info(f'DCS server is {status}')
@@ -194,12 +196,14 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             LOGGER.debug('waiting on DCS to close itself')
             self.app.wait_for_process_exit(timeout=10)
             LOGGER.debug('DCS has gracefully exited, nice')
+            self._update_application_status('not running')
         except RuntimeError as exception:
             if 'timed out' in exception.args[0]:
                 LOGGER.info('DCS server will not exit gracefully, killing it')
                 self.app.kill()
                 try:
                     self.app.wait_for_process_exit(timeout=10)
+                    self._update_application_status('not running')
                 except RuntimeError:
                     LOGGER.error('I was not able to kill DCS, something is wrong')
             else:
@@ -208,7 +212,6 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
     def _on_exit(self):
         LOGGER.info('closing DCS')
         self._kill_running_app()
-        blinker.signal('dcs ready to exit').send(__name__)
 
     def restart(self):
         """
@@ -279,6 +282,8 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
                 self._show_cpu_constantly = True
             elif cmd == 'show cpu stop':
                 self._show_cpu_constantly = False
+            elif cmd == 'kill dcs':
+                self._kill_running_app()
             else:
                 raise RuntimeError(f'unknown dcs command: {cmd}')
 
@@ -290,7 +295,7 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
         cmd_chain = [
             self._get_dcs_version_from_executable,
         ]
-        if self.ctx.obj['start_dcs']:
+        if self.ctx.obj['dcs_start_ok']:
             cmd_chain.extend(
                 [
                     self._try_to_connect_to_existing_dcs_application,
@@ -302,11 +307,14 @@ class App(threading.Thread):  # pylint: disable=too-few-public-methods,too-many-
             if self._should_exit():
                 LOGGER.debug('interrupted by exit signal')
                 break
-            if self.ctx.obj['start_dcs']:
+            if self.ctx.obj['dcs_start_ok']:
                 self._check_if_dcs_is_running()
                 if not self.process_pid:
                     LOGGER.debug('DCS has stopped, re-starting')
                     self.restart()
                 self.monitor_cpu_usage()
             time.sleep(0.5)
+
+        blinker.signal('dcs ready to exit').send(__name__)
+        self.ctx.obj['threads']['dcs']['ready_to_exit'] = True
         LOGGER.debug('closing DCS monitoring thread')

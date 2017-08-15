@@ -46,7 +46,18 @@ def main(ctx,
     from esst.core.version import __version__
 
     ctx.obj = {
-        'start_dcs': start_dcs
+        'dcs_start_ok': start_dcs,
+        'threads': {
+            'dcs': {
+                'ready_to_exit': False
+            },
+            'socket': {
+                'ready_to_exit': False
+            },
+            'discord': {
+                'ready_to_exit': False
+            },
+        }
     }
 
     import ctypes
@@ -102,8 +113,18 @@ def main(ctx,
                     break
                 time.sleep(0.1)
 
+        def _exit_gracefully2(thread_name):
+            blinker.signal(f'{thread_name} command').send(__name__, cmd='exit')
+            now = time.time()
+            while not ctx.obj['threads'][thread_name]['ready_to_exit']:
+                if time.time() > now + 20:
+                    MAIN_LOGGER.error(f'{thread_name} thread did not exit gracefully')
+                    break
+                time.sleep(0.1)
+
+
         if server:
-            _exit_gracefully('dcs')
+            _exit_gracefully2('dcs')
 
         if bot:
             _exit_gracefully('discord')

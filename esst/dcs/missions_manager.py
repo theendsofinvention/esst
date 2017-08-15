@@ -148,9 +148,9 @@ def _create_mission_path(mission_name):
 
 def set_weather(ctx: dict, icao_code: str, mission_name: str = None):
     if mission_name is None:
-        if Status.mission_file != 'unknown':
+        if Status.mission_file and Status.mission_file != 'unknown':
             LOGGER.debug(f'using active mission: {Status.mission_file}')
-            mission_path = Status.mission_file
+            mission_path = Status.mission_file.replace('_RLWX', '')
         else:
             LOGGER.error('no active mission; please load a mission first')
             return
@@ -159,6 +159,12 @@ def set_weather(ctx: dict, icao_code: str, mission_name: str = None):
     if not os.path.exists(mission_path):
         _mission_not_found(mission_path)
         return
+    LOGGER.info(f'closing DCS')
+    ctx['dcs_start_ok'] = False
+    blinker.signal('dcs command').send(__name__, cmd='kill dcs')
+    while Status.dcs_application != 'not running':
+        print('waiting for DCS to exit')
+        time.sleep(1)
     LOGGER.info(f'setting weather from {icao_code} to {mission_path}')
     output_path = _get_mission_path_with_RL_weather(mission_path)
     emft = os.path.join(os.path.dirname(sys.executable), 'Scripts/emft.exe')
@@ -184,6 +190,7 @@ def set_weather(ctx: dict, icao_code: str, mission_name: str = None):
             LOGGER.error(f'setting weather failed:\n{result["error"]}')
         else:
             LOGGER.error(f'unknown status: {result["status"]}')
+    ctx['dcs_start_ok'] = True
 
 
 
