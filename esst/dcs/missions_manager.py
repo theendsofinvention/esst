@@ -166,7 +166,6 @@ async def set_weather(ctx, icao_code: str, mission_name: str = None):
     if not os.path.exists(mission_path):
         _mission_not_found(mission_path)
         return
-    LOGGER.info(f'closing DCS')
     ctx.obj['dcs_start_ok'] = False
     ctx.obj['dcs_kill'] = True
     while Status.dcs_application != 'not running':
