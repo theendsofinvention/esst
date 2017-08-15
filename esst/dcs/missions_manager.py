@@ -7,6 +7,7 @@ import os
 import sys
 import json
 import shutil
+import time
 
 import blinker
 import github3
@@ -79,12 +80,13 @@ def _backup_settings_file():
         shutil.copy(_get_settings_file_path(), backup_file_path)
 
 
-def set_active_mission(mission_file_path: str):
+def set_active_mission(mission_file_path: str, metar: str = 'unknown'):
     """
     Sets the mission as active in "serverSettings.lua"
 
     Args:
         mission_file_path: complete path to the MIZ file
+        metar: METAR string for this mission
     """
     LOGGER.info(f'setting active mission to: {os.path.basename(mission_file_path)}')
     mission_file_path = mission_file_path.replace('\\', '/')
@@ -98,6 +100,7 @@ def set_active_mission(mission_file_path: str):
     _backup_settings_file()
     with open(settings_file, 'w') as handle:
         handle.write(content)
+    Status.metar = metar
 
 
 def set_active_mission_from_name(mission_name: str, load: bool = False):
@@ -143,7 +146,7 @@ def _create_mission_path(mission_name):
     return _sanitize_path(os.path.join(_get_mission_dir(), mission_name))
 
 
-def set_weather(icao_code: str, mission_name: str = None):
+def set_weather(ctx: dict, icao_code: str, mission_name: str = None):
     if mission_name is None:
         if Status.mission_file != 'unknown':
             LOGGER.debug(f'using active mission: {Status.mission_file}')
@@ -173,10 +176,9 @@ def set_weather(icao_code: str, mission_name: str = None):
     else:
         result = json.loads(out)
         if result['status'] == 'success':
-            Status.metar = result['metar']
             LOGGER.info(f'successfully set the weather on mission: {result["to"]}\n'
                         f'METAR is: {result["metar"].upper()}')
-            set_active_mission(result["to"])
+            set_active_mission(result["to"], metar=result['metar'])
             blinker.signal('dcs command').send('__name__', cmd='restart')
         elif result['status'] == 'failed':
             LOGGER.error(f'setting weather failed:\n{result["error"]}')
