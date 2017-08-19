@@ -118,6 +118,7 @@ class DCSListener(threading.Thread):
                 LOGGER.error('It has been 30 seconds since I heard from DCS. '
                              'It is likely that the server has crashed.')
                 blinker.signal('dcs command').send(__name__, cmd='restart')
+                self.ctx.obj['dcs_restart'] = True
                 self.monitoring = False
 
     def _monitor_server_startup(self):
