@@ -169,7 +169,6 @@ async def set_weather(ctx, icao_code: str, mission_name: str = None):
     ctx.obj['dcs_start_ok'] = False
     ctx.obj['dcs_kill'] = True
     while Status.dcs_application != 'not running':
-        print('waiting for DCS to exit')
         time.sleep(1)
     LOGGER.info(f'setting weather from {icao_code} to {mission_path}')
     output_path = _get_mission_path_with_RL_weather(mission_path)
