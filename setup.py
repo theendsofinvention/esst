@@ -2,7 +2,7 @@
 
 from setuptools import setup  # type: ignore
 
-dependency_links = [r'git+https://github.com/132nd-etcher/EMFT.git#egg=emft-0.5.1']
+dependency_links = []
 
 install_requires = [
     'discord.py',
@@ -11,13 +11,12 @@ install_requires = [
     'blinker',
     'certifi',
     'jinja2',
-    'path.py',
     'pefile',
     'humanize',
     'click',
     'psutil',
     'github3.py==1.0.0a4',
-    'emft==0.5.1',
+    'emiz',
 ]
 
 test_requires = [
@@ -25,9 +24,7 @@ test_requires = [
     'pytest-pycharm',
     'flake8',
     'pylint',
-    'mypy',
     'safety',
-    'prospector',
 ]
 
 dev_requires = [
@@ -56,6 +53,7 @@ def main():
         dependency_links=dependency_links,
         test_suite='pytest',
         packages=['esst', 'esst.core', 'esst.dcs', 'esst.discord_bot'],
+        python_requires='>=3.6',
     )
 
 
