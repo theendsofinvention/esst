@@ -1,0 +1,9 @@
+package: 'esst'
+
+doc:
+  repo: 'https://github.com/132nd-etcher/esst-doc.git'
+  folder: './esst-doc'
+
+test:
+  runner: 'pytest'
+  av_runner: 'pytest --long'
