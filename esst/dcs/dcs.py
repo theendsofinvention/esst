@@ -182,6 +182,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             if not await _no_more_mr_nice_guy():
                 LOGGER.error('I was not able to kill DCS, something is wrong')
                 raise RuntimeError()
+        await self._check_if_dcs_is_running()
 
     async def restart(self):
         """
