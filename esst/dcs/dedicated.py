@@ -19,7 +19,7 @@ if not os.path.exists(ME_AUTH_PATH):
 with open(ME_AUTH_PATH) as handle:
     ME_AUTH = handle.read()
 
-DEDI_CFG = r"""dedicated = 
+DEDI_CFG = r"""dedicated =
 {
     ["enabled"] = true,
 }
