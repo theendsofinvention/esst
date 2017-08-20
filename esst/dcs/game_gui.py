@@ -7,6 +7,7 @@ import os
 
 from esst.core.config import CFG
 from esst.core.logger import MAIN_LOGGER
+from esst.core.context import Context
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 FILE_PATH = os.path.join(CFG.saved_games_dir, 'Scripts/ESSTGameGUI.lua')
@@ -145,11 +146,11 @@ net.log("Loaded - ESST GameGUI")
 """
 
 
-def install_game_gui_hooks(ctx):
+def install_game_gui_hooks(ctx: Context):
     """
     Installs the GameGUI hooks in DCS Scripts folder
     """
-    if ctx.params['install_hooks']:
+    if ctx.dcs_install_hooks:
         LOGGER.debug('installing GameGUI hooks')
         with open(FILE_PATH, 'w') as handle:
             handle.write(GAMEGUI_CONTENT)

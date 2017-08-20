@@ -3,8 +3,7 @@
 import datetime
 import re
 
-from emft.miz import Mission, Miz
-from emft.miz.mission_weather import MissionWeather
+from emiz import Mission, MissionWeather, Miz
 
 
 def _get_wind(mission):

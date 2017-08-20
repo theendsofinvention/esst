@@ -1,20 +1,15 @@
 # coding=utf-8
 # This is a copy-paste from another project, I won't update the dosctrings and everything here
 # pylint: disable-all
-import binascii
 import os
-import shutil
-import tempfile
 
-import path
 import pefile
-from humanize import filesize
 
 
 class Win32FileInfo:
     def __init__(self, _path):
 
-        self.__path = str(Path(_path).abspath())
+        self.__path = os.path.abspath(_path)
         self.__props = None
         self.__read_props()
 
@@ -93,130 +88,3 @@ class Win32FileInfo:
                     for st in file_info.StringTable:
                         for entry in st.entries.items():
                             self.__props[entry[0].decode('latin_1')] = entry[1].decode('latin_1')
-
-
-# noinspection PyAbstractClass
-class Path(path.Path):
-    def crc32(self):
-
-        if not self.isfile():
-            raise TypeError('cannot compute crc32, not a file: {}'.format(self.abspath()))
-
-        else:
-
-            try:
-
-                with open(self.abspath(), 'rb') as buf:
-                    buf = "%08X" % (binascii.crc32(buf.read()) & 0xFFFFFFFF)
-
-                    return buf
-
-            except FileNotFoundError:
-                raise FileNotFoundError('failed to compute crc32 for: {}'.format(self.abspath()))
-
-            except PermissionError:
-                raise PermissionError('failed to compute crc32 for: {}'.format(self.abspath()))
-
-            except:
-                raise RuntimeError('failed to compute crc32 for: {}'.format(self.abspath()))
-
-    def human_size(self) -> str:
-        return filesize.naturalsize(self.getsize(), gnu=True)
-
-    def normalize(self) -> str:
-        return self.abspath().replace('\\', '/').lower()
-
-    def get_win32_file_info(self) -> Win32FileInfo:
-
-        if not self.exists():
-            raise FileNotFoundError(self.abspath())
-
-        elif not self.isfile():
-            raise TypeError(self.abspath())
-
-        return Win32FileInfo(self)
-
-    def abspath(self):
-        return path.Path.abspath(self)
-
-    def exists(self):
-        return path.Path.exists(self)
-
-    def get_size(self):
-        return path.Path.getsize(self)
-
-    def remove(self):
-        return path.Path.remove(self)
-
-    def text(self,
-             encoding=None,
-             errors='strict'):
-
-        return path.Path.text(self, encoding, errors)
-
-    def write_text(self,
-                   text,
-                   encoding=None,
-                   errors='strict',
-                   linesep=os.linesep,
-                   append=False):
-
-        return path.Path.write_text(self, text, encoding, errors, linesep, append)
-
-    def rmtree(self, must_exist=True):
-
-        if not self.isdir():
-            raise TypeError('not a directory: {}'.format(self.abspath()))
-
-        if must_exist and not self.exists():
-            raise ValueError('directory does not exist: {}'.format(self.abspath()))
-
-        for root, _, filenames in os.walk(str(self.abspath())):
-            for file in filenames:
-                os.chmod(root + '\\' + file, 0o777)
-                os.remove(root + '\\' + file)
-
-        shutil.rmtree(self.abspath())
-
-    def joinpath(self, first, *others):
-        return Path(super(Path, self).joinpath(first, *others))
-
-    def must_exist(self, exc):
-        if not self.exists():
-            raise exc(self.abspath())
-
-    def must_be_a_file(self, exc):
-        self.must_exist(exc)
-        if not self.isfile():
-            raise exc(self.abspath())
-
-    def must_be_a_dir(self, exc):
-        self.must_exist(exc)
-        if not self.isdir():
-            raise exc(self.abspath())
-
-
-def create_temp_file(
-        *,
-        suffix: str = None,
-        prefix: str = None,
-        create_in_dir: str = None) -> Path:
-    os_handle, temp_file = tempfile.mkstemp(suffix=suffix, prefix=prefix, dir=create_in_dir or tempfile.gettempdir())
-    os.close(os_handle)
-
-    return Path(temp_file)
-
-
-def create_temp_dir(
-        *,
-        suffix: str = None,
-        prefix: str = None,
-        create_in_dir: str = None) -> Path:
-    temp_dir = tempfile.mkdtemp(suffix=suffix, prefix=prefix, dir=create_in_dir or tempfile.gettempdir())
-
-    return Path(temp_dir)
-
-
-if __name__ == '__main__':
-    t = Path(r'F:\DEV\MizFlat\dist\EMFT.exe')
-    x = Win32FileInfo(t)

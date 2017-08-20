@@ -7,8 +7,6 @@ dependency_links = []
 install_requires = [
     'discord.py',
     'everett',
-    'pywinauto',
-    'blinker',
     'certifi',
     'jinja2',
     'pefile',

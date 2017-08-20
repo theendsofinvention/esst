@@ -3,11 +3,19 @@
 Main entry point
 """
 
-import os
-import time
+import queue
 
-import blinker
+import asyncio
 import click
+
+from esst.core.context import Context
+
+
+async def watch_for_exceptions(ctx: Context):
+    while True:
+        if ctx.exit:
+            break
+        await asyncio.sleep(0.1)
 
 
 @click.group(invoke_without_command=True)  # noqa: C901
@@ -33,74 +41,66 @@ def main(ctx,
     Main entry point
 
     Args:
+        install_dedi_config: setup DCS to run in dedicated mode
+        install_hooks: install GemGUI hooks
         ctx: click context
         bot: whether or not to start the Discord bot
         server: whether or not to start the DCS server
         socket: whether or not to start the DCS socket
         start_dcs: start the server thread, but not the actual DCS app
-        hooks: install GemGUI hooks
-        dedi_config: setup DCS to run in dedicated mode
         auto_mission: downloads the latest mission from Github
     """
     from esst.core.logger import MAIN_LOGGER
     from esst.core.version import __version__
 
-    ctx.obj = {
-        'dcs_start_ok': start_dcs,
-        'dcs_show_cpu_usage': False,
-        'dcs_show_cpu_usage_once': False,
-        'dcs_kill': False,
-        'dcs_restart': False,
-        'threads': {
-            'dcs': {
-                'ready_to_exit': True,
-                'should_exit': False,
-            },
-            'socket': {
-                'ready_to_exit': True,
-                'should_exit': False,
-            },
-            'discord': {
-                'ready_to_exit': True,
-                'should_exit': False,
-            },
-        }
-    }
+    from esst.core.context import Context
+    ctx = Context()
+    ctx.loop = asyncio.get_event_loop()
+    ctx.discord_start_bot = bot
+    ctx.dcs_start = server
+    ctx.dcs_can_start = start_dcs
+    ctx.socket_start = socket
+    ctx.dcs_setup_dedi_config = install_dedi_config
+    ctx.dcs_install_hooks = install_hooks
+    ctx.dcs_auto_mission = auto_mission
+    ctx.click_context = ctx
+
+    ctx.loop = asyncio.get_event_loop()
+    ctx.discord_msg_queue = queue.Queue()
 
     import ctypes
     ctypes.windll.kernel32.SetConsoleTitleW(f'ESST v{__version__} - Use CTRL+C to exit')
+    MAIN_LOGGER.debug(f'starting ESST {__version__}')
+
+    from esst import discord_bot
+    bot = discord_bot.DiscordBot(ctx)
+
+    from esst import dcs
+    app = dcs.App(ctx)
+    socket = dcs.DCSListener(ctx)
+
+    ctx.loop.create_task(bot.run())
+    ctx.loop.create_task(app.run())
+    ctx.loop.create_task(socket.run())
+    ctx.loop.create_task(watch_for_exceptions(ctx))
+
     try:
-        MAIN_LOGGER.debug(f'starting ESST {__version__}')
-
-        from esst import discord_bot
-        discord_bot.DiscordBot(ctx)
-
-        from esst import dcs
-        dcs.App(ctx)
-        dcs.DCSListener(ctx)
-
-        while True:
-            time.sleep(0.5)
+        ctx.loop.run_forever()
 
     except KeyboardInterrupt:
 
         MAIN_LOGGER.info('ESST has been interrupted by user request, closing all threads')
 
-        def _exit_gracefully2(thread_name):
-            ctx.obj['threads'][thread_name]['should_exit'] = True
-            now = time.time()
-            while not ctx.obj['threads'][thread_name]['ready_to_exit']:
-                if time.time() > now + 20:
-                    MAIN_LOGGER.error(f'{thread_name} thread did not exit gracefully')
-                    break
-                time.sleep(0.1)
+        ctx.exit = True
 
-        _exit_gracefully2('dcs')
-        _exit_gracefully2('discord')
-        _exit_gracefully2('socket')
+        ctx.loop.run_until_complete(app.exit())
+        ctx.loop.run_until_complete(socket.exit())
+        ctx.loop.run_until_complete(bot.exit())
 
-        # noinspection PyProtectedMember
-        os._exit(0)  # pylint: disable=protected-access
+        ctx.loop.run_until_complete(asyncio.gather(*asyncio.Task.all_tasks()))
+
+    finally:
+        ctx.loop.close()
 
 
 if __name__ == '__main__':

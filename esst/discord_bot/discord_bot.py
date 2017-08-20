@@ -6,13 +6,13 @@ Runs a Discord bot using the discord.py library
 import asyncio
 import os
 import random
-import threading
 
 import discord
 import websockets.exceptions
 
 from esst.core.config import CFG
 from esst.core.logger import MAIN_LOGGER
+from esst.core.context import Context
 from .abstract import AbstractDiscordBot
 from .commands import DiscordCommands
 from .logging_handler import register_logging_handler
@@ -21,8 +21,7 @@ from .tasks import DiscordTasks
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
-class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attributes
-                 DiscordTasks,
+class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
                  DiscordCommands,
                  AbstractDiscordBot):
     """
@@ -32,7 +31,7 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
     """
 
     @property
-    def ctx(self) -> object:
+    def ctx(self) -> Context:
         return self._ctx
 
     @property
@@ -63,16 +62,15 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
     def exiting(self) -> bool:
         return bool(self._exiting)
 
-    def __init__(self, ctx):
-        if not ctx.params['bot']:
-            LOGGER.debug('skipping startup of Discord bot thread')
-            return
-
-        LOGGER.debug('starting Discord bot thread')
-        ctx.obj['threads']['discord']['ready_to_exit'] = False
-        threading.Thread.__init__(self, daemon=True)
+    def __init__(self, ctx: Context):
         self._ctx = ctx
-        self.loop = asyncio.get_event_loop()
+        if not self.ctx.discord_start_bot:
+            LOGGER.debug('skipping Discord bot startup')
+            return
+        self._exit = False
+
+        LOGGER.debug('starting Discord bot')
+        ctx.discord_msg_queue.put(CFG.discord_motd)
         self._client = None
         self._server = None
         self._user = None
@@ -80,48 +78,21 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
         self._channel = None
         self._ready = False
         self._exiting = False
-        self.loop = None
-        register_logging_handler()
-        self.start()
+        self.tasks = None
+        register_logging_handler(ctx)
 
     def _create_client(self):
-        self._client = discord.Client(loop=self.loop)
-        self.client.loop.create_task(self.monitor_queues())
-        self.client.loop.create_task(self.monitor_exit_signal())
+        self._client = discord.Client(loop=self.ctx.loop)
+        # self.tasks = asyncio.gather(
+        #     self.monitor_exit_signal(),
+        #     self.monitor_queues(),
+        #     loop=self.ctx.loop,
+        # )
+        self.ctx.loop.create_task(self.monitor_queues())
+        # self.ctx.loop.create_task(self.monitor_exit_signal())
         self.client.on_ready = self.on_ready
         self.client.on_message = self.on_message
         self.client.on_message_edit = self.on_message_edit
-
-    def _run_bot(self):
-        # self.loop = asyncio.new_event_loop()
-        self.loop = asyncio.ProactorEventLoop()
-        self._create_client()
-        try:
-            self.loop.run_until_complete(self.client.start(CFG.discord_token))
-        except websockets.exceptions.InvalidHandshake:
-            LOGGER.exception('invalid handshake')
-        except websockets.exceptions.ConnectionClosed:
-            LOGGER.exception('connection closed')
-        except websockets.exceptions.InvalidState:
-            LOGGER.exception('invalid state')
-        except websockets.exceptions.PayloadTooBig:
-            LOGGER.exception('payload too big')
-        except websockets.exceptions.WebSocketProtocolError:
-            LOGGER.exception('protocol error')
-        except KeyboardInterrupt:
-            pass
-        finally:
-            self._client = None
-            if not self.exiting:
-                self._run_bot()
-
-    def run(self):
-        """
-        Starts the thread.
-        """
-        self._run_bot()
-
-    # noinspection PyUnresolvedReferences
 
     async def get_channel(self):
         """
@@ -153,6 +124,8 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
             try:
                 await self.client.edit_profile(**profile_update)
             except discord.errors.HTTPException:
+                pass
+            except RuntimeError:
                 pass
 
     async def _update_presence(
@@ -198,3 +171,26 @@ class DiscordBot(threading.Thread,  # pylint: disable=too-many-instance-attribut
             await self.get_channel()
 
             self._ready = True
+
+    async def run(self):
+        if not self.ctx.discord_start_bot:
+            LOGGER.debug('skipping Discord loop')
+            return
+
+        self._create_client()
+        try:
+            await self.client.start(CFG.discord_token)
+        except websockets.exceptions.InvalidHandshake:
+            LOGGER.exception('invalid handshake')
+        except websockets.exceptions.ConnectionClosed:
+            LOGGER.exception('connection closed')
+        except websockets.exceptions.InvalidState:
+            LOGGER.exception('invalid state')
+        except websockets.exceptions.PayloadTooBig:
+            LOGGER.exception('payload too big')
+        except websockets.exceptions.WebSocketProtocolError:
+            LOGGER.exception('protocol error')
+        except asyncio.CancelledError:
+            print('CANCELLING')
+        except KeyboardInterrupt:
+            pass
