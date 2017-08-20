@@ -3,7 +3,6 @@
 Runs a Discord bot using the discord.py library
 """
 
-import asyncio
 import os
 import random
 
@@ -11,8 +10,8 @@ import discord
 import websockets.exceptions
 
 from esst.core.config import CFG
-from esst.core.logger import MAIN_LOGGER
 from esst.core.context import Context
+from esst.core.logger import MAIN_LOGGER
 from .abstract import AbstractDiscordBot
 from .commands import DiscordCommands
 from .logging_handler import register_logging_handler

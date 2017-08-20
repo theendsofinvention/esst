@@ -3,22 +3,20 @@
 Manages missions for the server
 """
 
-import json
+import asyncio
 import os
 import shutil
-import asyncio
 
 import github3
 import humanize
 import requests
+from emiz.weather import build_metar_from_mission, retrieve_metar, set_weather_from_metar_str
 from jinja2 import Template
 
-from esst.core.context import Context
 from esst.core.config import CFG
+from esst.core.context import Context
 from esst.core.logger import MAIN_LOGGER
 from esst.core.status import Status
-from emiz.weather import build_metar_from_mission
-from emiz.weather import set_weather_from_metar_str, retrieve_metar
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
