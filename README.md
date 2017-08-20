@@ -83,7 +83,9 @@ First, you'll need to create a Discord application:
 
 Using a command prompt with your venv activcated, run the following command:
 
-`pip install --upgrade git+https://github.com/132nd-vWing/ESST.git#egg=esst`
+```batch
+pip install esst
+```
 
 This will install ESST in your venv.
 
@@ -124,7 +126,7 @@ github_repo = 132nd-Virtual-Wing-Training-Mission-Tblisi
 ```
 
 #### OS environment variables as config
-**Note:** all config values can be set either in the INI file, or in the environment. The value `PATH` in the example below can be set in the environment as `DCS_PATH`. 
+**Note:** all config values can be set either in the INI file, or in the environment. The value `PATH` in the example below can be set in the environment as `DCS_PATH`.
 ```ini
 [dcs]
 PATH = C:\path\to\DCS World\bin\dcs.exe
@@ -171,7 +173,7 @@ echo waiting 30 seconds
 ping 127.0.0.1 -n 30 > nul
 call activate ESST
 cd C:\Utils\ESST
-pip install --upgrade git+https://github.com/132nd-vWing/ESST.git@master#egg=esst
+pip install --upgrade --no-cache esst
 esst
 pause
 ```
