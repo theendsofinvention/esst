@@ -14,9 +14,9 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 FILE_PATH = os.path.join(CFG.saved_games_dir, 'Scripts/ESSTGameGUI.lua')
 
 # noinspection SpellCheckingInspection
-GAMEGUI_CONTENT_PATH = os.path.join(os.path.dirname(__file__), 'dedicated.template')
+GAMEGUI_CONTENT_PATH = os.path.join(os.path.dirname(__file__), 'game_gui.template')
 if not os.path.exists(GAMEGUI_CONTENT_PATH):
-    GAMEGUI_CONTENT_PATH = pkg_resources.resource_filename('esst', '/dcs/dedicated.template')
+    GAMEGUI_CONTENT_PATH = pkg_resources.resource_filename('esst', '/dcs/game_gui.template')
 if not os.path.exists(GAMEGUI_CONTENT_PATH):
     raise FileNotFoundError(GAMEGUI_CONTENT_PATH)
 with open(GAMEGUI_CONTENT_PATH) as handle:
