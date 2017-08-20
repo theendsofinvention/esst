@@ -17,8 +17,8 @@ from esst.core.context import Context
 from esst.core.config import CFG
 from esst.core.logger import MAIN_LOGGER
 from esst.core.status import Status
-from .build_metar import build_metar
-from emiz import set_weather_from_icao
+from emiz.weather import build_metar_from_mission
+from emiz.weather import set_weather_from_metar_str, retrieve_metar
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -108,7 +108,7 @@ def set_active_mission(ctx: Context, mission_file_path: str, metar: str = None, 
 
     if metar is None:
         LOGGER.debug(f'building metar for mission: {mission_file_path}')
-        metar = build_metar(mission_file_path, icao='UGTB')
+        metar = build_metar_from_mission(mission_file_path, icao='UGTB')
         LOGGER.info(f'metar for {os.path.basename(mission_file_path)}:\n{metar}')
     Status.metar = metar
 
@@ -153,9 +153,9 @@ def _create_mission_path(mission_name):
     return _sanitize_path(os.path.join(_get_mission_dir(), mission_name))
 
 
-def __set_weather(icao_code, mission_path, output_path):
+def __set_weather(metar_str, mission_path, output_path):
     try:
-        result = json.loads(set_weather_from_icao(icao_code, mission_path, output_path))
+        result = json.loads(set_weather_from_metar_str(metar_str, mission_path, output_path))
     except Exception:
         LOGGER.exception('Set weather failed')
         result = {
@@ -178,6 +178,14 @@ async def set_weather(ctx: Context, icao_code: str, mission_name: str = None):
     if not os.path.exists(mission_path):
         _mission_not_found(mission_path)
         return
+    try:
+        metar_str = retrieve_metar(icao_code)
+    except FileNotFoundError:
+        LOGGER.error(f'no METAR found for station: {icao_code}\n'
+                     f'Go to "http://tgftp.nws.noaa.gov/data/observations/metar/stations/" '
+                     f'for a list of valid stations')
+        return
+
     ctx.dcs_can_start = False
     ctx.dcs_do_kill = True
     while Status.dcs_application != 'not running':
@@ -188,7 +196,7 @@ async def set_weather(ctx: Context, icao_code: str, mission_name: str = None):
     result = await ctx.loop.run_in_executor(
         None,
         __set_weather,
-        icao_code, mission_path, output_path
+        metar_str, mission_path, output_path
     )
 
     if result['status'] == 'success':
