@@ -141,7 +141,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             if status is 'starting':
                 self.ctx.socket_monitor_server_startup = True
 
-    async def _kill_running_app(self):
+    async def _kill_running_app(self):  # noqa: C901
 
         async def _ask_politely():
             if not self.app or not self.app.is_running():
