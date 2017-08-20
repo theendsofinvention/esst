@@ -190,7 +190,8 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             LOGGER.exception('payload too big')
         except websockets.exceptions.WebSocketProtocolError:
             LOGGER.exception('protocol error')
-        except asyncio.CancelledError:
-            print('CANCELLING')
         except KeyboardInterrupt:
             pass
+
+        if not self._exit:
+            await self.run()
