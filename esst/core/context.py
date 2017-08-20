@@ -4,6 +4,7 @@ from asyncio import AbstractEventLoop
 from queue import Queue
 from click import Context as ClickContext
 
+
 class Context:
 
     exit: bool = False
@@ -28,4 +29,3 @@ class Context:
     socket_start: bool = True
     socket_cmd_q: Queue = Queue()
     socket_monitor_server_startup: bool = False
-

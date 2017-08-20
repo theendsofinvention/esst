@@ -2,7 +2,6 @@
 """
 Manages Discord chat commands
 """
-import blinker
 import discord
 import humanize
 
