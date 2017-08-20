@@ -155,14 +155,13 @@ def _create_mission_path(mission_name):
 
 def __set_weather(metar_str, mission_path, output_path):
     try:
-        result = json.loads(set_weather_from_metar_str(metar_str, mission_path, output_path))
+        return set_weather_from_metar_str(metar_str, mission_path, output_path)
     except Exception:
         LOGGER.exception('Set weather failed')
-        result = {
-            'result': 'failed',
+        return {
+            'status': 'failed',
             'error': 'Uncaught exception while setting the weather, please see the log file'
         }
-    return result
 
 
 async def set_weather(ctx: Context, icao_code: str, mission_name: str = None):
