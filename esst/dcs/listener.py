@@ -7,72 +7,45 @@ Manages a UDP socket and does two things:
 """
 
 import json
-import queue
 import socket
-import threading
 import time
-
-import blinker
+import asyncio
 
 from esst.core.logger import MAIN_LOGGER
 from esst.core.status import Status
 from esst.core.config import CFG
+from esst.core.context import Context
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
-SOCKET_CMD_QUEUE = queue.Queue()
-KNOWN_COMMANDS = ['exit dcs', 'monitor server start']
+KNOWN_COMMANDS = ['exit dcs']
 
 PING_TIMEOUT = 30
 
 
-def catch_command_signals(sender, **kwargs):
-    """
-    Listens for blinker.signal('socket command')
-
-    Passes command to be executed in DCS
-
-    Args:
-        sender: name of the sender
-        **kwargs: must contain "cmd" as a string
-    """
-    LOGGER.debug(f'got command signal from {sender}: {kwargs}')
-    if 'cmd' not in kwargs:
-        raise RuntimeError('missing command in signal')
-    cmd = kwargs['cmd']
-    if cmd not in KNOWN_COMMANDS:
-        raise RuntimeError(f'unknown socket command: {cmd}')
-    SOCKET_CMD_QUEUE.put(kwargs['cmd'])
-
-
-blinker.signal('socket command').connect(catch_command_signals)
-
-
-class DCSListener(threading.Thread):
+class DCSListener:
     """
     This class is a self-starting thread that creates and manages a UDP socket as a two-way communication with DCS
     """
 
-    def __init__(self, ctx):
-        if not ctx.params['socket']:
-            LOGGER.debug('skipping startup of socket thread')
-            return
-
-        LOGGER.debug('starting socket thread')
-        ctx.obj['threads']['socket']['ready_to_exit'] = False
+    def __init__(self, ctx: Context):
         self.ctx = ctx
-        threading.Thread.__init__(self, daemon=True)
+        self._exit = False
+        if not self.ctx.socket_start:
+            LOGGER.debug('skipping startup of socket')
+            return
+        LOGGER.debug('starting socket thread')
         self.monitoring = False
-        self.monitoring_startup = False
         self.last_ping = None
         self.startup_age = None
-        self.start()
 
-    def run(self):
-        """
-        Starts the thread
-        """
-        self.listen()
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.server_address = ('localhost', 10333)
+        self.sock.bind(self.server_address)
+        self.sock.settimeout(1)
+
+        self.cmd_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.cmd_address = ('localhost', 10334)
 
     def _parse_ping(self, data: dict):
         self.last_ping = time.time()
@@ -90,49 +63,46 @@ class DCSListener(threading.Thread):
             LOGGER.debug('starting monitoring server pings')
             self.last_ping = time.time()
             self.monitoring = True
-            self.monitoring_startup = False
+            self.ctx.socket_monitor_server_startup = False
         if data['message'] in ['stopping simulation']:
             LOGGER.debug('stopped monitoring server pings')
             self.monitoring = False
 
-    def _parse_commands(self, sock, cmd_sock, cmd_address):
-
-        if not SOCKET_CMD_QUEUE.empty():
-            message = SOCKET_CMD_QUEUE.get_nowait()
-            if message == 'monitor server start':
-                LOGGER.debug('monitoring server startup time')
-                self.monitoring_startup = True
-                self.startup_age = time.time()
+    async def _parse_commands(self):
+        await asyncio.sleep(0.1)
+        if not self.ctx.socket_cmd_q.empty():
+            command = self.ctx.socket_cmd_q.get_nowait()
+            if command not in KNOWN_COMMANDS:
+                raise ValueError(f'unknown command: {command}')
             else:
-                message = {'cmd': message}
-                message = json.dumps(message) + '\n'
-                LOGGER.debug(f'sending command via socket: {message}')
-                cmd_sock.sendto(message.encode(), cmd_address)
+                command = {'cmd': command}
+                command = json.dumps(command) + '\n'
+                LOGGER.debug(f'sending command via socket: {command}')
+                self.cmd_sock.sendto(command.encode(), self.cmd_address)
 
-        return True
-
-    def _monitor_server(self):
-
+    async def _monitor_server(self):
+        await asyncio.sleep(0.1)
         if self.monitoring:
             if time.time() - self.last_ping > CFG.dcs_ping_interval:
                 LOGGER.error('It has been 30 seconds since I heard from DCS. '
                              'It is likely that the server has crashed.')
-                blinker.signal('dcs command').send(__name__, cmd='restart')
-                self.ctx.obj['dcs_restart'] = True
+                self.ctx.dcs_do_restart = True
                 self.monitoring = False
 
-    def _monitor_server_startup(self):
-        if self.monitoring_startup:
+    async def _monitor_server_startup(self):
+        await asyncio.sleep(0.1)
+        if self.ctx.socket_monitor_server_startup:
+            if self.startup_age is None:
+                self.startup_age = time.time()
             if time.time() - self.startup_age > CFG.dcs_server_startup_time:
                 LOGGER.error('DCS is taking more than 2 minutes to start a multiplayer server.\n'
                              'Something is wrong ...')
-                self.monitoring_startup = False
+                self.ctx.socket_monitor_server_startup = False
 
-
-    def _read_socket(self, sock):
-
+    async def _read_socket(self):
+        await asyncio.sleep(0.1)
         try:
-            data, _ = sock.recvfrom(4096)
+            data, _ = self.sock.recvfrom(4096)
             data = json.loads(data.decode().strip())
             if data['type'] == 'ping':
                 self._parse_ping(data)
@@ -143,38 +113,31 @@ class DCSListener(threading.Thread):
         except socket.timeout:
             pass
 
-
-    def listen(self):
+    async def run(self):
         """
         Infinite loop that manages a UDP socket and does two things:
 
         1. Retrieve incoming messages from DCS and update :py:class:`esst.core.status.Status`
         2. Sends command to the DCS application via the socket
         """
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        server_address = ('localhost', 10333)
-        sock.bind(server_address)
-        sock.settimeout(1)
-
-        cmd_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        cmd_address = ('localhost', 10334)
+        if not self.ctx.socket_start:
+            LOGGER.debug('skipping startup of socket loop')
+            return
 
         while True:
+            try:
+                if self._exit:
+                    break
+                await self._read_socket()
+                await self._parse_commands()
+                await self._monitor_server_startup()
+                await self._monitor_server()
+                await asyncio.sleep(1)
+            except KeyboardInterrupt:
+                pass
 
-            if self.ctx.obj['threads']['socket']['should_exit']:
-                break
+        self.sock.close()
+        self.cmd_sock.close()
 
-            time.sleep(0.5)
-
-            self._read_socket(sock)
-
-            if not self._parse_commands(sock, cmd_sock, cmd_address):
-                break
-
-            self._monitor_server()
-
-            self._monitor_server_startup()
-
-        sock.close()
-        self.ctx.obj['threads']['socket']['ready_to_exit'] = True
-        LOGGER.debug('closing socket thread')
+    async def exit(self):
+        self._exit = True

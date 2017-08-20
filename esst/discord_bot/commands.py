@@ -2,7 +2,6 @@
 """
 Manages Discord chat commands
 """
-import blinker
 import discord
 import humanize
 
@@ -57,9 +56,9 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
             f'\t\t"overwrite": allow overwriting existing files\n'
             f'\t\t"load": immediately restart the server with the new mission\n'
             f'\t\t(note: options can be combined, for example: "load overwrite")\n\n'
-            
+
             f'Environment:\n\n'
-            f'!wx metar ICAO            updates the weather on the currently running mission\n' 
+            f'!wx metar ICAO            updates the weather on the currently running mission\n'
             f'!wx metar ICAO MISSION    updates the weather on any mission\n\n'
             f'Note: those two commands restart the DCS server with the latest mission'
         )
@@ -158,22 +157,22 @@ class DiscordCommands(AbstractDiscordBot):  # pylint: disable=abstract-method
                 await self.show_missions()
 
             elif message.content == '!dcs show cpu':
-                self.ctx.obj['dcs_show_cpu_usage_once'] = True
+                self.ctx.dcs_show_cpu_usage_once = True
 
             elif message.content == '!dcs show cpu start':
-                self.ctx.obj['dcs_show_cpu_usage'] = True
+                self.ctx.dcs_show_cpu_usage = True
 
             elif message.content == '!dcs show cpu stop':
-                self.ctx.obj['dcs_show_cpu_usage'] = False
+                self.ctx.dcs_show_cpu_usage = False
+
+            elif message.content == '!dcs restart':
+                self.ctx.dcs_do_restart = True
 
             elif message.content.startswith('!dcs load '):
                 await self.load_mission(message.content.replace('!dcs load ', ''))
 
             elif message.content.startswith('!wx metar '):
                 await self.set_weather(message.content.replace('!wx metar ', ''))
-
-            elif message.content.startswith('!dcs restart'):
-                self.ctx.obj['dcs_restart'] = True
 
             else:
                 await self.say(f'Unknown command: {message.content}\n'

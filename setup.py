@@ -7,8 +7,6 @@ dependency_links = []
 install_requires = [
     'discord.py',
     'everett',
-    'pywinauto',
-    'blinker',
     'certifi',
     'jinja2',
     'pefile',
@@ -51,6 +49,8 @@ def main():
         tests_require=test_requires,
         setup_requires=setup_requires,
         dependency_links=dependency_links,
+        package_dir={'esst': 'esst'},
+        package_data={'esst': ['dcs/*.template']},
         test_suite='pytest',
         packages=['esst', 'esst.core', 'esst.dcs', 'esst.discord_bot'],
         python_requires='>=3.6',

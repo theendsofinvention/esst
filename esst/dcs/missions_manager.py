@@ -3,22 +3,20 @@
 Manages missions for the server
 """
 
-import json
+import asyncio
 import os
 import shutil
-import sys
-import time
 
 import github3
 import humanize
 import requests
+from emiz.weather import build_metar_from_mission, retrieve_metar, set_weather_from_metar_str
 from jinja2 import Template
 
-from esst.core.async_run import do_ex
 from esst.core.config import CFG
+from esst.core.context import Context
 from esst.core.logger import MAIN_LOGGER
 from esst.core.status import Status
-from .build_metar import build_metar
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -81,7 +79,7 @@ def _backup_settings_file():
         shutil.copy(_get_settings_file_path(), backup_file_path)
 
 
-def set_active_mission(ctx, mission_file_path: str, metar: str = None, load: bool = False):
+def set_active_mission(ctx: Context, mission_file_path: str, metar: str = None, load: bool = False):
     """
     Sets the mission as active in "serverSettings.lua"
 
@@ -108,15 +106,15 @@ def set_active_mission(ctx, mission_file_path: str, metar: str = None, load: boo
 
     if metar is None:
         LOGGER.debug(f'building metar for mission: {mission_file_path}')
-        metar = build_metar(mission_file_path, icao='UGTB')
+        metar = build_metar_from_mission(mission_file_path, icao='UGTB')
         LOGGER.info(f'metar for {os.path.basename(mission_file_path)}:\n{metar}')
     Status.metar = metar
 
     if load:
-        ctx.obj['dcs_restart'] = True
+        ctx.dcs_do_restart = True
 
 
-def set_active_mission_from_name(ctx, mission_name: str, load: bool = False):
+def set_active_mission_from_name(ctx: Context, mission_name: str, load: bool = False):
     """
     Sets the mission as active in serverSettings.lua and optionally restarts the server
 
@@ -153,7 +151,18 @@ def _create_mission_path(mission_name):
     return _sanitize_path(os.path.join(_get_mission_dir(), mission_name))
 
 
-async def set_weather(ctx, icao_code: str, mission_name: str = None):
+def __set_weather(metar_str, mission_path, output_path):
+    try:
+        return set_weather_from_metar_str(metar_str, mission_path, output_path)
+    except Exception:
+        LOGGER.exception('Set weather failed')
+        return {
+            'status': 'failed',
+            'error': 'Uncaught exception while setting the weather, please see the log file'
+        }
+
+
+async def set_weather(ctx: Context, icao_code: str, mission_name: str = None):
     if mission_name is None:
         if Status.mission_file and Status.mission_file != 'unknown':
             LOGGER.debug(f'using active mission: {Status.mission_file}')
@@ -166,50 +175,49 @@ async def set_weather(ctx, icao_code: str, mission_name: str = None):
     if not os.path.exists(mission_path):
         _mission_not_found(mission_path)
         return
-    ctx.obj['dcs_start_ok'] = False
-    ctx.obj['dcs_kill'] = True
+    try:
+        metar_str = retrieve_metar(icao_code)
+    except FileNotFoundError:
+        LOGGER.error(f'no METAR found for station: {icao_code}\n'
+                     f'Go to "http://tgftp.nws.noaa.gov/data/observations/metar/stations/" '
+                     f'for a list of valid stations')
+        return
+
+    ctx.dcs_can_start = False
+    ctx.dcs_do_kill = True
     while Status.dcs_application != 'not running':
-        time.sleep(1)
+        await asyncio.sleep(1)
     LOGGER.info(f'setting weather from {icao_code} to {mission_path}')
     output_path = _get_mission_path_with_RL_weather(mission_path)
-    emft = os.path.join(os.path.dirname(sys.executable), 'Scripts/emft.exe')
-    out, err, ret = await do_ex(
-        [
-            emft, '-q', 'set_weather',
-            '-s', icao_code,
-            '-i', mission_path,
-            '-o', output_path,
-        ]
+
+    result = await ctx.loop.run_in_executor(
+        None,
+        __set_weather,
+        metar_str, mission_path, output_path
     )
 
-    if ret:
-        LOGGER.error('unable to set weather')
-        LOGGER.error(err)
+    if result['status'] == 'success':
+        LOGGER.info(f'successfully set the weather on mission: {result["to"]}\n'
+                    f'METAR is: {result["metar"].upper()}')
+        set_active_mission(ctx, result["to"], metar=result['metar'], load=True)
+
+    elif result['status'] == 'failed':
+        LOGGER.error(f'setting weather failed:\n{result["error"]}')
 
     else:
-        result = json.loads(out)
-        if result['status'] == 'success':
-            LOGGER.info(f'successfully set the weather on mission: {result["to"]}\n'
-                        f'METAR is: {result["metar"].upper()}')
-            set_active_mission(ctx, result["to"], metar=result['metar'], load=True)
+        LOGGER.error(f'unknown status: {result["status"]}')
 
-        elif result['status'] == 'failed':
-            LOGGER.error(f'setting weather failed:\n{result["error"]}')
-
-        else:
-            LOGGER.error(f'unknown status: {result["status"]}')
-
-    ctx.obj['dcs_start_ok'] = True
+    ctx.dcs_can_start = True
 
 
-def get_latest_mission_from_github(ctx):
+def get_latest_mission_from_github(ctx: Context):
     """
     Downloads the latest mission from a Github repository
 
     The repository needs to have releases (tagged)
     The function will download the first MIZ file found in the latest release
     """
-    if ctx.params['auto_mission']:
+    if ctx.dcs_auto_mission:
         if CFG.auto_mission_github_repo and CFG.auto_mission_github_owner:
             LOGGER.debug('looking for newer mission file')
             github = github3.GitHub(token=CFG.auto_mission_github_token)
@@ -231,7 +239,7 @@ def get_latest_mission_from_github(ctx):
         LOGGER.debug('skipping mission update')
 
 
-def download_mission_from_discord(ctx, discord_attachment, overwrite=False, load=False):
+def download_mission_from_discord(ctx: Context, discord_attachment, overwrite=False, load=False):
     """
     Downloads a mission from a discord message attachment
 

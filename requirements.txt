@@ -1,12 +1,11 @@
 aiohttp==1.0.5            # via discord.py
 async-timeout==1.2.1      # via aiohttp
-blinker==1.4
 certifi==2017.7.27.1
 chardet==3.0.4            # via aiohttp, requests
 click==6.7
-comtypes==1.1.3.post2     # via pywinauto
 configobj==5.0.6          # via everett
-discord.py==0.16.9
+discord.py==0.16.10
+emiz==0.1.3
 everett==0.9
 future==0.16.0            # via pefile
 github3.py==1.0.0a4
@@ -14,14 +13,15 @@ humanize==0.5.1
 idna==2.6                 # via requests
 jinja2==2.9.6
 markupsafe==1.0           # via jinja2
+metar==1.5.0              # via emiz
+mpmath==0.19              # via emiz
 multidict==3.1.3          # via aiohttp
+natsort==5.1.0            # via emiz
 pefile==2017.8.1
 psutil==5.2.2
-pypiwin32==220            # via pywinauto
-pywinauto==0.6.3
-requests==2.18.4          # via github3.py
-six==1.10.0               # via configobj, everett, pywinauto
+requests==2.18.4          # via emiz, github3.py
+six==1.10.0               # via configobj, everett
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py
 urllib3==1.22             # via requests
-websockets==3.3           # via discord.py
+websockets==3.4           # via discord.py

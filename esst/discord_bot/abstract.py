@@ -6,6 +6,7 @@ Dummy abstract class to help split the Discord bot into multiple more manageable
 import abc
 
 import discord
+from esst.core.context import Context
 
 
 class AbstractDiscordBot:
@@ -14,7 +15,7 @@ class AbstractDiscordBot:
     """
     @property
     @abc.abstractmethod
-    def ctx(self):
+    def ctx(self) -> Context:
         """
         Contains the click context obj
 
