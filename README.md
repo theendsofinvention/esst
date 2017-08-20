@@ -89,6 +89,19 @@ pip install esst
 
 This will install ESST in your venv.
 
+### Disable Windows crash dialog
+
+When the DCS application crashes, Windows will by default show a dialog, which will prevent ESST from restarting DCS.
+To disable that dialog, open an elevated command prompt and execute the following commands:
+
+```batch
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "DontShowUI" /t REG_DWORD /d 1 /f
+```
+
+```batch
+reg add "HKCU\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "DontShowUI" /t REG_DWORD /d 1 /f
+```
+
 ### Create the configuration file
 
 Create a file named `esst.ini` .
