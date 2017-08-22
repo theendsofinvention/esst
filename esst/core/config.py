@@ -7,8 +7,10 @@ import os
 
 import everett
 import everett.manager
+import inspect
 
 from esst.core.version import __version__
+from esst.core import ISentryContextProvider
 
 
 def parse_dcs_path(val: str) -> str:
@@ -61,10 +63,16 @@ def parse_saved_games_dir(val):
     return os.path.normpath(val)
 
 
-class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
+class Config(ISentryContextProvider):  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """
     Singleton configuration class for ESST.
     """
+
+    def get_context(self) -> dict:
+        return {member: value
+                for member, value in inspect.getmembers(self, lambda a: not (inspect.ismethod(a)))
+                if not member.startswith('_')
+                }
 
     def __init__(self):
         self._config = everett.manager.ConfigManager(
