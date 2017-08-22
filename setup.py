@@ -15,6 +15,7 @@ install_requires = [
     'psutil',
     'github3.py==1.0.0a4',
     'emiz',
+    'raven',
 ]
 
 test_requires = [

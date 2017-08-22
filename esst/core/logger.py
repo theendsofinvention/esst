@@ -28,8 +28,8 @@ MAIN_LOGGER.addHandler(CONSOLE_HANDLER)
 MAIN_LOGGER.addHandler(FILE_HANDLER)
 
 if CFG.debug:
-    MAIN_LOGGER.setLevel(logging.DEBUG)
+    CONSOLE_HANDLER.setLevel(logging.DEBUG)
 else:
-    MAIN_LOGGER.setLevel(logging.INFO)
+    CONSOLE_HANDLER.setLevel(logging.INFO)
 
 __all__ = ['MAIN_LOGGER']

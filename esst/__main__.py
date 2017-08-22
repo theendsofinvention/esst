@@ -3,9 +3,9 @@
 Main entry point
 """
 
+import asyncio
 import queue
 
-import asyncio
 import click
 
 from esst.core.context import Context
@@ -55,6 +55,14 @@ def main(ctx,
 
     from esst.core.context import Context
     ctx = Context()
+
+    from esst.core.config import CFG
+    if CFG.sentry_dsn:
+        from esst.core.sentry import Sentry
+        sentry = Sentry(CFG.sentry_dsn)
+        sentry.register_context('App context', ctx)
+        sentry.register_context('Config', CFG)
+
     ctx.loop = asyncio.get_event_loop()
     ctx.discord_start_bot = bot
     ctx.dcs_start = server

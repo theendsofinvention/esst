@@ -4,8 +4,19 @@ from asyncio import AbstractEventLoop
 from queue import Queue
 from click import Context as ClickContext
 
+from esst.core import ISentryContextProvider
 
-class Context:
+import inspect
+
+
+class Context(ISentryContextProvider):
+
+    @classmethod
+    def get_context(cls) -> dict:
+        return {member: value
+                for member, value in inspect.getmembers(cls, lambda a: not (inspect.ismethod(a)))
+                if not member.startswith('_')
+                }
 
     exit: bool = False
     loop: AbstractEventLoop = None

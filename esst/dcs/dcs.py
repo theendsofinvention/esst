@@ -24,6 +24,8 @@ DCS_CMD_QUEUE = queue.Queue()
 
 KNOWN_DCS_VERSIONS = ['1.5.6.5199']
 
+# => 2.1.1.8491: use DCS.exe --old-login
+
 
 async def get_dcs_process_pid():
     """
@@ -45,15 +47,16 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
     def __init__(self, ctx: Context):
         self.ctx = ctx
+        self._app = None
+        self.process_pid = None
+        self._exit = False
+        self._restart_ok = True
+
         if not self.ctx.dcs_start:
             LOGGER.debug('skipping startup of DCS application')
             return
 
         LOGGER.debug('starting DCS application thread')
-        self._app = None
-        self.process_pid = None
-        self._exit = False
-        self._restart_ok = True
 
     @property
     def app(self) -> psutil.Process:

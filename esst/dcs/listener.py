@@ -31,13 +31,15 @@ class DCSListener:
     def __init__(self, ctx: Context):
         self.ctx = ctx
         self._exit = False
-        if not self.ctx.socket_start:
-            LOGGER.debug('skipping startup of socket')
-            return
-        LOGGER.debug('starting socket thread')
         self.monitoring = False
         self.last_ping = None
         self.startup_age = None
+
+        if not self.ctx.socket_start:
+            LOGGER.debug('skipping startup of socket')
+            return
+
+        LOGGER.debug('starting socket thread')
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_address = ('localhost', 10333)
