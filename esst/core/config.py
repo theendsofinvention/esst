@@ -82,6 +82,7 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                 everett.manager.ConfigDictEnv(
                     {
                         'DEBUG': 'false',
+                        'SENTRY_DSN': '',
                         'DCS_IDLE_CPU_USAGE': 5,
                         'DCS_HIGH_CPU_USAGE': 80,
                         'DISCORD_BOT_NAME': 'ESST',
@@ -100,6 +101,7 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
 
         self.debug = self._config('DEBUG', default='false', parser=everett.manager.parse_bool)
         self.saved_games_dir = self._config('SAVED_GAMES_DIR', parser=str)
+        self.sentry_dsn = self._config('SENTRY_DSN', parser=str)
 
         self.dcs_path = self._config('PATH', parser=parse_dcs_path, namespace='DCS')
         self.dcs_idle_cpu_usage = self._config('IDLE_CPU_USAGE', parser=int, namespace='DCS')
