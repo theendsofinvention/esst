@@ -2,6 +2,7 @@
 
 import abc
 
+
 class ISentryContextProvider(metaclass=abc.ABCMeta):
     """
     Interface for any object that would like to register context with Sentry.
