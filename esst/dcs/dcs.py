@@ -24,6 +24,8 @@ DCS_CMD_QUEUE = queue.Queue()
 
 KNOWN_DCS_VERSIONS = ['1.5.6.5199']
 
+# => 2.1.1.8491: use DCS.exe --old-login
+
 
 async def get_dcs_process_pid():
     """
