@@ -4,6 +4,7 @@ certifi==2017.7.27.1
 chardet==3.0.4            # via aiohttp, requests
 click==6.7
 configobj==5.0.6          # via everett
+contextlib2==0.5.5        # via raven
 discord.py==0.16.10
 emiz==0.1.3
 everett==0.9
@@ -19,6 +20,7 @@ multidict==3.1.3          # via aiohttp
 natsort==5.1.0            # via emiz
 pefile==2017.8.1
 psutil==5.2.2
+raven==6.1.0
 requests==2.18.4          # via emiz, github3.py
 six==1.10.0               # via configobj, everett
 uritemplate.py==3.0.2     # via github3.py
