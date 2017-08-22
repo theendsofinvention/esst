@@ -2,8 +2,32 @@ Changelog
 =========
 
 
+0.1.25 (2017-08-22)
+-------------------
+- Update requirements. [132nd-etcher]
+- Fix initialization of Discord, DCS and socket when deactivated.
+  [132nd-etcher]
+- Add Sentry. [132nd-etcher]
+- Add SentryContextProvider. [132nd-etcher]
+- Make Context a sentry context provider. [132nd-etcher]
+- Make config object a context provider for Sentry. [132nd-etcher]
+- Add config option for Sentry DSN. [132nd-etcher]
+- Add raven dependency. [132nd-etcher]
+- Fix wrong logging level in log files. [132nd-etcher]
+- Add comment for future reference with OpenAlpha of DCS. [132nd-etcher]
+- Update README. [132nd-etcher]
+- Update readme. [132nd-etcher]
+- Published with https://stackedit.io/ [132nd-etcher]
+
+
 0.1.22 (2017-08-20)
 -------------------
+- Fix performance hit on server update mission weather management no
+  more threads, only asyncio (sic) [132nd-etcher]
+- Update changelog. [132nd-etcher]
+- Noqa. [132nd-etcher]
+- Remove trailing white space. [132nd-etcher]
+- Remove unused imports. [132nd-etcher]
 - Add package data to setup.py. [132nd-etcher]
 - Fix __set_weather. [132nd-etcher]
 - Fix game_gui template. [132nd-etcher]
