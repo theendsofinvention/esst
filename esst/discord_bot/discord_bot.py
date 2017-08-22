@@ -63,13 +63,6 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
 
     def __init__(self, ctx: Context):
         self._ctx = ctx
-        if not self.ctx.discord_start_bot:
-            LOGGER.debug('skipping Discord bot startup')
-            return
-        self._exit = False
-
-        LOGGER.debug('starting Discord bot')
-        ctx.discord_msg_queue.put(CFG.discord_motd)
         self._client = None
         self._server = None
         self._user = None
@@ -78,6 +71,14 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         self._ready = False
         self._exiting = False
         self.tasks = None
+
+        if not self.ctx.discord_start_bot:
+            LOGGER.debug('skipping Discord bot startup')
+            return
+        self._exit = False
+
+        LOGGER.debug('starting Discord bot')
+        ctx.discord_msg_queue.put(CFG.discord_motd)
         register_logging_handler(ctx)
 
     def _create_client(self):
