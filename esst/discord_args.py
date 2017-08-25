@@ -11,7 +11,7 @@ import sys
 # parser.epilog = 'caribou'
 
 
-class HelpFormatter(argparse.HelpFormatter):
+class HelpFormatter(argparse.RawDescriptionHelpFormatter):
     
     def add_usage(self, usage, actions, groups, prefix=None):
         # print('usage', usage)
@@ -68,10 +68,15 @@ class CustomParser(argh.ArghParser):
         # if args and args.startswith('!'):
         #     args = args.replace('!', '')
         # args = args.split(' ')
+        if len(args) == 1:
+            args.append('--help')
         try:
             return super(CustomParser, self).parse_args(args, namespace)
         except TypeError:
-            send_message_on_discord('invalid command: ' + ' '.join(args))
+            send_message_on_discord(
+                'Invalid command: ' + ' '.join(args) +
+                '\nType "!help" for a list of the available commands.'
+            )
         
     def format_help(self):
         # print('moo')
@@ -94,30 +99,19 @@ def caribou(flag1: 'flag dosctring' = False):
     Huge Function docstring
     """
     print('flag1', flag1)
-    
 
-def status():
-    """
-    Show current DCS status
-    """
-    print('DCS status')
+description = """
+To get help on a specific command, unse the "--help" option.
 
-description = """This is a somewhat
-longer
-description
-of everything
+Ex:
+    !dcs --help
+    !dcs status --help
 """
 parser = CustomParser(description=description, prog='', add_help=False)
 parent_parser = argparse.ArgumentParser(add_help=False)
 parent_parser.add_argument('--long-b', '-b',
                     action="store",
                     help='Long and short together')
-                    
-parser.add_commands([test, caribou], namespace='!foo', 
-    namespace_kwargs={'title':'Foo !', 'description': 'description', 'help': 'help text'},
-    func_kwargs={'parents': [parent_parser]},
-)
-parser.add_commands([status], namespace='!dcs')
 
 
 def send_message_on_discord(message: str):
@@ -146,8 +140,20 @@ def main():
     args = ' '.join(sys.argv[1:])
     # print('args', args)
     
-    parser = CustomParser(description='description')
-    parser.add_commands([test])
+    # parser = CustomParser(description='description')
+    # parser.add_commands([test])
+    # print(__file__)
+    # print(sys.path)
+    
+    # from esst import discord_args_dcs
+    import discord_args_dcs
+    discord_args_dcs.add_commands(parser, parent_parsers=[parent_parser])
+    import discord_args_server
+    discord_args_server.add_commands(parser, parent_parsers=[parent_parser])
+    import discord_args_esst
+    discord_args_esst.add_commands(parser, parent_parsers=[parent_parser])
+    
+    
     parse_discord_message(args)
     # parser.parse_args(args)
     # result = parser.dispatch()
