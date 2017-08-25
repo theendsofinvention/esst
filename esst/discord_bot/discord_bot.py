@@ -5,6 +5,7 @@ Runs a Discord bot using the discord.py library
 
 import os
 import random
+import aiohttp.errors
 
 import discord
 import websockets.exceptions
@@ -124,6 +125,10 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             try:
                 await self.client.edit_profile(**profile_update)
             except discord.errors.HTTPException:
+                pass
+            except aiohttp.errors.ClientResponseError:
+                pass
+            except websockets.exceptions.ConnectionClosed:
                 pass
             except RuntimeError:
                 pass
