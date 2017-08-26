@@ -1,6 +1,7 @@
 # coding=utf-8
 
 
+import abc
 import logging
 import sys
 
@@ -10,9 +11,7 @@ import raven.breadcrumbs
 import raven.conf
 import raven.handlers.logging
 
-from esst.core.logger import MAIN_LOGGER
-from esst.core.version import __version__
-from esst.core import ISentryContextProvider
+from esst.core import MAIN_LOGGER, __version__
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -40,7 +39,7 @@ class Sentry(raven.Client):
         except AttributeError:
             pass
 
-    def register_context(self, context_name: str, context_provider: ISentryContextProvider):
+    def register_context(self, context_name: str, context_provider):
         """Registers a context to be read when a crash occurs; obj must implement get_context()"""
         LOGGER.debug('registering context with Sentry: {}'.format(context_name))
         self.registered_contexts[context_name] = context_provider
@@ -56,7 +55,6 @@ class Sentry(raven.Client):
         if kwargs['data'].get('level') is None:
             kwargs['data']['level'] = logging.DEBUG
         for context_name, context_provider in self.registered_contexts.items():
-            assert isinstance(context_provider, ISentryContextProvider)
             self.extra_context({context_name: context_provider.get_context()})
         super(Sentry, self).captureMessage(message, **kwargs)
 
@@ -65,7 +63,6 @@ class Sentry(raven.Client):
 
         LOGGER.debug('capturing exception')
         for k, context_provider in self.registered_contexts.items():
-            assert isinstance(context_provider, ISentryContextProvider)
             self.extra_context({k: context_provider.get_context()})
         super(Sentry, self).captureException(exc_info, **kwargs)
 

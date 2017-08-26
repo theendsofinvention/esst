@@ -57,7 +57,7 @@ def main(bot: bool,
     from esst.core import CTX, MAIN_LOGGER, __version__, CFG
 
     if CFG.sentry_dsn:
-        from esst.core.sentry import Sentry
+        from esst.utils.sentry import Sentry
         sentry = Sentry(CFG.sentry_dsn)
         sentry.register_context('App context', CTX)
         sentry.register_context('Config', CFG)
