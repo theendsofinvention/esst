@@ -54,8 +54,7 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
             try:
                 await self.say(message)
             except discord.errors.HTTPException:
-                for message in message:
-                    CTX.discord_msg_queue.put(message)
+                CTX.discord_msg_queue.put(message)
 
     async def _process_file_queue(self):
         if self.client.is_closed:
