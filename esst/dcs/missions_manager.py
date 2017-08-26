@@ -13,10 +13,9 @@ import requests
 from emiz.weather import build_metar_from_mission, retrieve_metar, set_weather_from_metar_str
 from jinja2 import Template
 
-from esst.core.config import CFG
-from esst.core.context import Context
-from esst.core.logger import MAIN_LOGGER
-from esst.core.status import Status
+from esst.commands import DCS
+from esst.core import CFG, CTX, MAIN_LOGGER, Status
+from esst.utils import read_template
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -79,7 +78,7 @@ def _backup_settings_file():
         shutil.copy(_get_settings_file_path(), backup_file_path)
 
 
-def set_active_mission(ctx: Context, mission_file_path: str, metar: str = None, load: bool = False):
+def set_active_mission(mission_file_path: str, metar: str = None, load: bool = False):
     """
     Sets the mission as active in "serverSettings.lua"
 
@@ -114,7 +113,7 @@ def set_active_mission(ctx: Context, mission_file_path: str, metar: str = None, 
         ctx.dcs_do_restart = True
 
 
-def set_active_mission_from_name(ctx: Context, mission_name: str, load: bool = False):
+def set_active_mission_from_name(mission_name: str, load: bool = False):
     """
     Sets the mission as active in serverSettings.lua and optionally restarts the server
 
@@ -122,7 +121,7 @@ def set_active_mission_from_name(ctx: Context, mission_name: str, load: bool = F
         mission_name: mission name as string (not the full path)
         load: whether or not to restart the server
     """
-    set_active_mission(ctx, _get_mission_path(mission_name), load=load)
+    set_active_mission(get_path_from_name(mission_name), load=load)
 
 
 def _get_mission_dir() -> str:
@@ -162,7 +161,7 @@ def __set_weather(metar_str, mission_path, output_path):
         }
 
 
-async def set_weather(ctx: Context, icao_code: str, mission_name: str = None):
+async def set_weather(icao_code: str, mission_name: str = None):
     if mission_name is None:
         if Status.mission_file and Status.mission_file != 'unknown':
             LOGGER.debug(f'using active mission: {Status.mission_file}')
@@ -190,7 +189,7 @@ async def set_weather(ctx: Context, icao_code: str, mission_name: str = None):
     LOGGER.info(f'setting weather from {icao_code} to {mission_path}')
     output_path = _get_mission_path_with_RL_weather(mission_path)
 
-    result = await ctx.loop.run_in_executor(
+    result = await CTX.loop.run_in_executor(
         None,
         __set_weather,
         metar_str, mission_path, output_path
@@ -199,7 +198,7 @@ async def set_weather(ctx: Context, icao_code: str, mission_name: str = None):
     if result['status'] == 'success':
         LOGGER.info(f'successfully set the weather on mission: {result["to"]}\n'
                     f'METAR is: {result["metar"].upper()}')
-        set_active_mission(ctx, result["to"], metar=result['metar'], load=True)
+        set_active_mission(result["to"], metar=result['metar'], load=True)
 
     elif result['status'] == 'failed':
         LOGGER.error(f'setting weather failed:\n{result["error"]}')
@@ -210,14 +209,14 @@ async def set_weather(ctx: Context, icao_code: str, mission_name: str = None):
     ctx.dcs_can_start = True
 
 
-def get_latest_mission_from_github(ctx: Context):
+def get_latest_mission_from_github():
     """
     Downloads the latest mission from a Github repository
 
     The repository needs to have releases (tagged)
     The function will download the first MIZ file found in the latest release
     """
-    if ctx.dcs_auto_mission:
+    if CTX.dcs_auto_mission:
         if CFG.auto_mission_github_repo and CFG.auto_mission_github_owner:
             LOGGER.debug('looking for newer mission file')
             github = github3.GitHub(token=CFG.auto_mission_github_token)
@@ -232,14 +231,14 @@ def get_latest_mission_from_github(ctx: Context):
                     if not os.path.exists(local_file):
                         LOGGER.info(f'downloading new mission: {asset.name}')
                         asset.download(local_file)
-                    set_active_mission(ctx, local_file)
+                    set_active_mission(local_file)
         else:
             LOGGER.error('no config values given for [auto mission]')
     else:
         LOGGER.debug('skipping mission update')
 
 
-def download_mission_from_discord(ctx: Context, discord_attachment, overwrite=False, load=False):
+def download_mission_from_discord(discord_attachment, overwrite=False, load=False):
     """
     Downloads a mission from a discord message attachment
 
@@ -272,7 +271,7 @@ def download_mission_from_discord(ctx: Context, discord_attachment, overwrite=Fa
 
     if load:
         LOGGER.info(f'restarting the server with this mission')
-        set_active_mission(ctx, local_file, load=True)
+        set_active_mission(local_file, load=True)
     else:
         LOGGER.info(f'download successful, mission is now available')
 

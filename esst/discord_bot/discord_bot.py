@@ -5,15 +5,13 @@ Runs a Discord bot using the discord.py library
 
 import os
 import random
-import aiohttp.errors
 
+import aiohttp.errors
 import discord
 import websockets.exceptions
 
-from esst.core.config import CFG
-from esst.core.context import Context
-from esst.core.logger import MAIN_LOGGER
-from .abstract import AbstractDiscordBot
+from esst.core import CFG, CTX, MAIN_LOGGER
+from .abstract import AbstractDiscordBot, AbstractDiscordCommandParser
 from .commands import DiscordCommands
 from .logging_handler import register_logging_handler
 from .tasks import DiscordTasks
@@ -31,8 +29,8 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
     """
 
     @property
-    def ctx(self) -> Context:
-        return self._ctx
+    def parser(self) -> AbstractDiscordCommandParser:
+        return self._parser
 
     @property
     def channel(self) -> discord.Channel:
@@ -62,8 +60,8 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
     def exiting(self) -> bool:
         return bool(self._exiting)
 
-    def __init__(self, ctx: Context):
-        self._ctx = ctx
+    def __init__(self):
+        self._parser = make_root_parser()
         self._client = None
         self._server = None
         self._user = None
@@ -73,24 +71,24 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         self._exiting = False
         self.tasks = None
 
-        if not self.ctx.discord_start_bot:
+        if not CTX.discord_start_bot:
             LOGGER.debug('skipping Discord bot startup')
             return
         self._exit = False
 
         LOGGER.debug('starting Discord bot')
-        ctx.discord_msg_queue.put(CFG.discord_motd)
-        register_logging_handler(ctx)
+        CTX.discord_msg_queue.put(CFG.discord_motd)
+        register_logging_handler()
 
     def _create_client(self):
-        self._client = discord.Client(loop=self.ctx.loop)
+        self._client = discord.Client(loop=CTX.loop)
         # self.tasks = asyncio.gather(
         #     self.monitor_exit_signal(),
         #     self.monitor_queues(),
-        #     loop=self.ctx.loop,
+        #     loop=CTX.loop,
         # )
-        self.ctx.loop.create_task(self.monitor_queues())
-        # self.ctx.loop.create_task(self.monitor_exit_signal())
+        CTX.loop.create_task(self.monitor_queues())
+        # CTX.loop.create_task(self.monitor_exit_signal())
         self.client.on_ready = self.on_ready
         self.client.on_message = self.on_message
         self.client.on_message_edit = self.on_message_edit
@@ -178,13 +176,15 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             self._ready = True
 
     async def run(self):
-        if not self.ctx.discord_start_bot:
+        if not CTX.discord_start_bot:
             LOGGER.debug('skipping Discord loop')
             return
 
-        self._create_client()
-        try:
-            await self.client.start(CFG.discord_token)
+        while not CTX.exit:
+            LOGGER.debug('starting Discord client')
+            self._create_client()
+            try:
+                await self.client.start(CFG.discord_token)
         except websockets.exceptions.InvalidHandshake:
             LOGGER.exception('invalid handshake')
         except websockets.exceptions.ConnectionClosed:

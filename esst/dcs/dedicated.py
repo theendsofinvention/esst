@@ -7,6 +7,7 @@ import os
 import jinja2
 import shutil
 
+from esst.core import CFG, CTX, MAIN_LOGGER
 from esst.core.context import Context
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
@@ -56,7 +57,7 @@ def setup_config_for_dedicated_run(ctx: Context):
     """
     Setup the server to automatically starts in multiplayer mode when DCS starts
     """
-    if ctx.dcs_setup_dedi_config:
+    if CTX.dcs_setup_dedi_config:
         LOGGER.debug('setting up dedicated config')
         _backup_auth_file()
         with open(_get_me_auth_path(), 'w') as handle:

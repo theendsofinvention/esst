@@ -8,18 +8,17 @@ import queue
 
 import click
 
-from esst.core.context import Context
+from esst.core import CTX, MAIN_LOGGER
 
 
 async def watch_for_exceptions(ctx: Context):
     while True:
-        if ctx.exit:
+        if CTX.exit:
             break
         await asyncio.sleep(0.1)
 
 
 @click.group(invoke_without_command=True)  # noqa: C901
-@click.pass_context
 @click.option('--bot/--no-bot', default=True, help='Starts the Discord bot', show_default=True)
 @click.option('--server/--no-server', default=True, help='Starts the DCS app', show_default=True)
 @click.option('--socket/--no-socket', default=True, help='Starts the socket', show_default=True)
@@ -28,8 +27,7 @@ async def watch_for_exceptions(ctx: Context):
 @click.option('--install-dedi-config/--no-install-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
               show_default=True)
 @click.option('--auto-mission/--no-auto-mission', help='Download latest mission', default=True, show_default=True)
-def main(ctx,
-         bot: bool,
+def main(bot: bool,
          server: bool,
          socket: bool,
          start_dcs: bool,
@@ -50,54 +48,46 @@ def main(ctx,
         start_dcs: start the server thread, but not the actual DCS app
         auto_mission: downloads the latest mission from Github
     """
-    from esst import discord_args
-    discord_args.main()
-    return
 
-    from esst.core.logger import MAIN_LOGGER
-    from esst.core.version import __version__
+    from esst.core import CTX, MAIN_LOGGER, __version__, CFG
 
-    from esst.core.context import Context
-    ctx = Context()
-
-    from esst.core.config import CFG
     if CFG.sentry_dsn:
         from esst.core.sentry import Sentry
         sentry = Sentry(CFG.sentry_dsn)
-        sentry.register_context('App context', ctx)
+        sentry.register_context('App context', CTX)
         sentry.register_context('Config', CFG)
 
-    ctx.loop = asyncio.get_event_loop()
-    ctx.discord_start_bot = bot
-    ctx.dcs_start = server
-    ctx.dcs_can_start = start_dcs
-    ctx.socket_start = socket
-    ctx.dcs_setup_dedi_config = install_dedi_config
-    ctx.dcs_install_hooks = install_hooks
-    ctx.dcs_auto_mission = auto_mission
-    ctx.click_context = ctx
+    CTX.loop = asyncio.get_event_loop()
+    CTX.discord_start_bot = bot and CFG.start_bot
+    CTX.dcs_start = server and CFG.start_server
+    CTX.dcs_can_start = start_dcs
+    CTX.socket_start = socket and CFG.start_socket
+    CTX.dcs_setup_dedi_config = install_dedi_config
+    CTX.dcs_install_hooks = install_hooks
+    CTX.dcs_auto_mission = auto_mission
 
-    ctx.loop = asyncio.get_event_loop()
-    ctx.discord_msg_queue = queue.Queue()
+    CTX.loop = asyncio.get_event_loop()
+    # CTX.loop.set_debug(True)
+    CTX.discord_msg_queue = queue.Queue()
 
     import ctypes
     ctypes.windll.kernel32.SetConsoleTitleW(f'ESST v{__version__} - Use CTRL+C to exit')
     MAIN_LOGGER.debug(f'starting ESST {__version__}')
 
     from esst import discord_bot
-    bot = discord_bot.DiscordBot(ctx)
+    bot = discord_bot.DiscordBot()
 
-    from esst import dcs
-    app = dcs.App(ctx)
+    from esst.dcs import dcs
+    app = dcs.App()
     socket = dcs.DCSListener(ctx)
 
-    ctx.loop.create_task(bot.run())
-    ctx.loop.create_task(app.run())
-    ctx.loop.create_task(socket.run())
-    ctx.loop.create_task(watch_for_exceptions(ctx))
+    CTX.loop.create_task(bot.run())
+    CTX.loop.create_task(app.run())
+    CTX.loop.create_task(socket.run())
+    CTX.loop.create_task(watch_for_exceptions())
 
     try:
-        ctx.loop.run_forever()
+    CTX.loop.run_forever()
 
     except KeyboardInterrupt:
 

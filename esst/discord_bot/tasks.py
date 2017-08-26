@@ -7,7 +7,7 @@ import asyncio
 
 import discord
 
-from esst.core.logger import MAIN_LOGGER
+from esst.core import MAIN_LOGGER, CTX
 from .abstract import AbstractDiscordBot
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
@@ -34,14 +34,14 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
     async def _process_message_queue(self):
         if self.exiting or self.client.is_closed:
             return
-        if not self.ctx.discord_msg_queue.empty():
-            message = self.ctx.discord_msg_queue.get_nowait()
-            LOGGER.debug(f'received message to say: {message}')
+        if not CTX.discord_msg_queue.empty():
+            message = CTX.discord_msg_queue.get_nowait()
+            # LOGGER.debug(f'received message to say: {message}')
             try:
                 await self.say(message)
             except discord.errors.HTTPException:
                 for message in message:
-                    self.ctx.discord_msg_queue.put(message)
+                    CTX.discord_msg_queue.put(message)
             LOGGER.debug('message sent')
 
     async def monitor_queues(self):
@@ -49,12 +49,12 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
         Checks the message queue for pending messages to send
         """
         while not self.ready:
-            if self._exit:
+            if CTX.exit:
                 break
             await asyncio.sleep(0.1)
         await self.client.wait_until_ready()
         while not self.client.is_closed:
             await self._process_message_queue()
             await asyncio.sleep(0.1)
-            if self._exit:
+            if CTX.exit:
                 break

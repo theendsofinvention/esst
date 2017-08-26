@@ -15,12 +15,7 @@ class AbstractDiscordBot:
     """
     @property
     @abc.abstractmethod
-    def ctx(self) -> Context:
-        """
-        Contains the click context obj
-
-        Returns: click context object dictionary
-        """
+    def parser(self) -> AbstractDiscordCommandParser:
         pass
 
     @property

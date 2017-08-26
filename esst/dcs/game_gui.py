@@ -6,8 +6,8 @@ Manages GameGUI hooks
 import os
 import pkg_resources
 
-from esst.core.config import CFG
-from esst.core.logger import MAIN_LOGGER
+from esst.core import CFG, CTX, MAIN_LOGGER
+from esst.utils import read_template
 from esst.core.context import Context
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
@@ -23,11 +23,11 @@ with open(GAMEGUI_CONTENT_PATH) as handle:
     GAMEGUI_CONTENT = handle.read()
 
 
-def install_game_gui_hooks(ctx: Context):
+def install_game_gui_hooks():
     """
     Installs the GameGUI hooks in DCS Scripts folder
     """
-    if ctx.dcs_install_hooks:
+    if CTX.dcs_install_hooks:
         LOGGER.debug('installing GameGUI hooks')
         with open(FILE_PATH, 'w') as handle:
             handle.write(GAMEGUI_CONTENT)
