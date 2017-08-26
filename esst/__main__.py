@@ -50,6 +50,10 @@ def main(ctx,
         start_dcs: start the server thread, but not the actual DCS app
         auto_mission: downloads the latest mission from Github
     """
+    from esst import discord_args
+    discord_args.main()
+    return
+
     from esst.core.logger import MAIN_LOGGER
     from esst.core.version import __version__
 
