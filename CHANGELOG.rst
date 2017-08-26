@@ -9,6 +9,7 @@ New
 ~~~
 - Add "!server reboot" command. [132nd-etcher]
 - Add "!server show-cpu" command. [132nd-etcher]
+- Add "!server status" command. [132nd-etcher]
 - Add "!mission load" command. [132nd-etcher]
 - Add "!mission download" command. [132nd-etcher]
 - Add "!mission weather" command. [132nd-etcher]
@@ -34,7 +35,6 @@ Fix
 
 Other
 ~~~~~
-- New add "!server status" command. [132nd-etcher]
 - Add two exception catch in discord_bot. [132nd-etcher]
 - Wip. [132nd-etcher]
 - This is getting solid. [132nd-etcher]
