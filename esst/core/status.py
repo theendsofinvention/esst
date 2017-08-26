@@ -22,4 +22,12 @@ class Status:  # pylint: disable=too-few-public-methods
 
 
 class ServerStatus:
-    pass
+    physical_cpus = 'unknown'
+    logical_cpus = 'unknown'
+    cpu_frequency = 'unknown'
+    cpu_usage = 'unknown'
+    total_memory = 'unknown'
+    free_memory = 'unknown'
+    swap_size = 'unknown'
+    swap_used = 'unknown'
+    boot_time = 'unknown'
