@@ -3,7 +3,6 @@
 Manages DCS application Window process
 """
 import asyncio
-from collections import deque
 from pathlib import Path
 
 import psutil
@@ -210,23 +209,15 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
         Threshold is set via the config value "DCS_HIGH_CPU_USAGE", and it defaults to 80%
         """
-        collect = deque(maxlen=CFG.dcs_high_cpu_usage_interval)
-        counter = 0
-        while True:
-            counter += 1
-            if CTX.exit:
-                break
+        while not CTX.exit:
             try:
                 if self.app and self.app.is_running():
-                    cpu_usage = int(self.app.cpu_percent(1)) / psutil.cpu_count()
-                    collect.append(cpu_usage)
+                    cpu_usage = int(self.app.cpu_percent(CFG.dcs_high_cpu_usage)) / psutil.cpu_count()
                     Status.dcs_cpu_usage = f'{cpu_usage}%'
-                    if counter > 5:
-                        counter = 0
-                        if CTX.dcs_show_cpu_usage or CTX.dcs_show_cpu_usage_once:
-                            DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
-                            CTX.dcs_show_cpu_usage_once = False
-                    if sum(list(collect)) / CFG.dcs_high_cpu_usage_interval > CFG.dcs_high_cpu_usage:
+                    if CTX.dcs_show_cpu_usage or CTX.dcs_show_cpu_usage_once:
+                        DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
+                        CTX.dcs_show_cpu_usage_once = False
+                    if cpu_usage > CFG.dcs_high_cpu_usage:
                         if not Status.paused:
                             LOGGER.warning(
                                 f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}%'
