@@ -8,6 +8,10 @@ import os
 import sys
 
 
+def log_file_path(saved_games_folder):
+    return os.path.join(saved_games_folder, 'Logs/esst.log')
+
+
 def setup_logging(debug, saved_games_folder):
     logger = logging.getLogger('ESST')
 
@@ -17,7 +21,7 @@ def setup_logging(debug, saved_games_folder):
     console_handler.setFormatter(formatter)
 
     file_handler = logging.handlers.TimedRotatingFileHandler(
-        os.path.join(saved_games_folder, 'Logs/esst.log'),
+        log_file_path(saved_games_folder),
         when='midnight',
         backupCount=7
     )
