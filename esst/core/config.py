@@ -120,10 +120,23 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.dcs_high_cpu_usage = self._config('HIGH_CPU_USAGE', parser=int, namespace='DCS')
         self.dcs_high_cpu_usage_interval = self._config('HIGH_CPU_USAGE_INTERVAL', parser=int, namespace='DCS')
         self.dcs_server_password = self._config('SERVER_PASSWORD', parser=str, namespace='DCS')
-        self.dcs_server_name = self._config('SERVER_NAME', parser=str, namespace='DCS')
-        self.dcs_server_max_players = self._config('SERVER_MAX_PLAYERS', parser=int, namespace='DCS')
-        self.dcs_server_startup_time = self._config('SERVER_STARTUP_TIME', parser=int, namespace='DCS')
         self.dcs_ping_interval = self._config('PING_INTERVAL', parser=int, namespace='DCS')
+
+        self.dcs_server_name = self._config('NAME', parser=str, namespace='DCS_SERVER')
+        self.dcs_server_max_players = self._config('MAX_PLAYERS', parser=int, namespace='DCS_SERVER')
+        self.dcs_server_startup_time = self._config('STARTUP_TIME', parser=int, namespace='DCS_SERVER')
+        self.dcs_server_event_role = self._config(
+            'EVENT_ROLE', parser=str, namespace='DCS_SERVER', default='true'
+        )
+        self.dcs_server_require_pure_clients = self._config(
+            'require_pure_clients', parser=str, namespace='DCS_SERVER', default='false'
+        )
+        self.dcs_server_allow_ownship_export = self._config(
+            'allow_ownship_export', parser=str, namespace='DCS_SERVER', default='true'
+        )
+        self.dcs_server_allow_object_export = self._config(
+            'allow_object_export', parser=str, namespace='DCS_SERVER', default='true'
+        )
 
         self.discord_bot_name = self._config('BOT_NAME', parser=str, namespace='DISCORD')
         self.discord_channel = self._config('CHANNEL', parser=str.lower, namespace='DISCORD')
@@ -133,21 +146,3 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.auto_mission_github_token = self._config('GITHUB_TOKEN', parser=str, namespace='AUTO_MISSION')
         self.auto_mission_github_owner = self._config('GITHUB_OWNER', parser=str, namespace='AUTO_MISSION')
         self.auto_mission_github_repo = self._config('GITHUB_REPO', parser=str, namespace='AUTO_MISSION')
-
-
-try:
-    CFG = Config()
-except everett.InvalidValueError as exception:
-    KEY = exception.key
-    if exception.namespace:
-        KEY = f'{exception.namespace}_{KEY}'
-    print(f'Invalid value for key: {KEY}')
-    exit(1)
-except everett.ConfigurationMissingError as exception:
-    KEY = exception.key
-    if exception.namespace:
-        KEY = f'{exception.namespace}_{KEY}'
-    print(f'Missing configuration for key: {KEY}')
-    exit(1)
-
-__all__ = ['CFG']
