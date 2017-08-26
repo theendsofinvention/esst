@@ -1,24 +1,14 @@
 # coding=utf-8
 
-from esst.core.config import CFG
-from esst.core.logger import MAIN_LOGGER
-import pkg_resources
 import os
-import jinja2
 import shutil
 
+import jinja2
+
 from esst.core import CFG, CTX, MAIN_LOGGER
-from esst.core.context import Context
+from esst.utils import read_template
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
-
-ME_AUTH_PATH = os.path.join(os.path.dirname(__file__), 'dedicated.template')
-if not os.path.exists(ME_AUTH_PATH):
-    ME_AUTH_PATH = pkg_resources.resource_filename('esst', '/dcs/dedicated.template')
-if not os.path.exists(ME_AUTH_PATH):
-    raise FileNotFoundError(ME_AUTH_PATH)
-with open(ME_AUTH_PATH) as handle:
-    ME_AUTH = handle.read()
 
 DEDI_CFG = r"""dedicated =
 {
@@ -53,15 +43,22 @@ def _write_dedi_config():
         LOGGER.debug(f'file already exists: {dedi_cfg_path}')
 
 
-def setup_config_for_dedicated_run(ctx: Context):
+def _write_auth_file():
+    content = read_template('me_authorization.template')
+    LOGGER.debug('writing me_authorization.lua')
+    with open(_get_me_auth_path(), 'w') as handle:
+        handle.write(jinja2.Template(content).render(server_name=CFG.discord_bot_name))
+
+
+def setup_config_for_dedicated_run():
     """
     Setup the server to automatically starts in multiplayer mode when DCS starts
     """
     if CTX.dcs_setup_dedi_config:
         LOGGER.debug('setting up dedicated config')
         _backup_auth_file()
-        with open(_get_me_auth_path(), 'w') as handle:
-            handle.write(jinja2.Template(ME_AUTH).render(server_name=CFG.discord_bot_name))
+        _write_auth_file()
         _write_dedi_config()
+        LOGGER.debug('setting up dedicated config: all done!')
     else:
         LOGGER.debug('skipping installation of dedicated config')

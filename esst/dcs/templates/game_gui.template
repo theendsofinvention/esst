@@ -6,6 +6,8 @@ package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll;"
 local socket = require("socket")
 local JSON = loadfile("Scripts\\JSON.lua")()
 
+--local dediConfig = Tools.safeDoFile(lfs.writedir() .. 'Config/dedicated.lua', false)
+
 esst = {}
 
 esst.json = JSON
@@ -85,48 +87,50 @@ function esst.onSimulationResume()
     esst.status_update('resuming simulation')
 end
 
-function esst.onSimulationFrame()
+--if dediConfig and dediConfig.dedicated ~= nil and dediConfig.dedicated["enabled"] == true then
+    function esst.onSimulationFrame()
 
-    local now = DCS.getRealTime()
+        local now = DCS.getRealTime()
 
-    if now > esst.cmd_last_read + esst.cmd_read_interval then
-      esst.cmd_last_read = now
-      local message = esst.cmd_sock:receive()
-      if message then
-          local decoded = esst.json:decode(message)
-          if decoded.cmd then
-              esst.info('received command: '.. decoded.cmd)
-              if decoded.cmd == 'exit dcs' then
-                  esst.info('closing DCS')
-                  DCS.exitProcess()
+        if now > esst.cmd_last_read + esst.cmd_read_interval then
+          esst.cmd_last_read = now
+          local message = esst.cmd_sock:receive()
+          if message then
+              local decoded = esst.json:decode(message)
+              if decoded.cmd then
+                  esst.info('received command: '.. decoded.cmd)
+                  if decoded.cmd == 'exit dcs' then
+                      esst.info('closing DCS')
+                      DCS.exitProcess()
+                  else
+                      esst.error('unknown command: '.. decoded.cmd)
+                  end
               else
-                  esst.error('unknown command: '.. decoded.cmd)
+                  esst.error('badly formatted command message: '.. message)
               end
-          else
-              esst.error('badly formatted command message: '.. message)
           end
-      end
-    end
-
-    if now > esst.ping_last_sent + esst.ping_interval then
-        esst.ping_last_sent = now
-        local players = {}
-        for _, player_id in ipairs(net.get_player_list()) do
-            if player_id ~= 1 then
-                table.insert(players, net.get_name(player_id))
-            end
         end
-        local message = {
-            type = 'ping',
-            players = players,
-            model_time= DCS.getModelTime(),
-            paused = DCS.getPause(),
-            mission_name = DCS.getMissionName(),
-            mission_filename = DCS.getMissionFilename(),
-        }
-        esst.send(message)
+
+        if now > esst.ping_last_sent + esst.ping_interval then
+            esst.ping_last_sent = now
+            local players = {}
+            for _, player_id in ipairs(net.get_player_list()) do
+                if player_id ~= 1 then
+                    table.insert(players, net.get_name(player_id))
+                end
+            end
+            local message = {
+                type = 'ping',
+                players = players,
+                model_time= DCS.getModelTime(),
+                paused = DCS.getPause(),
+                mission_name = DCS.getMissionName(),
+                mission_filename = DCS.getMissionFilename(),
+            }
+            esst.send(message)
+        end
     end
-end
+--end
 
 DCS.setUserCallbacks(esst)
 
