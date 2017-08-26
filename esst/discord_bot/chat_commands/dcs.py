@@ -28,7 +28,7 @@ def status():
 
 @argh.arg('--start', help='Show CPU usage in real time')
 @argh.arg('--stop', help='Stop showing CPU usage in real time')
-def cpu(
+def show_cpu(
         start=False,
         stop=False
 ):
