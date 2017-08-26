@@ -1,6 +1,9 @@
 # coding=utf-8
 
-from esst.core import MAIN_LOGGER, Status
+from argh import arg
+
+from emiz.weather import retrieve_metar, set_weather_from_metar_str, set_weather_from_icao, build_metar_from_mission, parse_metar_string
+from esst.core import MAIN_LOGGER, Status, CTX
 from esst.commands import DCS, DISCORD
 from esst.dcs import missions_manager
 
@@ -8,19 +11,68 @@ from esst.dcs import missions_manager
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
-def load(mission_name: 'mission to load' = None,):
-    """
-    Show ESST version
-    """
-    if mission_name is None:
-        mission_file = missions_manager.get_running_mission()
+def _load(name, icao, metar):
+    if name is None:
+        mission = missions_manager.get_running_mission()
     else:
-        mission_file = missions_manager.get_path_from_name(mission_name)
-    if not mission_file:
+        mission = missions_manager.MissionPath(name)
+
+    if not mission:
         return
 
-    if mission_file:
-        DISCORD.say(mission_file)
+    if metar:
+        metar = ' '.join(metar)
+        LOGGER.info(f'analyzing METAR string: {metar}')
+        error, metar = parse_metar_string(metar)
+        if error:
+            LOGGER.error(error)
+            return
+        LOGGER.info(f'{metar.string()}')
+    if icao:
+        LOGGER.info(f'obtaining METAR from: {icao}')
+        error, metar_str = retrieve_metar(icao)
+        if error:
+            LOGGER.error(error)
+            return
+        LOGGER.info(f'analyzing METAR string: {metar_str}')
+        error, metar = parse_metar_string(metar_str)
+        if error:
+            LOGGER.error(error)
+            return
+        LOGGER.info(f'{metar.string()}')
+
+    if metar:
+        error, success = set_weather_from_metar_str(metar.code, mission.path, mission.rlwx.path)
+        if error:
+            LOGGER.error(error)
+            return
+        else:
+            LOGGER.info(success)
+        active_mission = mission.rlwx
+    else:
+        LOGGER.info('building METAR from mission file')
+        metar_str = build_metar_from_mission(mission.path, 'XXXX')
+        error, metar = parse_metar_string(metar_str)
+        if error:
+            LOGGER.error(error)
+            return
+        LOGGER.info(f'{metar.string()}')
+        active_mission = mission
+
+    active_mission.set_as_active(metar.code)
+    DCS.restart()
+
+
+@arg('-m', '--metar', nargs='+', metavar='METAR')
+def load(
+        name: 'name of the mission to load' = None,
+        icao: 'update the weather from ICAO' = None,
+        metar: 'update the weather from METAR string' = None,
+):
+    """
+    Load a mission, allowing to set the weather or the time
+    """
+    CTX.loop.run_in_executor(None, _load, name, icao, metar)
 
 
 def show():
