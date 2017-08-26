@@ -2,18 +2,18 @@
 
 from argh import arg
 
-from emiz.weather import retrieve_metar, set_weather_from_metar_str, set_weather_from_icao, build_metar_from_mission, parse_metar_string
 from esst.core import MAIN_LOGGER, Status, CTX
 from esst.commands import DCS, DISCORD
 from esst.dcs import missions_manager
+from emiz import edit_miz, parse_metar_string, retrieve_metar, build_metar_from_mission
 
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
-def _load(name, icao, metar):
+def _load(name, icao, metar, time, max_wind, min_wind):
     if name is None:
-        mission = missions_manager.get_running_mission()
+        mission = missions_manager.get_running_mission().strip_suffix()
     else:
         mission = missions_manager.MissionPath(name)
 
@@ -27,7 +27,7 @@ def _load(name, icao, metar):
         if error:
             LOGGER.error(error)
             return
-        LOGGER.info(f'{metar.string()}')
+        DISCORD.say(f'{metar.string()}')
     if icao:
         LOGGER.info(f'obtaining METAR from: {icao}')
         error, metar_str = retrieve_metar(icao)
@@ -39,40 +39,45 @@ def _load(name, icao, metar):
         if error:
             LOGGER.error(error)
             return
-        LOGGER.info(f'{metar.string()}')
+        DISCORD.say(f'{metar.string()}')
 
     if metar:
-        error, success = set_weather_from_metar_str(metar.code, mission.path, mission.rlwx.path)
-        if error:
-            LOGGER.error(error)
-            return
-        else:
-            LOGGER.info(success)
-        active_mission = mission.rlwx
+        info_metar = metar
     else:
         LOGGER.info('building METAR from mission file')
         metar_str = build_metar_from_mission(mission.path, 'XXXX')
-        error, metar = parse_metar_string(metar_str)
+        error, info_metar = parse_metar_string(metar_str)
         if error:
             LOGGER.error(error)
             return
-        LOGGER.info(f'{metar.string()}')
-        active_mission = mission
+        LOGGER.info(f'{info_metar.string()}')
 
-    active_mission.set_as_active(metar.code)
-    DCS.restart()
+    LOGGER.debug(f'editing "{mission.path}" to "{mission.rlwx.path}"')
+    error = edit_miz(mission.path, mission.rlwx.path, metar, time, min_wind, max_wind)
+    if error:
+        LOGGER.error(error)
+    else:
+        LOGGER.debug('mission has been successfully edited')
+        mission.rlwx.set_as_active(info_metar.code)
+        DCS.restart()
 
 
 @arg('-m', '--metar', nargs='+', metavar='METAR')
 def load(
         name: 'name of the mission to load' = None,
         icao: 'update the weather from ICAO' = None,
-        metar: 'update the weather from METAR string' = None,
+        metar: 'update the weather from METAR string\n'
+               'WARNING: METAR string may NOT contain dashes ("-")' = None,
+        time: 'set the mission time (syntax: YYYYMMDDHHMMSS)\n'
+              'Ex: 2017/08/22 at 12:30:00 -> 20170822123000' = None,
+        max_wind: 'maximum speed of the wind in MPS' = 40,
+        min_wind: 'minimum speed of the wind in MPS' = 0,
+
 ):
     """
     Load a mission, allowing to set the weather or the time
     """
-    CTX.loop.run_in_executor(None, _load, name, icao, metar)
+    CTX.loop.run_in_executor(None, _load, name, icao, metar, time, max_wind, min_wind)
 
 
 def show():
