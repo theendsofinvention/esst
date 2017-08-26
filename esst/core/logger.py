@@ -3,33 +3,33 @@
 Manages ESST logging
 """
 
-import os
 import logging.handlers
+import os
 import sys
 
-from esst.core.config import CFG
 
-MAIN_LOGGER = logging.getLogger('ESST')
+def setup_logging(debug, saved_games_folder):
+    logger = logging.getLogger('ESST')
 
-FORMATTER = logging.Formatter('%(asctime)s %(levelname)8s %(name)s: %(message)s')
+    formatter = logging.Formatter('%(asctime)s %(levelname)8s %(name)s: %(message)s')
 
-CONSOLE_HANDLER = logging.StreamHandler(sys.stdout)
-CONSOLE_HANDLER.setFormatter(FORMATTER)
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(formatter)
 
-FILE_HANDLER = logging.handlers.TimedRotatingFileHandler(
-    os.path.join(CFG.saved_games_dir, 'Logs/esst.log'),
-    when='midnight',
-    backupCount=7
-)
-FILE_HANDLER.setFormatter(FORMATTER)
+    file_handler = logging.handlers.TimedRotatingFileHandler(
+        os.path.join(saved_games_folder, 'Logs/esst.log'),
+        when='midnight',
+        backupCount=7
+    )
+    file_handler.setFormatter(formatter)
 
-MAIN_LOGGER.setLevel(logging.DEBUG)
-MAIN_LOGGER.addHandler(CONSOLE_HANDLER)
-MAIN_LOGGER.addHandler(FILE_HANDLER)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
 
-if CFG.debug:
-    CONSOLE_HANDLER.setLevel(logging.DEBUG)
-else:
-    CONSOLE_HANDLER.setLevel(logging.INFO)
+    if debug:
+        console_handler.setLevel(logging.DEBUG)
+    else:
+        console_handler.setLevel(logging.INFO)
 
-__all__ = ['MAIN_LOGGER']
+    return logger
