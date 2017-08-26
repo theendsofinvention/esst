@@ -20,6 +20,7 @@ class Context:
 
     discord_start_bot: bool = False
     discord_msg_queue: Queue = Queue()
+    discord_file_queue: Queue = Queue()
 
     dcs_start: bool = True
     dcs_install_hooks: bool = True

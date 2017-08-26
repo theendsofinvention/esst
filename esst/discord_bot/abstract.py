@@ -119,3 +119,13 @@ class AbstractDiscordBot:
             message: message to send as string
         """
         pass
+
+    @abc.abstractmethod
+    def send(self, file_path: str):
+        """
+        Sends a message to the channel
+
+        Args:
+            message: message to send as string
+        """
+        pass

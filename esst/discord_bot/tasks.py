@@ -42,6 +42,16 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
                 for message in message:
                     CTX.discord_msg_queue.put(message)
 
+    async def _process_file_queue(self):
+        if self.client.is_closed:
+            return
+        if not CTX.discord_file_queue.empty():
+            file = CTX.discord_file_queue.get_nowait()
+            try:
+                await self.send(file)
+            except discord.errors.HTTPException:
+                CTX.discord_msg_queue.put(file)
+
     async def monitor_queues(self):
         """
         Checks the message queue for pending messages to send
@@ -53,6 +63,7 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
         await self.client.wait_until_ready()
         while not self.client.is_closed:
             await self._process_message_queue()
+            await self._process_file_queue()
             await asyncio.sleep(0.1)
             if CTX.exit:
                 break
