@@ -39,12 +39,15 @@ class MissionPath:
 
     @property
     def rlwx(self):
-        if '_RLWX.miz' in self.path:
+        if '_ESST.miz' in self.path:
             return self
         else:
             dirname = os.path.dirname(self._path)
             file, ext = os.path.splitext(self._path)
-            return MissionPath(_sanitize_path(os.path.join(dirname, f'{file}_RLWX{ext}')))
+            return MissionPath(_sanitize_path(os.path.join(dirname, f'{file}_ESST{ext}')))
+
+    def strip_suffix(self):
+        return MissionPath(self.path.replace('_ESST', ''))
 
     @property
     def path(self):
@@ -242,7 +245,7 @@ def list_available_missions():
     Generator that yields available mission in ESST's mission dir
     """
     for file in os.listdir(MISSION_FOLDER):
-        if file.endswith('.miz') and not '_RLWX.miz' in file:
+        if file.endswith('.miz') and not '_ESST.miz' in file:
             yield file
 
 
