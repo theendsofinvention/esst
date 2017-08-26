@@ -19,21 +19,72 @@ from esst.utils import read_template
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
+MISSION_FOLDER = os.path.join(CFG.saved_games_dir, 'Missions/ESST')
+if not os.path.exists(MISSION_FOLDER):
+    LOGGER.debug(f'creating directory: {MISSION_FOLDER}')
+    os.makedirs(MISSION_FOLDER)
 
-def _mission_not_found(mission_path):
-    LOGGER.error(f'mission not found: {mission_path}')
+
+class MissionPath:
+
+    def __init__(self, mission: str):
+        if not os.path.isabs(mission):
+            self._path = os.path.join(MISSION_FOLDER, mission)
+        else:
+            self._path = mission
+
+    @property
+    def name(self):
+        return os.path.basename(self._path)
+
+    @property
+    def rlwx(self):
+        if '_RLWX.miz' in self.path:
+            return self
+        else:
+            dirname = os.path.dirname(self._path)
+            file, ext = os.path.splitext(self._path)
+            return MissionPath(_sanitize_path(os.path.join(dirname, f'{file}_RLWX{ext}')))
+
+    @property
+    def path(self):
+        return _sanitize_path(self._path)
+
+    def set_as_active(self, metar: str = None):
+
+        LOGGER.info(f'setting active mission to: {self.name}')
+        if not self:
+            LOGGER.error(f'mission file not found: {self.path}')
+            return
+        content = Template(read_template('settings.template')).render(
+            mission_file_path=self.path,
+            passwd=CFG.dcs_server_password,
+            name=CFG.dcs_server_name,
+            max_players=CFG.dcs_server_max_players,
+        )
+
+        _backup_settings_file()
+        with open(_get_settings_file_path(), 'w') as handle:
+            handle.write(content)
+
+        if metar is None:
+            LOGGER.debug(f'building metar for mission: {self.path}')
+            metar = build_metar_from_mission(self.path, icao='UGTB')
+            LOGGER.info(f'metar for {os.path.basename(self.path)}:\n{metar}')
+        Status.metar = metar
+
+    def __str__(self):
+        return _sanitize_path(self._path)
+
+    def __repr__(self):
+        return f'MissionPath({self._path})'
+
+    def __bool__(self):
+        return os.path.exists(self._path)
 
 
 def _sanitize_path(path):
     return path.replace('\\', '/')
-
-
-def _ensure_mission_file(path):
-    path = os.path.abspath(path)
-    if os.path.exists(path):
-        return _sanitize_path(path)
-
-    _mission_not_found(path)
 
 
 def _get_settings_file_path():
@@ -47,75 +98,16 @@ def _backup_settings_file():
         shutil.copy(_get_settings_file_path(), backup_file_path)
 
 
-def set_active_mission(mission_file_path: str, metar: str = None, load: bool = False):
+def set_active_mission(mission: str, metar: str = None):
     """
     Sets the mission as active in "serverSettings.lua"
 
     Args:
-        mission_file_path: complete path to the MIZ file
+        mission: path or name of the MIZ file
         metar: METAR string for this mission
     """
-    if not _ensure_mission_file(mission_file_path):
-        return
-
-    LOGGER.info(f'setting active mission to: {os.path.basename(mission_file_path)}')
-    mission_file_path = mission_file_path.replace('\\', '/')
-    content = Template(read_template('settings.template')).render(
-        mission_file_path=mission_file_path,
-        passwd=CFG.dcs_server_password,
-        name=CFG.dcs_server_name,
-        max_players=CFG.dcs_server_max_players,
-    )
-
-    _backup_settings_file()
-    with open(_get_settings_file_path(), 'w') as handle:
-        handle.write(content)
-
-    if metar is None:
-        LOGGER.debug(f'building metar for mission: {mission_file_path}')
-        metar = build_metar_from_mission(mission_file_path, icao='UGTB')
-        LOGGER.info(f'metar for {os.path.basename(mission_file_path)}:\n{metar}')
-    Status.metar = metar
-
-    if load:
-        DCS.restart()
-
-
-def set_active_mission_from_name(mission_name: str, load: bool = False):
-    """
-    Sets the mission as active in serverSettings.lua and optionally restarts the server
-
-    Args:
-        mission_name: mission name as string (not the full path)
-        load: whether or not to restart the server
-    """
-    set_active_mission(get_path_from_name(mission_name), load=load)
-
-
-def _get_mission_dir() -> str:
-    """
-    Returns: ESST mission dir path
-    """
-    mission_dir = os.path.join(CFG.saved_games_dir, 'Missions/ESST')
-    if not os.path.exists(mission_dir):
-        LOGGER.debug(f'creating directory: {mission_dir}')
-        os.makedirs(mission_dir)
-    return _sanitize_path(mission_dir)
-
-
-def get_path_from_name(mission_file_name):
-    return _sanitize_path(os.path.join(_get_mission_dir(), mission_file_name))
-
-
-def _get_mission_path_with_RL_weather(mission_file_name):
-    mission_path = get_path_from_name(mission_file_name)
-    dirname = os.path.dirname(mission_path)
-    file, ext = os.path.splitext(mission_path)
-    return os.path.join(dirname, f'{file}_RLWX{ext}')
-
-
-def _create_mission_path(mission_name):
-    return _sanitize_path(os.path.join(_get_mission_dir(), mission_name))
+    mission = MissionPath(mission)
+    mission.set_as_active(metar)
 
 
 def __set_weather(metar_str, mission_path, output_path):
@@ -166,7 +158,8 @@ async def set_weather(icao_code: str, mission_name: str = None):
     if result['status'] == 'success':
         LOGGER.info(f'successfully set the weather on mission: {result["to"]}\n'
                     f'METAR is: {result["metar"].upper()}')
-        set_active_mission(result["to"], metar=result['metar'], load=True)
+        set_active_mission(result["to"], metar=result['metar'])
+        DCS.restart()
 
     elif result['status'] == 'failed':
         LOGGER.error(f'setting weather failed:\n{result["error"]}')
@@ -185,6 +178,7 @@ def get_latest_mission_from_github():
     The function will download the first MIZ file found in the latest release
     """
     if CTX.dcs_auto_mission:
+        DCS.cannot_start()
         if CFG.auto_mission_github_repo and CFG.auto_mission_github_owner:
             LOGGER.debug('looking for newer mission file')
             github = github3.GitHub(token=CFG.auto_mission_github_token)
@@ -195,13 +189,14 @@ def get_latest_mission_from_github():
             for asset in assets:
                 if asset.name.endswith('.miz'):
                     LOGGER.debug(f'found a mission file: {asset.name}')
-                    local_file = _create_mission_path(asset.name)
-                    if not os.path.exists(local_file):
+                    local_file = MissionPath(asset.name)
+                    if not local_file:
                         LOGGER.info(f'downloading new mission: {asset.name}')
                         asset.download(local_file)
-                    set_active_mission(local_file)
+                    local_file.set_as_active()
         else:
             LOGGER.error('no config values given for [auto mission]')
+        DCS.can_start()
     else:
         LOGGER.debug('skipping mission update')
 
@@ -214,14 +209,11 @@ def download_mission_from_discord(discord_attachment, overwrite=False, load=Fals
         discord_attachment: url to download the mission from
         overwrite: whether or not to overwrite an existing file
         load: whether or not to restart the server with the downloaded mission
-
-    Returns:
-
     """
     url = discord_attachment['url']
     size = discord_attachment['size']
     filename = discord_attachment['filename']
-    local_file = get_path_from_name(filename)
+    local_file = MissionPath(filename)
 
     overwriting = ''
     if os.path.exists(local_file):
@@ -234,12 +226,13 @@ def download_mission_from_discord(discord_attachment, overwrite=False, load=Fals
 
     LOGGER.info(f'downloading: {filename} ({humanize.naturalsize(size)}) {overwriting}')
     with requests.get(url) as response:
-        with open(local_file, 'wb') as out_file:
+        with open(local_file.path, 'wb') as out_file:
             out_file.write(response.content)
 
     if load:
         LOGGER.info(f'restarting the server with this mission')
-        set_active_mission(local_file, load=True)
+        local_file.set_as_active()
+        DCS.restart()
     else:
         LOGGER.info(f'download successful, mission is now available')
 
@@ -248,17 +241,18 @@ def list_available_missions():
     """
     Generator that yields available mission in ESST's mission dir
     """
-    for file in os.listdir(_get_mission_dir()):
+    for file in os.listdir(MISSION_FOLDER):
         if file.endswith('.miz') and not '_RLWX.miz' in file:
             yield file
 
 
 def get_running_mission():
     if Status.mission_file and Status.mission_file != 'unknown':
-        if os.path.exists(Status.mission_file):
-            LOGGER.debug(f'using active mission: {Status.mission_file}')
-            return _sanitize_path(Status.mission_file)
+        mission = MissionPath(Status.mission_file)
+        if mission:
+            LOGGER.debug(f'returning active mission: {mission.name}')
+            return mission
         else:
-            LOGGER.error(f'current mission is: "{Status.mission_file}", but that file does not exist')
+            LOGGER.error(f'current mission is "{mission.path}", but that file does not exist')
     else:
         LOGGER.error('no active mission; please load a mission first (or just wait a moment for the server to start)')
