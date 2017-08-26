@@ -46,6 +46,15 @@ class DCSListener:
         if Status.paused != data.get('paused'):
             if not data.get('paused'):
                 LOGGER.info('DCS server is ready!')
+        players = data.get('players')
+        if players != Status.players:
+            players, old_players = set(players), set(Status.players)
+            joined = players - old_players
+            left = old_players - players
+            if joined:
+                LOGGER.info(f'player(s) joined: {", ".join(joined)}')
+            if left:
+                LOGGER.info(f'player(s) left: {", ".join(left)}')
         self.last_ping = time.time()
         Status.server_age = data.get('time')
         Status.mission_time = data.get('model_time')
