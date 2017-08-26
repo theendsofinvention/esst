@@ -48,5 +48,15 @@ def weather():
         else:
             DISCORD.say(f'Weather for {mission.name}:\n{metar.string()}')
 
+
+def download():
+    """
+    Sends the currently running mission on Discord
+    """
+    mission = missions_manager.get_running_mission()
+    if mission:
+        DISCORD.send(mission.path)
+
+
 namespace = '!mission'
 title = 'Manage missions'
