@@ -100,6 +100,9 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                         'AUTO_MISSION_GITHUB_REPO': '',
                         'DCS_SERVER_STARTUP_TIME': 120,
                         'DCS_PING_INTERVAL': 30,
+                        'START_SERVER': 'true',
+                        'START_SOCKET': 'true',
+                        'START_BOT': 'true',
                     }
                 ),
             ]
@@ -108,6 +111,9 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.debug = self._config('DEBUG', default='false', parser=everett.manager.parse_bool)
         self.saved_games_dir = self._config('SAVED_GAMES_DIR', parser=str)
         self.sentry_dsn = self._config('SENTRY_DSN', parser=str)
+        self.start_server = self._config('START_SERVER', parser=bool)
+        self.start_bot = self._config('START_BOT', parser=bool)
+        self.start_socket = self._config('START_SOCKET', parser=bool)
 
         self.dcs_path = self._config('PATH', parser=parse_dcs_path, namespace='DCS')
         self.dcs_idle_cpu_usage = self._config('IDLE_CPU_USAGE', parser=int, namespace='DCS')
