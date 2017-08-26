@@ -4,8 +4,6 @@ import inspect
 from asyncio import AbstractEventLoop
 from queue import Queue
 
-from click import Context as ClickContext
-
 
 class Context:
     @classmethod

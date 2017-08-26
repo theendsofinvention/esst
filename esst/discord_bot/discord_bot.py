@@ -3,15 +3,16 @@
 Runs a Discord bot using the discord.py library
 """
 
+import asyncio
 import os
 import random
-import asyncio
 
 import aiohttp.errors
 import discord
 import websockets.exceptions
 
 from esst.core import CFG, CTX, MAIN_LOGGER
+
 from .abstract import AbstractDiscordBot, AbstractDiscordCommandParser
 from .chat_commands.parser import make_root_parser
 from .events import DiscordEvents
@@ -22,7 +23,7 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
-                 DiscordEvents,
+          DiscordEvents,
           AbstractDiscordBot):
     """
     ESST Discord bot.

@@ -3,8 +3,8 @@
 import argh
 import humanize
 
-from esst.core import ServerStatus
 from esst.commands import DISCORD, SERVER
+from esst.core import ServerStatus
 
 
 def status():

@@ -8,8 +8,6 @@ import sys
 
 import discord
 
-from esst.core.context import Context
-
 
 class AbstractDiscordCommandParser:
     @abc.abstractmethod

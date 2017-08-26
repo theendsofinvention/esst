@@ -3,10 +3,10 @@
 Manages Discord chat commands
 """
 import discord
+
 from esst.core import MAIN_LOGGER
 from esst.dcs import missions_manager
 from esst.discord_bot import abstract
-
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 

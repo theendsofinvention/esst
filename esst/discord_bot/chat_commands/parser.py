@@ -1,7 +1,6 @@
 # coding=utf-8
 
 
-
 import argparse
 import inspect
 import sys
@@ -15,7 +14,6 @@ from esst.discord_bot.chat_commands import dcs, esst_, mission, server
 
 def _cancel_execution(namespace):
     raise SystemExit(0)
-
 
 
 class HelpFormatter(argparse.RawDescriptionHelpFormatter):

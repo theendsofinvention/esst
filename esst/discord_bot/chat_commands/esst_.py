@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from esst.core import __version__, CFG
+from esst.core import CFG, __version__
 from esst.core.logger import log_file_path
 from esst.discord_bot.commands import DISCORD
 
@@ -22,7 +22,7 @@ def version():
 def restart():
     """
     Restart ESST
-    
+
     """
     DISCORD.say('This command is not yet implemented')
 

@@ -1,17 +1,16 @@
 # coding=utf-8
 
 from argh import arg
+from emiz import build_metar_from_mission, edit_miz, parse_metar_string, retrieve_metar
 
-from esst.core import MAIN_LOGGER, Status, CTX
 from esst.commands import DCS, DISCORD
+from esst.core import CTX, MAIN_LOGGER, Status
 from esst.dcs import missions_manager
-from emiz import edit_miz, parse_metar_string, retrieve_metar, build_metar_from_mission
-
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
-def _load(name, icao, metar, time, max_wind, min_wind):
+def _load(name, icao, metar, time, max_wind, min_wind):  # noqa: C901
     if name is None:
         mission = missions_manager.get_running_mission().strip_suffix()
     else:

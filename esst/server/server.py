@@ -1,19 +1,17 @@
 # coding=utf-8
 
-import asyncio
 import datetime
-import psutil
 import time
-from esst.core import CFG, MAIN_LOGGER, CTX, ServerStatus
+
+import psutil
+
 from esst.commands import DISCORD
-
-
+from esst.core import CTX, MAIN_LOGGER, ServerStatus
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 class App:
-
     def __init__(self):
         if not CTX.start_server_loop:
             LOGGER.debug('skipping server loop init')

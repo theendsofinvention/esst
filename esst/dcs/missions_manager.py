@@ -3,14 +3,13 @@
 Manages missions for the server
 """
 
-import asyncio
 import os
 import shutil
 
 import github3
 import humanize
 import requests
-from emiz.weather import build_metar_from_mission, retrieve_metar, set_weather_from_metar_str
+from emiz.weather import build_metar_from_mission, set_weather_from_metar_str
 from jinja2 import Template
 
 from esst.commands import DCS
@@ -26,7 +25,6 @@ if not os.path.exists(MISSION_FOLDER):
 
 
 class MissionPath:
-
     def __init__(self, mission: str):
         if not os.path.isabs(mission):
             self._path = os.path.join(MISSION_FOLDER, mission)
@@ -124,55 +122,6 @@ def __set_weather(metar_str, mission_path, output_path):
         }
 
 
-async def set_weather(icao_code: str, mission_name: str = None):
-    if mission_name is None:
-        if Status.mission_file and Status.mission_file != 'unknown':
-            LOGGER.debug(f'using active mission: {Status.mission_file}')
-            mission_path = Status.mission_file.replace('_RLWX', '')
-        else:
-            LOGGER.error('no active mission; please load a mission first')
-            return
-    else:
-        mission_path = get_path_from_name(mission_name)
-    if not os.path.exists(mission_path):
-        _mission_not_found(mission_path)
-        return
-    try:
-        metar_str = retrieve_metar(icao_code)
-    except FileNotFoundError:
-        LOGGER.error(f'no METAR found for station: {icao_code}\n'
-                     f'Go to "http://tgftp.nws.noaa.gov/data/observations/metar/stations/" '
-                     f'for a list of valid stations')
-        return
-
-    DCS.cannot_start()
-    DCS.kill()
-    while Status.dcs_application != 'not running':
-        await asyncio.sleep(1)
-    LOGGER.info(f'setting weather from {icao_code} to {mission_path}')
-    output_path = _get_mission_path_with_RL_weather(mission_path)
-
-    result = await CTX.loop.run_in_executor(
-        None,
-        __set_weather,
-        metar_str, mission_path, output_path
-    )
-
-    if result['status'] == 'success':
-        LOGGER.info(f'successfully set the weather on mission: {result["to"]}\n'
-                    f'METAR is: {result["metar"].upper()}')
-        set_active_mission(result["to"], metar=result['metar'])
-        DCS.restart()
-
-    elif result['status'] == 'failed':
-        LOGGER.error(f'setting weather failed:\n{result["error"]}')
-
-    else:
-        LOGGER.error(f'unknown status: {result["status"]}')
-
-    DCS.can_start()
-
-
 def get_latest_mission_from_github():
     """
     Downloads the latest mission from a Github repository
@@ -245,7 +194,7 @@ def list_available_missions():
     Generator that yields available mission in ESST's mission dir
     """
     for file in os.listdir(MISSION_FOLDER):
-        if file.endswith('.miz') and not '_ESST.miz' in file:
+        if file.endswith('.miz') and '_ESST.miz' not in file:
             yield file
 
 

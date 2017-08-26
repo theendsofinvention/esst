@@ -7,7 +7,8 @@ import asyncio
 
 import discord
 
-from esst.core import MAIN_LOGGER, CTX
+from esst.core import CTX, MAIN_LOGGER
+
 from .abstract import AbstractDiscordBot
 
 LOGGER = MAIN_LOGGER.getChild(__name__)

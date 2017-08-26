@@ -1,10 +1,9 @@
 # coding=utf-8
 
 import argh
-
 import humanize
 
-from esst.commands import DISCORD, DCS
+from esst.commands import DCS, DISCORD
 from esst.core import Status
 
 
