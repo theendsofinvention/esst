@@ -10,11 +10,10 @@ import argh
 
 from esst.core import CTX
 from esst.discord_bot import abstract
-from . import dcs, esst, mission, server
+from esst.discord_bot.chat_commands import dcs, esst_, mission, server
 
 
 def _cancel_execution(namespace):
-    print(namespace, type(namespace))
     raise SystemExit(0)
 
 
@@ -85,7 +84,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
             return super(DiscordCommandParser, self).dispatch(
                 argv=argv,
                 add_help_command=add_help_command,
-                completion=completion,
+                completion=False,
                 pre_call=pre_call,
                 output_file=None, errors_file=None,
                 raw_output=raw_output,
@@ -143,12 +142,12 @@ In addition to the commands listed above, you can also upload a mission to the s
 def make_root_parser():
     parser = DiscordCommandParser(description=description, prog='', add_help=False, usage='', epilog=epilog)
     for module_ in [
-        esst,
+        esst_,
         mission,
         server,
         dcs,
     ]:
-        funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction)]
+        funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction) if o[1].__module__ == module_.__name__]
         parser.add_commands(
             functions=funcs,
             namespace=module_.namespace,
