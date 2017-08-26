@@ -19,6 +19,21 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
     Abstract class that contains background tasks for :py:class:`esst.discord_bot.DiscordBot`
     """
 
+    async def say(self, message: str):
+        """
+        Sends a message
+
+        Args:
+            message: message to send
+        """
+        content = f'```{message}```'
+        # noinspection PyUnresolvedReferences
+        await self.client.send_message(self.channel, content=content)
+
+    async def send(self, file_path: str):
+        # noinspection PyUnresolvedReferences
+        await self.client.send_file(self.channel, file_path, content='There you go:')
+
     async def exit(self):
         if self.ready:
             await self.say('Bye bye !')

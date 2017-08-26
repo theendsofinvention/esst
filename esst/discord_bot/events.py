@@ -17,17 +17,6 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
     Manages Discord chat commands
     """
 
-    async def say(self, message: str):
-        """
-        Sends a message
-
-        Args:
-            message: message to send
-        """
-        content = f'```{message}```'
-        # noinspection PyUnresolvedReferences
-        await self.client.send_message(self.channel, content=content)
-
     async def on_message_edit(self, _: discord.Message, after: discord.Message):
         """
         Dummy event catcher to re-transmit message when they're edited
