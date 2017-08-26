@@ -94,7 +94,7 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                         'DISCORD_BOT_NAME': 'ESST',
                         'DISCORD_MOTD': 'Hello!\n'
                                         'This is ESST v{version}\n'
-                                        'Type "!help" for a list of available commands'.format(version=__version__),
+                                        'Type "!help" for a list of available commands'.format(version=version),
                         'AUTO_MISSION_GITHUB_TOKEN': '',
                         'AUTO_MISSION_GITHUB_OWNER': '',
                         'AUTO_MISSION_GITHUB_REPO': '',
