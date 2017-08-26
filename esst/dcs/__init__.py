@@ -2,6 +2,3 @@
 """
 Manages all that is related to the DCS application
 """
-
-from .dcs import App
-from .listener import DCSListener
