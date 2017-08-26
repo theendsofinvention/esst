@@ -17,9 +17,8 @@ from .missions_manager import get_latest_mission_from_github
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
-DCS_CMD_QUEUE = queue.Queue()
-
 KNOWN_DCS_VERSIONS = ['1.5.6.5199']
+
 
 # => 2.1.1.8491: use DCS.exe --old-login
 
@@ -45,7 +44,6 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
     def __init__(self):
         self._app = None
         self.process_pid = None
-        self._exit = False
         self._restart_ok = True
 
         if not CTX.dcs_start:
@@ -138,7 +136,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             Status.dcs_application = status
             LOGGER.info(f'DCS server is {status}')
             if status is 'starting':
-                self.ctx.socket_monitor_server_startup = True
+                LISTENER.monitor_server_startup_start()
 
     async def _kill_running_app(self):  # noqa: C901
 
@@ -146,13 +144,13 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             if not self.app or not self.app.is_running():
                 return True
             LOGGER.debug('sending socket command to DCS for graceful exit')
-            self.ctx.socket_cmd_q.put('exit dcs')
+            LISTENER.exit_dcs()
             await asyncio.sleep(1)
             LOGGER.debug('waiting on DCS to close itself')
-            now = time.time()
+            now_ = now()
             while self.app.is_running():
                 await asyncio.sleep(1)
-                if time.time() - now > 30:
+                if now() - now_ > 30:
                     return False
             else:
                 return True
@@ -162,10 +160,10 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                 return True
             LOGGER.debug('killing dcs.exe application')
             self.app.kill()
-            now = time.time()
+            now_ = now()
             while self.app.is_running():
                 await asyncio.sleep(1)
-                if time.time() - now > 10:
+                if now() - now_ > 10:
                     return False
             else:
                 return True
@@ -255,7 +253,6 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                 ]
             )
         await self._execute_cmd_chain(cmd_chain)
-        # self.ctx.loop.create_task(self.monitor_cpu_usage())
         cpu_monitor_thread = CTX.loop.run_in_executor(None, self.monitor_cpu_usage)
         while True:
             if CTX.exit:
@@ -273,7 +270,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                 await self.restart()
             await asyncio.sleep(0.1)
 
+        LOGGER.debug('end of DCS loop')
+
     async def exit(self):
-        self._exit = True
         await self._kill_running_app()
-        LOGGER.debug('closing DCS monitoring thread')
