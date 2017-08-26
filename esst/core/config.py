@@ -104,7 +104,9 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                         'START_LISTENER_LOOP': 'true',
                         'START_DISCORD_LOOP': 'true',
                         'START_SERVER_LOOP': 'true',
-                        'DCS_CAN_START': 'true'
+                        'DCS_CAN_START': 'true',
+                        'DCS_GRACE_PERIOD': 30,
+
                     }
                 ),
             ]
@@ -125,6 +127,7 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.dcs_high_cpu_usage_interval = self._config('HIGH_CPU_USAGE_INTERVAL', parser=int, namespace='DCS')
         self.dcs_server_password = self._config('SERVER_PASSWORD', parser=str, namespace='DCS')
         self.dcs_ping_interval = self._config('PING_INTERVAL', parser=int, namespace='DCS')
+        self.dcs_grace_period = self._config('GRACE_PERIOD', parser=int, namespace='DCS')
 
         self.dcs_server_name = self._config('NAME', parser=str, namespace='DCS_SERVER')
         self.dcs_server_max_players = self._config('MAX_PLAYERS', parser=int, namespace='DCS_SERVER')

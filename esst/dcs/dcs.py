@@ -145,13 +145,15 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             LOGGER.debug('sending socket command to DCS for graceful exit')
             LISTENER.exit_dcs()
             await asyncio.sleep(1)
-            LOGGER.debug('waiting on DCS to close itself')
+            LOGGER.debug(f'waiting on DCS to close itself (grace period: {CFG.dcs_grace_period})')
             now_ = now()
             while self.app.is_running():
                 await asyncio.sleep(1)
-                if now() - now_ > 30:
+                if now() - now_ > CFG.dcs_grace_period:
+                    LOGGER.debug('grace period time out!')
                     return False
             else:
+                LOGGER.info('DCS closed itself, nice')
                 return True
 
         async def _no_more_mr_nice_guy():
