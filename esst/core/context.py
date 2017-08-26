@@ -1,16 +1,13 @@
 # coding=utf-8
 
+import inspect
 from asyncio import AbstractEventLoop
 from queue import Queue
+
 from click import Context as ClickContext
 
-from esst.core import ISentryContextProvider
 
-import inspect
-
-
-class Context(ISentryContextProvider):
-
+class Context:
     @classmethod
     def get_context(cls) -> dict:
         return {member: value
@@ -20,7 +17,6 @@ class Context(ISentryContextProvider):
 
     exit: bool = False
     loop: AbstractEventLoop = None
-    click_context: ClickContext = None
 
     discord_start_bot: bool = False
     discord_msg_queue: Queue = Queue()
