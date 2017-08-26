@@ -1,6 +1,7 @@
 # coding=utf-8
 
-from esst.core.version import __version__
+from esst.core import __version__, CFG
+from esst.core.logger import log_file_path
 from esst.discord_bot.commands import DISCORD
 
 
@@ -8,7 +9,7 @@ def log():
     """
     Show ESST log file
     """
-    DISCORD.say('This command is not yet implemented')
+    DISCORD.send(log_file_path(CFG.saved_games_dir))
 
 
 def version():
