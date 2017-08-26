@@ -3,8 +3,7 @@
 Manages DCS application Window process
 """
 import asyncio
-import queue
-import time
+from collections import deque
 from pathlib import Path
 
 import psutil
@@ -213,24 +212,24 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
         Threshold is set via the config value "DCS_HIGH_CPU_USAGE", and it defaults to 80%
         """
+        collect = deque(maxlen=CFG.dcs_high_cpu_usage_interval)
         while True:
             if CTX.exit:
                 break
             try:
                 if self.app and self.app.is_running():
-                    cpu_usage = int(self.app.cpu_percent(5)) / psutil.cpu_count()
+                    cpu_usage = int(self.app.cpu_percent(1)) / psutil.cpu_count()
+                    collect.append(cpu_usage)
                     Status.dcs_cpu_usage = f'{cpu_usage}%'
                     if CTX.dcs_show_cpu_usage or CTX.dcs_show_cpu_usage_once:
-                        self.ctx.discord_msg_queue.put(f'DCS cpu usage: {cpu_usage}%')
+                        DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
                         CTX.dcs_show_cpu_usage_once = False
-                    if cpu_usage > CFG.dcs_high_cpu_usage:
+                    if sum(list(collect)) / CFG.dcs_high_cpu_usage_interval > CFG.dcs_high_cpu_usage:
                         if not Status.paused:
                             LOGGER.warning(
-                                f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}% for 5 seconds')
-                time.sleep(0.1)
+                                f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}%'
+                                f' for {CFG.dcs_high_cpu_usage_interval} seconds')
             except psutil.NoSuchProcess:
-                pass
-            except KeyboardInterrupt:
                 pass
 
     async def run(self):
