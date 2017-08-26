@@ -119,6 +119,9 @@ def main(bot: bool,
     from esst.dcs import dcs
     app = dcs.App()
 
+    from esst.server import server_loop
+    app = server_loop.ServerLoop()
+
     from esst.listener import DCSListener
     try:
         listener = DCSListener()
