@@ -27,14 +27,19 @@ def status():
 
 @argh.arg('--start', help='Show CPU usage in real time')
 @argh.arg('--stop', help='Stop showing CPU usage in real time')
-def cpu(
+def show_cpu(
         start=False,
         stop=False
 ):
     """
     Show server CPU usage
     """
-    print('Server cpu usage', start, stop)
+    if start:
+        SERVER.show_cpu_usage_start()
+    elif stop:
+        SERVER.show_cpu_usage_stop()
+    else:
+        SERVER.show_cpu_usage_once()
 
 
 def restart():
