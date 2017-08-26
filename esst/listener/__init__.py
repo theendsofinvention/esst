@@ -144,6 +144,3 @@ class DCSListener:
         self.sock.close()
         self.cmd_sock.close()
         LOGGER.debug('end of listener loop')
-
-    async def exit(self):
-        pass

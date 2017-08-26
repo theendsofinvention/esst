@@ -48,6 +48,3 @@ class App:
         CTX.loop.run_in_executor(None, self._update_status)
 
         LOGGER.debug('end of Server computer loop')
-
-    async def exit(self):
-        pass

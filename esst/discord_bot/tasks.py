@@ -27,23 +27,13 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
             message: message to send
         """
         content = f'```{message}```'
-        # noinspection PyUnresolvedReferences
-        await self.client.send_message(self.channel, content=content)
+        if self.client.is_logged_in and self.channel:
+            # noinspection PyUnresolvedReferences
+            await self.client.send_message(self.channel, content=content)
 
     async def send(self, file_path: str):
         # noinspection PyUnresolvedReferences
         await self.client.send_file(self.channel, file_path, content='There you go:')
-
-    async def exit(self):
-        if self.ready:
-            await self.say('Bye bye !')
-            await self.client.change_presence(status='offline')
-        if self.client:
-            if self.client.is_logged_in:
-                await self.client.logout()
-            while not self.client.is_closed:
-                await asyncio.sleep(0.1)
-        LOGGER.debug('Discord client is closed')
 
     async def _process_message_queue(self):
         if self.client.is_closed:

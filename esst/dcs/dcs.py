@@ -137,7 +137,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             if status is 'starting':
                 LISTENER.monitor_server_startup_start()
 
-    async def _kill_running_app(self):  # noqa: C901
+    async def kill_running_app(self):  # noqa: C901
 
         async def _ask_politely():
             if not self.app or not self.app.is_running():
@@ -189,7 +189,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             return
         CTX.dcs_do_restart = False
         LOGGER.info('restarting DCS')
-        await self._kill_running_app()
+        await self.kill_running_app()
         Status.mission_file = 'unknown'
         Status.server_age = 'unknown'
         Status.mission_time = 'unknown'
@@ -260,12 +260,9 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                     LOGGER.debug('DCS has stopped, re-starting')
                     await self.restart()
             if CTX.dcs_do_kill:
-                await self._kill_running_app()
+                await self.kill_running_app()
             if CTX.dcs_do_restart:
                 await self.restart()
             await asyncio.sleep(0.1)
 
         LOGGER.debug('end of DCS loop')
-
-    async def exit(self):
-        await self._kill_running_app()

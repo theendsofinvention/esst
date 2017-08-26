@@ -136,23 +136,26 @@ def main(discord: bool,
             exit(-1)
     else:
 
-        CTX.loop.create_task(discord_loop.run())
-        CTX.loop.create_task(dcs_loop.run())
-        CTX.loop.create_task(listener_loop.run())
-        CTX.loop.create_task(server_loop.run())
-        CTX.loop.create_task(watch_for_exceptions())
+        futures = asyncio.gather(
+            CTX.loop.create_task(discord_loop.run()),
+            CTX.loop.create_task(dcs_loop.run()),
+            CTX.loop.create_task(listener_loop.run()),
+            CTX.loop.create_task(server_loop.run()),
+            CTX.loop.create_task(watch_for_exceptions()),
+        )
 
         def sigint_handler(*_):
             MAIN_LOGGER.info('ESST has been interrupted by user request, shutting down')
             CTX.exit = True
 
-            asyncio.ensure_future(server_loop.exit(), loop=CTX.loop)
-            asyncio.ensure_future(dcs_loop.exit(), loop=CTX.loop)
-            asyncio.ensure_future(listener_loop.exit(), loop=CTX.loop)
-            asyncio.ensure_future(discord_loop.exit(), loop=CTX.loop)
-
-            CTX.loop.call_later(5, force_exit)
-
         import signal
         signal.signal(signal.SIGINT, sigint_handler)
-        CTX.loop.run_forever()
+        CTX.loop.run_until_complete(futures)
+        MAIN_LOGGER.debug('main loop is done, killing DCS')
+
+        futures = asyncio.gather(
+            CTX.loop.create_task(dcs_loop.kill_running_app()),
+        )
+
+        CTX.loop.run_until_complete(futures)
+        MAIN_LOGGER.debug('all done !')

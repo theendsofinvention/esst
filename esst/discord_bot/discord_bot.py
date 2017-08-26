@@ -5,6 +5,7 @@ Runs a Discord bot using the discord.py library
 
 import os
 import random
+import asyncio
 
 import aiohttp.errors
 import discord
@@ -77,13 +78,6 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
 
     def _create_client(self):
         self._client = discord.Client(loop=CTX.loop)
-        # self.tasks = asyncio.gather(
-        #     self.monitor_exit_signal(),
-        #     self.monitor_queues(),
-        #     loop=CTX.loop,
-        # )
-        CTX.loop.create_task(self.monitor_queues())
-        # CTX.loop.create_task(self.monitor_exit_signal())
         self.client.on_ready = self.on_ready
         self.client.on_message = self.on_message
         self.client.on_message_edit = self.on_message_edit
@@ -170,17 +164,37 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
 
             self._ready = True
 
+    async def watch_for_exit_signals(self):
+        while True:
+            if CTX.exit:
+                if self.ready:
+                    await self.say('Bye bye !')
+                    await self.client.change_presence(status='offline')
+                LOGGER.debug('closing Discord client')
+                if self.client:
+                    if self.client.is_logged_in:
+                        await self.client.logout()
+                        await self.client.close()
+                    while not self.client.is_closed:
+                        await asyncio.sleep(0.1)
+                LOGGER.debug('Discord client is closed')
+                break
+            await asyncio.sleep(1)
+
     async def run(self):
         if not CTX.start_discord_loop:
             LOGGER.debug('skipping Discord loop')
             return
+
+        CTX.loop.create_task(self.watch_for_exit_signals())
+        CTX.loop.create_task(self.monitor_queues())
 
         while not CTX.exit:
             LOGGER.debug('starting Discord client')
             self._create_client()
             try:
                 await self.client.start(CFG.discord_token)
-                LOGGER.debug('Discord client has stopped')
+                LOGGER.warning('Discord client has stopped')
             except websockets.exceptions.InvalidHandshake:
                 LOGGER.exception('invalid handshake')
             except websockets.exceptions.ConnectionClosed:
