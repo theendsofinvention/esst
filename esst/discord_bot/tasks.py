@@ -20,7 +20,6 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
     """
 
     async def exit(self):
-        self._exit = True
         if self.ready:
             await self.say('Bye bye !')
             await self.client.change_presence(status='offline')
@@ -29,10 +28,10 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
                 await self.client.logout()
             while not self.client.is_closed:
                 await asyncio.sleep(0.1)
-        LOGGER.debug('closing Discord thread')
+        LOGGER.debug('Discord client is closed')
 
     async def _process_message_queue(self):
-        if self.exiting or self.client.is_closed:
+        if self.client.is_closed:
             return
         if not CTX.discord_msg_queue.empty():
             message = CTX.discord_msg_queue.get_nowait()
@@ -42,7 +41,6 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
             except discord.errors.HTTPException:
                 for message in message:
                     CTX.discord_msg_queue.put(message)
-            LOGGER.debug('message sent')
 
     async def monitor_queues(self):
         """

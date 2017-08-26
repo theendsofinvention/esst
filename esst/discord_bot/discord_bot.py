@@ -12,7 +12,8 @@ import websockets.exceptions
 
 from esst.core import CFG, CTX, MAIN_LOGGER
 from .abstract import AbstractDiscordBot, AbstractDiscordCommandParser
-from .commands import DiscordCommands
+from .chat_commands.parser import make_root_parser
+from .events import DiscordEvents
 from .logging_handler import register_logging_handler
 from .tasks import DiscordTasks
 
@@ -20,7 +21,7 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
-                 DiscordCommands,
+                 DiscordEvents,
                  AbstractDiscordBot):
     """
     ESST Discord bot.
@@ -56,10 +57,6 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
     def ready(self) -> bool:
         return bool(self._ready)
 
-    @property
-    def exiting(self) -> bool:
-        return bool(self._exiting)
-
     def __init__(self):
         self._parser = make_root_parser()
         self._client = None
@@ -68,13 +65,11 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         self._member = None
         self._channel = None
         self._ready = False
-        self._exiting = False
         self.tasks = None
 
         if not CTX.discord_start_bot:
             LOGGER.debug('skipping Discord bot startup')
             return
-        self._exit = False
 
         LOGGER.debug('starting Discord bot')
         CTX.discord_msg_queue.put(CFG.discord_motd)
@@ -185,18 +180,16 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             self._create_client()
             try:
                 await self.client.start(CFG.discord_token)
-        except websockets.exceptions.InvalidHandshake:
-            LOGGER.exception('invalid handshake')
-        except websockets.exceptions.ConnectionClosed:
-            LOGGER.exception('connection closed')
-        except websockets.exceptions.InvalidState:
-            LOGGER.exception('invalid state')
-        except websockets.exceptions.PayloadTooBig:
-            LOGGER.exception('payload too big')
-        except websockets.exceptions.WebSocketProtocolError:
-            LOGGER.exception('protocol error')
-        except KeyboardInterrupt:
-            pass
+                LOGGER.debug('Discord client has stopped')
+            except websockets.exceptions.InvalidHandshake:
+                LOGGER.exception('invalid handshake')
+            except websockets.exceptions.ConnectionClosed:
+                LOGGER.exception('connection closed')
+            except websockets.exceptions.InvalidState:
+                LOGGER.exception('invalid state')
+            except websockets.exceptions.PayloadTooBig:
+                LOGGER.exception('payload too big')
+            except websockets.exceptions.WebSocketProtocolError:
+                LOGGER.exception('protocol error')
 
-        if not self._exit:
-            await self.run()
+        LOGGER.debug('end of Discord loop')

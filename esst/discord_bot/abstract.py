@@ -4,15 +4,45 @@ Dummy abstract class to help split the Discord bot into multiple more manageable
 """
 
 import abc
+import sys
 
 import discord
+
 from esst.core.context import Context
+
+
+class AbstractDiscordCommandParser:
+    @abc.abstractmethod
+    def dispatch(self,
+                 argv=None,
+                 add_help_command=True,
+                 completion=True,
+                 pre_call=None,
+                 output_file=sys.stdout,
+                 errors_file=sys.stderr,
+                 raw_output=False,
+                 namespace=None,
+                 skip_unknown_args=False):
+        pass
+
+    @abc.abstractmethod
+    def parse_args(self, args=None, namespace=None):
+        pass
+
+    @abc.abstractmethod
+    def format_help(self):
+        pass
+
+    @abc.abstractmethod
+    def parse_discord_message(self, message: str):
+        pass
 
 
 class AbstractDiscordBot:
     """
     Dummy abstract class to help split the Discord bot into multiple more manageable classes
     """
+
     @property
     @abc.abstractmethod
     def parser(self) -> AbstractDiscordCommandParser:
