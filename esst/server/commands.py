@@ -12,7 +12,7 @@ class SERVER:
 
     @staticmethod
     def reboot():
-        os.system('shutdown /r /t 30 /c "Shutdown initialized by ESST"')
+        os.system('shutdown /r /t 30 /c "Reboot initialized by ESST"')
 
     @staticmethod
     def show_cpu_usage_once():
