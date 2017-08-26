@@ -65,7 +65,6 @@ class DCSListener:
 
     def _parse_status(self, data: dict):
         LOGGER.debug(f'DCS server says: {data["message"]}')
-        Status.server_status = data['message']
         if data['message'] in ['loaded mission']:
             LOGGER.debug('starting monitoring server pings')
             self.last_ping = time.time()
@@ -74,6 +73,7 @@ class DCSListener:
         if data['message'] in ['stopping simulation']:
             LOGGER.debug('stopped monitoring server pings')
             self.monitoring = False
+        Status.server_status = data['message']
 
     async def _parse_commands(self):
         await asyncio.sleep(0.1)
