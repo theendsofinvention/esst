@@ -2,7 +2,7 @@
 """
 Manages a UDP socket and does two things:
 
-1. Retrieve incoming messages from DCS and update :py:class:`esst.core.status.Status`
+1. Retrieve incoming messages from DCS and update :py:class:`esst.core.status.status`
 2. Sends command to the DCS application via the socket
 """
 
@@ -11,10 +11,7 @@ import socket
 import time
 import asyncio
 
-from esst.core.logger import MAIN_LOGGER
-from esst.core.status import Status
-from esst.core.config import CFG
-from esst.core.context import Context
+from esst.core import MAIN_LOGGER, Status, CFG, CTX
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -28,14 +25,12 @@ class DCSListener:
     This class is a self-starting thread that creates and manages a UDP socket as a two-way communication with DCS
     """
 
-    def __init__(self, ctx: Context):
-        self.ctx = ctx
-        self._exit = False
+    def __init__(self):
         self.monitoring = False
         self.last_ping = None
         self.startup_age = None
 
-        if not self.ctx.socket_start:
+        if not CTX.socket_start:
             LOGGER.debug('skipping startup of socket')
             return
 
@@ -43,8 +38,6 @@ class DCSListener:
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_address = ('localhost', 10333)
-        self.sock.bind(self.server_address)
-        self.sock.settimeout(1)
 
         self.cmd_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.cmd_address = ('localhost', 10334)
@@ -65,15 +58,15 @@ class DCSListener:
             LOGGER.debug('starting monitoring server pings')
             self.last_ping = time.time()
             self.monitoring = True
-            self.ctx.socket_monitor_server_startup = False
+            CTX.socket_monitor_server_startup = False
         if data['message'] in ['stopping simulation']:
             LOGGER.debug('stopped monitoring server pings')
             self.monitoring = False
 
     async def _parse_commands(self):
         await asyncio.sleep(0.1)
-        if not self.ctx.socket_cmd_q.empty():
-            command = self.ctx.socket_cmd_q.get_nowait()
+        if not CTX.socket_cmd_q.empty():
+            command = CTX.socket_cmd_q.get_nowait()
             if command not in KNOWN_COMMANDS:
                 raise ValueError(f'unknown command: {command}')
             else:
@@ -88,18 +81,18 @@ class DCSListener:
             if time.time() - self.last_ping > CFG.dcs_ping_interval:
                 LOGGER.error('It has been 30 seconds since I heard from DCS. '
                              'It is likely that the server has crashed.')
-                self.ctx.dcs_do_restart = True
+                CTX.dcs_do_restart = True
                 self.monitoring = False
 
     async def _monitor_server_startup(self):
         await asyncio.sleep(0.1)
-        if self.ctx.socket_monitor_server_startup:
+        if CTX.socket_monitor_server_startup:
             if self.startup_age is None:
                 self.startup_age = time.time()
             if time.time() - self.startup_age > CFG.dcs_server_startup_time:
                 LOGGER.error('DCS is taking more than 2 minutes to start a multiplayer server.\n'
                              'Something is wrong ...')
-                self.ctx.socket_monitor_server_startup = False
+                CTX.socket_monitor_server_startup = False
 
     async def _read_socket(self):
         await asyncio.sleep(0.1)
@@ -119,27 +112,26 @@ class DCSListener:
         """
         Infinite loop that manages a UDP socket and does two things:
 
-        1. Retrieve incoming messages from DCS and update :py:class:`esst.core.status.Status`
+        1. Retrieve incoming messages from DCS and update :py:class:`esst.core.status.status`
         2. Sends command to the DCS application via the socket
         """
-        if not self.ctx.socket_start:
+        if not CTX.socket_start:
             LOGGER.debug('skipping startup of socket loop')
             return
 
-        while True:
-            try:
-                if self._exit:
-                    break
-                await self._read_socket()
-                await self._parse_commands()
-                await self._monitor_server_startup()
-                await self._monitor_server()
-                await asyncio.sleep(1)
-            except KeyboardInterrupt:
-                pass
+        self.sock.bind(self.server_address)
+        self.sock.settimeout(1)
+
+        while not CTX.exit:
+            await self._read_socket()
+            await self._parse_commands()
+            await self._monitor_server_startup()
+            await self._monitor_server()
+            await asyncio.sleep(0.1)
 
         self.sock.close()
         self.cmd_sock.close()
+        LOGGER.debug('end of listener loop')
 
     async def exit(self):
-        self._exit = True
+        pass

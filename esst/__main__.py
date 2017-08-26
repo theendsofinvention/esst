@@ -79,7 +79,15 @@ def main(bot: bool,
 
     from esst.dcs import dcs
     app = dcs.App()
-    socket = dcs.DCSListener(ctx)
+
+    from esst import listener
+    try:
+        socket = listener.DCSListener()
+    except OSError as exc:
+        if exc.errno == 10048:
+            MAIN_LOGGER.error('cannot bind socket, maybe another instance of ESST is already running?')
+            exit(-1)
+
 
     CTX.loop.create_task(bot.run())
     CTX.loop.create_task(app.run())
