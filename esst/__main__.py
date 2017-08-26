@@ -11,11 +11,16 @@ import click
 from esst.core import CTX, MAIN_LOGGER
 
 
-async def watch_for_exceptions(ctx: Context):
+async def watch_for_exceptions():
     while True:
         if CTX.exit:
             break
         await asyncio.sleep(0.1)
+
+def force_exit():
+    for task in asyncio.Task.all_tasks():
+        MAIN_LOGGER.warning(f'dangling tasks: {task}')
+    raise SystemExit(0)
 
 
 @click.group(invoke_without_command=True)  # noqa: C901
@@ -94,24 +99,52 @@ def main(bot: bool,
     CTX.loop.create_task(socket.run())
     CTX.loop.create_task(watch_for_exceptions())
 
-    try:
+    def sigint_handler(signal, frame):
+
+        CTX.exit = True
+        # asyncio.ensure_future(bot.exit(), loop=CTX.loop)
+        # asyncio.ensure_future(socket.exit(), loop=CTX.loop)
+        # asyncio.ensure_future(app.exit(), loop=CTX.loop)
+        CTX.loop.create_task(bot.exit())
+        CTX.loop.create_task(socket.exit())
+        CTX.loop.create_task(app.exit())
+
+        # CTX.loop.stop()
+        #
+        # import time
+        # MAIN_LOGGER.debug('WAITING FOR LOOP TO CLOSE')
+        # while CTX.loop.is_running():
+        #     time.sleep(0.1)
+
+        # CTX.loop.run_until_complete(app.exit())
+        # CTX.loop.run_until_complete(socket.exit())
+        # CTX.loop.run_until_complete(bot.exit())
+
+        CTX.loop.call_later(5, force_exit)
+        # CTX.loop.run_until_complete(asyncio.gather(*asyncio.Task.all_tasks()))
+
+
+    import signal
+    signal.signal(signal.SIGINT, sigint_handler)
     CTX.loop.run_forever()
 
-    except KeyboardInterrupt:
-
-        MAIN_LOGGER.info('ESST has been interrupted by user request, closing all threads')
-
-        ctx.exit = True
-
-        ctx.loop.run_until_complete(app.exit())
-        ctx.loop.run_until_complete(socket.exit())
-        ctx.loop.run_until_complete(bot.exit())
-
-        ctx.loop.run_until_complete(asyncio.gather(*asyncio.Task.all_tasks()))
-
-    finally:
-        ctx.loop.close()
-
-
-if __name__ == '__main__':
-    main()  # pylint: disable=no-value-for-parameter
+    # try:
+    #     CTX.loop.run_forever()
+    #
+    # except KeyboardInterrupt:
+    #
+    #     MAIN_LOGGER.info('ESST has been interrupted by user request, closing all threads')
+    #
+    #     CTX.exit = True
+    #
+    #     CTX.loop.run_until_complete(app.exit())
+    #     CTX.loop.run_until_complete(socket.exit())
+    #     CTX.loop.run_until_complete(bot.exit())
+    #
+    #     CTX.loop.call_later(5, force_exit)
+    #     CTX.loop.run_until_complete(asyncio.gather(*asyncio.Task.all_tasks()))
+    #     # CTX.loop.run_forever()
+    #     # asyncio.wait(asyncio.gather(*asyncio.Task.all_tasks()), timeout=5)
+    #
+    # finally:
+    #     CTX.loop.close()
