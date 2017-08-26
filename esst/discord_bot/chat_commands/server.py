@@ -42,11 +42,11 @@ def show_cpu(
         SERVER.show_cpu_usage_once()
 
 
-def restart():
+def reboot():
     """
     Restart the server computer
     """
-    print('Server restart')
+    SERVER.reboot()
 
 
 namespace = '!server'
