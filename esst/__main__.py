@@ -17,7 +17,9 @@ async def watch_for_exceptions():
             break
         await asyncio.sleep(0.1)
 
-def force_exit():
+async def force_exit():
+    while len(asyncio.Task.all_tasks()) > 1:
+        asyncio.sleep(0.1)
     for task in asyncio.Task.all_tasks():
         MAIN_LOGGER.warning(f'dangling tasks: {task}')
     raise SystemExit(0)
@@ -100,14 +102,19 @@ def main(bot: bool,
     CTX.loop.create_task(watch_for_exceptions())
 
     def sigint_handler(signal, frame):
-
+        MAIN_LOGGER.info('ESST has been interrupted by user request, shutting down')
         CTX.exit = True
         # asyncio.ensure_future(bot.exit(), loop=CTX.loop)
         # asyncio.ensure_future(socket.exit(), loop=CTX.loop)
         # asyncio.ensure_future(app.exit(), loop=CTX.loop)
-        CTX.loop.create_task(bot.exit())
-        CTX.loop.create_task(socket.exit())
-        CTX.loop.create_task(app.exit())
+
+        asyncio.ensure_future(app.exit(), loop=CTX.loop)
+        asyncio.ensure_future(listener.exit(), loop=CTX.loop)
+        asyncio.ensure_future(bot.exit(), loop=CTX.loop)
+
+        # CTX.loop.create_task(bot.exit())
+        # CTX.loop.create_task(socket.exit())
+        # CTX.loop.create_task(app.exit())
 
         # CTX.loop.stop()
         #
@@ -120,7 +127,8 @@ def main(bot: bool,
         # CTX.loop.run_until_complete(socket.exit())
         # CTX.loop.run_until_complete(bot.exit())
 
-        CTX.loop.call_later(5, force_exit)
+        # CTX.loop.call_later(5, force_exit)
+        asyncio.ensure_future(force_exit(), loop=CTX.loop)
         # CTX.loop.run_until_complete(asyncio.gather(*asyncio.Task.all_tasks()))
 
 
