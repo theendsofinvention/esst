@@ -214,7 +214,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         while not CTX.exit:
             try:
                 if self.app and self.app.is_running():
-                    cpu_usage = int(self.app.cpu_percent(CFG.dcs_high_cpu_usage)) / psutil.cpu_count()
+                    cpu_usage = int(self.app.cpu_percent(CFG.dcs_high_cpu_usage_interval)) / psutil.cpu_count()
                     Status.dcs_cpu_usage = f'{cpu_usage}%'
                     if CTX.dcs_show_cpu_usage or CTX.dcs_show_cpu_usage_once:
                         DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
