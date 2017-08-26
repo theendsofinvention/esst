@@ -28,6 +28,14 @@ def _sanitize_path(path):
     return path.replace('\\', '/')
 
 
+def _ensure_mission_file(path):
+    path = os.path.abspath(path)
+    if os.path.exists(path):
+        return _sanitize_path(path)
+
+    _mission_not_found(path)
+
+
 def _get_settings_file_path():
     return _sanitize_path(os.path.join(CFG.saved_games_dir, 'Config/serverSettings.lua'))
 
@@ -47,8 +55,7 @@ def set_active_mission(mission_file_path: str, metar: str = None, load: bool = F
         mission_file_path: complete path to the MIZ file
         metar: METAR string for this mission
     """
-    if not os.path.exists(mission_file_path):
-        _mission_not_found(mission_file_path)
+    if not _ensure_mission_file(mission_file_path):
         return
 
     LOGGER.info(f'setting active mission to: {os.path.basename(mission_file_path)}')
@@ -59,9 +66,9 @@ def set_active_mission(mission_file_path: str, metar: str = None, load: bool = F
         name=CFG.dcs_server_name,
         max_players=CFG.dcs_server_max_players,
     )
-    settings_file = _get_settings_file_path()
+
     _backup_settings_file()
-    with open(settings_file, 'w') as handle:
+    with open(_get_settings_file_path(), 'w') as handle:
         handle.write(content)
 
     if metar is None:
@@ -71,7 +78,7 @@ def set_active_mission(mission_file_path: str, metar: str = None, load: bool = F
     Status.metar = metar
 
     if load:
-        ctx.dcs_do_restart = True
+        DCS.restart()
 
 
 def set_active_mission_from_name(mission_name: str, load: bool = False):
@@ -96,12 +103,12 @@ def _get_mission_dir() -> str:
     return _sanitize_path(mission_dir)
 
 
-def _get_mission_path(mission_file_name):
+def get_path_from_name(mission_file_name):
     return _sanitize_path(os.path.join(_get_mission_dir(), mission_file_name))
 
 
 def _get_mission_path_with_RL_weather(mission_file_name):
-    mission_path = _get_mission_path(mission_file_name)
+    mission_path = get_path_from_name(mission_file_name)
     dirname = os.path.dirname(mission_path)
     file, ext = os.path.splitext(mission_path)
     return os.path.join(dirname, f'{file}_RLWX{ext}')
@@ -131,7 +138,7 @@ async def set_weather(icao_code: str, mission_name: str = None):
             LOGGER.error('no active mission; please load a mission first')
             return
     else:
-        mission_path = _get_mission_path(mission_name)
+        mission_path = get_path_from_name(mission_name)
     if not os.path.exists(mission_path):
         _mission_not_found(mission_path)
         return
@@ -143,8 +150,8 @@ async def set_weather(icao_code: str, mission_name: str = None):
                      f'for a list of valid stations')
         return
 
-    ctx.dcs_can_start = False
-    ctx.dcs_do_kill = True
+    DCS.cannot_start()
+    DCS.kill()
     while Status.dcs_application != 'not running':
         await asyncio.sleep(1)
     LOGGER.info(f'setting weather from {icao_code} to {mission_path}')
@@ -167,7 +174,7 @@ async def set_weather(icao_code: str, mission_name: str = None):
     else:
         LOGGER.error(f'unknown status: {result["status"]}')
 
-    ctx.dcs_can_start = True
+    DCS.can_start()
 
 
 def get_latest_mission_from_github():
@@ -214,7 +221,7 @@ def download_mission_from_discord(discord_attachment, overwrite=False, load=Fals
     url = discord_attachment['url']
     size = discord_attachment['size']
     filename = discord_attachment['filename']
-    local_file = _get_mission_path(filename)
+    local_file = get_path_from_name(filename)
 
     overwriting = ''
     if os.path.exists(local_file):
@@ -242,5 +249,16 @@ def list_available_missions():
     Generator that yields available mission in ESST's mission dir
     """
     for file in os.listdir(_get_mission_dir()):
-        if file.endswith('.miz'):
+        if file.endswith('.miz') and not '_RLWX.miz' in file:
             yield file
+
+
+def get_running_mission():
+    if Status.mission_file and Status.mission_file != 'unknown':
+        if os.path.exists(Status.mission_file):
+            LOGGER.debug(f'using active mission: {Status.mission_file}')
+            return _sanitize_path(Status.mission_file)
+        else:
+            LOGGER.error(f'current mission is: "{Status.mission_file}", but that file does not exist')
+    else:
+        LOGGER.error('no active mission; please load a mission first (or just wait a moment for the server to start)')
