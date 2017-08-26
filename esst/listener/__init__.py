@@ -43,6 +43,9 @@ class DCSListener:
         self.cmd_address = ('localhost', 10334)
 
     def _parse_ping(self, data: dict):
+        if Status.paused != data.get('paused'):
+            if not data.get('paused'):
+                LOGGER.info('DCS server is ready!')
         self.last_ping = time.time()
         Status.server_age = data.get('time')
         Status.mission_time = data.get('model_time')
