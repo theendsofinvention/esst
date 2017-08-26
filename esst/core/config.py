@@ -101,7 +101,7 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                         'DCS_SERVER_STARTUP_TIME': 120,
                         'DCS_PING_INTERVAL': 30,
                         'START_SERVER': 'true',
-                        'START_SOCKET': 'true',
+                        'START_LISTENER': 'true',
                         'START_BOT': 'true',
                     }
                 ),
@@ -113,7 +113,7 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.sentry_dsn = self._config('SENTRY_DSN', parser=str)
         self.start_server = self._config('START_SERVER', parser=bool)
         self.start_bot = self._config('START_BOT', parser=bool)
-        self.start_socket = self._config('START_SOCKET', parser=bool)
+        self.start_listener = self._config('START_LISTENER', parser=bool)
 
         self.dcs_path = self._config('PATH', parser=parse_dcs_path, namespace='DCS')
         self.dcs_idle_cpu_usage = self._config('IDLE_CPU_USAGE', parser=int, namespace='DCS')
