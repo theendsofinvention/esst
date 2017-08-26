@@ -47,10 +47,10 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         self._restart_ok = True
 
         if not CTX.dcs_start:
-            LOGGER.debug('skipping startup of DCS application')
+            LOGGER.debug('skipping startup of DCS loop')
             return
 
-        LOGGER.debug('starting DCS application thread')
+        LOGGER.debug('starting DCS loop')
 
     @property
     def app(self) -> psutil.Process:
@@ -134,7 +134,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
     async def _update_application_status(self, status: str):
         if Status.dcs_application != status:
             Status.dcs_application = status
-            LOGGER.info(f'DCS server is {status}')
+            LOGGER.info(f'DCS application is {status}')
             if status is 'starting':
                 LISTENER.monitor_server_startup_start()
 
