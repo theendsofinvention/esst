@@ -58,16 +58,18 @@ def force_exit():
 
 
 @click.group(invoke_without_command=True)  # noqa: C901
-@click.option('--bot/--no-bot', default=True, help='Starts the Discord bot', show_default=True)
-@click.option('--server/--no-server', default=True, help='Starts the DCS app', show_default=True)
-@click.option('--listener/--no-listener', default=True, help='Starts the socket', show_default=True)
+@click.option('--discord/--no-discord', default=True, help='Starts the Discord bot loop', show_default=True)
+@click.option('--server/--no-server', default=True, help='Starts the server monitoring loop', show_default=True)
+@click.option('--dcs/--no-dcs', default=True, help='Starts the DCS app loop', show_default=True)
+@click.option('--listener/--no-listener', default=True, help='Starts the socket loop', show_default=True)
 @click.option('--start-dcs/--no-start-dcs', help='Spawn DCS.exe process', default=True, show_default=True)
 @click.option('--install-hooks/--no-install-hooks', help='Install GameGUI hooks', default=True, show_default=True)
 @click.option('--install-dedi-config/--no-install-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
               show_default=True)
 @click.option('--auto-mission/--no-auto-mission', help='Download latest mission', default=True, show_default=True)
-def main(bot: bool,
+def main(discord: bool,
          server: bool,
+         dcs: bool,
          listener: bool,
          start_dcs: bool,
          install_hooks: bool,
@@ -81,9 +83,10 @@ def main(bot: bool,
         install_dedi_config: setup DCS to run in dedicated mode
         install_hooks: install GemGUI hooks
         ctx: click context
-        bot: whether or not to start the Discord bot
-        server: whether or not to start the DCS server
-        listener: whether or not to start the DCS socket
+        dcs: start dcs loop
+        discord: start Discord bot loop
+        server: start server loop
+        listener: start the listener loop
         start_dcs: start the server thread, but not the actual DCS app
         auto_mission: downloads the latest mission from Github
     """
@@ -97,10 +100,12 @@ def main(bot: bool,
         sentry.register_context('Config', CFG)
 
     CTX.loop = asyncio.get_event_loop()
-    CTX.discord_start_bot = bot and CFG.start_bot
-    CTX.dcs_start = server and CFG.start_server
+    CTX.start_discord_loop = discord and CFG.start_discord_loop
+    CTX.start_server_loop = server and CFG.start_server_loop
+    CTX.start_dcs_loop = dcs and CFG.start_dcs_loop
+    CTX.start_listener_loop = listener and CFG.start_listener_loop
+
     CTX.dcs_can_start = start_dcs
-    CTX.socket_start = listener and CFG.start_listener
     CTX.dcs_setup_dedi_config = install_dedi_config
     CTX.dcs_install_hooks = install_hooks
     CTX.dcs_auto_mission = auto_mission
@@ -113,38 +118,41 @@ def main(bot: bool,
     ctypes.windll.kernel32.SetConsoleTitleW(f'ESST v{__version__} - Use CTRL+C to exit')
     MAIN_LOGGER.debug(f'starting ESST {__version__}')
 
-    from esst import discord_bot
-    bot = discord_bot.DiscordBot()
+    import esst.discord_bot.discord_bot
+    discord_loop = esst.discord_bot.discord_bot.App()
 
-    from esst.dcs import dcs
-    app = dcs.App()
+    import esst.dcs.dcs
+    dcs_loop = esst.dcs.dcs.App()
 
-    from esst.server import server_loop
-    app = server_loop.ServerLoop()
+    import esst.server.server
+    server_loop = esst.server.server.App()
 
     from esst.listener import DCSListener
     try:
-        listener = DCSListener()
+        listener_loop = DCSListener()
     except OSError as exc:
         if exc.errno == 10048:
             MAIN_LOGGER.error('cannot bind socket, maybe another instance of ESST is already running?')
             exit(-1)
+    else:
 
-    CTX.loop.create_task(bot.run())
-    CTX.loop.create_task(app.run())
-    CTX.loop.create_task(listener.run())
-    CTX.loop.create_task(watch_for_exceptions())
+        CTX.loop.create_task(discord_loop.run())
+        CTX.loop.create_task(dcs_loop.run())
+        CTX.loop.create_task(listener_loop.run())
+        CTX.loop.create_task(server_loop.run())
+        CTX.loop.create_task(watch_for_exceptions())
 
-    def sigint_handler(signal, frame):
-        MAIN_LOGGER.info('ESST has been interrupted by user request, shutting down')
-        CTX.exit = True
+        def sigint_handler(*_):
+            MAIN_LOGGER.info('ESST has been interrupted by user request, shutting down')
+            CTX.exit = True
 
-        asyncio.ensure_future(app.exit(), loop=CTX.loop)
-        asyncio.ensure_future(listener.exit(), loop=CTX.loop)
-        asyncio.ensure_future(bot.exit(), loop=CTX.loop)
+            asyncio.ensure_future(server_loop.exit(), loop=CTX.loop)
+            asyncio.ensure_future(dcs_loop.exit(), loop=CTX.loop)
+            asyncio.ensure_future(listener_loop.exit(), loop=CTX.loop)
+            asyncio.ensure_future(discord_loop.exit(), loop=CTX.loop)
 
-        CTX.loop.call_later(5, force_exit)
+            CTX.loop.call_later(5, force_exit)
 
-    import signal
-    signal.signal(signal.SIGINT, sigint_handler)
-    CTX.loop.run_forever()
+        import signal
+        signal.signal(signal.SIGINT, sigint_handler)
+        CTX.loop.run_forever()

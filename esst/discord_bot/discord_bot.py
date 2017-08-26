@@ -20,9 +20,9 @@ from .tasks import DiscordTasks
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
-class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
+class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
                  DiscordEvents,
-                 AbstractDiscordBot):
+          AbstractDiscordBot):
     """
     ESST Discord bot.
 
@@ -67,7 +67,7 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         self._ready = False
         self.tasks = None
 
-        if not CTX.discord_start_bot:
+        if not CTX.start_discord_loop:
             LOGGER.debug('skipping Discord bot startup')
             return
 
@@ -171,7 +171,7 @@ class DiscordBot(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             self._ready = True
 
     async def run(self):
-        if not CTX.discord_start_bot:
+        if not CTX.start_discord_loop:
             LOGGER.debug('skipping Discord loop')
             return
 

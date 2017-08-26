@@ -30,7 +30,7 @@ class DCSListener:
         self.last_ping = None
         self.startup_age = None
 
-        if not CTX.socket_start:
+        if not CTX.start_listener_loop:
             LOGGER.debug('skipping startup of socket')
             return
 
@@ -69,7 +69,7 @@ class DCSListener:
             LOGGER.debug('starting monitoring server pings')
             self.last_ping = time.time()
             self.monitoring = True
-            CTX.socket_monitor_server_startup = False
+            CTX.listener_monitor_server_startup = False
         if data['message'] in ['stopping simulation']:
             LOGGER.debug('stopped monitoring server pings')
             self.monitoring = False
@@ -77,8 +77,8 @@ class DCSListener:
 
     async def _parse_commands(self):
         await asyncio.sleep(0.1)
-        if not CTX.socket_cmd_q.empty():
-            command = CTX.socket_cmd_q.get_nowait()
+        if not CTX.listener_cmd_queue.empty():
+            command = CTX.listener_cmd_queue.get_nowait()
             if command not in KNOWN_COMMANDS:
                 raise ValueError(f'unknown command: {command}')
             else:
@@ -98,13 +98,13 @@ class DCSListener:
 
     async def _monitor_server_startup(self):
         await asyncio.sleep(0.1)
-        if CTX.socket_monitor_server_startup:
+        if CTX.listener_monitor_server_startup:
             if self.startup_age is None:
                 self.startup_age = time.time()
             if time.time() - self.startup_age > CFG.dcs_server_startup_time:
                 LOGGER.error('DCS is taking more than 2 minutes to start a multiplayer server.\n'
                              'Something is wrong ...')
-                CTX.socket_monitor_server_startup = False
+                CTX.listener_monitor_server_startup = False
 
     async def _read_socket(self):
         await asyncio.sleep(0.1)
@@ -127,7 +127,7 @@ class DCSListener:
         1. Retrieve incoming messages from DCS and update :py:class:`esst.core.status.status`
         2. Sends command to the DCS application via the socket
         """
-        if not CTX.socket_start:
+        if not CTX.start_listener_loop:
             LOGGER.debug('skipping startup of socket loop')
             return
 

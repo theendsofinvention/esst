@@ -100,9 +100,10 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                         'AUTO_MISSION_GITHUB_REPO': '',
                         'DCS_SERVER_STARTUP_TIME': 120,
                         'DCS_PING_INTERVAL': 30,
-                        'START_SERVER': 'true',
-                        'START_LISTENER': 'true',
-                        'START_BOT': 'true',
+                        'START_DCS_LOOP': 'true',
+                        'START_LISTENER_LOOP': 'true',
+                        'START_DISCORD_LOOP': 'true',
+                        'START_SERVER_LOOP': 'true',
                         'DCS_CAN_START': 'true'
                     }
                 ),
@@ -112,9 +113,10 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.debug = self._config('DEBUG', default='false', parser=everett.manager.parse_bool)
         self.saved_games_dir = self._config('SAVED_GAMES_DIR', parser=str)
         self.sentry_dsn = self._config('SENTRY_DSN', parser=str)
-        self.start_server = self._config('START_SERVER', parser=bool)
-        self.start_bot = self._config('START_BOT', parser=bool)
-        self.start_listener = self._config('START_LISTENER', parser=bool)
+        self.start_server_loop = self._config('START_SERVER_LOOP', parser=bool)
+        self.start_dcs_loop = self._config('START_DCS_LOOP', parser=bool)
+        self.start_discord_loop = self._config('START_DISCORD_LOOP', parser=bool)
+        self.start_listener_loop = self._config('START_LISTENER_LOOP', parser=bool)
         self.dcs_can_start = self._config('DCS_CAN_START', parser=bool)
 
         self.dcs_path = self._config('PATH', parser=parse_dcs_path, namespace='DCS')

@@ -18,22 +18,26 @@ class Context:
     exit: bool = False
     loop: AbstractEventLoop = None
 
-    discord_start_bot: bool = False
+    start_listener_loop: bool = True
+    start_discord_loop: bool = True
+    start_server_loop: bool = True
+    start_dcs_loop: bool = True
+
     discord_msg_queue: Queue = Queue()
     discord_file_queue: Queue = Queue()
 
-    dcs_start: bool = True
     dcs_install_hooks: bool = True
     dcs_setup_dedi_config: bool = True
     dcs_auto_mission: bool = True
 
-    dcs_server_start: bool = True
     dcs_can_start: bool = True
     dcs_show_cpu_usage: bool = False
     dcs_show_cpu_usage_once: bool = False
     dcs_do_kill: bool = False
     dcs_do_restart: bool = False
 
-    socket_start: bool = True
-    socket_cmd_q: Queue = Queue()
-    socket_monitor_server_startup: bool = False
+    listener_cmd_queue: Queue = Queue()
+    listener_monitor_server_startup: bool = False
+
+    server_show_cpu_usage: bool = False
+    server_show_cpu_usage_once: bool = False
