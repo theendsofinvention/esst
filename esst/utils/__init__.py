@@ -1,9 +1,30 @@
 # coding=utf-8
-# This is a copy-paste from another project, I won't update the dosctrings and everything here
-# pylint: disable-all
 import os
+import time
 
 import pefile
+import pkg_resources
+
+from esst.core import MAIN_LOGGER
+
+LOGGER = MAIN_LOGGER.getChild(__name__)
+
+
+def now():
+    return time.time()
+
+
+def read_template(template_name):
+    LOGGER.debug(f'reading template: {template_name}')
+    template_path = os.path.join(os.path.dirname(__file__), 'templates', template_name)
+    if not os.path.exists(template_path):
+        LOGGER.debug('template not found, trying from pkg_resource')
+        template_path = pkg_resources.resource_filename('esst', f'/dcs/templates/{template_name}')
+    if not os.path.exists(template_path):
+        raise FileNotFoundError(template_path)
+    with open(template_path) as handle_:
+        LOGGER.debug('returning template content')
+        return handle_.read()
 
 
 class Win32FileInfo:
