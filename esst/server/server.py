@@ -1,8 +1,12 @@
 # coding=utf-8
 
 import asyncio
-from esst.core import ServerStatus
-from esst.core import CFG, MAIN_LOGGER, CTX
+import datetime
+import psutil
+import time
+from esst.core import CFG, MAIN_LOGGER, CTX, ServerStatus
+from esst.commands import DISCORD
+
 
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
@@ -11,19 +15,37 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 class App:
 
     def __init__(self):
-        pass
+        if not CTX.start_server_loop:
+            LOGGER.debug('skipping server loop init')
+            return
+
+        ServerStatus.logical_cpus = psutil.cpu_count()
+        ServerStatus.physical_cpus = psutil.cpu_count(logical=False)
+        ServerStatus.cpu_frequency = psutil.cpu_freq().max
+        ServerStatus.total_memory = psutil.virtual_memory().total
+        ServerStatus.swap_size = psutil.swap_memory().total
+        ServerStatus.boot_time = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+
+    @staticmethod
+    def _update_status():
+        while not CTX.exit:
+            cpu_usage = psutil.cpu_percent(1)
+            ServerStatus.cpu_usage = cpu_usage
+            ServerStatus.free_memory = psutil.virtual_memory().free
+            ServerStatus.swap_used = psutil.swap_memory().used
+            if CTX.server_show_cpu_usage or CTX.server_show_cpu_usage_once:
+                DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
+                CTX.server_show_cpu_usage_once = False
+            time.sleep(5)
 
     async def run(self):
         """
         Entry point of the loop
         """
-        if not CTX.dcs_start:
-            LOGGER.debug('skipping DCS application loop')
+        if not CTX.start_server_loop:
+            LOGGER.debug('skipping server loop')
             return
-        while True:
-            if CTX.exit:
-                break
-            await asyncio.sleep(0.1)
+        CTX.loop.run_in_executor(None, self._update_status)
 
         LOGGER.debug('end of Server computer loop')
 
