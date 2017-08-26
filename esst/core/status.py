@@ -19,3 +19,7 @@ class Status:  # pylint: disable=too-few-public-methods
     paused = 'unknown'
     mission_name = 'unknown'
     players = []
+
+
+class ServerStatus:
+    pass

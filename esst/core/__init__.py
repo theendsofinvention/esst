@@ -5,7 +5,7 @@ import everett
 from .config import Config
 from .context import Context
 from .logger import setup_logging
-from .status import Status
+from .status import Status, ServerStatus
 from .version import __version__
 
 try:
