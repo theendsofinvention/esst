@@ -103,6 +103,7 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
                         'START_SERVER': 'true',
                         'START_LISTENER': 'true',
                         'START_BOT': 'true',
+                        'DCS_CAN_START': 'true'
                     }
                 ),
             ]
@@ -114,6 +115,7 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
         self.start_server = self._config('START_SERVER', parser=bool)
         self.start_bot = self._config('START_BOT', parser=bool)
         self.start_listener = self._config('START_LISTENER', parser=bool)
+        self.dcs_can_start = self._config('DCS_CAN_START', parser=bool)
 
         self.dcs_path = self._config('PATH', parser=parse_dcs_path, namespace='DCS')
         self.dcs_idle_cpu_usage = self._config('IDLE_CPU_USAGE', parser=int, namespace='DCS')
