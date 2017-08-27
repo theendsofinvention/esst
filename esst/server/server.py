@@ -39,7 +39,7 @@ class App:
             ServerStatus.free_memory = psutil.virtual_memory().free
             ServerStatus.swap_used = psutil.swap_memory().used
             if CTX.server_show_cpu_usage or CTX.server_show_cpu_usage_once:
-                DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
+                DISCORD.say(f'Server cpu usage: {cpu_usage}%')
                 CTX.server_show_cpu_usage_once = False
             time.sleep(5)
 
