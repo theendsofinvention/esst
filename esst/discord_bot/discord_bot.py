@@ -171,11 +171,15 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         """
         while True:
             if CTX.exit:
+                while not self.ready:
+                    await asyncio.sleep(0.1)
                 if self.ready:
                     await self.say('Bye bye !')
                     await self.client.change_presence(status='offline')
                 LOGGER.debug('closing Discord client')
                 if self.client:
+                    while not self.client.is_logged_in:
+                        await asyncio.sleep(0.1)
                     if self.client.is_logged_in:
                         await self.client.logout()
                         await self.client.close()
