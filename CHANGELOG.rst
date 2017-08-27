@@ -7,6 +7,10 @@ Changelog
 
 New
 ~~~
+- Add safety check to prevent server restart/kill while players are
+  connected. [132nd-etcher]
+
+  closes #18
 - Add config option for the grace timeout when DCS closes itself.
   [132nd-etcher]
 - Add "!server reboot" command. [132nd-etcher]
@@ -41,6 +45,7 @@ Changes
 
 Fix
 ~~~
+- Fix capitalization of messages sent to Discord. [132nd-etcher]
 - Fix fallback of Discord message queue watcher. [132nd-etcher]
 - Fix exit mechanism. [132nd-etcher]
 
