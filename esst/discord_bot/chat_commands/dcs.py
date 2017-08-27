@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Commands related to managing the DSC application
+"""
 
 import argh
 import humanize

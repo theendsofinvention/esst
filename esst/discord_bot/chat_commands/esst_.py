@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Manages commands related to ESST itself
+"""
 
 from esst.core import CFG, __version__
 from esst.core.logger import log_file_path

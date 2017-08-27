@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Represents the global context
+"""
 
 import inspect
 from asyncio import AbstractEventLoop
@@ -6,12 +9,21 @@ from queue import Queue
 
 
 class Context:
+    """
+    Represents the global context
+    """
     @classmethod
     def get_context(cls) -> dict:
-        return {member: value
-                for member, value in inspect.getmembers(cls, lambda a: not (inspect.ismethod(a)))
-                if not member.startswith('_')
-                }
+        """
+
+        Returns: dict context for Sentry
+
+        """
+        return {
+            member: value
+            for member, value in inspect.getmembers(cls, lambda a: not inspect.ismethod(a))
+            if not member.startswith('_')
+        }
 
     exit: bool = False
     loop: AbstractEventLoop = None

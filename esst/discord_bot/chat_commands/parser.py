@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Discord chat commands parser
+"""
 
 
 import argparse
@@ -12,18 +15,36 @@ from esst.discord_bot import abstract
 from esst.discord_bot.chat_commands import dcs, esst_, mission, server
 
 
-def _cancel_execution(namespace):
+def _cancel_execution(*_):
     raise SystemExit(0)
 
 
 class HelpFormatter(argparse.RawDescriptionHelpFormatter):
+    """
+    Dummy
+    """
     def add_usage(self, usage, actions, groups, prefix=None):
+        """
+        Dummy
+
+        Args:
+            usage:
+            actions:
+            groups:
+            prefix:
+
+        Returns:
+
+        """
         if usage and '!help' in usage:
             usage = ''
         return super(HelpFormatter, self).add_usage(usage, actions, groups, prefix)
 
 
 class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParser):
+    """
+    Creates chat commands out of regular functions with argh
+    """
     def __init__(self,
                  prog=None,
                  usage=None,
@@ -60,16 +81,31 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
         if message:
             CTX.discord_msg_queue.put(message)
 
-    def dispatch(self,
+    def dispatch(self,  # pylint: disable=arguments-differ
                  argv=None,
                  add_help_command=True,
-                 completion=True,
+                 completion=True,  # pylint: disable=unused-argument
                  pre_call=None,
-                 output_file=sys.stdout,
-                 errors_file=sys.stderr,
+                 output_file=sys.stdout,  # pylint: disable=unused-argument
+                 errors_file=sys.stderr,  # pylint: disable=unused-argument
                  raw_output=False,
                  namespace=None,
                  skip_unknown_args=False):
+        """
+        Passes arguments to linked function
+
+        Args:
+            argv:
+            add_help_command:
+            completion:
+            pre_call:
+            output_file:
+            errors_file:
+            raw_output:
+            namespace:
+            skip_unknown_args:
+
+        """
         try:
             for arg in argv:
                 if arg == 'help':
@@ -107,7 +143,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
         except TypeError:
             pass
 
-    def format_help(self):
+    def format_help(self):  # pylint: disable=useless-super-delegation
         return super(DiscordCommandParser, self).format_help()
 
     def parse_discord_message(self, message: str):
@@ -120,14 +156,14 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
                 self.dispatch(formatted_args)
 
 
-description = """
+DECRIPTION = """
 To get help on a specific command, use the "--help" option.
 
 Ex:
     !dcs --help
     !dcs status --help
 """
-epilog = """
+EPILOG = """
 In addition to the commands listed above, you can also upload a mission to the server via Discord:
 1. Drag and drop the mission file to this channel
 2. In the "Add a comment" field, you can specify one of:
@@ -138,13 +174,14 @@ In addition to the commands listed above, you can also upload a mission to the s
 
 
 def make_root_parser():
-    parser = DiscordCommandParser(description=description, prog='', add_help=False, usage='', epilog=epilog)
-    for module_ in [
-        esst_,
-        mission,
-        server,
-        dcs,
-    ]:
+    """
+    Creates the chat commands parser for the Discord bot
+
+    Returns: parser object
+
+    """
+    parser = DiscordCommandParser(description=DECRIPTION, prog='', add_help=False, usage='', epilog=EPILOG)
+    for module_ in [esst_, mission, server, dcs, ]:
         funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction) if o[1].__module__ == module_.__name__]
         parser.add_commands(
             functions=funcs,

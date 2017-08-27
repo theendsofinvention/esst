@@ -53,7 +53,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         LOGGER.debug('starting DCS loop')
 
     @property
-    def app(self) -> psutil.Process:
+    def app(self) -> psutil.Process:  # pylint: disable=missing-docstring
         return self._app
 
     async def _execute_cmd_chain(self, cmd_chain: list):
@@ -135,10 +135,13 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         if Status.dcs_application != status:
             Status.dcs_application = status
             LOGGER.info(f'DCS application is {status}')
-            if status is 'starting':
+            if status == 'starting':
                 LISTENER.monitor_server_startup_start()
 
     async def kill_running_app(self):  # noqa: C901
+        """
+        Kills the running DCS.exe process
+        """
 
         async def _ask_politely():
             if not self.app or not self.app.is_running():
@@ -153,9 +156,9 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                 if now() - now_ > CFG.dcs_grace_period:
                     LOGGER.debug('grace period time out!')
                     return False
-            else:
-                LOGGER.info('DCS closed itself, nice')
-                return True
+
+            LOGGER.info('DCS closed itself, nice')
+            return True
 
         async def _no_more_mr_nice_guy():
             if not self.app or not self.app.is_running():
@@ -167,8 +170,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                 await asyncio.sleep(1)
                 if now() - now_ > 10:
                     return False
-            else:
-                return True
+
+            return True
 
         CTX.dcs_do_kill = False
         await self._check_if_dcs_is_running()

@@ -8,53 +8,17 @@ import queue
 
 import click
 
-from esst.core import CTX, MAIN_LOGGER
+from esst.core import CFG, CTX, MAIN_LOGGER, __version__
 
 
 async def watch_for_exceptions():
+    """
+    Dummy loop to wake up asyncio event loop from time to time
+    """
     while True:
         if CTX.exit:
             break
         await asyncio.sleep(0.1)
-
-
-async def force_exit_FUCK():
-    while len(asyncio.Task.all_tasks()) > 1:
-        tasks = asyncio.Task.all_tasks()
-        for task in list(tasks):
-            if 'finished' in repr(task):
-                print(f'popping {task}')
-                tasks.remove(task)
-            if 'cancelled' in repr(task):
-                print(f'popping {task}')
-                tasks.remove(task)
-            if 'force_exit' in repr(task):
-                print(f'popping {task}')
-                tasks.remove(task)
-        if tasks:
-            MAIN_LOGGER.debug(f'waiting on tasks:\n{tasks}')
-            print(f'waiting on tasks:\n{tasks}')
-            await asyncio.sleep(1)
-        else:
-            break
-
-
-async def async_force_exit():
-    for task in asyncio.Task.all_tasks():
-        MAIN_LOGGER.warning(f'dangling tasks: {task}')
-    raise SystemExit(0)
-
-
-def force_exit():
-    for task in asyncio.Task.all_tasks():
-        if 'finished' in repr(task):
-            continue
-        if 'cancelled' in repr(task):
-            continue
-        if 'force_exit' in repr(task):
-            continue
-        MAIN_LOGGER.warning(f'dangling tasks: {task}')
-    raise SystemExit(0)
 
 
 @click.group(invoke_without_command=True)  # noqa: C901
@@ -67,22 +31,22 @@ def force_exit():
 @click.option('--install-dedi-config/--no-install-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
               show_default=True)
 @click.option('--auto-mission/--no-auto-mission', help='Download latest mission', default=True, show_default=True)
-def main(discord: bool,
-         server: bool,
-         dcs: bool,
-         listener: bool,
-         start_dcs: bool,
-         install_hooks: bool,
-         install_dedi_config: bool,
-         auto_mission: bool,
-         ):
+def main(  # pylint: disable=too-many-locals
+        discord: bool,
+        server: bool,
+        dcs: bool,
+        listener: bool,
+        start_dcs: bool,
+        install_hooks: bool,
+        install_dedi_config: bool,
+        auto_mission: bool,
+):
     """
     Main entry point
 
     Args:
         install_dedi_config: setup DCS to run in dedicated mode
-        install_hooks: install GemGUI hooks
-        ctx: click context
+        install_hooks: install GameGUI hooks
         dcs: start dcs loop
         discord: start Discord bot loop
         server: start server loop
@@ -90,8 +54,6 @@ def main(discord: bool,
         start_dcs: start the server thread, but not the actual DCS app
         auto_mission: downloads the latest mission from Github
     """
-
-    from esst.core import CTX, MAIN_LOGGER, __version__, CFG
 
     if CFG.sentry_dsn:
         from esst.utils.sentry import Sentry
@@ -145,6 +107,13 @@ def main(discord: bool,
         )
 
         def sigint_handler(*_):
+            """
+            Catches exit signal (triggered byu CTRL+C)
+
+            Args:
+                *_: frame
+
+            """
             MAIN_LOGGER.info('ESST has been interrupted by user request, shutting down')
             CTX.exit = True
 

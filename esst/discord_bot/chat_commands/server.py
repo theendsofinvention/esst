@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Commands related to managing the server computer
+"""
 
 import argh
 import humanize

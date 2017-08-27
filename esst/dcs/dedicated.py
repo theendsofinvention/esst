@@ -1,5 +1,7 @@
 # coding=utf-8
-
+"""
+Installs the necessary files to run in dedicated mode
+"""
 import os
 import shutil
 

@@ -5,6 +5,8 @@ Manages missions for the server
 
 import os
 import shutil
+import typing
+import warnings
 
 import github3
 import humanize
@@ -25,6 +27,10 @@ if not os.path.exists(MISSION_FOLDER):
 
 
 class MissionPath:
+    """
+    Represents a MIZ file managed by ESST
+    """
+
     def __init__(self, mission: str):
         if not os.path.isabs(mission):
             self._path = os.path.join(MISSION_FOLDER, mission)
@@ -33,25 +39,51 @@ class MissionPath:
 
     @property
     def name(self):
+        """
+
+        Returns: basename
+
+        """
         return os.path.basename(self._path)
 
     @property
     def rlwx(self):
+        """
+
+        Returns: path to the MIZ file with a "_ESST" suffixed to its name
+
+        """
         if '_ESST.miz' in self.path:
             return self
-        else:
-            dirname = os.path.dirname(self._path)
-            file, ext = os.path.splitext(self._path)
-            return MissionPath(_sanitize_path(os.path.join(dirname, f'{file}_ESST{ext}')))
+
+        dirname = os.path.dirname(self._path)
+        file, ext = os.path.splitext(self._path)
+        return MissionPath(_sanitize_path(os.path.join(dirname, f'{file}_ESST{ext}')))
 
     def strip_suffix(self):
+        """
+
+        Returns: path to a MIZ file without the "_ESST" suffix
+
+        """
         return MissionPath(self.path.replace('_ESST', ''))
 
     @property
     def path(self):
+        """
+
+        Returns: path to the MIZ file
+
+        """
         return _sanitize_path(self._path)
 
     def set_as_active(self, metar: str = None):
+        """
+        Write the settings file to set this mission as active
+        Args:
+            metar: metar string; if not provided,  will be inferred from MIZ file
+
+        """
 
         LOGGER.info(f'setting active mission to: {self.name}')
         if not self:
@@ -70,7 +102,7 @@ class MissionPath:
 
         if metar is None:
             LOGGER.debug(f'building metar for mission: {self.path}')
-            metar = build_metar_from_mission(self.path, icao='UGTB')
+            metar = build_metar_from_mission(self.path, icao='XXXX')
             LOGGER.info(f'metar for {os.path.basename(self.path)}:\n{metar}')
         Status.metar = metar
 
@@ -111,10 +143,13 @@ def set_active_mission(mission: str, metar: str = None):
     mission.set_as_active(metar)
 
 
+# deprecated
 def __set_weather(metar_str, mission_path, output_path):
+    warnings.warn('deprecated', PendingDeprecationWarning)
+    # noinspection PyBroadException
     try:
         return set_weather_from_metar_str(metar_str, mission_path, output_path)
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         LOGGER.exception('Set weather failed')
         return {
             'status': 'failed',
@@ -198,7 +233,12 @@ def list_available_missions():
             yield file
 
 
-def get_running_mission():
+def get_running_mission() -> typing.Union['MissionPath', str]:
+    """
+
+    Returns: currently running mission as a MissionPath instance
+
+    """
     if Status.mission_file and Status.mission_file != 'unknown':
         mission = MissionPath(Status.mission_file)
         if mission:

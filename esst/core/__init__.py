@@ -1,5 +1,7 @@
 # coding=utf-8
-
+"""
+Globals
+"""
 import everett
 
 from .config import Config

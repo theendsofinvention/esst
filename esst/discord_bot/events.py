@@ -29,7 +29,7 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
         """
         await self.on_message(after)
 
-    async def on_message(self, message: discord.Message):  # pylint: disable=too-many-branches  # noqa: C901
+    async def on_message(self, message: discord.Message):  # noqa: C901  # pylint: disable=too-many-branches
         """
         Triggers on any message received from the Discord server
 

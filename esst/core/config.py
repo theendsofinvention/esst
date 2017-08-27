@@ -66,10 +66,16 @@ class Config:  # pylint: disable=too-many-instance-attributes,too-few-public-met
     """
 
     def get_context(self) -> dict:
-        return {member: value
-                for member, value in inspect.getmembers(self, lambda a: not (inspect.ismethod(a)))
-                if not member.startswith('_')
-                }
+        """
+
+        Returns: dict context for Sentry
+
+        """
+        return {
+            member: value
+            for member, value in inspect.getmembers(self, lambda a: not inspect.ismethod(a))
+            if not member.startswith('_')
+        }
 
     def __init__(self, version):
         self._config = everett.manager.ConfigManager(

@@ -6,7 +6,7 @@ Dummy class to facilitate the passing of information between other classes
 
 class Status:  # pylint: disable=too-few-public-methods
     """
-    Dummy class to facilitate the passing of information between other classes
+    Represents DCS status
     """
     dcs_application = 'not running'
     dcs_version = 'unknown'
@@ -22,6 +22,9 @@ class Status:  # pylint: disable=too-few-public-methods
 
 
 class ServerStatus:
+    """
+    Represents server status
+    """
     physical_cpus = 'unknown'
     logical_cpus = 'unknown'
     cpu_frequency = 'unknown'

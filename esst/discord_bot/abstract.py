@@ -2,7 +2,7 @@
 """
 Dummy abstract class to help split the Discord bot into multiple more manageable classes
 """
-
+#  pylint: disable=missing-docstring
 import abc
 import sys
 
