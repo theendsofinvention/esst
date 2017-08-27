@@ -2,11 +2,15 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+0.1.26 (2017-08-27)
+-------------------
 
 New
 ~~~
+- Add DCS version to backup files (so updating DCS will generate a new
+  backup) [132nd-etcher]
+
+  closes #22
 - Add safety check to prevent server restart/kill while players are
   connected. [132nd-etcher]
 
@@ -14,12 +18,11 @@ New
 - Add config option for the grace timeout when DCS closes itself.
   [132nd-etcher]
 - Add "!server reboot" command. [132nd-etcher]
+
+  closes #2
 - Add "!server show-cpu" command. [132nd-etcher]
 - Add "!server status" command. [132nd-etcher]
 - Add "!mission load" command. [132nd-etcher]
-
-  closes #6
-  closes #5
 - Add "!mission download" command. [132nd-etcher]
 - Add "!mission weather" command. [132nd-etcher]
 - Add command to retrieve log file from Discord. [132nd-etcher]
@@ -39,6 +42,9 @@ Changes
 - All missions that are edited by ESST will have the "_ESST" suffix
   added to them. [132nd-etcher]
 - Update Discord chat commands. [132nd-etcher]
+
+  closes #5
+  closes #6
 - Dev update discord logging handler. [132nd-etcher]
 - Change DCS CPU monitoring mechanism. [132nd-etcher]
 - Global CTX object. [132nd-etcher]
