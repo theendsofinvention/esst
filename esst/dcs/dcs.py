@@ -238,22 +238,14 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         if not CTX.start_dcs_loop:
             LOGGER.debug('skipping DCS application loop')
             return
-
+        await self._get_dcs_version_from_executable()
         await CTX.loop.run_in_executor(None, install_game_gui_hooks)
         await CTX.loop.run_in_executor(None, get_latest_mission_from_github)
 
         LOGGER.debug('starting DCS monitoring thread')
-        cmd_chain = [
-            self._get_dcs_version_from_executable,
-        ]
         if CTX.dcs_can_start:
-            cmd_chain.extend(
-                [
-                    self._try_to_connect_to_existing_dcs_application,
-                    self._start_new_dcs_application_if_needed,
-                ]
-            )
-        await self._execute_cmd_chain(cmd_chain)
+            await self._try_to_connect_to_existing_dcs_application()
+            await self._start_new_dcs_application_if_needed()
         cpu_monitor_thread = CTX.loop.run_in_executor(None, self.monitor_cpu_usage)
         while True:
             if CTX.exit:

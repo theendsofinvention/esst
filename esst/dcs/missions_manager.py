@@ -4,7 +4,6 @@ Manages missions for the server
 """
 
 import os
-import shutil
 import typing
 import warnings
 
@@ -16,7 +15,7 @@ from jinja2 import Template
 
 from esst.commands import DCS
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
-from esst.utils import read_template
+from esst.utils import create_versionned_backup, read_template
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -95,8 +94,7 @@ class MissionPath:
             name=CFG.dcs_server_name,
             max_players=CFG.dcs_server_max_players,
         )
-
-        _backup_settings_file()
+        create_versionned_backup(_get_settings_file_path())
         with open(_get_settings_file_path(), 'w') as handle:
             handle.write(content)
 
@@ -122,13 +120,6 @@ def _sanitize_path(path):
 
 def _get_settings_file_path():
     return _sanitize_path(os.path.join(CFG.saved_games_dir, 'Config/serverSettings.lua'))
-
-
-def _backup_settings_file():
-    backup_file_path = _get_settings_file_path() + '.backup'
-    if not os.path.exists(backup_file_path):
-        LOGGER.debug('making of backup of the settings')
-        shutil.copy(_get_settings_file_path(), backup_file_path)
 
 
 def set_active_mission(mission: str, metar: str = None):

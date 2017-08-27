@@ -3,12 +3,11 @@
 Installs the necessary files to run in dedicated mode
 """
 import os
-import shutil
 
 import jinja2
 
 from esst.core import CFG, CTX, MAIN_LOGGER
-from esst.utils import read_template
+from esst.utils import create_versionned_backup, read_template
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -17,14 +16,6 @@ DEDI_CFG = r"""dedicated =
     ["enabled"] = true,
 }
 """
-
-
-def _backup_auth_file():
-    me_auth_path = _get_me_auth_path()
-    backup_path = me_auth_path + '_backup'
-    if not os.path.exists(backup_path):
-        LOGGER.debug('creating backup for me_authorization.lua')
-        shutil.copy(me_auth_path, backup_path)
 
 
 def _get_me_auth_path() -> str:
@@ -58,7 +49,7 @@ def setup_config_for_dedicated_run():
     """
     if CTX.dcs_setup_dedi_config:
         LOGGER.debug('setting up dedicated config')
-        _backup_auth_file()
+        create_versionned_backup(_get_me_auth_path())
         _write_auth_file()
         _write_dedi_config()
         LOGGER.debug('setting up dedicated config: all done!')

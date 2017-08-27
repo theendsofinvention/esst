@@ -4,13 +4,36 @@ Various helper functions
 """
 import os
 import time
+import shutil
 
 import pefile
 import pkg_resources
 
-from esst.core import MAIN_LOGGER
+from esst.core import MAIN_LOGGER, Status
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
+
+
+def create_versionned_backup(file_path):
+    """
+    Creates a backup of a file, with a "_backup_DCS-VERSION" suffix, if the backup does not exist yet
+
+    Args:
+        file_path: file to backup
+
+    """
+    file_path = os.path.abspath(file_path)
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(file_path)
+    backup_file = os.path.join(
+        os.path.dirname(file_path),
+        os.path.basename(file_path) + f'_backup_{Status.dcs_version}'
+    )
+    if not os.path.exists(backup_file):
+        LOGGER.debug(f'creating backup of "{file_path}": "{backup_file}"')
+        shutil.copy2(file_path, backup_file)
+    else:
+        LOGGER.debug(f'backup already exists: "{backup_file}"')
 
 
 def now():
