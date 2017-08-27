@@ -3,6 +3,8 @@
 """
 Meh
 """
+from time import sleep
+
 from argh import arg
 from emiz import build_metar_from_mission, edit_miz, parse_metar_string, retrieve_metar
 
@@ -13,13 +15,14 @@ from esst.dcs import missions_manager
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
-def _load(name, icao, metar, time, max_wind, min_wind):  # noqa: C901
+def _load(name, icao, metar, time, max_wind, min_wind):  # noqa: C901  # pylint: disable=too-many-statements
     if name is None:
         mission = missions_manager.get_running_mission().strip_suffix()
     else:
         mission = missions_manager.MissionPath(name)
 
     if not mission:
+        LOGGER.error(f'mission file does not exist: {mission.path}')
         return
 
     if metar:
@@ -55,18 +58,34 @@ def _load(name, icao, metar, time, max_wind, min_wind):  # noqa: C901
         LOGGER.info(f'{info_metar.string()}')
 
     LOGGER.debug(f'editing "{mission.path}" to "{mission.rlwx.path}"')
-    error = edit_miz(mission.path, mission.rlwx.path, metar, time, min_wind, max_wind)
-    if error:
-        LOGGER.error(error)
+    DCS.cannot_start()
+    DCS.kill()
+    while Status.dcs_application != 'not running':
+        sleep(1)
+    edit_str = []
+    if time:
+        edit_str.append('time')
+    if metar:
+        edit_str.append('weather')
+    if edit_str:
+        edit_str = ' and '.join(edit_str)
+        LOGGER.info(f'loading {mission.name} with {edit_str} (this may take a few seconds)')
     else:
-        LOGGER.debug('mission has been successfully edited')
-        mission.rlwx.set_as_active(info_metar.code)
-        DCS.restart()
+        LOGGER.info(f'loading {mission.name}')
+    try:
+        error = edit_miz(mission.path, mission.rlwx.path, metar, time, min_wind, max_wind)
+        if error:
+            LOGGER.error(error)
+        else:
+            LOGGER.debug('mission has been successfully edited')
+            mission.rlwx.set_as_active(info_metar.code)
+    finally:
+        DCS.can_start()
 
 
 @arg('-m', '--metar', nargs='+', metavar='METAR')
 def load(
-        name: 'name of the mission to load' = None,
+        name: 'name of the mission to load (if not provided, will re-use the current mission)' = None,
         icao: 'update the weather from ICAO' = None,
         metar: 'update the weather from METAR string\n'
                'WARNING: METAR string may NOT contain dashes ("-")' = None,
