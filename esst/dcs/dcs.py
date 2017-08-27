@@ -17,7 +17,10 @@ from .missions_manager import get_latest_mission_from_github
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
-KNOWN_DCS_VERSIONS = ['1.5.6.5199']
+KNOWN_DCS_VERSIONS = [
+    '1.5.6.5199',
+    '1.5.7.8899',
+]
 
 
 # => 2.1.1.8491: use DCS.exe --old-login
