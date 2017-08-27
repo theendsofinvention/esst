@@ -65,7 +65,15 @@ class MissionPath:
         Returns: path to a MIZ file without the "_ESST" suffix
 
         """
-        return MissionPath(self.path.replace('_ESST', ''))
+        if '_ESST' not in os.path.basename(self.path):
+            return self
+
+        return MissionPath(
+            os.path.join(
+                os.path.dirname(self.path),
+                os.path.basename(self.path).replace('_ESST', '')
+            )
+        )
 
     @property
     def path(self):
