@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+0.1.29 (2017-08-27)
+-------------------
+
+Fix
+~~~
+- Fix downloading mission from Discord. [132nd-etcher]
+- Fix downloading latest mission from Github. [132nd-etcher]
+- Fix Discord bot reacting on its own message. [132nd-etcher]
+
+
 0.1.28 (2017-08-27)
 -------------------
 
