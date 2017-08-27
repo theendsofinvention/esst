@@ -178,7 +178,7 @@ def get_latest_mission_from_github():
                     local_file = MissionPath(asset.name)
                     if not local_file:
                         LOGGER.info(f'downloading new mission: {asset.name}')
-                        asset.download(local_file)
+                        asset.download(local_file.path)
                     local_file.set_as_active()
         else:
             LOGGER.error('no config values given for [auto mission]')
