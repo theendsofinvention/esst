@@ -7,10 +7,15 @@ Changelog
 
 New
 ~~~
+- Add config option for the grace timeout when DCS closes itself.
+  [132nd-etcher]
 - Add "!server reboot" command. [132nd-etcher]
 - Add "!server show-cpu" command. [132nd-etcher]
 - Add "!server status" command. [132nd-etcher]
 - Add "!mission load" command. [132nd-etcher]
+
+  closes #6
+  closes #5
 - Add "!mission download" command. [132nd-etcher]
 - Add "!mission weather" command. [132nd-etcher]
 - Add command to retrieve log file from Discord. [132nd-etcher]
@@ -23,6 +28,12 @@ New
 
 Changes
 ~~~~~~~
+- Allow to set both time and weather via the "!mission load" command.
+  [132nd-etcher]
+
+  closes #17
+- All missions that are edited by ESST will have the "_ESST" suffix
+  added to them. [132nd-etcher]
 - Update Discord chat commands. [132nd-etcher]
 - Dev update discord logging handler. [132nd-etcher]
 - Change DCS CPU monitoring mechanism. [132nd-etcher]
