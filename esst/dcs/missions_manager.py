@@ -202,11 +202,11 @@ def download_mission_from_discord(discord_attachment, overwrite=False, load=Fals
     local_file = MissionPath(filename)
 
     overwriting = ''
-    if os.path.exists(local_file):
+    if local_file:
         if overwrite:
             overwriting = ' (replacing existing file)'
         else:
-            LOGGER.warning(f'this mission already exists: {local_file}\n'
+            LOGGER.warning(f'this mission already exists: {local_file.path}\n'
                            f'use "overwrite" to replace it')
             return
 
