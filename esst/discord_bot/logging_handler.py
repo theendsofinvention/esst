@@ -26,7 +26,7 @@ class DiscordLoggingHandler(logging.Handler):
         Args:
             record: logging.record to emit
         """
-        DISCORD.say(record.msg[:1].upper() + record.msg[1:])
+        DISCORD.say(record.msg)
 
 
 def register_logging_handler():

@@ -19,7 +19,7 @@ class DISCORD:
             message: string to send
 
         """
-        CTX.discord_msg_queue.put(message)
+        CTX.discord_msg_queue.put(message[:1].upper() + message[1:])
 
     @staticmethod
     def send(file_path):
