@@ -4,8 +4,8 @@
 
 import os
 
-from esst.core import CTX, MAIN_LOGGER
 from esst.commands import DCS
+from esst.core import CTX, MAIN_LOGGER
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
