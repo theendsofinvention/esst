@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from setuptools import setup  # type: ignore
+from setuptools import setup, find_packages
 
 dependency_links = []
 
@@ -16,6 +16,7 @@ install_requires = [
     'github3.py==1.0.0a4',
     'emiz',
     'raven',
+    'argh',
 ]
 
 test_requires = [
@@ -51,9 +52,11 @@ def main():
         setup_requires=setup_requires,
         dependency_links=dependency_links,
         package_dir={'esst': 'esst'},
-        package_data={'esst': ['dcs/*.template']},
+        package_data={'esst': ['dcs/templates/*.template']},
         test_suite='pytest',
-        packages=['esst', 'esst.core', 'esst.dcs', 'esst.discord_bot'],
+        packages=find_packages(),
+        # packages=['esst', 'esst.core', 'esst.dcs', 'esst.discord_bot', 'esst.discord_bot.chat_commands',
+        #           'esst.listener', 'esst.server', 'esst.utils', 'esst.commands'],
         python_requires='>=3.6',
     )
 
