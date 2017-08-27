@@ -37,6 +37,8 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
             message: message received
 
         """
+        if message.author.id == self.member.id:
+            return
         if message.channel != self.channel:
             return
         if message.attachments:
