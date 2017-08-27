@@ -33,7 +33,7 @@ def setup_logging(debug: bool, saved_games_folder: str) -> logging.Logger:
     """
     logger = logging.getLogger('ESST')
 
-    formatter = logging.Formatter('%(asctime)s %(levelname)8s %(name)s: %(message)s')
+    formatter = logging.Formatter('%(asctime)s %(levelname)8s %(name)s[%(lineno)d].%(funcName)s: %(message)s')
 
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)
