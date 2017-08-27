@@ -46,6 +46,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
     """
     Creates chat commands out of regular functions with argh
     """
+
     def __init__(self,
                  prog=None,
                  usage=None,

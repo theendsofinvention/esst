@@ -45,11 +45,14 @@ def show_cpu(
         DCS.show_cpu_usage_once()
 
 
-def restart():
+@argh.arg('--force', help='force restart, even when players are connected')
+def restart(force: bool = False):
     """
     Closes and restart DCS.exe
     """
-    DCS.restart()
+    error = DCS.restart(force=force)
+    if error:
+        DISCORD.say(error)
 
 
 def version():
