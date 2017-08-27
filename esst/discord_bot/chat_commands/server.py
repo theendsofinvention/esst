@@ -49,5 +49,5 @@ def reboot():
     SERVER.reboot()
 
 
-namespace = '!server'
-title = 'Manage server computer'
+NAMESPACE = '!server'
+TITLE = 'Manage server computer'

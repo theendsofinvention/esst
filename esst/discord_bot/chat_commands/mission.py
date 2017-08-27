@@ -1,5 +1,8 @@
 # coding=utf-8
-
+# pylint: disable=bad-whitespace,missing-docstring
+"""
+Meh
+"""
 from argh import arg
 from emiz import build_metar_from_mission, edit_miz, parse_metar_string, retrieve_metar
 
@@ -114,5 +117,5 @@ def download():
         DISCORD.send(mission.path)
 
 
-namespace = '!mission'
-title = 'Manage missions'
+NAMESPACE = '!mission'
+TITLE = 'Manage missions'

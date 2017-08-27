@@ -1,5 +1,5 @@
 # coding=utf-8
-
+# pylint: disable=missing-docstring
 
 from esst.core import CTX, MAIN_LOGGER
 

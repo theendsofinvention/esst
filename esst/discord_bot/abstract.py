@@ -58,16 +58,6 @@ class AbstractDiscordBot:
 
     @property
     @abc.abstractmethod
-    def exiting(self) -> bool:
-        """
-        Indicates that the bot is trying to exit and that it should stop processing its message queue
-
-        Returns: exit status as a boolean
-        """
-        pass
-
-    @property
-    @abc.abstractmethod
     def client(self) -> discord.Client:
         """
         Represents the bot :py:class:`discord.Client` object

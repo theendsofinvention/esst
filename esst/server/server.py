@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Manages the server computer
+"""
 
 import datetime
 import time
@@ -12,6 +15,9 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 class App:
+    """
+    Manages the server computer
+    """
     def __init__(self):
         if not CTX.start_server_loop:
             LOGGER.debug('skipping server loop init')

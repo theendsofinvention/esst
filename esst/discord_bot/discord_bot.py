@@ -166,6 +166,9 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             self._ready = True
 
     async def watch_for_exit_signals(self):
+        """
+        Continuously runs and intercepts CTX.exit
+        """
         while True:
             if CTX.exit:
                 if self.ready:
@@ -183,6 +186,9 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             await asyncio.sleep(1)
 
     async def run(self):
+        """
+        Main loop
+        """
         if not CTX.start_discord_loop:
             LOGGER.debug('skipping Discord loop')
             return

@@ -56,5 +56,5 @@ def version():
     DISCORD.say(f'DCS version: {Status.dcs_version}')
 
 
-namespace = '!dcs'
-title = 'Manage DCS application'
+NAMESPACE = '!dcs'
+TITLE = 'Manage DCS application'

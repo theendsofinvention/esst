@@ -27,5 +27,5 @@ def restart():
     DISCORD.say('This command is not yet implemented')
 
 
-namespace = '!esst'
-title = 'Manage ESST application'
+NAMESPACE = '!esst'
+TITLE = 'Manage ESST application'

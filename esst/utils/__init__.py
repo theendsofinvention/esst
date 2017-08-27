@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Various helper functions
+"""
 import os
 import time
 
@@ -11,10 +14,24 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def now():
+    """
+
+    Returns: epoch
+
+    """
     return time.time()
 
 
-def read_template(template_name):
+def read_template(template_name: str) -> str:
+    """
+    Reads a template file, getting it from the local install or from the package
+
+    Args:
+        template_name: name of the template file
+
+    Returns: template file content
+
+    """
     LOGGER.debug(f'reading template: {template_name}')
     template_path = os.path.join(os.path.dirname(__file__), 'templates', template_name)
     if not os.path.exists(template_path):
@@ -27,7 +44,10 @@ def read_template(template_name):
         return handle_.read()
 
 
-class Win32FileInfo:
+class Win32FileInfo:  # pylint: disable=missing-docstring
+    """
+    Gets information about a Win32 portable executable
+    """
     def __init__(self, _path):
 
         self.__path = os.path.abspath(_path)
@@ -79,11 +99,11 @@ class Win32FileInfo:
         return self.__props.get('fixed_version')
 
     @property
-    def original_filename(self):
+    def original_filename(self) -> str:
         return self.__props.get('OriginalFilename')
 
     @property
-    def special_build(self):
+    def special_build(self) -> str:
         return self.__props.get('SpecialBuild')
 
     def __read_props(self):
@@ -97,15 +117,17 @@ class Win32FileInfo:
         self.__props = {}
 
         try:
-            pe = pefile.PE(self.__path)
-        except pefile.PEFormatError as e:
-            raise ValueError(e.value)
+            pe_file = pefile.PE(self.__path)
+        except pefile.PEFormatError as exc:
+            raise ValueError(exc.value)
         else:
-            ms = pe.VS_FIXEDFILEINFO.ProductVersionMS
-            ls = pe.VS_FIXEDFILEINFO.ProductVersionLS
-            self.__props['fixed_version'] = '.'.join(map(str, (_hiword(ms), _loword(ms), _hiword(ls), _loword(ls))))
-            for file_info in pe.FileInfo:
+            pvms = pe_file.VS_FIXEDFILEINFO.ProductVersionMS  # pylint: disable=no-member
+            pvls = pe_file.VS_FIXEDFILEINFO.ProductVersionLS  # pylint: disable=no-member
+            self.__props['fixed_version'] = '.'.join(
+                map(str, (_hiword(pvms), _loword(pvms), _hiword(pvls), _loword(pvls)))
+            )
+            for file_info in pe_file.FileInfo:
                 if file_info.Key == b'StringFileInfo':
-                    for st in file_info.StringTable:
-                        for entry in st.entries.items():
+                    for str_table in file_info.StringTable:
+                        for entry in str_table.entries.items():
                             self.__props[entry[0].decode('latin_1')] = entry[1].decode('latin_1')

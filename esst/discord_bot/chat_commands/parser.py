@@ -148,9 +148,9 @@ def make_root_parser():
         funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction) if o[1].__module__ == module_.__name__]
         parser.add_commands(
             functions=funcs,
-            namespace=module_.namespace,
+            namespace=module_.NAMESPACE,
             namespace_kwargs={
-                'title': module_.title,
+                'title': module_.TITLE,
             },
             func_kwargs={
                 # 'parents': [parser],

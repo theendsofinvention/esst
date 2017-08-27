@@ -1,9 +1,7 @@
 # coding=utf-8
-
+# pylint: disable=missing-docstring
 
 from esst.core import CTX, MAIN_LOGGER
-
-# from .missions_manager import list_available_missions
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 

@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Connection with sentry.io
+"""
 
 
 import logging
@@ -16,6 +19,9 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 class Sentry(raven.Client):
+    """
+    Connection with sentry.io
+    """
     def __init__(self, dsn):
         LOGGER.info('initializing Sentry')
         self.registered_contexts = {}
@@ -27,6 +33,10 @@ class Sentry(raven.Client):
             LOGGER.info('Sentry is ready')
 
     def set_context(self):
+        """
+        Sets Sentry context
+
+        """
         self.tags_context(
             dict(
                 platform=sys.platform,
@@ -45,9 +55,26 @@ class Sentry(raven.Client):
 
     @staticmethod
     def add_crumb(message, category, level):
+        """
+        Manually add a crumb to the logger
+
+        Args:
+            message: message str
+            category: category
+            level: logging level
+
+        """
         raven.breadcrumbs.record(message=message, category=category, level=level)
 
     def captureMessage(self, message, **kwargs):  # noqa: N802
+        """
+        Manually add a message
+
+        Args:
+            message: message content
+            **kwargs: meh
+
+        """
         self.set_context()
         if kwargs.get('data') is None:
             kwargs['data'] = {}
@@ -68,13 +95,24 @@ class Sentry(raven.Client):
 
 # noinspection PyUnusedLocal
 def filter_breadcrumbs(_logger, level, msg, *args, **kwargs):
+    """
+    Intercepts logging messages
+
+    Args:
+        _logger: originating logger
+        level: record level
+        msg: record message
+        *args: meh
+        **kwargs: meh
+
+    """
     skip_lvl = []
     skip_msg = []
 
     if level in skip_lvl or msg in skip_msg:
         return False
 
-    # print('got args, kwargs: ', args, kwargs)
+    print('got args, kwargs: ', args, kwargs)
     if _logger == 'requests':
         return False
     return True
