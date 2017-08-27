@@ -7,7 +7,9 @@ import argh
 import humanize
 
 from esst.commands import DISCORD, SERVER
-from esst.core import ServerStatus
+from esst.core import MAIN_LOGGER, ServerStatus
+
+LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def status():
@@ -45,11 +47,12 @@ def show_cpu(
         SERVER.show_cpu_usage_once()
 
 
-def reboot():
+@argh.arg('--force', help='force server reboot, even when players are connected')
+def reboot(force: bool = False):
     """
     Restart the server computer
     """
-    SERVER.reboot()
+    SERVER.reboot(force)
 
 
 NAMESPACE = '!server'
