@@ -10,9 +10,10 @@ from .logger import setup_logging
 from .status import Status, ServerStatus
 from .version import __version__
 
+CTX = Context()
+
 try:
     CFG = Config(__version__)
-    CTX = Context()
     MAIN_LOGGER = setup_logging(CFG.debug, CFG.saved_games_dir)
 except everett.InvalidValueError as exception:
     KEY = exception.key
