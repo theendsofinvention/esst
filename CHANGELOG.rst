@@ -2,6 +2,20 @@ Changelog
 =========
 
 
+0.1.28 (2017-08-27)
+-------------------
+
+New
+~~~
+- Add support for DCS 1.5.7.8899. [132nd-etcher]
+
+Fix
+~~~
+- Fix mission switching while DCS is running. [132nd-etcher]
+- Add connected player check on "!server reboot" command. [132nd-etcher]
+- Dev fix strip_suffix in MissionPath. [132nd-etcher]
+
+
 0.1.26 (2017-08-27)
 -------------------
 

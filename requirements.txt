@@ -1,4 +1,5 @@
 aiohttp==1.0.5            # via discord.py
+argh==0.26.2
 async-timeout==1.3.0      # via aiohttp
 certifi==2017.7.27.1
 chardet==3.0.4            # via aiohttp, requests
@@ -6,7 +7,7 @@ click==6.7
 configobj==5.0.6          # via everett
 contextlib2==0.5.5        # via raven
 discord.py==0.16.10
-emiz==0.1.7
+emiz==0.1.8
 everett==0.9
 future==0.16.0            # via pefile
 github3.py==1.0.0a4
