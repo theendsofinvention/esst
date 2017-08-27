@@ -48,6 +48,7 @@ class Win32FileInfo:  # pylint: disable=missing-docstring
     """
     Gets information about a Win32 portable executable
     """
+
     def __init__(self, _path):
 
         self.__path = os.path.abspath(_path)

@@ -22,6 +22,7 @@ class Sentry(raven.Client):
     """
     Connection with sentry.io
     """
+
     def __init__(self, dsn):
         LOGGER.info('initializing Sentry')
         self.registered_contexts = {}

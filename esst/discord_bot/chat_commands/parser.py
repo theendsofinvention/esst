@@ -23,6 +23,7 @@ class HelpFormatter(argparse.RawDescriptionHelpFormatter):
     """
     Dummy
     """
+
     def add_usage(self, usage, actions, groups, prefix=None):
         """
         Dummy

@@ -18,6 +18,7 @@ class App:
     """
     Manages the server computer
     """
+
     def __init__(self):
         if not CTX.start_server_loop:
             LOGGER.debug('skipping server loop init')
