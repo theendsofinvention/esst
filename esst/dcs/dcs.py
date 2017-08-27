@@ -77,9 +77,11 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                              f'This safety check exists so ESST does not screw your DCS installation '
                              f'by installing hooks into an unsupported DCS installation.')
                 CTX.exit = True
+                return False
             else:
                 setup_config_for_dedicated_run()
             LOGGER.debug(f'DCS version: {Status.dcs_version}')
+            return True
         except:  # pylint: disable=bare-except
             LOGGER.error('unable to retrieve version from dcs.exe')
             Status.dcs_version = 'unknown'
@@ -238,7 +240,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         if not CTX.start_dcs_loop:
             LOGGER.debug('skipping DCS application loop')
             return
-        await self._get_dcs_version_from_executable()
+        if not await self._get_dcs_version_from_executable():
+            return
         await CTX.loop.run_in_executor(None, install_game_gui_hooks)
         await CTX.loop.run_in_executor(None, get_latest_mission_from_github)
 
