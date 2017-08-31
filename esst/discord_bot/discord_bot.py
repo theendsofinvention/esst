@@ -194,6 +194,12 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         """
         Main loop
         """
+        def _pass_exception():
+            LOGGER.exception('Discord bot error')
+            if CTX.sentry:
+                CTX.sentry.captureException(True)
+
+
         if not CTX.start_discord_loop:
             LOGGER.debug('skipping Discord loop')
             return
@@ -208,22 +214,16 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
                 await self.client.start(CFG.discord_token)
                 LOGGER.info('Discord client has stopped')
             except websockets.exceptions.InvalidHandshake:
-                LOGGER.exception('invalid handshake')
-                CTX.sentry.captureException(True)
+                _pass_exception()
             except websockets.exceptions.InvalidState:
-                LOGGER.exception('invalid state')
-                CTX.sentry.captureException(True)
+                _pass_exception()
             except websockets.exceptions.PayloadTooBig:
-                LOGGER.exception('payload too big')
-                CTX.sentry.captureException(True)
+                _pass_exception()
             except websockets.exceptions.WebSocketProtocolError:
-                LOGGER.exception('protocol error')
-                CTX.sentry.captureException(True)
+                _pass_exception()
             except websockets.exceptions.InvalidURI:
-                LOGGER.exception('invalid URI')
-                CTX.sentry.captureException(True)
+                _pass_exception()
             except aiohttp.ClientError:
-                LOGGER.exception('aiohttp error')
-                CTX.sentry.captureException(True)
+                _pass_exception()
 
         LOGGER.debug('end of Discord loop')
