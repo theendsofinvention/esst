@@ -6,6 +6,7 @@ Runs a Discord bot using the discord.py library
 import asyncio
 import os
 import random
+import aiohttp
 
 import aiohttp.errors
 import discord
@@ -205,16 +206,24 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             self._create_client()
             try:
                 await self.client.start(CFG.discord_token)
-                LOGGER.warning('Discord client has stopped')
+                LOGGER.info('Discord client has stopped')
             except websockets.exceptions.InvalidHandshake:
                 LOGGER.exception('invalid handshake')
-            except websockets.exceptions.ConnectionClosed:
-                LOGGER.exception('connection closed')
+                CTX.sentry.captureException(True)
             except websockets.exceptions.InvalidState:
                 LOGGER.exception('invalid state')
+                CTX.sentry.captureException(True)
             except websockets.exceptions.PayloadTooBig:
                 LOGGER.exception('payload too big')
+                CTX.sentry.captureException(True)
             except websockets.exceptions.WebSocketProtocolError:
                 LOGGER.exception('protocol error')
+                CTX.sentry.captureException(True)
+            except websockets.exceptions.InvalidURI:
+                LOGGER.exception('invalid URI')
+                CTX.sentry.captureException(True)
+            except aiohttp.ClientError:
+                LOGGER.exception('aiohttp error')
+                CTX.sentry.captureException(True)
 
         LOGGER.debug('end of Discord loop')
