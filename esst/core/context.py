@@ -6,6 +6,7 @@ Represents the global context
 import inspect
 from asyncio import AbstractEventLoop
 from queue import Queue
+from esst.utils.sentry import Sentry
 
 
 class Context:
@@ -27,6 +28,7 @@ class Context:
 
     exit: bool = False
     loop: AbstractEventLoop = None
+    sentry: Sentry = None
 
     start_listener_loop: bool = True
     start_discord_loop: bool = True

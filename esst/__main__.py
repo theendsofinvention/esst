@@ -57,9 +57,9 @@ def main(  # pylint: disable=too-many-locals
 
     if CFG.sentry_dsn:
         from esst.utils.sentry import Sentry
-        sentry = Sentry(CFG.sentry_dsn)
-        sentry.register_context('App context', CTX)
-        sentry.register_context('Config', CFG)
+        CTX.sentry = Sentry(CFG.sentry_dsn)
+        CTX.sentry.register_context('App context', CTX)
+        CTX.sentry.register_context('Config', CFG)
 
     CTX.loop = asyncio.get_event_loop()
     CTX.start_discord_loop = discord and CFG.start_discord_loop
