@@ -53,7 +53,3 @@ async def monitor_connection():
         await asyncio.sleep(5)
 
     LOGGER.debug('end of connection monitoring loop')
-
-
-if __name__ == '__main__':
-    print(wan_available())

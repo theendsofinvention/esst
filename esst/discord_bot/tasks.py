@@ -31,7 +31,6 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
         if self.client and self.client.is_logged_in and self.channel:
             # noinspection PyUnresolvedReferences
             await self.client.send_message(self.channel, content=content)
-            print('ok')
             return True
 
     @catch_exc
