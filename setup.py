@@ -17,6 +17,7 @@ install_requires = [
     'emiz',
     'raven',
     'argh',
+    'requests',
 ]
 
 test_requires = [
