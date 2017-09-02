@@ -1,6 +1,7 @@
 # coding=utf-8
 # pylint: disable=missing-docstring
 import typing
+import time
 
 from esst.core import CTX, MAIN_LOGGER, Status
 
@@ -29,14 +30,28 @@ class DCS:
         CTX.dcs_do_restart = True
 
     @staticmethod
-    def kill(force: bool = False):
+    def kill(force: bool = False, queue: bool = False):
         if DCS.there_are_connected_players():
             if not force:
+                if queue:
+                    DCS.queue_kill()
                 return 'there are connected players; cannot kill the server now (use "--force" to kill anyway)'
             else:
                 LOGGER.warning('forcing kill with connected players')
         LOGGER.debug('setting context for DCS kill')
         CTX.dcs_do_kill = True
+
+    @staticmethod
+    def queue_kill():
+
+        def _queue_kill():
+            while DCS.there_are_connected_players():
+                time.sleep(5)
+            LOGGER.info('executing planned DCS restart')
+            DCS.kill()
+
+        LOGGER.warning('queing DCS kill for when all players have left')
+        CTX.loop.run_in_executor(None, _queue_kill)
 
     @staticmethod
     def show_cpu_usage_once():
