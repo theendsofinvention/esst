@@ -13,12 +13,14 @@ import discord
 import websockets.exceptions
 
 from esst.core import CFG, CTX, MAIN_LOGGER
+from esst.utils.conn import wan_available
 
 from .abstract import AbstractDiscordBot, AbstractDiscordCommandParser
 from .chat_commands.parser import make_root_parser
 from .events import DiscordEvents
 from .logging_handler import register_logging_handler
 from .tasks import DiscordTasks
+from .catch_exc import catch_exc
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -122,6 +124,7 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             except RuntimeError:
                 pass
 
+    @catch_exc
     async def _update_presence(
             self,
             status: str = discord.Status.online,
@@ -140,6 +143,7 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             afk=afk,
         )
 
+    @catch_exc
     async def on_ready(self):
         """
         Triggers when the bot is ready.
@@ -166,39 +170,54 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
 
             self._ready = True
 
+    @catch_exc
+    async def _watch_for_exit_signals(self):
+        if CTX.exit:
+            while not self.ready:
+                await asyncio.sleep(0.1)
+            if self.ready:
+                await self.say('Bye bye !')
+                await self.client.change_presence(status='offline')
+            LOGGER.debug('closing Discord client')
+            if self.client:
+                while not self.client.is_logged_in:
+                    await asyncio.sleep(0.1)
+                if self.client.is_logged_in:
+                    await self.client.logout()
+                    await self.client.close()
+                while not self.client.is_closed:
+                    await asyncio.sleep(0.1)
+            LOGGER.debug('Discord client is closed')
+            return True
+
+
     async def watch_for_exit_signals(self):
         """
         Continuously runs and intercepts CTX.exit
         """
         while True:
-            if CTX.exit:
-                while not self.ready:
-                    await asyncio.sleep(0.1)
-                if self.ready:
-                    await self.say('Bye bye !')
-                    await self.client.change_presence(status='offline')
-                LOGGER.debug('closing Discord client')
-                if self.client:
-                    while not self.client.is_logged_in:
-                        await asyncio.sleep(0.1)
-                    if self.client.is_logged_in:
-                        await self.client.logout()
-                        await self.client.close()
-                    while not self.client.is_closed:
-                        await asyncio.sleep(0.1)
-                LOGGER.debug('Discord client is closed')
+            if await self._watch_for_exit_signals():
                 break
             await asyncio.sleep(1)
 
+    @catch_exc
+    async def _run(self):
+        if CTX.discord_can_start:
+            LOGGER.debug('starting Discord client')
+            self._create_client()
+            await self.client.start(CFG.discord_token)
+        else:
+            await asyncio.sleep(1)
+
+    @catch_exc
     async def run(self):
         """
         Main loop
         """
         def _pass_exception():
-            LOGGER.exception('Discord bot error')
+            # LOGGER.exception('Discord bot error')
             if CTX.sentry:
                 CTX.sentry.captureException(True)
-
 
         if not CTX.start_discord_loop:
             LOGGER.debug('skipping Discord loop')
@@ -208,22 +227,6 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         CTX.loop.create_task(self.monitor_queues())
 
         while not CTX.exit:
-            LOGGER.debug('starting Discord client')
-            self._create_client()
-            try:
-                await self.client.start(CFG.discord_token)
-                LOGGER.info('Discord client has stopped')
-            except websockets.exceptions.InvalidHandshake:
-                _pass_exception()
-            except websockets.exceptions.InvalidState:
-                _pass_exception()
-            except websockets.exceptions.PayloadTooBig:
-                _pass_exception()
-            except websockets.exceptions.WebSocketProtocolError:
-                _pass_exception()
-            except websockets.exceptions.InvalidURI:
-                _pass_exception()
-            except aiohttp.ClientError:
-                _pass_exception()
+            await self._run()
 
         LOGGER.debug('end of Discord loop')

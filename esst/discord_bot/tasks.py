@@ -5,11 +5,10 @@ Manages background tasks for Discord bot
 
 import asyncio
 
-import discord
-
 from esst.core import CTX, MAIN_LOGGER
 
 from .abstract import AbstractDiscordBot
+from .catch_exc import catch_exc
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -20,6 +19,7 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
     Abstract class that contains background tasks for :py:class:`esst.discord_bot.DiscordBot`
     """
 
+    @catch_exc
     async def say(self, message: str):
         """
         Sends a message
@@ -28,42 +28,44 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
             message: message to send
         """
         content = f'```{message}```'
-        if self.client.is_logged_in and self.channel:
+        if self.client and self.client.is_logged_in and self.channel:
             # noinspection PyUnresolvedReferences
             await self.client.send_message(self.channel, content=content)
+            print('ok')
+            return True
 
+    @catch_exc
     async def send(self, file_path: str):
-        # noinspection PyUnresolvedReferences
-        await self.client.send_file(self.channel, file_path, content='There you go:')
+        if self.client and self.client.is_logged_in and self.channel:
+            # noinspection PyUnresolvedReferences
+            await self.client.send_file(self.channel, file_path, content='There you go:')
+            return True
 
     async def _process_message_queue(self):
-        if self.client.is_closed:
+        if self.client.is_closed or not CTX.wan:
             return
         if not CTX.discord_msg_queue.empty():
             message = CTX.discord_msg_queue.get_nowait()
-            # LOGGER.debug(f'received message to say: {message}')
-            try:
-                await self.say(message)
-            except discord.errors.HTTPException:
+            if not await self.say(message):
                 CTX.discord_msg_queue.put(message)
 
     async def _process_file_queue(self):
-        if self.client.is_closed:
+        if self.client.is_closed or not CTX.wan:
             return
         if not CTX.discord_file_queue.empty():
             file = CTX.discord_file_queue.get_nowait()
-            try:
-                await self.send(file)
-            except discord.errors.HTTPException:
+            if not await self.send(file):
                 CTX.discord_msg_queue.put(file)
 
-    async def monitor_queues(self):
-        """
-        Checks the message queue for pending messages to send
-        """
+    @catch_exc
+    async def _monitor_queues(self):
+        while self.client is None:
+            if CTX.exit:
+                return True
+            await asyncio.sleep(0.1)
         while not self.ready:
             if CTX.exit:
-                break
+                return True
             await asyncio.sleep(0.1)
         await self.client.wait_until_ready()
         while not self.client.is_closed:
@@ -71,4 +73,13 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
             await self._process_file_queue()
             await asyncio.sleep(0.1)
             if CTX.exit:
+                return True
+
+
+    async def monitor_queues(self):
+        """
+        Checks the message queue for pending messages to send
+        """
+        while not CTX.exit:
+            if await self._monitor_queues():
                 break
