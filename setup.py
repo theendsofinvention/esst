@@ -1,5 +1,7 @@
 # coding=utf-8
 
+import shutil
+import os
 from setuptools import find_packages, setup
 
 dependency_links = []
@@ -44,23 +46,39 @@ esst=esst:main
 
 
 def main():
-    setup(
-        name='esst',
-        use_scm_version=True,
-        zip_safe=False,
-        install_requires=install_requires,
-        entry_points=entry_points,
-        tests_require=test_requires,
-        setup_requires=setup_requires,
-        dependency_links=dependency_links,
-        package_dir={'esst': 'esst'},
-        package_data={'esst': ['dcs/templates/*.template']},
-        test_suite='pytest',
-        packages=find_packages(),
-        # packages=['esst', 'esst.core', 'esst.dcs', 'esst.discord_bot', 'esst.discord_bot.chat_commands',
-        #           'esst.listener', 'esst.server', 'esst.utils', 'esst.commands'],
-        python_requires='>=3.6',
-    )
+    try:
+        shutil.copy2('./CHANGELOG.rst', './esst/CHANGELOG.rst')
+        shutil.copy2('./README.md', './esst/README.md')
+        setup(
+            name='esst',
+            use_scm_version=True,
+            zip_safe=False,
+            install_requires=install_requires,
+            entry_points=entry_points,
+            tests_require=test_requires,
+            setup_requires=setup_requires,
+            dependency_links=dependency_links,
+            package_dir={'esst': 'esst'},
+            package_data={
+                'esst': [
+                    'dcs/templates/*.template',
+                    'CHANGELOG.rst',
+                    'README.md',
+                ]
+            },
+            test_suite='pytest',
+            packages=find_packages(),
+            # packages=['esst', 'esst.core', 'esst.dcs', 'esst.discord_bot', 'esst.discord_bot.chat_commands',
+            #           'esst.listener', 'esst.server', 'esst.utils', 'esst.commands'],
+            python_requires='>=3.6',
+            extras_require={
+                'dev': dev_requires,
+                'test': test_requires,
+            },
+        )
+    finally:
+        os.remove('./esst/CHANGELOG.rst')
+        os.remove('./esst/README.md')
 
 
 if __name__ == '__main__':
