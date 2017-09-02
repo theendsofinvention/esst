@@ -1,7 +1,7 @@
 # coding=utf-8
 # pylint: disable=missing-docstring
-import typing
 import time
+import typing
 
 from esst.core import CTX, MAIN_LOGGER, Status
 

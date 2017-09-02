@@ -9,7 +9,7 @@ import queue
 import click
 
 from esst.core import CFG, CTX, MAIN_LOGGER, __version__
-from esst.utils.conn import wan_available, monitor_connection
+from esst.utils.conn import monitor_connection, wan_available
 
 
 async def watch_for_exceptions():
@@ -141,4 +141,4 @@ def main(  # pylint: disable=too-many-locals
 
 
 if __name__ == '__main__':
-    main()
+    main()  # pylint: disable=no-value-for-parameter

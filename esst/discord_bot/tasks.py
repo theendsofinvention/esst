@@ -75,7 +75,6 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
             if CTX.exit:
                 return True
 
-
     async def monitor_queues(self):
         """
         Checks the message queue for pending messages to send

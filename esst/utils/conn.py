@@ -1,16 +1,24 @@
 # coding=utf-8
+"""
+Checks WAN connection
+"""
 import asyncio
+
 import requests
 import requests.exceptions
 
-from esst.core import CTX, MAIN_LOGGER
 from esst.commands import DCS, DISCORD
-
+from esst.core import CTX, MAIN_LOGGER
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def wan_available():
+    """
+
+    Returns: True if connected to WAN
+
+    """
     try:
         response = requests.get('http://google.com', timeout=1)
         DCS.can_start()
@@ -24,6 +32,9 @@ def wan_available():
 
 async def monitor_connection():
 
+    """
+    Loop that checks WAN every 5 seconds
+    """
     LOGGER.debug('starting connection monitoring loop')
 
     while not CTX.exit:
@@ -39,12 +50,10 @@ async def monitor_connection():
                 DCS.kill(force=False, queue=True)
             CTX.wan = current_status
 
-        await asyncio.sleep(2)
+        await asyncio.sleep(5)
 
     LOGGER.debug('end of connection monitoring loop')
 
 
-
 if __name__ == '__main__':
     print(wan_available())
-

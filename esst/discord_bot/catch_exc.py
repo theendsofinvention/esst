@@ -1,8 +1,10 @@
 # coding=utf-8
+"""
+Catches connection error in Discord bot
+"""
 
-import websockets.exceptions
-import socket
 import aiohttp
+import websockets.exceptions
 
 from esst.core import CTX, MAIN_LOGGER
 from esst.utils.conn import wan_available
@@ -16,9 +18,13 @@ def _pass_exception(exc):
     if CTX.sentry:
         CTX.sentry.captureException(True)
 
-def catch_exc(func):
 
-    async def wrapper(*args, **kwargs):
+def catch_exc(func):
+    """
+    Decorator to protect discord.client methods
+    """
+
+    async def _wrapper(*args, **kwargs):
 
         try:
             return await func(*args, **kwargs)
@@ -36,4 +42,4 @@ def catch_exc(func):
             wan_available()
             _pass_exception(exc)
 
-    return wrapper
+    return _wrapper

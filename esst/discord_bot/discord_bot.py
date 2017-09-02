@@ -6,21 +6,20 @@ Runs a Discord bot using the discord.py library
 import asyncio
 import os
 import random
-import aiohttp
 
+import aiohttp
 import aiohttp.errors
 import discord
 import websockets.exceptions
 
 from esst.core import CFG, CTX, MAIN_LOGGER
-from esst.utils.conn import wan_available
 
 from .abstract import AbstractDiscordBot, AbstractDiscordCommandParser
+from .catch_exc import catch_exc
 from .chat_commands.parser import make_root_parser
 from .events import DiscordEvents
 from .logging_handler import register_logging_handler
 from .tasks import DiscordTasks
-from .catch_exc import catch_exc
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -190,7 +189,6 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             LOGGER.debug('Discord client is closed')
             return True
 
-
     async def watch_for_exit_signals(self):
         """
         Continuously runs and intercepts CTX.exit
@@ -214,6 +212,7 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         """
         Main loop
         """
+
         def _pass_exception():
             # LOGGER.exception('Discord bot error')
             if CTX.sentry:
