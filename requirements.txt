@@ -6,7 +6,7 @@ chardet==3.0.4            # via aiohttp, requests
 click==6.7
 configobj==5.0.6          # via everett
 contextlib2==0.5.5        # via raven
-discord.py==0.16.10
+discord.py==0.16.11
 emiz==0.1.8
 everett==0.9
 future==0.16.0            # via pefile
@@ -20,9 +20,9 @@ mpmath==0.19              # via emiz
 multidict==3.1.3          # via aiohttp
 natsort==5.1.0            # via emiz
 pefile==2017.8.1
-psutil==5.2.2
+psutil==5.3.0
 raven==6.1.0
-requests==2.18.4          # via emiz, github3.py
+requests==2.18.4
 six==1.10.0               # via configobj, everett
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py
