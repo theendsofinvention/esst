@@ -47,6 +47,7 @@ def main():
     setup(
         name='esst',
         use_scm_version=True,
+        zip_safe=False,
         install_requires=install_requires,
         entry_points=entry_points,
         tests_require=test_requires,
