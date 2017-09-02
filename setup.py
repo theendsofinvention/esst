@@ -75,6 +75,24 @@ def main():
                 'dev': dev_requires,
                 'test': test_requires,
             },
+            license='MIT',
+            classifiers=[
+                'Development Status :: 3 - Alpha',
+                'Environment :: Win32 (MS Windows)',
+                'Intended Audience :: End Users/Desktop',
+                'Topic :: Software Development :: Build Tools',
+                'Natural Language :: English',
+                'Operating System :: Microsoft :: Windows :: Windows 7',
+                'Operating System :: Microsoft :: Windows :: Windows 8',
+                'Operating System :: Microsoft :: Windows :: Windows 8.1',
+                'Operating System :: Microsoft :: Windows :: Windows 10',
+                'License :: OSI Approved :: MIT License',
+                'Programming Language :: Python :: 3.6',
+                'Programming Language :: Python :: 3.7',
+                'Topic :: Games/Entertainment :: Simulation',
+                'Topic :: System :: Systems Administration',
+                'Topic :: Utilities',
+            ],
         )
     finally:
         os.remove('./esst/CHANGELOG.rst')
