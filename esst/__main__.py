@@ -138,3 +138,7 @@ def main(  # pylint: disable=too-many-locals
 
         CTX.loop.run_until_complete(futures)
         MAIN_LOGGER.debug('all done !')
+
+
+if __name__ == '__main__':
+    main()
