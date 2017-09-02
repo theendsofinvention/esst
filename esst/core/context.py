@@ -28,12 +28,14 @@ class Context:
     exit: bool = False
     loop: AbstractEventLoop = None
     sentry = None
+    wan = False
 
     start_listener_loop: bool = True
     start_discord_loop: bool = True
     start_server_loop: bool = True
     start_dcs_loop: bool = True
 
+    discord_can_start = False
     discord_msg_queue: Queue = Queue()
     discord_file_queue: Queue = Queue()
 
@@ -41,10 +43,11 @@ class Context:
     dcs_setup_dedi_config: bool = True
     dcs_auto_mission: bool = True
 
-    dcs_can_start: bool = True
+    dcs_can_start: bool = False
     dcs_show_cpu_usage: bool = False
     dcs_show_cpu_usage_once: bool = False
     dcs_do_kill: bool = False
+    dcs_do_queued_kill: bool = False
     dcs_do_restart: bool = False
 
     listener_cmd_queue: Queue = Queue()

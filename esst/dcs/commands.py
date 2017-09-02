@@ -60,12 +60,14 @@ class DCS:
 
     @staticmethod
     def can_start():
-        LOGGER.debug('DCS can start')
+        if not CTX.dcs_can_start:
+            LOGGER.debug('DCS can start')
         CTX.dcs_can_start = True
 
     @staticmethod
     def cannot_start():
-        LOGGER.debug('DCS can NOT start')
+        if CTX.dcs_can_start:
+            LOGGER.debug('DCS can NOT start')
         CTX.dcs_can_start = False
 
     @staticmethod

@@ -9,6 +9,7 @@ import queue
 import click
 
 from esst.core import CFG, CTX, MAIN_LOGGER, __version__
+from esst.utils.conn import wan_available, monitor_connection
 
 
 async def watch_for_exceptions():
@@ -62,6 +63,15 @@ def main(  # pylint: disable=too-many-locals
         CTX.sentry.register_context('Config', CFG)
 
     CTX.loop = asyncio.get_event_loop()
+
+    def _handler(_, context):
+        MAIN_LOGGER.error(f'error in event loop: {context["message"]}')
+
+    # CTX.loop.set_exception_handler(_handler)
+
+    CTX.wan = wan_available()
+    CTX.loop.create_task(monitor_connection())
+
     CTX.start_discord_loop = discord and CFG.start_discord_loop
     CTX.start_server_loop = server and CFG.start_server_loop
     CTX.start_dcs_loop = dcs and CFG.start_dcs_loop
