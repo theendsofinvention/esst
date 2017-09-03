@@ -25,7 +25,7 @@ local panel_waitDsbweb  = require('me_waitDsbweb')
 local lfs               = require('lfs')
 local S 				= require('Serializer')
 local Tools 			= require('tools')
-local module_updater    =  require('me_updater')
+local module_updater    = require('me_updater')
 
 i18n.setup(_M)
 
