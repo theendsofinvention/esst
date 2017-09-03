@@ -1,7 +1,8 @@
 # coding=utf-8
 
-import shutil
 import os
+import shutil
+
 from setuptools import find_packages, setup
 
 dependency_links = []

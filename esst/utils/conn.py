@@ -4,9 +4,9 @@ Checks WAN connection
 """
 import asyncio
 
+import ipgetter
 import requests
 import requests.exceptions
-import ipgetter
 
 from esst.commands import DCS, DISCORD
 from esst.core import CTX, MAIN_LOGGER
@@ -15,6 +15,9 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def external_ip():
+    """
+    Returns: external IP of this machine
+    """
     return ipgetter.IPgetter().get_externalip()
 
 

@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Manages config params for auto mission
+"""
 
 import os
 
@@ -36,38 +39,65 @@ class ESSTConfig(BaseConfig,
                  DCSServerConfig,
                  AutoMissionConfig,
                  DiscordConfig):
+    """
+    Manages config params for auto mission
+    """
+
     def __init__(self):
         BaseConfig.__init__(self, 'esst')
-        pass
 
     @ConfigProp(bool)
     def debug(self):
+        """
+        Outputs debug messages on the console
+        """
         pass
 
     @ConfigProp(str)
     def saved_games_dir(self):
+        """
+        Path to "Saved Games" folder
+        """
         pass
 
     @ConfigProp(str, '')
     def sentry_dsn(self):
+        """
+        Optional Sentry DSN to send crash reports
+        """
         pass
 
     @ConfigProp(bool, True)
     def start_server_loop(self):
+        """
+        Starts the server loop ("server" is the machine on which DCS is running)
+        """
         pass
 
     @ConfigProp(bool, True)
     def start_dcs_loop(self):
+        """
+        Starts the DCS loop
+        """
         pass
 
     @ConfigProp(bool, True)
     def start_discord_loop(self):
+        """
+        Starts the Discord bot loop
+        """
         pass
 
     @ConfigProp(bool, True)
     def start_listener_loop(self):
+        """
+        Starts the listening socket loop
+        """
         pass
 
     @ConfigProp(bool, True)
     def dcs_can_start(self):
+        """
+        Allow DCS application to actually start
+        """
         pass

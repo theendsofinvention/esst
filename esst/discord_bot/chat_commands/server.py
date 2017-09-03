@@ -57,7 +57,7 @@ def reboot(force: bool = False):
     SERVER.reboot(force)
 
 
-def ip():
+def ip():  # pylint: disable=invalid-name
     """
     Show the server's external IP
     """
