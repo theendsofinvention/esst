@@ -134,6 +134,7 @@ def main(  # pylint: disable=too-many-locals
 
         futures = asyncio.gather(
             CTX.loop.create_task(dcs_loop.kill_running_app()),
+            CTX.loop.create_task(listener_loop.run_until_dcs_is_closed()),
         )
 
         CTX.loop.run_until_complete(futures)
