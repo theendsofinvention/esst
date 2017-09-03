@@ -4,6 +4,7 @@ Manages background tasks for Discord bot
 """
 
 import asyncio
+import time
 
 from esst.core import CTX, MAIN_LOGGER
 
@@ -27,7 +28,8 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
         Args:
             message: message to send
         """
-        content = f'```{message}```'
+        time_stamp = time.strftime('%X')
+        content = f'{time_stamp}```{message}```'
         if self.client and self.client.is_logged_in and self.channel:
             # noinspection PyUnresolvedReferences
             await self.client.send_message(self.channel, content=content)
