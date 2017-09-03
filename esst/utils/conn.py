@@ -6,11 +6,16 @@ import asyncio
 
 import requests
 import requests.exceptions
+import ipgetter
 
 from esst.commands import DCS, DISCORD
 from esst.core import CTX, MAIN_LOGGER
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
+
+
+def external_ip():
+    return ipgetter.IPgetter().get_externalip()
 
 
 def wan_available():

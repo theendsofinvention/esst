@@ -20,6 +20,7 @@ install_requires = [
     'raven',
     'argh',
     'requests',
+    'ipgetter',
 ]
 
 test_requires = [

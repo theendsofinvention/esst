@@ -8,6 +8,7 @@ import humanize
 
 from esst.commands import DISCORD, SERVER
 from esst.core import MAIN_LOGGER, ServerStatus
+from esst.utils.conn import external_ip
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -54,6 +55,13 @@ def reboot(force: bool = False):
     """
     LOGGER.warning('rebooting server, ciao a tutti !')
     SERVER.reboot(force)
+
+
+def ip():
+    """
+    Show the server's external IP
+    """
+    DISCORD.say(f'Server IP: {external_ip()}')
 
 
 NAMESPACE = '!server'
