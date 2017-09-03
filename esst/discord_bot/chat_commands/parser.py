@@ -19,7 +19,7 @@ from argh.utils import get_arg_spec
 from esst.commands import DISCORD
 from esst.core import CFG, MAIN_LOGGER
 from esst.discord_bot import abstract
-from esst.discord_bot.chat_commands import dcs, esst_, mission, server, report
+from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -119,7 +119,8 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
         return '\n'.join(result)
     except tuple(wrappable_exceptions) as exc:  # pylint: disable=catching-non-exception
         processor = getattr(func, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
-                            lambda exc: '{0.__class__.__name__}: {0}'.format(exc))
+                            lambda exc: '{0.__class__.__name__}: {0}'  # pylint: disable=unnecessary-lambda
+                            .format(exc))
 
         LOGGER.error(compat.text_type(processor(exc)))
         LOGGER.exception(exc)

@@ -3,8 +3,8 @@
 Manages config params for auto mission
 """
 
-import os
 import inspect
+import os
 
 from elib.config import BaseConfig, ConfigProp
 

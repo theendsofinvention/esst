@@ -4,8 +4,9 @@
 Meh
 """
 import uuid
-from esst.core import MAIN_LOGGER, CTX
+
 from esst.commands import DISCORD
+from esst.core import CTX, MAIN_LOGGER
 
 from .arg import arg
 
@@ -19,19 +20,19 @@ def _send(msg, ctx):
 
 
 @arg('issue', nargs='+', metavar='ISSUE')
-def issue(issue):
+def issue(issue_):
     """
     Load a mission, allowing to set the weather or the time (protected)
     """
-    _send(issue, 'ISSUE')
+    _send(issue_, 'ISSUE')
 
 
 @arg('suggestion', nargs='+', metavar='SUGGESTION')
-def suggestion(suggestion):
+def suggestion(suggestion_):
     """
     Load a mission, allowing to set the weather or the time (protected)
     """
-    _send(suggestion, 'SUGGESTION')
+    _send(suggestion_, 'SUGGESTION')
 
 
 NAMESPACE = '!report'
