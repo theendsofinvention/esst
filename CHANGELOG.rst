@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+0.1.40 (2017-09-03)
+-------------------
+
+Fix
+~~~
+- Fixed protected modules method registering as available chat commands.
+  [132nd-etcher]
+- Fix "-h" command not registering correctly. [132nd-etcher]
+
+
 0.1.39 (2017-09-03)
 -------------------
 
