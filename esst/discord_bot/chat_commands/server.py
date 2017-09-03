@@ -3,12 +3,12 @@
 Commands related to managing the server computer
 """
 
-import argh
 import humanize
 
 from esst.commands import DISCORD, SERVER
 from esst.core import MAIN_LOGGER, ServerStatus
 from esst.utils.conn import external_ip
+
 from .arg import arg
 
 LOGGER = MAIN_LOGGER.getChild(__name__)

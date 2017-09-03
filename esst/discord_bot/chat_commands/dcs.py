@@ -3,11 +3,12 @@
 Commands related to managing the DSC application
 """
 
-from .arg import arg
 import humanize
 
 from esst.commands import DCS, DISCORD
 from esst.core import Status
+
+from .arg import arg
 
 
 def status():

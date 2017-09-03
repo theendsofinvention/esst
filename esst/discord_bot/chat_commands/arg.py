@@ -1,11 +1,12 @@
 # coding=utf-8
-
+# pylint: disable=missing-docstring
 from argh.constants import ATTR_ARGS
 
 
-
+# noinspection PyMissingOrEmptyDocstring
 def arg(*args, **kwargs):
 
+    # noinspection PyMissingOrEmptyDocstring
     def wrapper(func):
         if 'protected' in kwargs:
             setattr(func, 'protected_', True)

@@ -10,17 +10,16 @@ from types import GeneratorType
 
 import argh
 from argh import compat
-from argh.constants import ATTR_EXPECTS_NAMESPACE_OBJECT, ATTR_WRAPPED_EXCEPTIONS, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR, \
-    DEST_FUNCTION
+from argh.constants import (ATTR_EXPECTS_NAMESPACE_OBJECT, ATTR_WRAPPED_EXCEPTIONS, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
+                            DEST_FUNCTION)
 from argh.dispatching import ArghNamespace
 from argh.exceptions import CommandError
 from argh.utils import get_arg_spec
 
-from esst.core import CTX, MAIN_LOGGER, CFG
+from esst.commands import DISCORD
+from esst.core import CFG, MAIN_LOGGER
 from esst.discord_bot import abstract
 from esst.discord_bot.chat_commands import dcs, esst_, mission, server
-from esst.commands import DISCORD
-
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -49,7 +48,7 @@ def _get_function_from_namespace_obj(namespace_obj):
     return func
 
 
-def _execute_command(func, namespace_obj, errors_file, pre_call=None):
+def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
     """
     Assumes that `function` is a callable.  Tries different approaches
     to call it (with `namespace_obj` or with ordinary signature).
@@ -63,7 +62,6 @@ def _execute_command(func, namespace_obj, errors_file, pre_call=None):
     if pre_call:
         LOGGER.debug(f'running pre_call: {pre_call}')
         pre_call(namespace_obj)
-
 
     # namespace -> dictionary
     def _flat_key(key):
@@ -119,9 +117,8 @@ def _execute_command(func, namespace_obj, errors_file, pre_call=None):
         LOGGER.debug(f'running func {func}')
         result = _call()
         return '\n'.join(result)
-    except tuple(wrappable_exceptions) as exc:
-        processor = getattr(func, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
-                            lambda exc: '{0.__class__.__name__}: {0}'.format(exc))
+    except tuple(wrappable_exceptions) as exc:  # pylint: disable=catching-non-exception
+        processor = getattr(func, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR, '{0.__class__.__name__}: {0}'.format(exc))
 
         LOGGER.error(compat.text_type(processor(exc)))
 
@@ -190,18 +187,17 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
         if message:
             DISCORD.say(message)
 
-    def dispatch(self,  # pylint: disable=arguments-differ
+    def dispatch(self,  # noqa: C901  # pylint: disable=arguments-differ
                  argv=None,
                  add_help_command=True,
                  completion=True,  # pylint: disable=unused-argument
                  pre_call=None,
                  output_file=sys.stdout,  # pylint: disable=unused-argument
                  errors_file=sys.stderr,  # pylint: disable=unused-argument
-                 raw_output=False,
+                 raw_output=False,  # pylint: disable=unused-argument
                  namespace=None,
                  skip_unknown_args=False,
-                 is_admin: bool = False,
-                 ):
+                 is_admin: bool = False, ):
         """
         Passes arguments to linked function
 
@@ -253,7 +249,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
                     LOGGER.error(f'only users with role "{CFG.discord_admin_role}" have access to this command')
                     return
                 LOGGER.debug(f'running func: {func}')
-                return _execute_command(func, namespace_obj, errors_file, pre_call=pre_call)
+                return _execute_command(func, namespace_obj, pre_call=pre_call)
             else:
                 # no commands declared, can't dispatch; display help message
                 return [self.format_usage()]
