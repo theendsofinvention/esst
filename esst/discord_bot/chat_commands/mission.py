@@ -100,6 +100,9 @@ def load(
     """
     Load a mission, allowing to set the weather or the time (protected)
     """
+    if not any((name, icao, metar, time)):
+        DISCORD.say('Type "!mission load --help" to see available options')
+        return
     CTX.loop.run_in_executor(None, _load, name, icao, metar, time, max_wind, min_wind)
 
 
