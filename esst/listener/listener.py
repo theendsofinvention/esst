@@ -62,6 +62,7 @@ class DCSListener:
         Status.mission_file = data.get('mission_filename')
         Status.mission_name = data.get('mission_name')
         Status.players = data.get('players')
+        CTX.players_history.append(len(Status.players))
 
     def _parse_status(self, data: dict):
         LOGGER.debug(f'DCS server says: {data["message"]}')

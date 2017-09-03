@@ -22,6 +22,7 @@ install_requires = [
     'argh',
     'requests',
     'ipgetter',
+    'matplotlib',
 ]
 
 test_requires = [

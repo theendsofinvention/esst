@@ -31,6 +31,7 @@ class ServerStatus:
     cpu_usage = 'unknown'
     total_memory = 'unknown'
     free_memory = 'unknown'
+    mem_usage = 'unknown'
     swap_size = 'unknown'
     swap_used = 'unknown'
     boot_time = 'unknown'

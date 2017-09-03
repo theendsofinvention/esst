@@ -4,6 +4,7 @@ Manages DCS application Window process
 """
 import asyncio
 from pathlib import Path
+from collections import deque
 
 import psutil
 
@@ -224,6 +225,9 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             try:
                 if self.app and self.app.is_running():
                     cpu_usage = int(self.app.cpu_percent(CFG.dcs_high_cpu_usage_interval)) / psutil.cpu_count()
+                    mem_usage = int(self.app.memory_percent())
+                    CTX.dcs_mem_history.append(mem_usage)
+                    CTX.dcs_cpu_history.append(cpu_usage)
                     Status.dcs_cpu_usage = f'{cpu_usage}%'
                     if CTX.dcs_show_cpu_usage or CTX.dcs_show_cpu_usage_once:
                         DISCORD.say(f'DCS cpu usage: {cpu_usage}%')

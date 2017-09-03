@@ -6,6 +6,9 @@ import os
 
 from esst.commands import DCS
 from esst.core import CTX, MAIN_LOGGER
+from esst.commands import DISCORD
+
+from esst.utils.historygraph import make_history_graph
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -40,3 +43,9 @@ class SERVER:
     def show_cpu_usage_stop():
         LOGGER.debug('show cpu usage: stop')
         CTX.server_show_cpu_usage = False
+
+    @staticmethod
+    def show_cpu_graph():
+        LOGGER.debug('show cpu usage: graph')
+        graph_file = make_history_graph()
+        DISCORD.send(graph_file)
