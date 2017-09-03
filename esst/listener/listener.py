@@ -148,7 +148,7 @@ class DCSListener:
         """
         Parse commands until DCS has closed itself (or was killed)
         """
-        while not Status.dcs_application == 'not running':
+        while Status.dcs_application != 'not running':
             await self._parse_commands()
             await asyncio.sleep(0.1)
         self.cmd_sock.close()

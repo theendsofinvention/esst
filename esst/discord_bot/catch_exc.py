@@ -3,12 +3,12 @@
 Catches connection error in Discord bot
 """
 
-import aiohttp
 import asyncio
+
+import aiohttp
 import websockets.exceptions
 
 from esst.core import CTX, MAIN_LOGGER
-from esst.utils.conn import wan_available
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
