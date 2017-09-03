@@ -4,6 +4,7 @@ Manages config params for auto mission
 """
 
 import os
+import inspect
 
 from elib.config import BaseConfig, ConfigProp
 
@@ -42,6 +43,18 @@ class ESSTConfig(BaseConfig,
     """
     Manages config params for auto mission
     """
+
+    def get_context(self) -> dict:
+        """
+
+        Returns: dict context for Sentry
+
+        """
+        return {
+            member: value
+            for member, value in inspect.getmembers(self, lambda a: not inspect.ismethod(a))
+            if not member.startswith('_')
+        }
 
     def __init__(self):
         BaseConfig.__init__(self, 'esst')
