@@ -230,9 +230,10 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
                 argv = sys.argv[1:]
 
             if add_help_command:
-                if argv and argv[0] == 'help':
-                    argv.pop(0)
-                    argv.append('--help')
+                if argv:
+                    if argv[0] in ['help', '-h']:
+                        argv.pop(0)
+                        argv.append('--help')
 
             if skip_unknown_args:
                 parse_args = self.parse_known_args
