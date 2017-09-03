@@ -2,6 +2,15 @@ Changelog
 =========
 
 
+0.1.36 (2017-09-03)
+-------------------
+
+Fix
+~~~
+- Fix regular member having access to the upload mission function.
+  [132nd-etcher]
+
+
 0.1.34 (2017-09-03)
 -------------------
 
