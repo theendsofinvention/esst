@@ -19,20 +19,20 @@ def _send(msg, ctx):
         DISCORD.say('Thank you !')
 
 
-@arg('issue', nargs='+', metavar='ISSUE')
-def issue(issue_):
+@arg('message', nargs='+', metavar='ISSUE')
+def issue(message):
     """
     Load a mission, allowing to set the weather or the time (protected)
     """
-    _send(issue_, 'ISSUE')
+    _send(message, 'ISSUE')
 
 
-@arg('suggestion', nargs='+', metavar='SUGGESTION')
-def suggestion(suggestion_):
+@arg('message', nargs='+', metavar='SUGGESTION')
+def suggestion(message):
     """
     Load a mission, allowing to set the weather or the time (protected)
     """
-    _send(suggestion_, 'SUGGESTION')
+    _send(message, 'SUGGESTION')
 
 
 NAMESPACE = '!report'
