@@ -95,7 +95,7 @@ class Sentry(raven.Client):
 
 
 # noinspection PyUnusedLocal
-def filter_breadcrumbs(_logger, level, msg, *args, **kwargs):
+def filter_breadcrumbs(_logger, level, msg, *args, **kwargs):  # pylint: disable=unused-argument
     """
     Intercepts logging messages
 
@@ -113,7 +113,6 @@ def filter_breadcrumbs(_logger, level, msg, *args, **kwargs):
     if level in skip_lvl or msg in skip_msg:
         return False
 
-    LOGGER.debug('got args, kwargs: ', args, kwargs)
     if _logger == 'requests':
         return False
     return True
