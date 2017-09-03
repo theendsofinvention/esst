@@ -3,20 +3,127 @@
 Discord chat commands parser
 """
 
-
 import argparse
 import inspect
 import sys
+from types import GeneratorType
 
 import argh
+from argh import compat
+from argh.constants import ATTR_EXPECTS_NAMESPACE_OBJECT, ATTR_WRAPPED_EXCEPTIONS, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR, \
+    DEST_FUNCTION
+from argh.dispatching import ArghNamespace
+from argh.exceptions import CommandError
+from argh.utils import get_arg_spec
 
-from esst.core import CTX
+from esst.core import CTX, MAIN_LOGGER, CFG
 from esst.discord_bot import abstract
 from esst.discord_bot.chat_commands import dcs, esst_, mission, server
+from esst.commands import DISCORD
+
+
+LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def _cancel_execution(*_):
     raise SystemExit(0)
+
+
+def _get_function_from_namespace_obj(namespace_obj):
+    if isinstance(namespace_obj, ArghNamespace):
+        # our special namespace object keeps the stack of assigned functions
+        try:
+            func = namespace_obj.get_function()
+        except (AttributeError, IndexError):
+            return None
+    else:
+        # a custom (probably vanilla) namespace object keeps the last assigned
+        # function; this may be wrong but at least something may work
+        if not hasattr(namespace_obj, DEST_FUNCTION):
+            return None
+        func = getattr(namespace_obj, DEST_FUNCTION)
+
+    if not func or not hasattr(func, '__call__'):
+        return None
+
+    return func
+
+
+def _execute_command(func, namespace_obj, errors_file, pre_call=None):
+    """
+    Assumes that `function` is a callable.  Tries different approaches
+    to call it (with `namespace_obj` or with ordinary signature).
+    Yields the results line by line.
+
+    If :class:`~argh.exceptions.CommandError` is raised, its message is
+    appended to the results (i.e. yielded by the generator as a string).
+    All other exceptions propagate unless marked as wrappable
+    by :func:`wrap_errors`.
+    """
+    if pre_call:
+        LOGGER.debug(f'running pre_call: {pre_call}')
+        pre_call(namespace_obj)
+
+
+    # namespace -> dictionary
+    def _flat_key(key):
+        return key.replace('-', '_')
+
+    def _call():
+        # Actually call the function
+        if getattr(func, ATTR_EXPECTS_NAMESPACE_OBJECT, False):
+            result_ = func(namespace_obj)
+        else:
+
+            all_input = dict((_flat_key(k), v)
+                             for k, v in vars(namespace_obj).items())
+
+            # filter the namespace variables so that only those expected
+            # by the actual function will pass
+
+            spec = get_arg_spec(func)
+
+            positional = [all_input[k] for k in spec.args]
+            kwonly = getattr(spec, 'kwonlyargs', [])
+            keywords = dict((k, all_input[k]) for k in kwonly)
+
+            # *args
+            if spec.varargs:
+                positional += getattr(namespace_obj, spec.varargs)
+
+            # **kwargs
+            varkw = getattr(spec, 'varkw', getattr(spec, 'keywords', []))
+            if varkw:
+                not_kwargs = [DEST_FUNCTION] + spec.args + [spec.varargs] + kwonly
+                for k in vars(namespace_obj):
+                    if k.startswith('_') or k in not_kwargs:
+                        continue
+                    keywords[k] = getattr(namespace_obj, k)
+
+            result_ = func(*positional, **keywords)
+
+        # Yield the results
+        if isinstance(result_, (GeneratorType, list, tuple)):
+            # yield each line ASAP, convert CommandError message to a line
+            for line_ in result_:
+                yield line_
+        else:
+            # yield non-empty non-iterable result as a single line
+            if result_ is not None:
+                yield result_
+
+    wrappable_exceptions = [CommandError, Exception]
+    wrappable_exceptions += getattr(func, ATTR_WRAPPED_EXCEPTIONS, [])
+
+    try:
+        LOGGER.debug(f'running func {func}')
+        result = _call()
+        return '\n'.join(result)
+    except tuple(wrappable_exceptions) as exc:
+        processor = getattr(func, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
+                            lambda exc: '{0.__class__.__name__}: {0}'.format(exc))
+
+        LOGGER.error(compat.text_type(processor(exc)))
 
 
 class HelpFormatter(argparse.RawDescriptionHelpFormatter):
@@ -81,7 +188,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
 
     def _print_message(self, message, _=None):
         if message:
-            CTX.discord_msg_queue.put(message)
+            DISCORD.say(message)
 
     def dispatch(self,  # pylint: disable=arguments-differ
                  argv=None,
@@ -92,11 +199,14 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
                  errors_file=sys.stderr,  # pylint: disable=unused-argument
                  raw_output=False,
                  namespace=None,
-                 skip_unknown_args=False):
+                 skip_unknown_args=False,
+                 is_admin: bool = False,
+                 ):
         """
         Passes arguments to linked function
 
         Args:
+            is_admin: is the user that issued the command an admin ?
             argv:
             add_help_command:
             completion:
@@ -117,16 +227,37 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
                 if arg in ['-h', '--help']:
                     pre_call = _cancel_execution
 
-            return super(DiscordCommandParser, self).dispatch(
-                argv=argv,
-                add_help_command=add_help_command,
-                completion=False,
-                pre_call=pre_call,
-                output_file=None, errors_file=None,
-                raw_output=raw_output,
-                namespace=namespace,
-                skip_unknown_args=skip_unknown_args,
-            )
+            if argv is None:
+                argv = sys.argv[1:]
+
+            if add_help_command:
+                if argv and argv[0] == 'help':
+                    argv.pop(0)
+                    argv.append('--help')
+
+            if skip_unknown_args:
+                parse_args = self.parse_known_args
+            else:
+                parse_args = self.parse_args
+
+            if not namespace:
+                namespace = ArghNamespace()
+
+            # this will raise SystemExit if parsing fails
+            namespace_obj = parse_args(argv, namespace=namespace)
+
+            func = _get_function_from_namespace_obj(namespace_obj)
+
+            if func:
+                if hasattr(func, 'protected_') and not is_admin:
+                    LOGGER.error(f'only users with role "{CFG.discord_admin_role}" have access to this command')
+                    return
+                LOGGER.debug(f'running func: {func}')
+                return _execute_command(func, namespace_obj, errors_file, pre_call=pre_call)
+            else:
+                # no commands declared, can't dispatch; display help message
+                return [self.format_usage()]
+
         except SystemExit:
             pass
 
@@ -148,14 +279,14 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
     def format_help(self):  # pylint: disable=useless-super-delegation
         return super(DiscordCommandParser, self).format_help()
 
-    def parse_discord_message(self, message: str):
+    def parse_discord_message(self, message: str, is_admin: bool):
         if message.startswith('!'):
 
             if message == '!help':
                 self._print_message(self.format_help())
             else:
                 formatted_args = message.split(' ')
-                self.dispatch(formatted_args)
+                self.dispatch(formatted_args, is_admin=is_admin)
 
 
 DECRIPTION = """

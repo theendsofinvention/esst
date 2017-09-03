@@ -35,6 +35,13 @@ class DiscordConfig:
         """
         pass
 
+    @ConfigProp(str, default='', namespace=NAMESPACE)
+    def discord_admin_role(self) -> str:
+        """
+        Discord bot token
+        """
+        pass
+
     @ConfigProp(str, namespace=NAMESPACE,
                 default='Hello!\n'
                         f'This is ESST v{__version__}\n'

@@ -4,7 +4,7 @@ Manages Discord chat commands
 """
 import discord
 
-from esst.core import MAIN_LOGGER
+from esst.core import MAIN_LOGGER, CFG
 from esst.dcs import missions_manager
 from esst.discord_bot import abstract
 
@@ -48,6 +48,11 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
                     load = 'load' in message.content
                     missions_manager.download_mission_from_discord(attach, overwrite, load)
         if message.content.startswith('!'):
-            LOGGER.debug(f'received "{message.content}" command from: {message.author.display_name}')
+            if CFG.discord_admin_role:
+                is_admin = CFG.discord_admin_role in [role.name for role in message.author.roles]
+            else:
+                is_admin = True
+            LOGGER.debug(f'received "{message.content}" command from: {message.author.display_name}'
+                         f'{" (admin)" if is_admin else ""}')
 
-            self.parser.parse_discord_message(message.content)
+            self.parser.parse_discord_message(message.content, is_admin)

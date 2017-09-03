@@ -32,7 +32,7 @@ class AbstractDiscordCommandParser:
         pass
 
     @abc.abstractmethod
-    def parse_discord_message(self, message: str):
+    def parse_discord_message(self, message: str, is_admin: bool):
         pass
 
 

@@ -5,12 +5,12 @@ Meh
 """
 from time import sleep
 
-from argh import arg
 from emiz import build_metar_from_mission, edit_miz, parse_metar_string, retrieve_metar
 
 from esst.commands import DCS, DISCORD
 from esst.core import CTX, MAIN_LOGGER, Status
 from esst.dcs import missions_manager
+from .arg import arg
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -84,6 +84,7 @@ def _load(name, icao, metar, time, max_wind, min_wind):  # noqa: C901  # pylint:
 
 
 @arg('-m', '--metar', nargs='+', metavar='METAR')
+@arg(protected=True)
 def load(
         name: 'name of the mission to load (if not provided, will re-use the current mission)' = None,
         icao: 'update the weather from ICAO' = None,
@@ -96,7 +97,7 @@ def load(
 
 ):
     """
-    Load a mission, allowing to set the weather or the time
+    Load a mission, allowing to set the weather or the time (protected)
     """
     CTX.loop.run_in_executor(None, _load, name, icao, metar, time, max_wind, min_wind)
 

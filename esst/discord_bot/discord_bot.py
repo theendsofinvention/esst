@@ -13,7 +13,6 @@ import discord
 import websockets.exceptions
 
 from esst.core import CFG, CTX, MAIN_LOGGER
-
 from .abstract import AbstractDiscordBot, AbstractDiscordCommandParser
 from .catch_exc import catch_exc
 from .chat_commands.parser import make_root_parser

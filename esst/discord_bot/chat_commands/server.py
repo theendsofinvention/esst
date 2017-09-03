@@ -9,6 +9,7 @@ import humanize
 from esst.commands import DISCORD, SERVER
 from esst.core import MAIN_LOGGER, ServerStatus
 from esst.utils.conn import external_ip
+from .arg import arg
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -31,8 +32,8 @@ def status():
     DISCORD.say('Server status:\n' + '\n'.join(output))
 
 
-@argh.arg('--start', help='Show CPU usage in real time')
-@argh.arg('--stop', help='Stop showing CPU usage in real time')
+@arg('--start', help='Show CPU usage in real time')
+@arg('--stop', help='Stop showing CPU usage in real time')
 def show_cpu(
         start=False,
         stop=False
@@ -48,10 +49,11 @@ def show_cpu(
         SERVER.show_cpu_usage_once()
 
 
-@argh.arg('--force', help='force server reboot, even when players are connected')
+@arg('--force', help='force server reboot, even when players are connected')
+@arg(protected=True)
 def reboot(force: bool = False):
     """
-    Restart the server computer
+    Restart the server computer (protected)
     """
     LOGGER.warning('rebooting server, ciao a tutti !')
     SERVER.reboot(force)

@@ -113,7 +113,7 @@ def filter_breadcrumbs(_logger, level, msg, *args, **kwargs):
     if level in skip_lvl or msg in skip_msg:
         return False
 
-    print('got args, kwargs: ', args, kwargs)
+    LOGGER.debug('got args, kwargs: ', args, kwargs)
     if _logger == 'requests':
         return False
     return True

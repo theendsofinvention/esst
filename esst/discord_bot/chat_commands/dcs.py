@@ -3,7 +3,7 @@
 Commands related to managing the DSC application
 """
 
-import argh
+from .arg import arg
 import humanize
 
 from esst.commands import DCS, DISCORD
@@ -28,8 +28,8 @@ def status():
     DISCORD.say('\n'.join(output))
 
 
-@argh.arg('--start', help='Show CPU usage in real time')
-@argh.arg('--stop', help='Stop showing CPU usage in real time')
+@arg('--start', help='Show CPU usage in real time')
+@arg('--stop', help='Stop showing CPU usage in real time')
 def show_cpu(
         start=False,
         stop=False
@@ -45,10 +45,11 @@ def show_cpu(
         DCS.show_cpu_usage_once()
 
 
-@argh.arg('--force', help='force restart, even when players are connected')
+@arg('--force', help='force restart, even when players are connected')
+@arg(protected=True)
 def restart(force: bool = False):
     """
-    Closes and restart DCS.exe
+    Closes and restart DCS.exe (protected)
     """
     error = DCS.restart(force=force)
     if error:

@@ -6,6 +6,7 @@ Manages commands related to ESST itself
 from esst.core import CFG, __version__
 from esst.core.logger import log_file_path
 from esst.discord_bot.commands import DISCORD
+from .arg import arg
 
 
 def log():
@@ -22,9 +23,10 @@ def version():
     DISCORD.say(f'ESST v{__version__}')
 
 
+@arg(protected=True)
 def restart():
     """
-    Restart ESST
+    Restart ESST (protected)
 
     """
     DISCORD.say('This command is not yet implemented')
