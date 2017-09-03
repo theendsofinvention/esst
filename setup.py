@@ -68,7 +68,7 @@ def main():
             package_dir={'esst': 'esst'},
             package_data={
                 'esst': [
-                    'dcs/templates/*.template',
+                    'dcs/templates/*.lua',
                     'CHANGELOG.rst',
                     'README.md',
                 ]

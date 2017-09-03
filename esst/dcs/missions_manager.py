@@ -96,7 +96,7 @@ class MissionPath:
         if not self:
             LOGGER.error(f'mission file not found: {self.path}')
             return
-        content = Template(read_template('settings.template')).render(
+        content = Template(read_template('settings.lua')).render(
             mission_file_path=self.path,
             passwd=CFG.dcs_server_password,
             name=CFG.dcs_server_name,

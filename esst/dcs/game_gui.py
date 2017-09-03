@@ -23,6 +23,6 @@ def install_game_gui_hooks():
     if CTX.dcs_install_hooks:
         LOGGER.debug('installing GameGUI hooks')
         with open(FILE_PATH, 'w') as stream:
-            stream.write(read_template('game_gui.template'))
+            stream.write(read_template('game_gui.lua'))
     else:
         LOGGER.debug('skipping installation of GameGUI hooks')

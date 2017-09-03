@@ -37,7 +37,7 @@ def _write_dedi_config():
 
 
 def _write_auth_file():
-    content = read_template('me_authorization.template')
+    content = read_template('me_authorization.lua')
     LOGGER.debug('writing me_authorization.lua')
     with open(_get_me_auth_path(), 'w') as handle:
         handle.write(jinja2.Template(content).render(server_name=CFG.discord_bot_name))
