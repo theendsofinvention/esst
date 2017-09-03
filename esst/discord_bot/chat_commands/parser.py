@@ -19,7 +19,7 @@ from argh.utils import get_arg_spec
 from esst.commands import DISCORD
 from esst.core import CFG, MAIN_LOGGER
 from esst.discord_bot import abstract
-from esst.discord_bot.chat_commands import dcs, esst_, mission, server
+from esst.discord_bot.chat_commands import dcs, esst_, mission, server, report
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -118,9 +118,11 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
         result = _call()
         return '\n'.join(result)
     except tuple(wrappable_exceptions) as exc:  # pylint: disable=catching-non-exception
-        processor = getattr(func, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR, '{0.__class__.__name__}: {0}'.format(exc))
+        processor = getattr(func, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
+                            lambda exc: '{0.__class__.__name__}: {0}'.format(exc))
 
         LOGGER.error(compat.text_type(processor(exc)))
+        LOGGER.exception(exc)
 
 
 class HelpFormatter(argparse.RawDescriptionHelpFormatter):
@@ -310,7 +312,7 @@ def make_root_parser():
 
     """
     parser = DiscordCommandParser(description=DECRIPTION, prog='', add_help=False, usage='', epilog=EPILOG)
-    for module_ in [esst_, mission, server, dcs, ]:
+    for module_ in [esst_, mission, server, dcs, report, ]:
         funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction) if o[1].__module__ == module_.__name__]
         parser.add_commands(
             functions=funcs,
