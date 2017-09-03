@@ -41,17 +41,20 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
             return
         if message.channel != self.channel:
             return
+        if CFG.discord_admin_role:
+            is_admin = CFG.discord_admin_role in [role.name for role in message.author.roles]
+        else:
+            is_admin = True
         if message.attachments:
             for attach in message.attachments:
                 if attach['filename'].endswith('.miz'):
+                    if not is_admin:
+                        LOGGER.error(f'only users with role "{CFG.discord_admin_role}" can load missions on the server')
+                        return
                     overwrite = 'overwrite' in message.content
                     load = 'load' in message.content
                     missions_manager.download_mission_from_discord(attach, overwrite, load)
         if message.content.startswith('!'):
-            if CFG.discord_admin_role:
-                is_admin = CFG.discord_admin_role in [role.name for role in message.author.roles]
-            else:
-                is_admin = True
             LOGGER.debug(f'received "{message.content}" command from: {message.author.display_name}'
                          f'{" (admin)" if is_admin else ""}')
 
