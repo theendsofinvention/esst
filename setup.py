@@ -7,8 +7,9 @@ from setuptools import find_packages, setup
 dependency_links = []
 
 install_requires = [
+    'elib',
+    'emiz',
     'discord.py',
-    'everett',
     'certifi',
     'jinja2',
     'pefile',
@@ -16,7 +17,6 @@ install_requires = [
     'click',
     'psutil',
     'github3.py==1.0.0a4',
-    'emiz',
     'raven',
     'argh',
     'requests',
@@ -28,10 +28,17 @@ test_requires = [
     'flake8',
     'pylint',
     'safety',
+    'coverage',
+    'pytest-pep8',
+    'pytest-cache',
+    'pytest-catchlog',
+    'pytest-cov',
+    'hypothesis',
 ]
 
 dev_requires = [
     'pip-tools',
+    'epab',
 ]
 
 setup_requires = [
@@ -41,7 +48,7 @@ setup_requires = [
 
 entry_points = '''
 [console_scripts]
-esst=esst:main
+esst=esst.__main__:main
 '''
 
 
@@ -68,8 +75,6 @@ def main():
             },
             test_suite='pytest',
             packages=find_packages(),
-            # packages=['esst', 'esst.core', 'esst.dcs', 'esst.discord_bot', 'esst.discord_bot.chat_commands',
-            #           'esst.listener', 'esst.server', 'esst.utils', 'esst.commands'],
             python_requires='>=3.6',
             extras_require={
                 'dev': dev_requires,
@@ -80,7 +85,6 @@ def main():
                 'Development Status :: 3 - Alpha',
                 'Environment :: Win32 (MS Windows)',
                 'Intended Audience :: End Users/Desktop',
-                'Topic :: Software Development :: Build Tools',
                 'Natural Language :: English',
                 'Operating System :: Microsoft :: Windows :: Windows 7',
                 'Operating System :: Microsoft :: Windows :: Windows 8',

@@ -20,7 +20,7 @@ def wan_available():
 
     """
     try:
-        response = requests.get('http://google.com', timeout=1)
+        response = requests.get('http://google.com', timeout=2)
         DCS.can_start()
         DISCORD.can_start()
         return bool(response.ok)
@@ -50,6 +50,6 @@ async def monitor_connection():
                 DCS.kill(force=False, queue=True)
             CTX.wan = current_status
 
-        await asyncio.sleep(5)
+        await asyncio.sleep(10)
 
     LOGGER.debug('end of connection monitoring loop')

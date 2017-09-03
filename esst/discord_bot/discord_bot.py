@@ -213,6 +213,10 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         Main loop
         """
 
+        if not CFG.discord_token:
+            LOGGER.error('missing Discord token in config, cannot start bot')
+            return
+
         def _pass_exception():
             # LOGGER.exception('Discord bot error')
             if CTX.sentry:
