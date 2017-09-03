@@ -6,12 +6,12 @@ Manages a UDP socket and does two things:
 2. Sends command to the DCS application via the socket
 """
 
+import asyncio
 import json
 import socket
 import time
-import asyncio
 
-from esst.core import MAIN_LOGGER, Status, CFG, CTX
+from esst.core import CFG, CTX, MAIN_LOGGER, Status
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
