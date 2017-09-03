@@ -1,23 +1,16 @@
-net.log("Loading - ESST GameGUI")
+net.log("ESST GameGUI: loading")
 
 package.path = package.path .. ";.\\LuaSocket\\?.lua;"
 package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll;"
 
 local socket = require("socket")
 local JSON = loadfile("Scripts\\JSON.lua")()
-
---local dediConfig = Tools.safeDoFile(lfs.writedir() .. 'Config/dedicated.lua', false)
+local lfs = require('lfs')
+local tools = require('tools')
 
 esst = {}
 
 esst.json = JSON
-
-esst.sock = socket.udp()
-esst.port = 10333
-
-esst.cmd_sock = socket.udp()
-esst.cmd_sock:setsockname('*', 10334)
-esst.cmd_sock:settimeout(0.1)
 
 esst.send = function(message)
     message.time = DCS.getRealTime()
@@ -87,51 +80,67 @@ function esst.onSimulationResume()
     esst.status_update('resuming simulation')
 end
 
---if dediConfig and dediConfig.dedicated ~= nil and dediConfig.dedicated["enabled"] == true then
-    function esst.onSimulationFrame()
+function esst.onSimulationFrame()
 
-        local now = DCS.getRealTime()
+    local now = DCS.getRealTime()
 
-        if now > esst.cmd_last_read + esst.cmd_read_interval then
-          esst.cmd_last_read = now
-          local message = esst.cmd_sock:receive()
-          if message then
-              local decoded = esst.json:decode(message)
-              if decoded.cmd then
-                  esst.info('received command: '.. decoded.cmd)
-                  if decoded.cmd == 'exit dcs' then
-                      esst.info('closing DCS')
-                      DCS.exitProcess()
-                  else
-                      esst.error('unknown command: '.. decoded.cmd)
-                  end
+    if now > esst.cmd_last_read + esst.cmd_read_interval then
+      esst.cmd_last_read = now
+      local message = esst.cmd_sock:receive()
+      if message then
+          local decoded = esst.json:decode(message)
+          if decoded.cmd then
+              esst.info('received command: '.. decoded.cmd)
+              if decoded.cmd == 'exit dcs' then
+                  esst.info('closing DCS')
+                  DCS.exitProcess()
               else
-                  esst.error('badly formatted command message: '.. message)
+                  esst.error('unknown command: '.. decoded.cmd)
               end
+          else
+              esst.error('badly formatted command message: '.. message)
           end
-        end
-
-        if now > esst.ping_last_sent + esst.ping_interval then
-            esst.ping_last_sent = now
-            local players = {}
-            for _, player_id in ipairs(net.get_player_list()) do
-                if player_id ~= 1 then
-                    table.insert(players, net.get_name(player_id))
-                end
-            end
-            local message = {
-                type = 'ping',
-                players = players,
-                model_time= DCS.getModelTime(),
-                paused = DCS.getPause(),
-                mission_name = DCS.getMissionName(),
-                mission_filename = DCS.getMissionFilename(),
-            }
-            esst.send(message)
-        end
+      end
     end
---end
 
-DCS.setUserCallbacks(esst)
+    if now > esst.ping_last_sent + esst.ping_interval then
+        esst.ping_last_sent = now
+        local players = {}
+        for _, player_id in ipairs(net.get_player_list()) do
+            if player_id ~= 1 then
+                table.insert(players, net.get_name(player_id))
+            end
+        end
+        local message = {
+            type = 'ping',
+            players = players,
+            model_time= DCS.getModelTime(),
+            paused = DCS.getPause(),
+            mission_name = DCS.getMissionName(),
+            mission_filename = DCS.getMissionFilename(),
+        }
+        esst.send(message)
+    end
+end
 
-net.log("Loaded - ESST GameGUI")
+local dediConfig = tools.safeDoFile(lfs.writedir() .. 'Config/dedicated.lua', false)
+if dediConfig and dediConfig.dedicated ~= nil and dediConfig.dedicated["enabled"] == true then
+
+    esst.debug('Creating listening socket')
+    esst.sock = socket.udp()
+    esst.port = 10333
+
+    esst.debug('Creating command socket')
+    esst.cmd_sock = socket.udp()
+    esst.cmd_sock:setsockname('*', 10334)
+    esst.cmd_sock:settimeout(0.1)
+
+    esst.debug('Installing hooks')
+    DCS.setUserCallbacks(esst)
+
+    net.log("ESST GameGUI: loaded")
+else
+    net.log("ESST GameGUI: skipped (from configuration)")
+end
+
+
