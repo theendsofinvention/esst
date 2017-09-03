@@ -4,6 +4,7 @@ Catches connection error in Discord bot
 """
 
 import aiohttp
+import asyncio
 import websockets.exceptions
 
 from esst.core import CTX, MAIN_LOGGER
@@ -39,7 +40,9 @@ def catch_exc(func):
         except websockets.exceptions.InvalidURI as exc:
             _pass_exception(exc)
         except (aiohttp.ClientError, ConnectionError, OSError, aiohttp.ClientOSError) as exc:
-            wan_available()
+            await asyncio.sleep(10)
+            while not CTX.wan:
+                await asyncio.sleep(2)
             _pass_exception(exc)
 
     return _wrapper

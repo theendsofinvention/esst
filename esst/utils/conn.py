@@ -21,7 +21,7 @@ def external_ip():
     return ipgetter.IPgetter().get_externalip()
 
 
-def wan_available():
+async def wan_available(retry: int = 0):
     """
 
     Returns: True if connected to WAN
@@ -33,6 +33,12 @@ def wan_available():
         DISCORD.can_start()
         return bool(response.ok)
     except requests.exceptions.RequestException:
+        if retry < 5:
+            LOGGER.debug(f'Internet connection loss detected, retry {retry}')
+            await asyncio.sleep(2)
+            result = await wan_available(retry + 1)
+            return result
+        LOGGER.debug(f'Internet connection loss detected, no more retry')
         DCS.cannot_start()
         DISCORD.cannot_start()
         return False
@@ -47,7 +53,7 @@ async def monitor_connection():
 
     while not CTX.exit:
 
-        current_status = wan_available()
+        current_status = await wan_available()
 
         if current_status != CTX.wan:
             if current_status:

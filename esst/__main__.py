@@ -69,7 +69,7 @@ def main(  # pylint: disable=too-many-locals
 
     # CTX.loop.set_exception_handler(_handler)
 
-    CTX.wan = wan_available()
+    CTX.wan = CTX.loop.run_until_complete(wan_available())
     CTX.loop.create_task(monitor_connection())
 
     CTX.start_discord_loop = discord and CFG.start_discord_loop
