@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+0.1.33 (2017-09-03)
+-------------------
+
+New
+~~~
+- Implement roles and permissions. [132nd-etcher]
+
+  closes #33
+
+
 0.1.32 (2017-09-03)
 -------------------
 
