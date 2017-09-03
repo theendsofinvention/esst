@@ -67,6 +67,22 @@ def read_template(template_name: str) -> str:
         return handle_.read()
 
 
+def get_changelog_path() -> str:
+    """
+
+    Returns: changelog path
+
+    """
+    changelog_path = os.path.join(os.path.dirname(__file__), 'CHANGELOG.rst')
+    if not os.path.exists(changelog_path):
+        LOGGER.debug('changelog not found, trying from pkg_resource')
+        changelog_path = pkg_resources.resource_filename('esst', 'CHANGELOG.rst')
+    if not os.path.exists(changelog_path):
+        LOGGER.error('changelog not found')
+    else:
+        return changelog_path
+
+
 class Win32FileInfo:  # pylint: disable=missing-docstring
     """
     Gets information about a Win32 portable executable
