@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+0.1.41 (2017-09-03)
+-------------------
+
+Fix
+~~~
+- Don't reload the same mission without change. [132nd-etcher]
+
+
 0.1.40 (2017-09-03)
 -------------------
 
