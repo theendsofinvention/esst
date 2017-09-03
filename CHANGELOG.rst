@@ -2,6 +2,32 @@ Changelog
 =========
 
 
+0.1.32 (2017-09-03)
+-------------------
+
+New
+~~~
+- Add timestamp to discord messages. [132nd-etcher]
+
+  closes #27
+- Add "!server ip" command. [132nd-etcher]
+
+  closes #29
+- Add feedback to server reboot command. [132nd-etcher]
+
+  closes #26
+- Add a YAML dict config to Config() [132nd-etcher]
+
+  closes #25
+
+Fix
+~~~
+- Do not spam sockets when DCS isn't running in dedicated mode. [132nd-
+  etcher]
+
+  closes #19
+
+
 0.1.29 (2017-08-27)
 -------------------
 
