@@ -2,6 +2,20 @@ Changelog
 =========
 
 
+0.1.34 (2017-09-03)
+-------------------
+
+New
+~~~
+- Add "!esst changelog" command. [132nd-etcher]
+
+Fix
+~~~
+- Fixed Internet connection check being a bit of an arse. [132nd-etcher]
+- Fix ESST not sending the exit to DCS via socket (thus killing the
+  process for no reason) [132nd-etcher]
+
+
 0.1.33 (2017-09-03)
 -------------------
 
