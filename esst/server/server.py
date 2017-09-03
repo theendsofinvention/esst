@@ -32,7 +32,8 @@ class App:
         ServerStatus.swap_size = psutil.swap_memory().total
         ServerStatus.boot_time = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
 
-    def _update_status(self):
+    @staticmethod
+    def _update_status():
         while not CTX.exit:
             cpu_usage = psutil.cpu_percent(1)
             CTX.server_cpu_history.append(cpu_usage)

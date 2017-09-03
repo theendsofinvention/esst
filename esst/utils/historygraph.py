@@ -1,14 +1,27 @@
 # coding=utf-8
+"""
+Creates graphic of perfs
+"""
 
 from tempfile import mktemp
 
 import numpy as np
-from matplotlib import pyplot as plt, ticker
+from matplotlib import pyplot as plt
+from matplotlib import ticker
 
 from esst.core import CTX
 
 
-def make_history_graph():
+def make_history_graph(show: bool = False, save_path=None):
+    """
+    Creates a graph of perfs
+
+    Args:
+        show: show and exit
+        save_path: specify path to save to (default to temp path)
+
+    """
+    # noinspection PyTypeChecker
     fig, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, figsize=(18, 12))
 
     time = range(0, 720)
@@ -32,8 +45,6 @@ def make_history_graph():
     players_count, = ax3.plot(time, players_count, 'k')
     plt.setp(players_count, label='Players count')
 
-    axes = plt.gca()
-
     def _x_format_func(val, _):
         return str(int(round((val - 720) / 12))) + 'min'
 
@@ -56,15 +67,16 @@ def make_history_graph():
         axis.grid(True)
         axis.legend()
 
-    # plt.show()
-    # return
-    temp_file = mktemp('.png')
-    # temp_file = 'test.png'
-    plt.savefig(temp_file)
-    plt.close()
-
-    return temp_file
+    if show:
+        plt.show()
+        plt.close()
+        return
+    else:
+        if not save_path:
+            save_path = mktemp('.png')
+        plt.savefig(save_path)
+        return save_path
 
 
 if __name__ == '__main__':
-    make_history_graph()
+    make_history_graph(show=True)

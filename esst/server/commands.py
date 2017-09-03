@@ -4,10 +4,8 @@
 
 import os
 
-from esst.commands import DCS
+from esst.commands import DCS, DISCORD
 from esst.core import CTX, MAIN_LOGGER
-from esst.commands import DISCORD
-
 from esst.utils.historygraph import make_history_graph
 
 LOGGER = MAIN_LOGGER.getChild(__name__)

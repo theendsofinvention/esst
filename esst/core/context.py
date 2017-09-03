@@ -5,8 +5,8 @@ Represents the global context
 
 import inspect
 from asyncio import AbstractEventLoop
-from queue import Queue
 from collections import deque
+from queue import Queue
 
 
 # noinspection PyRedeclaration
@@ -62,4 +62,4 @@ class Context:
     server_cpu_history = deque([0 for _ in range(720)], maxlen=720)
     server_mem_history = deque([0 for _ in range(720)], maxlen=720)
 
-    players_history= deque([0 for _ in range(720)], maxlen=720)
+    players_history = deque([0 for _ in range(720)], maxlen=720)

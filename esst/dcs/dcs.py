@@ -4,7 +4,6 @@ Manages DCS application Window process
 """
 import asyncio
 from pathlib import Path
-from collections import deque
 
 import psutil
 
