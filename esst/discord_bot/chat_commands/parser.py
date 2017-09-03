@@ -315,7 +315,8 @@ def make_root_parser():
     """
     parser = DiscordCommandParser(description=DECRIPTION, prog='', add_help=False, usage='', epilog=EPILOG)
     for module_ in [esst_, mission, server, dcs, report, ]:
-        funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction) if o[1].__module__ == module_.__name__]
+        funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction)
+                 if o[1].__module__ == module_.__name__ and not o[1].__name__.startswith('_')]
         parser.add_commands(
             functions=funcs,
             namespace=module_.NAMESPACE,
