@@ -52,6 +52,7 @@ def reboot(force: bool = False):
     """
     Restart the server computer
     """
+    LOGGER.warning('rebooting server, ciao a tutti !')
     SERVER.reboot(force)
 
 
