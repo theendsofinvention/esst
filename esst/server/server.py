@@ -10,6 +10,7 @@ import psutil
 
 from esst.commands import DISCORD
 from esst.core import CTX, MAIN_LOGGER, ServerStatus
+from esst.utils import now
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -51,9 +52,9 @@ class App:
             ServerStatus.mem_usage = round(ServerStatus.free_memory / ServerStatus.total_memory * 100, 2)
             ServerStatus.swap_used = psutil.swap_memory().used
 
-            now = datetime.datetime.now().timestamp()
-            CTX.server_cpu_history.append((now, cpu_usage))
-            CTX.server_mem_history.append((now, ServerStatus.mem_usage))
+            now_ = now()
+            CTX.server_cpu_history.append((now_, cpu_usage))
+            CTX.server_mem_history.append((now_, ServerStatus.mem_usage))
 
             # noinspection PyProtectedMember
             if ServerStatus._bytes_recv != 0:

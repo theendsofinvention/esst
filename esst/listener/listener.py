@@ -7,12 +7,12 @@ Manages a UDP socket and does two things:
 """
 
 import asyncio
-import datetime
 import json
 import socket
 import time
 
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
+from esst.utils import now
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -64,8 +64,7 @@ class DCSListener:
         Status.mission_name = data.get('mission_name')
         Status.players = data.get('players')
 
-        now = datetime.datetime.now().timestamp()
-        CTX.players_history.append((now, len(Status.players)))
+        CTX.players_history.append((now(), len(Status.players)))
 
     def _parse_status(self, data: dict):
         LOGGER.debug(f'DCS server says: {data["message"]}')

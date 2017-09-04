@@ -3,7 +3,6 @@
 Manages DCS application Window process
 """
 import asyncio
-import datetime
 from pathlib import Path
 
 import psutil
@@ -11,7 +10,6 @@ import psutil
 from esst.commands import DISCORD, LISTENER
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
 from esst.utils import Win32FileInfo, now
-
 from .dedicated import setup_config_for_dedicated_run
 from .game_gui import install_game_gui_hooks
 from .missions_manager import get_latest_mission_from_github
@@ -236,9 +234,9 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                                 f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}%'
                                 f' for {CFG.dcs_high_cpu_usage_interval} seconds')
 
-                    now = datetime.datetime.now().timestamp()
-                    CTX.dcs_mem_history.append((now, mem_usage))
-                    CTX.dcs_cpu_history.append((now, cpu_usage))
+                    now_ = now()
+                    CTX.dcs_mem_history.append((now_, mem_usage))
+                    CTX.dcs_cpu_history.append((now_, cpu_usage))
 
             except psutil.NoSuchProcess:
                 pass

@@ -3,7 +3,7 @@
 Various helper functions
 """
 import os
-import time
+import datetime
 import shutil
 
 import pefile
@@ -42,7 +42,7 @@ def now():
     Returns: epoch
 
     """
-    return time.time()
+    return datetime.datetime.now().timestamp()
 
 
 def read_template(template_name: str) -> str:
