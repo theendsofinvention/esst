@@ -1,5 +1,7 @@
 # coding=utf-8
-
+"""
+Clean folders of old files
+"""
 import datetime
 import os
 
@@ -41,8 +43,8 @@ def clean_all_folder():
     Cleans all folders according to current config
     """
     paths_to_clean = CFG.remove_files
-    if paths_to_clean:
-        for remove_config in paths_to_clean:
+    if paths_to_clean:  # pylint: disable=using-constant-test
+        for remove_config in paths_to_clean:  # pylint: disable=not-an-iterable
             name = tuple(remove_config.keys())[0]
             LOGGER.info(f'processing: {name}')
             remove_config = remove_config[name]
