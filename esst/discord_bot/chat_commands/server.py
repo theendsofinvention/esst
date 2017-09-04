@@ -48,11 +48,9 @@ def graph(days=0, hours=0, minutes=0):
 
 @arg('--start', help='Show CPU usage in real time')
 @arg('--stop', help='Stop showing CPU usage in real time')
-@arg('--graphic', help='Stop showing CPU usage in real time')
 def show_cpu(
         start=False,
         stop=False,
-        graphic=False,
 ):
     """
     Show server CPU usage
@@ -61,8 +59,6 @@ def show_cpu(
         SERVER.show_cpu_usage_start()
     elif stop:
         SERVER.show_cpu_usage_stop()
-    elif graphic:
-        SERVER.show_graph()
     else:
         SERVER.show_cpu_usage_once()
 
