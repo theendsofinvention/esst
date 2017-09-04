@@ -12,6 +12,7 @@ from ._auto_mission import AutoMissionConfig
 from ._dcs import DCSConfig
 from ._dcs_server import DCSServerConfig
 from ._discord_bot import DiscordConfig
+from ._remove_old_files import RemoveOldFile
 
 
 def parse_dcs_path(val: str) -> str:
@@ -39,6 +40,7 @@ class ESSTConfig(BaseConfig,
                  DCSConfig,
                  DCSServerConfig,
                  AutoMissionConfig,
+                 RemoveOldFile,
                  DiscordConfig):
     """
     Manages config params for auto mission

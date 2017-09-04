@@ -23,6 +23,7 @@ install_requires = [
     'requests',
     'ipgetter',
     'matplotlib',
+    'parsedatetime',
 ]
 
 test_requires = [

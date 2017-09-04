@@ -10,6 +10,7 @@ import pefile
 import pkg_resources
 
 from esst.core import MAIN_LOGGER, Status
+from .remove_old_files import clean_all_folder
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 

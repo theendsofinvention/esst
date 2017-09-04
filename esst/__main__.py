@@ -90,6 +90,9 @@ def main(  # pylint: disable=too-many-locals
     ctypes.windll.kernel32.SetConsoleTitleW(f'ESST v{__version__} - Use CTRL+C to exit')
     MAIN_LOGGER.debug(f'starting ESST {__version__}')
 
+    from esst.utils import clean_all_folder
+    clean_all_folder()
+
     import esst.discord_bot.discord_bot
     discord_loop = esst.discord_bot.discord_bot.App()
 
