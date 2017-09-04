@@ -57,15 +57,15 @@ class App:
             CTX.server_mem_history.append((now_, ServerStatus.mem_usage))
 
             # noinspection PyProtectedMember
-            if ServerStatus._bytes_recv != 0:
-                bytes_sent_ = bytes_sent - ServerStatus._bytes_sent
-                bytes_recv_ = bytes_recv - ServerStatus._bytes_recv
+            if ServerStatus.bytes_recv_ != 0:
+                bytes_sent_ = bytes_sent - ServerStatus.bytes_sent_
+                bytes_recv_ = bytes_recv - ServerStatus.bytes_recv_
                 ServerStatus.bytes_sent = bytes_sent_
                 ServerStatus.bytes_recv = bytes_recv_
-                CTX.server_bytes_sent_history.append((now, bytes_sent_))
-                CTX.server_bytes_recv_history.append((now, bytes_recv_))
-            ServerStatus._bytes_recv = bytes_recv
-            ServerStatus._bytes_sent = bytes_sent
+                CTX.server_bytes_sent_history.append((now_, bytes_sent_))
+                CTX.server_bytes_recv_history.append((now_, bytes_recv_))
+            ServerStatus.bytes_recv_ = bytes_recv
+            ServerStatus.bytes_sent_ = bytes_sent
 
             time.sleep(5)
 

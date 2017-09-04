@@ -35,7 +35,7 @@ class ServerStatus:
     swap_size = 'unknown'
     swap_used = 'unknown'
     boot_time = 'unknown'
-    _bytes_recv = 0
-    _bytes_sent = 0
+    bytes_recv_ = 0
+    bytes_sent_ = 0
     bytes_recv = 'unknown'
     bytes_sent = 'unknown'

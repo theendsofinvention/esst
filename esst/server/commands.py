@@ -50,4 +50,3 @@ class SERVER:
 
         LOGGER.debug('show cpu usage: graph')
         make_history_graph(_callback, days, hours, minutes)
-

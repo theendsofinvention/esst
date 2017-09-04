@@ -41,7 +41,7 @@ def graph(days=0, hours=0, minutes=0):
 
     By default, the command shows the stats for the last 2 hours
     """
-    if all((days==0, hours==0, minutes==0)):
+    if all((days == 0, hours == 0, minutes == 0)):
         hours = 2
     SERVER.show_graph(days, hours, minutes)
 
