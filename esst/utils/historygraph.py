@@ -172,7 +172,7 @@ def _plot_dcs(grid_spec, values, now, sharex=None):
                       title='DCS stats',
                       ylabel_text='Percentage used',
                       values=values,
-                      visible_x_labels=True,
+                      visible_x_labels=False,
                       sharex=sharex,
                       y_format_func=_y_format_func_percent)
     axis.set_ylim([0, 100])
