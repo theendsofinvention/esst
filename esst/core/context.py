@@ -4,12 +4,12 @@ Represents the global context
 """
 
 import inspect
+from concurrent.futures import ProcessPoolExecutor
 from asyncio import AbstractEventLoop
 from collections import deque
 from queue import Queue
 
 
-# noinspection PyRedeclaration
 class Context:
     """
     Represents the global context
@@ -31,6 +31,7 @@ class Context:
     loop: AbstractEventLoop = None
     sentry = None
     wan = False
+    process_pool = ProcessPoolExecutor(max_workers=1)
 
     start_listener_loop: bool = True
     start_discord_loop: bool = True
