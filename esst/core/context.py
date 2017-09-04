@@ -52,15 +52,15 @@ class Context:
     dcs_do_kill: bool = False
     dcs_do_queued_kill: bool = False
     dcs_do_restart: bool = False
-    dcs_cpu_history = deque([0 for _ in range(720)], maxlen=720)
-    dcs_mem_history = deque([0 for _ in range(720)], maxlen=720)
+    dcs_cpu_history = deque(maxlen=17280)
+    dcs_mem_history = deque(maxlen=17280)
 
     listener_cmd_queue: Queue = Queue()
     listener_monitor_server_startup: bool = False
 
     server_show_cpu_usage: bool = False
     server_show_cpu_usage_once: bool = False
-    server_cpu_history = deque([0 for _ in range(720)], maxlen=720)
-    server_mem_history = deque([0 for _ in range(720)], maxlen=720)
+    server_cpu_history = deque(maxlen=17280)
+    server_mem_history = deque(maxlen=17280)
 
-    players_history = deque([0 for _ in range(720)], maxlen=720)
+    players_history = deque(maxlen=17280)
