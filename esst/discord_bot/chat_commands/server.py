@@ -26,7 +26,7 @@ def status():
         value = getattr(ServerStatus, attr_name)
         if ('memory' in attr_name or 'swap' in attr_name) and value != 'unknown':
             value = humanize.naturalsize(value)
-        if attr_name in ['cpu_usage']:
+        if 'usage' in attr_name:
             value = str(value) + '%'
         output.append(f'{attr_nice_name}: {value}')
     DISCORD.say('Server status:\n' + '\n'.join(output))
