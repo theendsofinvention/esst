@@ -3,6 +3,7 @@
 Manages DCS application Window process
 """
 import asyncio
+import datetime
 from pathlib import Path
 
 import psutil
@@ -225,8 +226,6 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                 if self.app and self.app.is_running():
                     cpu_usage = int(self.app.cpu_percent(CFG.dcs_high_cpu_usage_interval)) / psutil.cpu_count()
                     mem_usage = int(self.app.memory_percent())
-                    CTX.dcs_mem_history.append(mem_usage)
-                    CTX.dcs_cpu_history.append(cpu_usage)
                     Status.dcs_cpu_usage = f'{cpu_usage}%'
                     if CTX.dcs_show_cpu_usage or CTX.dcs_show_cpu_usage_once:
                         DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
@@ -236,6 +235,11 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                             LOGGER.warning(
                                 f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}%'
                                 f' for {CFG.dcs_high_cpu_usage_interval} seconds')
+
+                    now = datetime.datetime.now().timestamp()
+                    CTX.dcs_mem_history.append((now, mem_usage))
+                    CTX.dcs_cpu_history.append((now, cpu_usage))
+
             except psutil.NoSuchProcess:
                 pass
 

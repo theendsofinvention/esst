@@ -35,6 +35,7 @@ class App:
     @staticmethod
     def _update_status():
         while not CTX.exit:
+
             cpu_usage = psutil.cpu_percent(1)
 
             net_io = psutil.net_io_counters()
@@ -42,13 +43,17 @@ class App:
             bytes_recv = net_io.bytes_recv
 
             ServerStatus.cpu_usage = cpu_usage
-            ServerStatus.free_memory = psutil.virtual_memory().free
-            ServerStatus.mem_usage = ServerStatus.free_memory / ServerStatus.total_memory * 100
-            CTX.server_mem_history.append(ServerStatus.mem_usage)
-            ServerStatus.swap_used = psutil.swap_memory().used
             if CTX.server_show_cpu_usage or CTX.server_show_cpu_usage_once:
                 DISCORD.say(f'Server cpu usage: {cpu_usage}%')
                 CTX.server_show_cpu_usage_once = False
+
+            ServerStatus.free_memory = psutil.virtual_memory().free
+            ServerStatus.mem_usage = round(ServerStatus.free_memory / ServerStatus.total_memory * 100, 2)
+            ServerStatus.swap_used = psutil.swap_memory().used
+
+            now = datetime.datetime.now().timestamp()
+            CTX.server_cpu_history.append((now, cpu_usage))
+            CTX.server_mem_history.append((now, ServerStatus.mem_usage))
 
             # noinspection PyProtectedMember
             if ServerStatus._bytes_recv != 0:
