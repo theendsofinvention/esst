@@ -62,5 +62,7 @@ class Context:
     server_show_cpu_usage_once: bool = False
     server_cpu_history = deque(maxlen=17280)
     server_mem_history = deque(maxlen=17280)
+    server_bytes_sent_history = deque(maxlen=17280)
+    server_bytes_recv_history = deque(maxlen=17280)
 
     players_history = deque(maxlen=17280)

@@ -36,7 +36,11 @@ class App:
     def _update_status():
         while not CTX.exit:
             cpu_usage = psutil.cpu_percent(1)
-            CTX.server_cpu_history.append(cpu_usage)
+
+            net_io = psutil.net_io_counters()
+            bytes_sent = net_io.bytes_sent
+            bytes_recv = net_io.bytes_recv
+
             ServerStatus.cpu_usage = cpu_usage
             ServerStatus.free_memory = psutil.virtual_memory().free
             ServerStatus.mem_usage = ServerStatus.free_memory / ServerStatus.total_memory * 100
@@ -45,6 +49,18 @@ class App:
             if CTX.server_show_cpu_usage or CTX.server_show_cpu_usage_once:
                 DISCORD.say(f'Server cpu usage: {cpu_usage}%')
                 CTX.server_show_cpu_usage_once = False
+
+            # noinspection PyProtectedMember
+            if ServerStatus._bytes_recv != 0:
+                bytes_sent_ = bytes_sent - ServerStatus._bytes_sent
+                bytes_recv_ = bytes_recv - ServerStatus._bytes_recv
+                ServerStatus.bytes_sent = bytes_sent_
+                ServerStatus.bytes_recv = bytes_recv_
+                CTX.server_bytes_sent_history.append((now, bytes_sent_))
+                CTX.server_bytes_recv_history.append((now, bytes_recv_))
+            ServerStatus._bytes_recv = bytes_recv
+            ServerStatus._bytes_sent = bytes_sent
+
             time.sleep(5)
 
     async def run(self):
