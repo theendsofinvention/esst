@@ -2,6 +2,28 @@ Changelog
 =========
 
 
+0.1.42 (2017-09-04)
+-------------------
+
+New
+~~~
+- Add options to "!server graph" commands. [132nd-etcher]
+
+  It's now possible to specify the time delta
+- Collect network stats (all NICs combined) [132nd-etcher]
+
+  closes #36
+
+Changes
+~~~~~~~
+- Remove "!server show-cpu --graph" command. [132nd-etcher]
+
+Other
+~~~~~
+- Fix fix "!server status" showing weird values for mem perc. [132nd-
+  etcher]
+
+
 0.1.41 (2017-09-03)
 -------------------
 
