@@ -293,29 +293,29 @@ def make_history_graph(callback=None, days=0, hours=0, minutes=0, show: bool = F
 if __name__ == '__main__':
     import random
 
-    time_delta_ = datetime.timedelta(hours=5)
-    total_seconds_ = int(time_delta_.total_seconds())
+    TIME_DELTA = datetime.timedelta(hours=5)
+    TOTAL_SECONDS = int(TIME_DELTA.total_seconds())
 
-    now_ = datetime.datetime.now().timestamp()
+    NOW = datetime.datetime.now().timestamp()
 
-    player_count = 0
-    CTX.players_history.append((now_ - total_seconds_, 0))
-    for time_stamp in range(total_seconds_, 0, -5):
-        CTX.server_mem_history.append((now_ - time_stamp, random.randint(60, 70)))
-        CTX.dcs_cpu_history.append((now_ - time_stamp, random.randint(20, 30)))
-        CTX.dcs_mem_history.append((now_ - time_stamp, random.randint(60, 70)))
-        CTX.server_bytes_recv_history.append((now_ - time_stamp, random.randint(0, 50000000)))
-        CTX.server_bytes_sent_history.append((now_ - time_stamp, random.randint(0, 50000000)))
-        if time_stamp <= int(total_seconds_ / 2):
-            CTX.server_cpu_history.append((now_ - time_stamp, random.randint(20, 30)))
+    PLAYER_COUNT = 0
+    CTX.players_history.append((NOW - TOTAL_SECONDS, 0))
+    for time_stamp in range(TOTAL_SECONDS, 0, -5):
+        CTX.server_mem_history.append((NOW - time_stamp, random.randint(60, 70)))
+        CTX.dcs_cpu_history.append((NOW - time_stamp, random.randint(20, 30)))
+        CTX.dcs_mem_history.append((NOW - time_stamp, random.randint(60, 70)))
+        CTX.server_bytes_recv_history.append((NOW - time_stamp, random.randint(0, 50000000)))
+        CTX.server_bytes_sent_history.append((NOW - time_stamp, random.randint(0, 50000000)))
+        if time_stamp <= int(TOTAL_SECONDS / 2):
+            CTX.server_cpu_history.append((NOW - time_stamp, random.randint(20, 30)))
         if random.randint(0, 100) > 99:
-            player_count += random.choice([-1, 1])
-            if player_count < 0:
-                player_count = 0
+            PLAYER_COUNT += random.choice([-1, 1])
+            if PLAYER_COUNT < 0:
+                PLAYER_COUNT = 0
                 continue
-        CTX.players_history.append((now_ - time_stamp, player_count))
+        CTX.players_history.append((NOW - time_stamp, PLAYER_COUNT))
 
-    time_delta_ = datetime.datetime.now() - time_delta_
-    time_delta_ = time_delta_.timestamp()
+    TIME_DELTA = datetime.datetime.now() - TIME_DELTA
+    TIME_DELTA = TIME_DELTA.timestamp()
 
     make_history_graph(minutes=5, show=True)

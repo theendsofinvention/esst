@@ -10,6 +10,7 @@ import psutil
 from esst.commands import DISCORD, LISTENER
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
 from esst.utils import Win32FileInfo, now
+
 from .dedicated import setup_config_for_dedicated_run
 from .game_gui import install_game_gui_hooks
 from .missions_manager import get_latest_mission_from_github
