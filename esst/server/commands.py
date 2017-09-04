@@ -43,7 +43,11 @@ class SERVER:
         CTX.server_show_cpu_usage = False
 
     @staticmethod
-    def show_cpu_graph():
+    def show_graph(days, hours, minutes):
+
+        def _callback(future):
+            DISCORD.send(future.result())
+
         LOGGER.debug('show cpu usage: graph')
-        graph_file = make_history_graph()
-        DISCORD.send(graph_file)
+        make_history_graph(_callback, days, hours, minutes)
+

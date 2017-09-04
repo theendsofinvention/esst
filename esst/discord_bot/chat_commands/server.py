@@ -62,7 +62,7 @@ def show_cpu(
     elif stop:
         SERVER.show_cpu_usage_stop()
     elif graphic:
-        SERVER.show_cpu_graph()
+        SERVER.show_graph()
     else:
         SERVER.show_cpu_usage_once()
 
