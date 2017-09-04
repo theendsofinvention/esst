@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+0.1.43 (2017-09-04)
+-------------------
+
+New
+~~~
+- Add a routine to clean folders of old files. [132nd-etcher]
+
+  closes #23
+
+
 0.1.42 (2017-09-04)
 -------------------
 
