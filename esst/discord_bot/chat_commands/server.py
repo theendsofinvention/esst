@@ -32,11 +32,18 @@ def status():
     DISCORD.say('Server status:\n' + '\n'.join(output))
 
 
-def graph():
+@arg('--hours', help='Show stats for the last HOURS hours')
+@arg('--minutes', help='Show stats for the last MINUTES minutes')
+@arg('--days', help='Show stats for the last DAYS days')
+def graph(days=0, hours=0, minutes=0):
     """
     Shows a graph of server performance (CPU, memory, ...)
+
+    By default, the command shows the stats for the last 2 hours
     """
-    SERVER.show_cpu_graph()
+    if all((days==0, hours==0, minutes==0)):
+        hours = 2
+    SERVER.show_graph(days, hours, minutes)
 
 
 @arg('--start', help='Show CPU usage in real time')
