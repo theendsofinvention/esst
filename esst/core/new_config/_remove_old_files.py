@@ -11,7 +11,7 @@ class RemoveOldFile:
     Clean folders of old files
     """
 
-    @ConfigProp(list, default=None)
+    @ConfigProp(list, default='')
     def remove_files(self) -> list:
         """
         List of folders to clean
