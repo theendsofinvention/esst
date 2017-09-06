@@ -71,3 +71,4 @@ avatar.png
 *.ini
 /emft.debug
 /esst.yml
+/esst.log.*
