@@ -266,7 +266,8 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
             self._print_message(message)
 
     def error(self, message):
-        self._print_message('Invalid command: ' + message)
+        self._print_message(message)
+        raise SystemExit(-1)
 
     def parse_args(self, args=None, namespace=None):
         if len(args) == 1:
