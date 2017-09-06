@@ -2,6 +2,20 @@ Changelog
 =========
 
 
+0.1.45 (2017-09-06)
+-------------------
+
+Fix
+~~~
+- "!report" command help text. [132nd-etcher]
+
+  closes #38
+- Fixed invalid commands still being executed. [132nd-etcher]
+
+  closes #39
+- Fix remove_files config default value. [132nd-etcher]
+
+
 0.1.43 (2017-09-04)
 -------------------
 
