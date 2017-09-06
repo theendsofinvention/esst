@@ -22,7 +22,7 @@ def _send(msg, ctx):
 @arg('message', nargs='+', metavar='ISSUE')
 def issue(message):
     """
-    Load a mission, allowing to set the weather or the time (protected)
+    Send feedback about an issue with ESST
     """
     _send(message, 'ISSUE')
 
@@ -30,7 +30,7 @@ def issue(message):
 @arg('message', nargs='+', metavar='SUGGESTION')
 def suggestion(message):
     """
-    Load a mission, allowing to set the weather or the time (protected)
+    Suggest a new feature
     """
     _send(message, 'SUGGESTION')
 
