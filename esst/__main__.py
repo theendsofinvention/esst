@@ -20,19 +20,7 @@ async def watch_for_exceptions():
         if CTX.exit:
             break
         await asyncio.sleep(0.1)
-
-
-@click.group(invoke_without_command=True)  # noqa: C901
-@click.option('--discord/--no-discord', default=True, help='Starts the Discord bot loop', show_default=True)
-@click.option('--server/--no-server', default=True, help='Starts the server monitoring loop', show_default=True)
-@click.option('--dcs/--no-dcs', default=True, help='Starts the DCS app loop', show_default=True)
-@click.option('--listener/--no-listener', default=True, help='Starts the socket loop', show_default=True)
-@click.option('--start-dcs/--no-start-dcs', help='Spawn DCS.exe process', default=True, show_default=True)
-@click.option('--install-hooks/--no-install-hooks', help='Install GameGUI hooks', default=True, show_default=True)
-@click.option('--install-dedi-config/--no-install-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
-              show_default=True)
-@click.option('--auto-mission/--no-auto-mission', help='Download latest mission', default=True, show_default=True)
-def main(  # pylint: disable=too-many-locals
+def _main(  # pylint: disable=too-many-locals
         discord: bool,
         server: bool,
         dcs: bool,
@@ -142,6 +130,63 @@ def main(  # pylint: disable=too-many-locals
 
         CTX.loop.run_until_complete(futures)
         MAIN_LOGGER.debug('all done !')
+
+
+@click.group(invoke_without_command=True)  # noqa: C901
+@click.option('--callgraph', default=False, help='Run ESST with pycallgraph', show_default=True, is_flag=True)
+@click.option('--discord/--no-discord', default=True, help='Starts the Discord bot loop', show_default=True)
+@click.option('--server/--no-server', default=True, help='Starts the server monitoring loop', show_default=True)
+@click.option('--dcs/--no-dcs', default=True, help='Starts the DCS app loop', show_default=True)
+@click.option('--listener/--no-listener', default=True, help='Starts the socket loop', show_default=True)
+@click.option('--start-dcs/--no-start-dcs', help='Spawn DCS.exe process', default=True, show_default=True)
+@click.option('--install-hooks/--no-install-hooks', help='Install GameGUI hooks', default=True, show_default=True)
+@click.option('--install-dedi-config/--no-install-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
+              show_default=True)
+@click.option('--auto-mission/--no-auto-mission', help='Download latest mission', default=True, show_default=True)
+def main(  # pylint: disable=too-many-locals
+        discord: bool,
+        server: bool,
+        dcs: bool,
+        listener: bool,
+        start_dcs: bool,
+        install_hooks: bool,
+        install_dedi_config: bool,
+        auto_mission: bool,
+        callgraph: bool,):
+    if callgraph:
+        from pycallgraph.output import GraphvizOutput
+        from pycallgraph import PyCallGraph, Config, GlobbingFilter
+
+        trace_output = GraphvizOutput()
+        trace_output.output_file = 'trace.png'
+        trace_config = Config(max_depth=20)
+
+        trace_config.trace_filter = GlobbingFilter(exclude=[
+            'pycallgraph.*',
+            'importlib.*',
+        ])
+        with PyCallGraph(output=trace_output, config=trace_config):
+            _main(
+                discord=discord,
+                server=server,
+                dcs=dcs,
+                listener=listener,
+                start_dcs=start_dcs,
+                install_hooks=install_hooks,
+                install_dedi_config=install_dedi_config,
+                auto_mission=auto_mission,
+            )
+    else:
+        _main(
+            discord=discord,
+            server=server,
+            dcs=dcs,
+            listener=listener,
+            start_dcs=start_dcs,
+            install_hooks=install_hooks,
+            install_dedi_config=install_dedi_config,
+            auto_mission=auto_mission,
+        )
 
 
 if __name__ == '__main__':

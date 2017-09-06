@@ -83,6 +83,7 @@ def main():
             extras_require={
                 'dev': dev_requires,
                 'test': test_requires,
+                'callgraph': ['pycallgraph'],
             },
             license='MIT',
             classifiers=[
