@@ -20,6 +20,8 @@ async def watch_for_exceptions():
         if CTX.exit:
             break
         await asyncio.sleep(0.1)
+
+
 def _main(  # pylint: disable=too-many-locals
         discord: bool,
         server: bool,
@@ -153,6 +155,7 @@ def main(  # pylint: disable=too-many-locals
         install_dedi_config: bool,
         auto_mission: bool,
         callgraph: bool,):
+    """Dummy entry point added to allow for callgraph context"""
     if callgraph:
         from pycallgraph.output import GraphvizOutput
         from pycallgraph import PyCallGraph, Config, GlobbingFilter
