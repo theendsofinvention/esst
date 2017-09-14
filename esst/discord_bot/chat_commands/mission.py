@@ -77,7 +77,10 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901  # 
     try:
         error = edit_miz(mission.path, mission.rlwx.path, metar, time, min_wind, max_wind)
         if error:
-            LOGGER.error(error)
+            if error == 'nothing to do!':
+                mission.set_as_active(info_metar.code)
+            else:
+                LOGGER.error(error)
         else:
             LOGGER.debug('mission has been successfully edited')
             mission.rlwx.set_as_active(info_metar.code)
