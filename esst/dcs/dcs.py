@@ -20,6 +20,7 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 KNOWN_DCS_VERSIONS = [
     '1.5.6.5199',
     '1.5.7.8899',
+    '1.5.7.9459',
 ]
 
 
