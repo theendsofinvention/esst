@@ -14,7 +14,7 @@ class DCS:
     """
 
     @staticmethod
-    def restart(force: bool = False) -> typing.Union[str, None]:
+    def restart(force: bool = False):
         """
         Sets the context to restart the DCS application
 
@@ -22,10 +22,9 @@ class DCS:
 
         """
         if DCS.there_are_connected_players():
-            if not force:
-                return 'there are connected players; cannot restart the server now (use "--force" to restart anyway)'
-            else:
-                LOGGER.warning('forcing restart with connected players')
+            LOGGER.error('there are connected players; cannot restart the server now '
+                         ' (use "--force" to kill anyway)')
+            return
         LOGGER.debug('setting context for DCS restart')
         CTX.dcs_do_restart = True
 
@@ -35,7 +34,10 @@ class DCS:
             if not force:
                 if queue:
                     DCS.queue_kill()
-                return 'there are connected players; cannot kill the server now (use "--force" to kill anyway)'
+                else:
+                    LOGGER.error('there are connected players; cannot kill the server now'
+                                 ' (use "--force" to kill anyway)')
+                return
             else:
                 LOGGER.warning('forcing kill with connected players')
         LOGGER.debug('setting context for DCS kill')
@@ -98,3 +100,13 @@ class DCS:
         else:
             LOGGER.debug('there is no connected players')
         return connected_players
+
+    @staticmethod
+    def check_for_connected_players() -> bool:
+        if DCS.there_are_connected_players():
+            LOGGER.warning('there are connected players; cannot kill the server now')
+            return False
+        else:
+            return True
+
+
