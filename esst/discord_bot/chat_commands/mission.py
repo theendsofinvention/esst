@@ -35,6 +35,7 @@ def _load(name, icao, metar, time, max_wind, min_wind):  # noqa: C901  # pylint:
             return
         DISCORD.say(f'{metar.string()}')
     if icao:
+        icao = icao.upper()
         LOGGER.info(f'obtaining METAR from: {icao}')
         error, metar_str = retrieve_metar(icao)
         if error:
