@@ -6,6 +6,7 @@ import typing
 from esst.core import CTX, MAIN_LOGGER, Status
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
+CANCEL_QUEUED_KILL = False
 
 
 class DCS:
@@ -47,12 +48,17 @@ class DCS:
     def queue_kill():
 
         def _queue_kill():
+            global CANCEL_QUEUED_KILL
             while DCS.there_are_connected_players():
+                if CANCEL_QUEUED_KILL:
+                    LOGGER.debug('queued DCS kill has been cancelled')
+                    CANCEL_QUEUED_KILL = False
+                    return
                 time.sleep(5)
             LOGGER.info('executing planned DCS restart')
             DCS.kill()
 
-        LOGGER.warning('queing DCS kill for when all players have left')
+        LOGGER.warning('queuing DCS kill for when all players have left')
         CTX.loop.run_in_executor(None, _queue_kill)
 
     @staticmethod
