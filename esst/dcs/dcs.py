@@ -76,9 +76,12 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         try:
             Status.dcs_version = Win32FileInfo(str(dcs_exe.absolute())).file_version
             if Status.dcs_version not in KNOWN_DCS_VERSIONS:
-                LOGGER.error(f'sorry, but I am unable to manage this version of DCS: {Status.dcs_version}\n'
-                             f'This safety check exists so ESST does not screw your DCS installation '
-                             f'by installing hooks into an unsupported DCS installation.')
+                error = f'sorry, but I am unable to manage this version of DCS: {Status.dcs_version}\n'
+                f'This safety check exists so ESST does not screw your DCS installation '
+                f'by installing hooks into an unsupported DCS installation.'
+                LOGGER.error(error)
+                if CTX.sentry:
+                    CTX.sentry.captureMessage('Unmanaged DCS version', data={'extra': {'version': Status.dcs_version}})
                 CTX.exit = True
                 return False
             else:
