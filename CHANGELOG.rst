@@ -2,6 +2,27 @@ Changelog
 =========
 
 
+0.1.46 (2017-09-14)
+-------------------
+
+Changes
+~~~~~~~
+- Add support for DCS 1.5.7.9459. [132nd-etcher]
+- Add feedback when trying to start unmanaged DCS version. [132nd-
+  etcher]
+
+  closes #46
+
+Fix
+~~~
+- Fix loading of unchanged missions. [132nd-etcher]
+
+  closes #42
+- Accept lower case ICAO codes. [132nd-etcher]
+
+  closes #43
+
+
 0.1.45 (2017-09-06)
 -------------------
 
