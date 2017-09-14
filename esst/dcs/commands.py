@@ -2,6 +2,7 @@
 # pylint: disable=missing-docstring
 import time
 from queue import Queue
+
 from esst.core import CTX, MAIN_LOGGER, Status
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
@@ -112,5 +113,5 @@ class DCS:
         if DCS.there_are_connected_players():
             LOGGER.warning('there are connected players; cannot kill the server now')
             return False
-        else:
-            return True
+
+        return True
