@@ -1,12 +1,11 @@
 # coding=utf-8
 # pylint: disable=missing-docstring
 import time
-import typing
-
+from queue import Queue
 from esst.core import CTX, MAIN_LOGGER, Status
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
-CANCEL_QUEUED_KILL = False
+CANCEL_QUEUED_KILL = Queue()
 
 
 class DCS:
@@ -22,7 +21,8 @@ class DCS:
         Returns: None if restart is OK, err as a str otherwise
 
         """
-        if DCS.there_are_connected_players():
+        CANCEL_QUEUED_KILL.put(1)
+        if DCS.there_are_connected_players() and not force:
             LOGGER.error('there are connected players; cannot restart the server now '
                          ' (use "--force" to kill anyway)')
             return
@@ -31,6 +31,7 @@ class DCS:
 
     @staticmethod
     def kill(force: bool = False, queue: bool = False):
+        CANCEL_QUEUED_KILL.put(1)
         if DCS.there_are_connected_players():
             if not force:
                 if queue:
@@ -47,19 +48,18 @@ class DCS:
     @staticmethod
     def queue_kill():
 
-        def _queue_kill():
-            global CANCEL_QUEUED_KILL
+        def _queue_kill(queue: Queue):
             while DCS.there_are_connected_players():
-                if CANCEL_QUEUED_KILL:
+                if not queue.empty():
+                    queue.get_nowait()
                     LOGGER.debug('queued DCS kill has been cancelled')
-                    CANCEL_QUEUED_KILL = False
                     return
                 time.sleep(5)
             LOGGER.info('executing planned DCS restart')
             DCS.kill()
 
         LOGGER.warning('queuing DCS kill for when all players have left')
-        CTX.loop.run_in_executor(None, _queue_kill)
+        CTX.loop.run_in_executor(None, _queue_kill, CANCEL_QUEUED_KILL)
 
     @staticmethod
     def show_cpu_usage_once():
@@ -114,5 +114,3 @@ class DCS:
             return False
         else:
             return True
-
-
