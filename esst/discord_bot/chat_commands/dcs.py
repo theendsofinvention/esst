@@ -52,9 +52,7 @@ def restart(force: bool = False):
     """
     Closes and restart DCS.exe (protected)
     """
-    error = DCS.restart(force=force)
-    if error:
-        DISCORD.say(error)
+    DCS.restart(force=force)
 
 
 def version():

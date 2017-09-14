@@ -16,7 +16,7 @@ from .arg import arg
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
-def _load(name, icao, metar, time, max_wind, min_wind):  # noqa: C901  # pylint: disable=too-many-statements
+def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901  # pylint: disable=too-many-statements
     if name is None:
         mission = missions_manager.get_running_mission().strip_suffix()
     else:
@@ -61,7 +61,7 @@ def _load(name, icao, metar, time, max_wind, min_wind):  # noqa: C901  # pylint:
 
     LOGGER.debug(f'editing "{mission.path}" to "{mission.rlwx.path}"')
     DCS.cannot_start()
-    DCS.kill()
+    DCS.kill(force=force)
     while Status.dcs_application != 'not running':
         sleep(1)
     edit_str = []
@@ -96,15 +96,18 @@ def load(
               'Ex: 2017/08/22 at 12:30:00 -> 20170822123000' = None,
         max_wind: 'maximum speed of the wind in MPS' = 40,
         min_wind: 'minimum speed of the wind in MPS' = 0,
+        force: 'force server restart even with connected players' = False,
 
 ):
     """
     Load a mission, allowing to set the weather or the time (protected)
     """
+    if not (force or DCS.check_for_connected_players()):
+        return
     if not any((name, icao, metar, time)):
         DISCORD.say('Type "!mission load --help" to see available options')
         return
-    CTX.loop.run_in_executor(None, _load, name, icao, metar, time, max_wind, min_wind)
+    CTX.loop.run_in_executor(None, _load, name, icao, metar, time, max_wind, min_wind, force)
 
 
 def show():

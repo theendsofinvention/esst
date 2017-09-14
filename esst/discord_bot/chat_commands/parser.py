@@ -303,6 +303,7 @@ In addition to the commands listed above, you can also upload a mission to the s
 2. In the "Add a comment" field, you can specify one of:
     a. "load": the mission will be loaded immediately (the server will restart)
     b. "overwrite": replace an existing mission file with the same name
+    c. "force": force server restart even if there are connected players
     (note: those options can be combined: "load overwrite" is valid)
 """
 

@@ -53,7 +53,8 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
                         return
                     overwrite = 'overwrite' in message.content
                     load = 'load' in message.content
-                    missions_manager.download_mission_from_discord(attach, overwrite, load)
+                    force = 'force' in message.content
+                    missions_manager.download_mission_from_discord(attach, overwrite, load, force)
         if message.content.startswith('!'):
             LOGGER.debug(f'received "{message.content}" command from: {message.author.display_name}'
                          f'{" (admin)" if is_admin else ""}')

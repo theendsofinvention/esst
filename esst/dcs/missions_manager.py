@@ -187,7 +187,7 @@ def get_latest_mission_from_github():
         LOGGER.debug('skipping mission update')
 
 
-def download_mission_from_discord(discord_attachment, overwrite=False, load=False):
+def download_mission_from_discord(discord_attachment, overwrite=False, load=False, force=False):
     """
     Downloads a mission from a discord message attachment
 
@@ -216,9 +216,9 @@ def download_mission_from_discord(discord_attachment, overwrite=False, load=Fals
             out_file.write(response.content)
 
     if load:
-        LOGGER.info(f'restarting the server with this mission')
         local_file.set_as_active()
-        DCS.restart()
+        LOGGER.info(f'restarting the server with this mission')
+        DCS.restart(force=force)
     else:
         LOGGER.info(f'download successful, mission is now available')
 
