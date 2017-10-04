@@ -2,14 +2,14 @@ aiohttp==1.0.5            # via discord.py
 argh==0.26.2
 async-timeout==1.4.0      # via aiohttp
 certifi==2017.7.27.1
-cffi==1.11.0              # via pynacl
+cffi==1.11.1              # via pynacl
 chardet==3.0.4            # via aiohttp, requests
 click==6.7
 configobj==5.0.6          # via everett
 cycler==0.10.0            # via matplotlib
-discord.py==0.16.11
+discord.py==0.16.12
 elib==0.1.4
-emiz==0.1.10
+emiz==0.1.11
 everett==0.9              # via elib
 future==0.16.0            # via parsedatetime, pefile
 github3.py==1.0.0a4
@@ -20,7 +20,7 @@ jinja2==2.9.6
 markupsafe==1.0           # via jinja2
 matplotlib==2.0.2
 metar==1.5.0              # via emiz
-mpmath==0.19              # via emiz
+mpmath==1.0.0             # via emiz
 multidict==3.2.0          # via aiohttp
 natsort==5.1.0            # via emiz
 numpy==1.13.3             # via matplotlib
