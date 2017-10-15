@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+0.1.49 (2017-10-15)
+-------------------
+
+New
+~~~
+- Added "!mission delete" and "!mission load" by index. [132nd-etcher]
+
+
 0.1.47 (2017-09-30)
 -------------------
 
