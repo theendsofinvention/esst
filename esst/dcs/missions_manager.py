@@ -142,6 +142,15 @@ def set_active_mission(mission: str, metar: str = None):
     mission.set_as_active(metar)
 
 
+def delete(mission: MissionPath):
+    if os.path.exists(mission.path):
+        LOGGER.info(f'removing: {mission.path}')
+        os.unlink(mission.path)
+    if os.path.exists(mission.rlwx.path):
+        LOGGER.info(f'removing: {mission.rlwx.path}')
+        os.unlink(mission.rlwx.path)
+
+
 # deprecated
 def __set_weather(metar_str, mission_path, output_path):
     warnings.warn('deprecated', PendingDeprecationWarning)
@@ -227,9 +236,11 @@ def list_available_missions():
     """
     Generator that yields available mission in ESST's mission dir
     """
+    count = 1
     for file in os.listdir(MISSION_FOLDER):
         if file.endswith('.miz') and '_ESST.miz' not in file:
-            yield file
+            yield count, file
+            count += 1
 
 
 def get_running_mission() -> typing.Union['MissionPath', str]:

@@ -10,21 +10,33 @@ from emiz import build_metar_from_mission, edit_miz, parse_metar_string, retriev
 from esst.commands import DCS, DISCORD
 from esst.core import CTX, MAIN_LOGGER, Status
 from esst.dcs import missions_manager
-
 from .arg import arg
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
+
+
+def _mission_index_to_mission_name(mission_index):
+    for index, mission_name in missions_manager.list_available_missions():
+        if index == mission_index:
+            return missions_manager.MissionPath(mission_name)
 
 
 def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901  # pylint: disable=too-many-statements
     if name is None:
         mission = missions_manager.get_running_mission().strip_suffix()
     else:
-        mission = missions_manager.MissionPath(name)
-
-    if not mission:
-        LOGGER.error(f'mission file does not exist: {mission.path}')
-        return
+        try:
+            mission_number = int(name)
+        except ValueError:
+            mission = missions_manager.MissionPath(name)
+            if not mission:
+                LOGGER.error(f'mission file does not exist: {mission.path}')
+                return
+        else:
+            mission = _mission_index_to_mission_name(mission_number)
+            if not mission:
+                LOGGER.error(f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
+                return
 
     if metar:
         metar = ' '.join(metar)
@@ -88,10 +100,35 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901  # 
         DCS.can_start()
 
 
+@arg(protected=True)
+def delete(name: 'name or index of the mission to load'):
+    """
+    Removes a mission file from the server (protected)
+
+    Args:
+        name: name or index of the mission to remove
+
+    """
+    try:
+        mission_number = int(name)
+    except ValueError:
+        mission = missions_manager.MissionPath(name)
+        if not mission:
+            LOGGER.error(f'mission file does not exist: {mission.path}')
+            return
+    else:
+        mission = _mission_index_to_mission_name(mission_number)
+        if not mission:
+            LOGGER.error(f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
+            return
+
+    missions_manager.delete(mission)
+
+
 @arg('-m', '--metar', nargs='+', metavar='METAR')
 @arg(protected=True)
 def load(
-        name: 'name of the mission to load (if not provided, will re-use the current mission)' = None,
+        name: 'name or index of the mission to load (if not provided, will re-use the current mission)' = None,
         icao: 'update the weather from ICAO' = None,
         metar: 'update the weather from METAR string\n'
                'WARNING: METAR string may NOT contain dashes ("-")' = None,
@@ -103,7 +140,9 @@ def load(
 
 ):
     """
-    Load a mission, allowing to set the weather or the time (protected)
+    Load a mission, allowing to set the weather or the time (protected).
+
+    Missions can be loaded by typing their full name, or using the index number given by the "!mission show" command.
     """
     if not (force or DCS.check_for_connected_players()):
         return
@@ -117,8 +156,8 @@ def show():
     """
     Show list of missions available on the server
     """
-
-    available_mission = '\n\t'.join(missions_manager.list_available_missions())
+    available_mission = '\n\t'.join(f'{n}. {m}' for n, m in missions_manager.list_available_missions())
+    # available_mission = '\n\t'.join(available_mission)
     DISCORD.say(
         'Available missions:\n'
         f'\t{available_mission}\n'
