@@ -143,6 +143,15 @@ def set_active_mission(mission: str, metar: str = None):
 
 
 def delete(mission: MissionPath):
+    """
+    Removes a mission from the filesystem.
+
+    Also removes leftover RLWX artifacts
+
+    Args:
+        mission: MissionPath instance to remove
+
+    """
     if os.path.exists(mission.path):
         LOGGER.info(f'removing: {mission.path}')
         os.unlink(mission.path)
