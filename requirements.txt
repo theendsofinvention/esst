@@ -21,7 +21,7 @@ markupsafe==1.0           # via jinja2
 matplotlib==2.1.0
 metar==1.5.0              # via emiz
 mpmath==1.0.0             # via emiz
-multidict==3.2.0          # via aiohttp
+multidict==3.3.0          # via aiohttp
 natsort==5.1.0            # via emiz
 numpy==1.13.3             # via matplotlib
 parsedatetime==2.4

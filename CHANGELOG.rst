@@ -2,6 +2,21 @@ Changelog
 =========
 
 
+0.1.50 (2017-10-17)
+-------------------
+
+Fix
+~~~
+- Download auto mission to a separate file. [132nd-etcher]
+
+  Auto mission should not overwrite a mission with the same name already present on the server; that way, weather and other edits are kept separate
+  closes #49
+- Fix process polling. [132nd-etcher]
+
+  ESST would crash while iterating over process when stumbling upon a recently closed process
+  closes #48
+
+
 0.1.49 (2017-10-15)
 -------------------
 
