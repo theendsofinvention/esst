@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+0.1.51 (2017-10-17)
+-------------------
+
+Changes
+~~~~~~~
+- Deactivate DCS version check at startup. [132nd-etcher]
+
+  Allow DCS update on the server while I'm away
+
+
 0.1.50 (2017-10-17)
 -------------------
 
