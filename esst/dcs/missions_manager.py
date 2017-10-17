@@ -193,7 +193,7 @@ def get_latest_mission_from_github():
             for asset in assets:
                 if asset.name.endswith('.miz'):
                     LOGGER.debug(f'found a mission file: {asset.name}')
-                    local_file = MissionPath(asset.name)
+                    local_file = MissionPath(f'AUTO_{asset.name}')
                     if not local_file:
                         LOGGER.info(f'downloading new mission: {asset.name}')
                         asset.download(local_file.path)
