@@ -6,6 +6,7 @@ Commands related to managing the DSC application
 import humanize
 
 from esst.commands import DCS, DISCORD
+from esst.utils import get_dcs_log_file_path
 from esst.core import MAIN_LOGGER, Status
 
 from .arg import arg
@@ -62,6 +63,13 @@ def version():
     Show DCS.exe version
     """
     DISCORD.say(f'DCS version: {Status.dcs_version}')
+
+
+def log():
+    """
+    Show DCS log file
+    """
+    DISCORD.send(get_dcs_log_file_path())
 
 
 NAMESPACE = '!dcs'

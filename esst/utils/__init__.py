@@ -9,7 +9,7 @@ import shutil
 import pefile
 import pkg_resources
 
-from esst.core import MAIN_LOGGER, Status
+from esst.core import MAIN_LOGGER, Status, CFG
 from .remove_old_files import clean_all_folder
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
@@ -82,6 +82,13 @@ def get_esst_changelog_path() -> str:
         LOGGER.error('changelog not found')
     else:
         return changelog_path
+
+
+def get_dcs_log_file_path() -> str:
+    """
+    Returns: path to DCS log file
+    """
+    return os.path.join(CFG.saved_games_dir, 'Logs/dcs.log')
 
 
 class Win32FileInfo:  # pylint: disable=missing-docstring
