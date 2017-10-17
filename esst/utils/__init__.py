@@ -68,7 +68,7 @@ def read_template(template_name: str) -> str:
         return handle_.read()
 
 
-def get_changelog_path() -> str:
+def get_esst_changelog_path() -> str:
     """
 
     Returns: changelog path

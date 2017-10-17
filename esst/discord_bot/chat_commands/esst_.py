@@ -6,7 +6,7 @@ Manages commands related to ESST itself
 from esst.core import CFG, __version__
 from esst.core.logger import get_esst_log_file_path
 from esst.discord_bot.commands import DISCORD
-from esst.utils import get_changelog_path
+from esst.utils import get_esst_changelog_path
 
 from .arg import arg
 
@@ -22,7 +22,7 @@ def changelog():
     """
     Show ESST changelog file
     """
-    changelog_path = get_changelog_path()
+    changelog_path = get_esst_changelog_path()
     if changelog_path:
         DISCORD.send(changelog_path)
 
