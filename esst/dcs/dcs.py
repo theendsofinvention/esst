@@ -35,8 +35,11 @@ async def get_dcs_process_pid():
     Returns: "DCS.exe" PID or False
     """
     for process in psutil.process_iter():
-        if process.name().lower() == 'dcs.exe':
-            return process.pid
+        try:
+            if process.name().lower() == 'dcs.exe':
+                return process.pid
+        except psutil.NoSuchProcess:
+            pass
 
     return False
 
