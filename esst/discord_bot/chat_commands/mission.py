@@ -105,10 +105,6 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901  # 
 def delete(name: 'name or index of the mission to load'):
     """
     Removes a mission file from the server (protected)
-
-    Args:
-        name: name or index of the mission to remove
-
     """
     try:
         mission_number = int(name)
