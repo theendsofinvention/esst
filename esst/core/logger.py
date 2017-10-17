@@ -9,7 +9,7 @@ import os
 import sys
 
 
-def log_file_path(saved_games_folder: str) -> str:
+def get_esst_log_file_path(saved_games_folder: str) -> str:
     """
 
     Args:
@@ -39,7 +39,7 @@ def setup_logging(debug: bool, saved_games_folder: str) -> logging.Logger:
     console_handler.setFormatter(formatter)
 
     file_handler = logging.handlers.TimedRotatingFileHandler(
-        log_file_path(saved_games_folder),
+        get_esst_log_file_path(saved_games_folder),
         when='midnight',
         backupCount=7
     )

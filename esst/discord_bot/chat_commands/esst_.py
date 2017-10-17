@@ -4,7 +4,7 @@ Manages commands related to ESST itself
 """
 
 from esst.core import CFG, __version__
-from esst.core.logger import log_file_path
+from esst.core.logger import get_esst_log_file_path
 from esst.discord_bot.commands import DISCORD
 from esst.utils import get_changelog_path
 
@@ -15,7 +15,7 @@ def log():
     """
     Show ESST log file
     """
-    DISCORD.send(log_file_path(CFG.saved_games_dir))
+    DISCORD.send(get_esst_log_file_path(CFG.saved_games_dir))
 
 
 def changelog():
