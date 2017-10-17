@@ -2,6 +2,15 @@ Changelog
 =========
 
 
+0.1.52 (2017-10-17)
+-------------------
+
+New
+~~~
+- Add "!dcs log" command to retrieve DCS log file from Discord. [132nd-
+  etcher]
+
+
 0.1.51 (2017-10-17)
 -------------------
 
