@@ -42,7 +42,8 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
         if message.channel != self.channel:
             return
         if CFG.discord_admin_role:
-            is_admin = CFG.discord_admin_role in [role.name for role in message.author.roles]
+            is_admin = bool([role for role in CFG.discord_admin_role
+                             if role in [role.name for role in message.author.roles]])
         else:
             is_admin = True
         if message.attachments:

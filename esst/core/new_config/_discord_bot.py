@@ -35,10 +35,10 @@ class DiscordConfig:
         """
         pass
 
-    @ConfigProp(str, default='', namespace=NAMESPACE)
-    def discord_admin_role(self) -> str:
+    @ConfigProp(list, default='', namespace=NAMESPACE)
+    def discord_admin_role(self) -> list:
         """
-        Discord bot token
+        List of roles that are allowed to administrate the server
         """
         pass
 
