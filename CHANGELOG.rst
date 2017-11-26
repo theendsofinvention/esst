@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+0.1.54 (2017-11-26)
+-------------------
+
+New
+~~~
+- Add CPU priority and affinity management for DCS process. [132nd-
+  etcher]
+- Added support for multiple admin roles. [132nd-etcher]
+
+
 0.1.53 (2017-11-26)
 -------------------
 
