@@ -7,6 +7,7 @@ import asyncio
 
 import aiohttp
 import websockets.exceptions
+from discord import HTTPException
 
 from esst.core import CTX, MAIN_LOGGER
 
@@ -29,15 +30,12 @@ def catch_exc(func):
 
         try:
             return await func(*args, **kwargs)
-        except websockets.exceptions.InvalidHandshake as exc:
-            _pass_exception(exc)
-        except websockets.exceptions.InvalidState as exc:
-            _pass_exception(exc)
-        except websockets.exceptions.PayloadTooBig as exc:
-            _pass_exception(exc)
-        except websockets.exceptions.WebSocketProtocolError as exc:
-            _pass_exception(exc)
-        except websockets.exceptions.InvalidURI as exc:
+        except (websockets.exceptions.InvalidHandshake,
+                websockets.exceptions.InvalidState,
+                websockets.exceptions.PayloadTooBig,
+                websockets.exceptions.WebSocketProtocolError,
+                websockets.exceptions.InvalidURI,
+                HTTPException) as exc:
             _pass_exception(exc)
         except (aiohttp.ClientError, ConnectionError, OSError, aiohttp.ClientOSError) as exc:
             await asyncio.sleep(10)
