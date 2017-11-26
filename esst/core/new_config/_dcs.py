@@ -12,6 +12,7 @@ class DCSConfig:
     """
     Manages config params for dcs application
     """
+
     @ConfigProp(str, namespace=NAMESPACE)
     def dcs_path(self):
         """
@@ -54,5 +55,19 @@ class DCSConfig:
         """
         Amount of seconds given to DCS to close itself after issuing the "exit" command via socket; if that
         period is exceeded, DCS application will be forcibly killed
+        """
+        pass
+
+    @ConfigProp(list, default='', namespace=NAMESPACE)
+    def dcs_cpu_affinity(self):
+        """
+        CPU affinity for the DCS process.
+        """
+        pass
+
+    @ConfigProp(str, default='', namespace=NAMESPACE)
+    def dcs_cpu_priority(self):
+        """
+        CPU priority for the DCS process.
         """
         pass

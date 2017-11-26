@@ -42,7 +42,7 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
         if message.channel != self.channel:
             return
         if CFG.discord_admin_role:
-            is_admin = bool([role for role in CFG.discord_admin_role
+            is_admin = bool([role for role in CFG.discord_admin_role  # pylint: disable=not-an-iterable
                              if role in [role.name for role in message.author.roles]])
         else:
             is_admin = True

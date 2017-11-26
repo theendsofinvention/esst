@@ -3,6 +3,7 @@
 Manages DCS application Window process
 """
 import asyncio
+import time
 from pathlib import Path
 
 import psutil
@@ -48,6 +49,14 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
     """
     Manages DCS application Window process
     """
+    valid_priorities = {
+        'idle': psutil.IDLE_PRIORITY_CLASS,
+        'below_normal': psutil.BELOW_NORMAL_PRIORITY_CLASS,
+        'normal': psutil.NORMAL_PRIORITY_CLASS,
+        'above_normal': psutil.ABOVE_NORMAL_PRIORITY_CLASS,
+        'high': psutil.HIGH_PRIORITY_CLASS,
+        'realtime': psutil.REALTIME_PRIORITY_CLASS,
+    }
 
     def __init__(self):
         self._app = None
@@ -132,6 +141,43 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         LOGGER.debug('waiting for DCS to spool up')
         await _wait_for_process()
         LOGGER.debug('process is ready')
+
+    def set_affinity(self):
+        """
+        Sets the DCS process CPU affinity to the CFG value
+        """
+        while True:
+            if CFG.dcs_cpu_affinity:
+                if CTX.exit:
+                    return
+                if list(self._app.cpu_affinity()) != list(CFG.dcs_cpu_affinity):
+                    LOGGER.debug(f'setting DCS process affinity to: {CFG.dcs_cpu_affinity}')
+                    self._app.cpu_affinity(list(CFG.dcs_cpu_affinity))
+            else:
+                LOGGER.warning('no affinity given in config file')
+                return
+            time.sleep(30)
+
+    def set_priority(self):
+        """
+        Sets the DCS process CPU priority to the CFG value
+        """
+        time.sleep(15)
+        while True:
+            if CFG.dcs_cpu_priority:
+                if CTX.exit:
+                    return
+                if CFG.dcs_cpu_priority not in self.valid_priorities.keys():
+                    LOGGER.error(f'invalid priority: {CFG.dcs_cpu_priority}\n'
+                                 f'Choose one of: {self.valid_priorities.keys()}')
+                    return
+                if self.app.nice() != self.valid_priorities[CFG.dcs_cpu_priority]:
+                    LOGGER.debug(f'setting DCS process priority to: {CFG.dcs_cpu_priority}')
+                    self.app.nice(self.valid_priorities[CFG.dcs_cpu_priority])
+            else:
+                LOGGER.warning('no priority given in config file')
+                return
+            time.sleep(30)
 
     async def _start_new_dcs_application_if_needed(self):
 
@@ -272,10 +318,14 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             await self._try_to_connect_to_existing_dcs_application()
             await self._start_new_dcs_application_if_needed()
         cpu_monitor_thread = CTX.loop.run_in_executor(None, self.monitor_cpu_usage)
+        cpu_affinity_thread = CTX.loop.run_in_executor(None, self.set_affinity)
+        cpu_priority_thread = CTX.loop.run_in_executor(None, self.set_priority)
         while True:
             if CTX.exit:
                 LOGGER.debug('interrupted by exit signal')
                 await cpu_monitor_thread
+                await cpu_affinity_thread
+                await cpu_priority_thread
                 break
             if CTX.dcs_can_start:
                 await self._check_if_dcs_is_running()
