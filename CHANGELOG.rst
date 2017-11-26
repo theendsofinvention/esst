@@ -2,6 +2,15 @@ Changelog
 =========
 
 
+0.1.53 (2017-11-26)
+-------------------
+
+Fix
+~~~
+- Ignore HTTPException from Discord client (just restart it) [132nd-
+  etcher]
+
+
 0.1.52 (2017-10-17)
 -------------------
 
