@@ -56,10 +56,3 @@ class DCSConfig:
         period is exceeded, DCS application will be forcibly killed
         """
         pass
-
-    @ConfigProp(str, namespace=NAMESPACE)
-    def dcs_server_password(self):
-        """
-        Password of the server
-        """
-        pass

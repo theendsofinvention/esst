@@ -60,3 +60,10 @@ class DCSServerConfig:
         Allow export of other objects data
         """
         pass
+
+    @ConfigProp(str, namespace=NAMESPACE)
+    def dcs_server_password(self):
+        """
+        Password of the server
+        """
+        pass
