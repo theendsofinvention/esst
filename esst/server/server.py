@@ -48,8 +48,8 @@ class App:
                 DISCORD.say(f'Server cpu usage: {cpu_usage}%')
                 CTX.server_show_cpu_usage_once = False
 
-            ServerStatus.free_memory = psutil.virtual_memory().free
-            ServerStatus.mem_usage = round(ServerStatus.free_memory / ServerStatus.total_memory * 100, 2)
+            ServerStatus.used_memory = ServerStatus.total_memory - psutil.virtual_memory().free
+            ServerStatus.mem_usage = round(ServerStatus.used_memory / ServerStatus.total_memory * 100, 2)
             ServerStatus.swap_used = psutil.swap_memory().used
 
             now_ = now()
