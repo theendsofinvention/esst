@@ -20,11 +20,11 @@ except everett.InvalidValueError as exception:
     KEY = exception.key
     if exception.namespace:
         KEY = f'{exception.namespace}_{KEY}'
-    print(f'Invalid value for key: {KEY}')
+    print(f'Invalid config value: {KEY}')
     exit(1)
 except everett.ConfigurationMissingError as exception:
     KEY = exception.key
     if exception.namespace:
         KEY = f'{exception.namespace}_{KEY}'
-    print(f'Missing configuration for key: {KEY}')
+    print(f'Missing configuration value: {KEY}')
     exit(1)
