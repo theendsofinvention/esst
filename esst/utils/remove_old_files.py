@@ -13,7 +13,15 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def parse_age_string(age_str):
-    # noinspection PyUnresolvedReferences
+    """
+    Converts age string to datetime timestamp
+
+    Args:
+        age_str: human friendly age string
+
+    Returns: datetime timestamp
+
+    """
     time_struct, parse_status = parsedatetime.Calendar().parse(age_str)
     if parse_status != 1:
         LOGGER.error(f'unable to parse age: {age_str}')
@@ -22,6 +30,13 @@ def parse_age_string(age_str):
 
 
 def remove_file_if_older_than(file_path, age):
+    """
+    Removes file if it's older than age
+
+    Args:
+        file_path: path to file to remove
+        age: maximum age of file
+    """
     file = os.path.abspath(file_path)
     if not os.path.exists(file):
         LOGGER.error(f'file does not exist: {file}')
@@ -33,7 +48,6 @@ def remove_file_if_older_than(file_path, age):
         os.unlink(file)
 
 
-
 def _remove_old_files_from_folder(folder, age):
     LOGGER.info(f'cleaning folder "{folder}" of all files older than {age}')
 
@@ -43,7 +57,7 @@ def _remove_old_files_from_folder(folder, age):
 
     for root, _, files in os.walk(folder):
         for file in files:
-            remove_file_if_older_than(file, age)
+            remove_file_if_older_than(os.path.join(root, file), age)
 
 
 def clean_all_folder():

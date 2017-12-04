@@ -1,11 +1,13 @@
 # coding=utf-8
+"""
+Rotates dcs.log files
+"""
 
-import os
-from pathlib import Path
 import datetime
+from pathlib import Path
 
 from esst.core import CFG, MAIN_LOGGER
-from esst.utils.remove_old_files import remove_file_if_older_than, parse_age_string
+from esst.utils.remove_old_files import parse_age_string, remove_file_if_older_than
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -21,13 +23,16 @@ def _save_old_log(old_log: Path):
 
 
 def rotate_dcs_log():
+    """
+    Rotates DCS logs
+    """
     LOGGER.info('rotating DCS logs')
     log_dir = _log_dir()
     LOGGER.debug(f'using logs directory: {log_dir}')
     if not log_dir.exists():
         LOGGER.error('log directory does no exist')
         return
-    old_log = log_dir.joinpath('dcs.log.old')
+    old_log = Path(log_dir.joinpath('dcs.log.old'))
     if old_log.exists():
         LOGGER.debug('saving old log')
         _save_old_log(old_log)
@@ -36,10 +41,13 @@ def rotate_dcs_log():
 
 
 def clean_old_logs():
+    """
+    Removes old logs
+    """
     if CFG.dcs_delete_logs_older_than:
         age = parse_age_string(CFG.dcs_delete_logs_older_than)
         if not age:
-            LOGGER.error(f'invalid value for "dcs_keep_logs_for": {CFG.dcs_keep_logs_for}')
+            LOGGER.error(f'invalid value for "dcs_keep_logs_for": {CFG.dcs_delete_logs_older_than}')
             return
         LOGGER.info('removing old DCS logs')
         log_dir = _log_dir()
@@ -56,4 +64,3 @@ def clean_old_logs():
 if __name__ == '__main__':
     clean_old_logs()
     # rotate_dcs_log()
-

@@ -10,8 +10,8 @@ import psutil
 
 from esst.commands import DISCORD, LISTENER
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
-from esst.utils import Win32FileInfo, now
 from esst.dcs.rotate_logs import rotate_dcs_log
+from esst.utils import Win32FileInfo, now
 
 from .dedicated import setup_config_for_dedicated_run
 from .game_gui import install_game_gui_hooks
