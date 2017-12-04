@@ -24,7 +24,6 @@ install_requires = [
     'ipgetter',
     'matplotlib',
     'parsedatetime',
-    'pynacl',
 ]
 
 test_requires = [
