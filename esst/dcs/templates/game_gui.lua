@@ -129,11 +129,12 @@ if dediConfig and dediConfig.dedicated ~= nil and dediConfig.dedicated["enabled"
     esst.debug('Creating listening socket')
     esst.sock = socket.udp()
     esst.port = 10333
+    esst.sock:settimeout(0.001)
 
     esst.debug('Creating command socket')
     esst.cmd_sock = socket.udp()
     esst.cmd_sock:setsockname('*', 10334)
-    esst.cmd_sock:settimeout(0.1)
+    esst.cmd_sock:settimeout(0.001)
 
     esst.debug('Installing hooks')
     DCS.setUserCallbacks(esst)
