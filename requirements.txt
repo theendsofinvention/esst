@@ -2,7 +2,6 @@ aiohttp==1.0.5            # via discord.py
 argh==0.26.2
 async-timeout==2.0.0      # via aiohttp
 certifi==2017.11.5
-cffi==1.11.2              # via pynacl
 chardet==3.0.4            # via aiohttp, requests
 click==6.7
 configobj==5.0.6          # via everett
@@ -27,15 +26,13 @@ numpy==1.13.3             # via matplotlib
 parsedatetime==2.4
 pefile==2017.11.5
 psutil==5.4.1
-pycparser==2.18           # via cffi
-pynacl==1.2.0
 pyparsing==2.2.0          # via matplotlib
 python-dateutil==2.6.1    # via matplotlib
 pytz==2017.3              # via matplotlib
 pyyaml==3.12              # via elib
 raven==6.3.0
 requests==2.18.4
-six==1.11.0               # via configobj, cycler, everett, matplotlib, pynacl, python-dateutil
+six==1.11.0               # via configobj, cycler, everett, matplotlib, python-dateutil
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py
 urllib3==1.22             # via requests

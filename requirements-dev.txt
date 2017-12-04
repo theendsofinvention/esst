@@ -3,7 +3,7 @@
 click==6.7                # via epab, pip-tools
 epab==0.1.9
 first==2.0.1              # via pip-tools
-pip-tools==1.10.2
+pip-tools==1.11.0
 pyyaml==3.12              # via epab
 setuptools-scm==1.15.6    # via epab
 six==1.11.0               # via pip-tools

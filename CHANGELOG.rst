@@ -2,6 +2,25 @@ Changelog
 =========
 
 
+0.1.56 (2017-12-04)
+-------------------
+
+Fix
+~~~
+- Fix server graph reporting DCS CPU usage on all cores. [132nd-etcher]
+
+  Since DCS is single-threaded, that was basically useless info. ESST now reports usage from a single core.
+- Server graph reporting free memory instead of used memory. [132nd-
+  etcher]
+- Fix server lag due to socket timeout. [132nd-etcher]
+
+Other
+~~~~~
+- Add: DCS log rotation. [132nd-etcher]
+
+  fix #52
+
+
 0.1.54 (2017-11-26)
 -------------------
 
