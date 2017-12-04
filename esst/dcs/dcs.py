@@ -11,6 +11,7 @@ import psutil
 from esst.commands import DISCORD, LISTENER
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
 from esst.utils import Win32FileInfo, now
+from esst.dcs.rotate_logs import rotate_dcs_log
 
 from .dedicated import setup_config_for_dedicated_run
 from .game_gui import install_game_gui_hooks
@@ -69,6 +70,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
         LOGGER.debug('starting DCS loop')
 
+    # noinspection PyMissingOrEmptyDocstring
     @property
     def app(self) -> psutil.Process:  # pylint: disable=missing-docstring
         return self._app
@@ -194,6 +196,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         ]
         await self._execute_cmd_chain(cmd_chain)
         await self._check_if_dcs_is_running()
+        rotate_dcs_log()
 
     async def _update_application_status(self, status: str):
         if Status.dcs_application != status:

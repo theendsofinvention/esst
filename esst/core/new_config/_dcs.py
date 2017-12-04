@@ -71,3 +71,10 @@ class DCSConfig:
         CPU priority for the DCS process.
         """
         pass
+
+    @ConfigProp(str, default='', namespace=NAMESPACE)
+    def dcs_delete_logs_older_than(self):
+        """
+        CPU priority for the DCS process.
+        """
+        pass

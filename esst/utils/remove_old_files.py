@@ -12,7 +12,7 @@ from esst.core import CFG, MAIN_LOGGER
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
-def _parse_age_string(age_str):
+def parse_age_string(age_str):
     # noinspection PyUnresolvedReferences
     time_struct, parse_status = parsedatetime.Calendar().parse(age_str)
     if parse_status != 1:
@@ -21,21 +21,29 @@ def _parse_age_string(age_str):
     return datetime.datetime(*time_struct[:6]).timestamp()
 
 
-def _remove_old_files(folder, age):
+def remove_file_if_older_than(file_path, age):
+    file = os.path.abspath(file_path)
+    if not os.path.exists(file):
+        LOGGER.error(f'file does not exist: {file}')
+        return
+    modification_time = os.path.getmtime(file)
+    # LOGGER.debug(f'"{file}" modification time: {modification_time}')
+    if modification_time <= age:
+        LOGGER.info(f'removing: {file}')
+        os.unlink(file)
+
+
+
+def _remove_old_files_from_folder(folder, age):
     LOGGER.info(f'cleaning folder "{folder}" of all files older than {age}')
 
-    age = _parse_age_string(age)
+    age = parse_age_string(age)
     if not age:
         return
 
     for root, _, files in os.walk(folder):
         for file in files:
-            file = os.path.abspath(os.path.join(root, file))
-            creation_time = os.path.getctime(file)
-            LOGGER.debug(f'"{file}" creation time: {creation_time}')
-            if creation_time <= age:
-                LOGGER.info(f'removing: {file}')
-                os.unlink(file)
+            remove_file_if_older_than(file, age)
 
 
 def clean_all_folder():
@@ -57,6 +65,6 @@ def clean_all_folder():
             if not os.path.exists(remove_config['folder']):
                 LOGGER.error(f'path does not exist: {remove_config["folder"]}')
                 return
-            _remove_old_files(**remove_config)
+            _remove_old_files_from_folder(**remove_config)
     else:
         LOGGER.debug('no folder to clean')
