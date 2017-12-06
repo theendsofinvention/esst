@@ -8,7 +8,8 @@ import queue
 
 import click
 
-from esst.core import CFG, CTX, MAIN_LOGGER, __version__
+from esst import __version__
+from esst.core import CFG, CTX, MAIN_LOGGER
 from esst.utils.conn import monitor_connection, wan_available
 
 

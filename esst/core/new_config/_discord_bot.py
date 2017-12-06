@@ -5,7 +5,7 @@ Manages config params for auto mission
 
 from elib.config import ConfigProp
 
-from ..version import __version__
+from esst import __version__
 
 NAMESPACE = 'DISCORD'
 

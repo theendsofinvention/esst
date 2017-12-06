@@ -2,3 +2,7 @@
 """
 Etcher's Server Startup Tool
 """
+
+from ._esst_version import get_versions
+__version__ = get_versions()['version']
+del get_versions

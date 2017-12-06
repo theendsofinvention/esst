@@ -3,6 +3,9 @@
 import os
 import shutil
 
+import versioneer
+
+
 from setuptools import find_packages, setup
 
 entry_points = '''
@@ -17,7 +20,8 @@ def main():
         shutil.copy2('./README.md', './esst/README.md')
         setup(
             name='esst',
-            use_scm_version=True,
+            version=versioneer.get_version(),
+            cmdclass=versioneer.get_cmdclass(),
             zip_safe=False,
             entry_points=entry_points,
             package_dir={'esst': 'esst'},
