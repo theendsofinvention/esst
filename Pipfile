@@ -52,6 +52,7 @@ pytest-cov = "*"
 pytest-pycharm = "*"
 pytest = "*"
 pipenv = "*"
+pylint = "*"
 
 
 [pipenv]
