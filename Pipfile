@@ -1,0 +1,59 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[requires]
+
+python_version = "3.6"
+
+
+[packages]
+
+argh = "*"
+certifi = ">=2017.11.5"
+click = ">=6.7"
+configobj = ">=5.0.6"
+"discord.py" = ">=0.16.12"
+elib = ">=0.1.4"
+emiz = ">=0.1.12"
+everett = ">=0.9"
+"github3.py" = "*"
+humanize = ">=0.5.1"
+"jinja2" = ">=2.10"
+matplotlib = ">=2.1.0"
+metar = ">=1.5.0"
+mpmath = ">=1.0.0"
+natsort = ">=5.1.1"
+numpy = ">=1.13.3"
+parsedatetime = ">=2.4"
+pefile = ">=2017.11.5"
+psutil = ">=5.4.1"
+python-dateutil = ">=2.6.1"
+pytz = ">=2017.3"
+pyyaml = ">=3.12"
+raven = ">=6.3.0"
+requests = "*"
+"urllib3" = ">=1.22"
+ipgetter = "*"
+versioneer = "*"
+
+
+[dev-packages]
+
+epab = "*"
+coverage = "*"
+hypothesis = "*"
+pytest-cache = "*"
+pytest-catchlog = "*"
+pytest-cov = "*"
+"pytest-pep8" = "*"
+pytest-pycharm = "*"
+pytest = "*"
+
+
+[pipenv]
+
+allow_prereleases = true
