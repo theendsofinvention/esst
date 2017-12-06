@@ -4,8 +4,14 @@ import os
 import shutil
 
 import versioneer
+from pipenv.project import Project
+from pipenv.utils import convert_deps_to_pip
 
 from setuptools import find_packages, setup
+
+pfile = Project(chdir=False).parsed_pipfile
+requirements = convert_deps_to_pip(pfile['packages'], r=False)
+test_requirements = convert_deps_to_pip(pfile['dev-packages'], r=False)
 
 
 entry_points = '''
@@ -34,6 +40,8 @@ def main():
             },
             test_suite='pytest',
             packages=find_packages(),
+            install_requires=requirements,
+            tests_require=test_requirements,
             python_requires='>=3.6',
             extras_require={
                 'callgraph': ['pycallgraph'],
