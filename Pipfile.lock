@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "62454663efd82f4593e15cb5ab3458a7af80920ee6920108446242fd997f1198"
+            "sha256": "1a404d814b017521387d1f6fb998e1fca77d27bca0cf7ac8a2652a7681303995"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -108,6 +108,12 @@
                 "sha256:d46872c89cd620efd54ba1349cd08c5da335d61b167efdde325b6fa48da32145"
             ],
             "version": "==0.1.12"
+        },
+        "epab": {
+            "hashes": [
+                "sha256:ec8a5f91baaeff628b6aba66fc3df9b44c706d42ae045f2dfd855eba40cb18b8"
+            ],
+            "version": "==0.1.16"
         },
         "everett": {
             "hashes": [
@@ -344,6 +350,12 @@
             ],
             "version": "==2.18.4"
         },
+        "semver": {
+            "hashes": [
+                "sha256:1ffb55fb86a076cf7c161e6b5931f7da59f15abe217e0f24cea96cc8eec50f42"
+            ],
+            "version": "==2.7.9"
+        },
         "six": {
             "hashes": [
                 "sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb",
@@ -489,9 +501,9 @@
         },
         "epab": {
             "hashes": [
-                "sha256:6ddf3c75d1e275222c14b7176602e864f46b9c7301898c44facbef93e70bf63e"
+                "sha256:ec8a5f91baaeff628b6aba66fc3df9b44c706d42ae045f2dfd855eba40cb18b8"
             ],
-            "version": "==0.1.15"
+            "version": "==0.1.16"
         },
         "execnet": {
             "hashes": [

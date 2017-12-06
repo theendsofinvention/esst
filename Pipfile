@@ -37,7 +37,6 @@ raven = ">=6.3.0"
 requests = "*"
 "urllib3" = ">=1.22"
 ipgetter = "*"
-versioneer = "*"
 
 
 [dev-packages]
@@ -53,6 +52,8 @@ pytest-pycharm = "*"
 pytest = "*"
 pipenv = "*"
 pylint = "*"
+epab = "*"
+versioneer = "*"
 
 
 [pipenv]
