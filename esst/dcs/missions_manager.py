@@ -14,7 +14,7 @@ import humanize
 from emiz.weather import build_metar_from_mission, set_weather_from_metar_str
 from esst.commands import DCS
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
-from esst.utils import create_versionned_backup, read_template, get_latest_release
+from esst.utils import create_versionned_backup, get_latest_release, read_template
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
