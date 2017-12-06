@@ -52,6 +52,7 @@ pytest-cov = "*"
 "pytest-pep8" = "*"
 pytest-pycharm = "*"
 pytest = "*"
+pipenv = "*"
 
 
 [pipenv]
