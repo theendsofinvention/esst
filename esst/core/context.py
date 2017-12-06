@@ -4,7 +4,6 @@ Represents the global context
 """
 
 import inspect
-from asyncio import AbstractEventLoop
 from collections import deque
 from concurrent.futures import ProcessPoolExecutor
 from queue import Queue
