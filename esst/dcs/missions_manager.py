@@ -10,12 +10,11 @@ import warnings
 import requests
 from jinja2 import Template
 
-import github3
 import humanize
 from emiz.weather import build_metar_from_mission, set_weather_from_metar_str
 from esst.commands import DCS
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
-from esst.utils import create_versionned_backup, read_template
+from esst.utils import create_versionned_backup, read_template, get_latest_release
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -185,19 +184,20 @@ def get_latest_mission_from_github():
         DCS.cannot_start()
         if CFG.auto_mission_github_repo and CFG.auto_mission_github_owner:
             LOGGER.debug('looking for newer mission file')
-            github = github3.GitHub(token=CFG.auto_mission_github_token)
-            repo = github.repository(CFG.auto_mission_github_owner, CFG.auto_mission_github_repo)
-            rel = repo.latest_release()
-            LOGGER.debug(f'release tag: {rel.tag_name}')
-            assets = list(rel.assets(1))
-            for asset in assets:
-                if asset.name.endswith('.miz'):
-                    LOGGER.debug(f'found a mission file: {asset.name}')
-                    local_file = MissionPath(f'AUTO_{asset.name}')
-                    if not local_file:
-                        LOGGER.info(f'downloading new mission: {asset.name}')
-                        asset.download(local_file.path)
+            latest_version, asset_name, download_url = get_latest_release(
+                CFG.auto_mission_github_owner, CFG.auto_mission_github_repo
+            )
+            LOGGER.debug(f'latest release: {latest_version}')
+            local_file = MissionPath(f'AUTO_{asset_name}')
+            if not local_file:
+                LOGGER.info(f'downloading new mission: {asset_name}')
+                req = requests.get(download_url)
+                if req.ok:
+                    with open(str(local_file.path), 'wb') as stream:
+                        stream.write(req.content)
                     local_file.set_as_active()
+                else:
+                    LOGGER.error('failed to download latest mission')
         else:
             LOGGER.error('no config values given for [auto mission]')
         DCS.can_start()
