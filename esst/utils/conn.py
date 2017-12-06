@@ -4,10 +4,10 @@ Checks WAN connection
 """
 import asyncio
 
+import ipgetter
 import requests
 import requests.exceptions
 
-import ipgetter
 from esst.commands import DCS, DISCORD
 from esst.core import CTX, MAIN_LOGGER
 

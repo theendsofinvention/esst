@@ -9,9 +9,10 @@ from collections import namedtuple
 from tempfile import mktemp
 
 import humanize
-from esst.core import CTX
 from matplotlib import pyplot as plt
 from matplotlib import gridspec, ticker
+
+from esst.core import CTX
 
 GraphValues = namedtuple('GraphValues', ['server_cpu_history',
                                          'server_mem_history',
@@ -104,7 +105,7 @@ def _y_format_func_bytes(val, _):
     return humanize.naturalsize(val)
 
 
-def _plot_axis(grid_spec, grid_pos,
+def _plot_axis(grid_spec, grid_pos,  # pylint: disable=too-many-arguments
                values_to_plot: typing.Set[PlotLine],
                title,
                y_label_text,
@@ -225,7 +226,13 @@ def _add_players_count_to_axis(axis, players_history):
     axis.legend(lines + lines2, labels + labels2)
 
 
-def _make_history_graph(values_to_process, days=0, hours=0, minutes=0, show: bool = False, save_path=None):
+def _make_history_graph(  # pylint: disable=too-many-arguments
+        values_to_process,
+        days=0,
+        hours=0,
+        minutes=0,
+        show: bool = False,
+        save_path=None):
     """
     Creates a graph of perfs
 

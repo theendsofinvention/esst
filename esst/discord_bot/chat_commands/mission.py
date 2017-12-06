@@ -6,6 +6,7 @@ Meh
 from time import sleep
 
 from emiz import build_metar_from_mission, edit_miz, parse_metar_string, retrieve_metar
+
 from esst.commands import DCS, DISCORD
 from esst.core import CTX, MAIN_LOGGER, Status
 from esst.dcs import missions_manager

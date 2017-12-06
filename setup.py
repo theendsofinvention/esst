@@ -6,7 +6,6 @@ import shutil
 import versioneer
 from pipenv.project import Project
 from pipenv.utils import convert_deps_to_pip
-
 from setuptools import find_packages, setup
 
 pfile = Project(chdir=False).parsed_pipfile
