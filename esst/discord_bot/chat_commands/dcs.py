@@ -4,7 +4,6 @@ Commands related to managing the DSC application
 """
 
 import humanize
-
 from esst.commands import DCS, DISCORD
 from esst.core import MAIN_LOGGER, Status
 from esst.utils import get_dcs_log_file_path

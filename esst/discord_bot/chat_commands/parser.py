@@ -15,7 +15,6 @@ from argh.constants import (ATTR_EXPECTS_NAMESPACE_OBJECT, ATTR_WRAPPED_EXCEPTIO
 from argh.dispatching import ArghNamespace
 from argh.exceptions import CommandError
 from argh.utils import get_arg_spec
-
 from esst.commands import DISCORD
 from esst.core import CFG, MAIN_LOGGER
 from esst.discord_bot import abstract

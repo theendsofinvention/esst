@@ -7,12 +7,12 @@ import os
 import typing
 import warnings
 
-import github3
-import humanize
 import requests
-from emiz.weather import build_metar_from_mission, set_weather_from_metar_str
 from jinja2 import Template
 
+import github3
+import humanize
+from emiz.weather import build_metar_from_mission, set_weather_from_metar_str
 from esst.commands import DCS
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
 from esst.utils import create_versionned_backup, read_template

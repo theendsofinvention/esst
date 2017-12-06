@@ -9,10 +9,9 @@ from collections import namedtuple
 from tempfile import mktemp
 
 import humanize
+from esst.core import CTX
 from matplotlib import pyplot as plt
 from matplotlib import gridspec, ticker
-
-from esst.core import CTX
 
 GraphValues = namedtuple('GraphValues', ['server_cpu_history',
                                          'server_mem_history',

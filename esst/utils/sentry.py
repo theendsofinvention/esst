@@ -8,11 +8,11 @@ import logging
 import sys
 
 import certifi
+
 import raven
 import raven.breadcrumbs
 import raven.conf
 import raven.handlers.logging
-
 from esst.core import MAIN_LOGGER, __version__
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
