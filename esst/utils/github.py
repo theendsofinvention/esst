@@ -16,11 +16,11 @@ BASE_URL = 'https://api.github.com/'
 def _make_request(endpoint):
     url = f'{BASE_URL}{endpoint}'
     LOGGER.debug(url)
-    r = requests.get(url)
-    if r.ok:
-        return json.loads(r.text or r.content)
-    if r.text or r.content:
-        resp = json.loads(r.text or r.content)
+    req = requests.get(url)
+    if req.ok:
+        return json.loads(req.text or req.content)
+    if req.text or req.content:
+        resp = json.loads(req.text or req.content)
         if resp['message']:
             raise ConnectionError(f'Request failed: {url}\nMessage: {resp["message"]}')
 
@@ -39,8 +39,3 @@ def get_latest_release(owner: str, repo: str) -> typing.Tuple[str, str, str]:
     """
     resp = _make_request(f'repos/{owner}/{repo}/releases/latest')
     return resp['tag_name'], resp['assets'][0]['name'], resp['assets'][0]['browser_download_url']
-
-
-if __name__ == '__main__':
-    tag, name, dlurl = get_latest_release('132nd-vWing', '132nd-Virtual-Wing-Training-Mission-Tblisi')
-    print(tag, name, dlurl)
