@@ -36,7 +36,8 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901  # 
         else:
             mission = _mission_index_to_mission_name(mission_number)
             if not mission:
-                LOGGER.error(f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
+                LOGGER.error(
+                    f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
                 return
 
     if metar:
@@ -84,11 +85,13 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901  # 
         edit_str.append('weather')
     if edit_str:
         edit_str = ' and '.join(edit_str)
-        LOGGER.info(f'loading {mission.name} with {edit_str} (this may take a few seconds)')
+        LOGGER.info(
+            f'loading {mission.name} with {edit_str} (this may take a few seconds)')
     else:
         LOGGER.info(f'loading {mission.name}')
     try:
-        error = edit_miz(mission.path, mission.rlwx.path, metar, time, min_wind, max_wind)
+        error = edit_miz(mission.path, mission.rlwx.path,
+                         metar, time, min_wind, max_wind)
         if error:
             if error == 'nothing to do!':
                 mission.set_as_active(info_metar.code)
@@ -116,7 +119,8 @@ def delete(name: 'name or index of the mission to load'):
     else:
         mission = _mission_index_to_mission_name(mission_number)
         if not mission:
-            LOGGER.error(f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
+            LOGGER.error(
+                f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
             return
 
     missions_manager.delete(mission)
@@ -146,14 +150,16 @@ def load(
     if not any((name, icao, metar, time)):
         DISCORD.say('Type "!mission load --help" to see available options')
         return
-    CTX.loop.run_in_executor(None, _load, name, icao, metar, time, max_wind, min_wind, force)
+    CTX.loop.run_in_executor(None, _load, name, icao,
+                             metar, time, max_wind, min_wind, force)
 
 
 def show():
     """
     Show list of missions available on the server
     """
-    available_mission = '\n\t'.join(f'{n}. {m}' for n, m in missions_manager.list_available_missions())
+    available_mission = '\n\t'.join(
+        f'{n}. {m}' for n, m in missions_manager.list_available_missions())
     # available_mission = '\n\t'.join(available_mission)
     DISCORD.say(
         'Available missions:\n'

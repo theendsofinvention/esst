@@ -22,7 +22,8 @@ def _make_request(endpoint):
     if req.text or req.content:
         resp = json.loads(req.text or req.content)
         if resp['message']:
-            raise ConnectionError(f'Request failed: {url}\nMessage: {resp["message"]}')
+            raise ConnectionError(
+                f'Request failed: {url}\nMessage: {resp["message"]}')
 
     raise ConnectionError(f'Request failed: {url}')
 

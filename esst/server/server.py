@@ -31,7 +31,8 @@ class App:
         ServerStatus.cpu_frequency = psutil.cpu_freq().max
         ServerStatus.total_memory = psutil.virtual_memory().total
         ServerStatus.swap_size = psutil.swap_memory().total
-        ServerStatus.boot_time = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+        ServerStatus.boot_time = datetime.datetime.fromtimestamp(
+            psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
 
     @staticmethod
     def _update_status():
@@ -49,7 +50,8 @@ class App:
                 CTX.server_show_cpu_usage_once = False
 
             ServerStatus.used_memory = ServerStatus.total_memory - psutil.virtual_memory().free
-            ServerStatus.mem_usage = round(ServerStatus.used_memory / ServerStatus.total_memory * 100, 2)
+            ServerStatus.mem_usage = round(
+                ServerStatus.used_memory / ServerStatus.total_memory * 100, 2)
             ServerStatus.swap_used = psutil.swap_memory().used
 
             now_ = now()

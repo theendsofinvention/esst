@@ -78,7 +78,8 @@ def _main(  # pylint: disable=too-many-locals
     CTX.discord_msg_queue = queue.Queue()
 
     import ctypes
-    ctypes.windll.kernel32.SetConsoleTitleW(f'ESST v{__version__} - Use CTRL+C to exit')
+    ctypes.windll.kernel32.SetConsoleTitleW(
+        f'ESST v{__version__} - Use CTRL+C to exit')
     MAIN_LOGGER.debug(f'starting ESST {__version__}')
 
     from esst.utils import clean_all_folder
@@ -98,7 +99,8 @@ def _main(  # pylint: disable=too-many-locals
         listener_loop = DCSListener()
     except OSError as exc:
         if exc.errno == 10048:
-            MAIN_LOGGER.error('cannot bind socket, maybe another instance of ESST is already running?')
+            MAIN_LOGGER.error(
+                'cannot bind socket, maybe another instance of ESST is already running?')
             exit(-1)
     else:
 
@@ -118,7 +120,8 @@ def _main(  # pylint: disable=too-many-locals
                 *_: frame
 
             """
-            MAIN_LOGGER.info('ESST has been interrupted by user request, shutting down')
+            MAIN_LOGGER.info(
+                'ESST has been interrupted by user request, shutting down')
             CTX.exit = True
 
         import signal

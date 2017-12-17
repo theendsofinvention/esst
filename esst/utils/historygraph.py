@@ -41,12 +41,18 @@ def process_values(values_to_process: GraphValues, time_delta: float) -> GraphVa
     Returns: processed values
 
     """
-    server_cpu_history = [data for data in values_to_process.server_cpu_history if data[0] >= time_delta]
-    server_mem_history = [data for data in values_to_process.server_mem_history if data[0] >= time_delta]
-    server_bytes_sent_history = [data for data in values_to_process.server_bytes_sent_history if data[0] >= time_delta]
-    server_bytes_recv_history = [data for data in values_to_process.server_bytes_recv_history if data[0] >= time_delta]
-    dcs_cpu_history = [data for data in values_to_process.dcs_cpu_history if data[0] >= time_delta]
-    dcs_mem_history = [data for data in values_to_process.dcs_mem_history if data[0] >= time_delta]
+    server_cpu_history = [
+        data for data in values_to_process.server_cpu_history if data[0] >= time_delta]
+    server_mem_history = [
+        data for data in values_to_process.server_mem_history if data[0] >= time_delta]
+    server_bytes_sent_history = [
+        data for data in values_to_process.server_bytes_sent_history if data[0] >= time_delta]
+    server_bytes_recv_history = [
+        data for data in values_to_process.server_bytes_recv_history if data[0] >= time_delta]
+    dcs_cpu_history = [
+        data for data in values_to_process.dcs_cpu_history if data[0] >= time_delta]
+    dcs_mem_history = [
+        data for data in values_to_process.dcs_mem_history if data[0] >= time_delta]
     if not values_to_process.players_history:
         players_history = [(time_delta, 0)]
     else:
@@ -61,7 +67,8 @@ def process_values(values_to_process: GraphValues, time_delta: float) -> GraphVa
         #             players_history.append(data)
         # if CTX.players_history[-1] not in players_history:
         #     players_history.append(CTX.players_history[-1])
-        players_history = [data for data in values_to_process.players_history if data[0] >= time_delta]
+        players_history = [
+            data for data in values_to_process.players_history if data[0] >= time_delta]
     if not server_cpu_history:
         server_cpu_history = [(time_delta, 0)]
     if not server_mem_history:
@@ -86,7 +93,8 @@ def process_values(values_to_process: GraphValues, time_delta: float) -> GraphVa
 
 
 def _make_delta(now, days, hours, minutes):
-    delta = datetime.timedelta(days=days, hours=hours, minutes=minutes).total_seconds()
+    delta = datetime.timedelta(
+        days=days, hours=hours, minutes=minutes).total_seconds()
     if delta == 0:
         delta = datetime.timedelta(hours=2).total_seconds()
     return now - delta
@@ -214,7 +222,8 @@ def _plot_bandwidth(grid_spec, values, now, share_x=None):
 
 def _add_players_count_to_axis(axis, players_history):
     ax_players = axis.twinx()
-    max_player_count = max(max((players_count for players_count in players_history[1])), 10)
+    max_player_count = max(
+        max((players_count for players_count in players_history[1])), 10)
     ax_players.set_ylim([0, max_player_count + (max_player_count / 4)])
     ax_players.yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
     ax_players.set_ylabel('Connected players')
@@ -291,7 +300,8 @@ def make_history_graph(callback=None, days=0, hours=0, minutes=0, show: bool = F
         server_bytes_sent_history=CTX.server_bytes_sent_history,
         players_history=CTX.players_history,
     )
-    future = CTX.process_pool.submit(_make_history_graph, values_to_process, days, hours, minutes, show, save_path)
+    future = CTX.process_pool.submit(
+        _make_history_graph, values_to_process, days, hours, minutes, show, save_path)
     if callback:
         future.add_done_callback(callback)
 
@@ -307,13 +317,17 @@ if __name__ == '__main__':
     PLAYER_COUNT = 0
     CTX.players_history.append((NOW - TOTAL_SECONDS, 0))
     for time_stamp in range(TOTAL_SECONDS, 0, -5):
-        CTX.server_mem_history.append((NOW - time_stamp, random.randint(60, 70)))
+        CTX.server_mem_history.append(
+            (NOW - time_stamp, random.randint(60, 70)))
         CTX.dcs_cpu_history.append((NOW - time_stamp, random.randint(20, 30)))
         CTX.dcs_mem_history.append((NOW - time_stamp, random.randint(60, 70)))
-        CTX.server_bytes_recv_history.append((NOW - time_stamp, random.randint(0, 50000000)))
-        CTX.server_bytes_sent_history.append((NOW - time_stamp, random.randint(0, 50000000)))
+        CTX.server_bytes_recv_history.append(
+            (NOW - time_stamp, random.randint(0, 50000000)))
+        CTX.server_bytes_sent_history.append(
+            (NOW - time_stamp, random.randint(0, 50000000)))
         if time_stamp <= int(TOTAL_SECONDS / 2):
-            CTX.server_cpu_history.append((NOW - time_stamp, random.randint(20, 30)))
+            CTX.server_cpu_history.append(
+                (NOW - time_stamp, random.randint(20, 30)))
         if random.randint(0, 100) > 99:
             PLAYER_COUNT += random.choice([-1, 1])
             if PLAYER_COUNT < 0:

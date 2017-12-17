@@ -58,7 +58,8 @@ async def monitor_connection():
         if current_status != CTX.wan:
             if current_status:
                 LOGGER.debug('connected to the Internet')
-                DISCORD.say('I just lost internet connection, server is scheduled to be restarted')
+                DISCORD.say(
+                    'I just lost internet connection, server is scheduled to be restarted')
             else:
                 LOGGER.warning('internet connection lost !')
                 DCS.kill(force=False, queue=True)

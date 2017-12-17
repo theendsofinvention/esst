@@ -92,7 +92,8 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
             # **kwargs
             varkw = getattr(spec, 'varkw', getattr(spec, 'keywords', []))
             if varkw:
-                not_kwargs = [DEST_FUNCTION] + spec.args + [spec.varargs] + kwonly
+                not_kwargs = [DEST_FUNCTION] + \
+                    spec.args + [spec.varargs] + kwonly
                 for k in vars(namespace_obj):
                     if k.startswith('_') or k in not_kwargs:
                         continue
@@ -250,7 +251,8 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
 
             if func:
                 if hasattr(func, 'protected_') and not is_admin:
-                    LOGGER.error(f'only users with role "{CFG.discord_admin_role}" have access to this command')
+                    LOGGER.error(
+                        f'only users with role "{CFG.discord_admin_role}" have access to this command')
                     return
                 LOGGER.debug(f'running func: {func}')
                 return _execute_command(func, namespace_obj, pre_call=pre_call)
@@ -315,7 +317,8 @@ def make_root_parser():
     Returns: parser object
 
     """
-    parser = DiscordCommandParser(description=DECRIPTION, prog='', add_help=False, usage='', epilog=EPILOG)
+    parser = DiscordCommandParser(
+        description=DECRIPTION, prog='', add_help=False, usage='', epilog=EPILOG)
     for module_ in [esst_, mission, server, dcs, report, ]:
         funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction)
                  if o[1].__module__ == module_.__name__ and not o[1].__name__.startswith('_')]

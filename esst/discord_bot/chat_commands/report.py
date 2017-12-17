@@ -15,7 +15,8 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 def _send(msg, ctx):
     if msg and CTX.sentry:
-        CTX.sentry.captureMessage(ctx + '_' + str(uuid.uuid4()), data={'extra': {'text': ' '.join(msg)}})
+        CTX.sentry.captureMessage(
+            ctx + '_' + str(uuid.uuid4()), data={'extra': {'text': ' '.join(msg)}})
         DISCORD.say('Thank you !')
 
 

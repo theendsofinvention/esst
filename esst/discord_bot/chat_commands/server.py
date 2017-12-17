@@ -22,7 +22,8 @@ def status():
     for attr_name in dir(ServerStatus):
         if attr_name.startswith('_'):
             continue
-        attr_nice_name = (attr_name[:1].upper() + attr_name[1:]).replace("_", " ")
+        attr_nice_name = (attr_name[:1].upper() +
+                          attr_name[1:]).replace("_", " ")
         value = getattr(ServerStatus, attr_name)
         if ('memory' in attr_name or 'swap' in attr_name) and value != 'unknown':
             value = humanize.naturalsize(value)

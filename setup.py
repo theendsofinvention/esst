@@ -4,9 +4,8 @@ import os
 import shutil
 
 import versioneer
-from setuptools import find_packages, setup
-
 from pip.req import parse_requirements
+from setuptools import find_packages, setup
 
 requirements = [str(r.req) for r in
                 parse_requirements('requirements.txt', session=False)]

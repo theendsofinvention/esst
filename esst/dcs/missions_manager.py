@@ -228,7 +228,8 @@ def download_mission_from_discord(discord_attachment, overwrite=False, load=Fals
                            f'use "overwrite" to replace it')
             return
 
-    LOGGER.info(f'downloading: {filename} ({humanize.naturalsize(size)}) {overwriting}')
+    LOGGER.info(
+        f'downloading: {filename} ({humanize.naturalsize(size)}) {overwriting}')
     with requests.get(url) as response:
         with open(local_file.path, 'wb') as out_file:
             out_file.write(response.content)
@@ -264,7 +265,8 @@ def get_running_mission() -> typing.Union['MissionPath', str]:
             LOGGER.debug(f'returning active mission: {mission.name}')
             return mission
         else:
-            LOGGER.error(f'current mission is "{mission.path}", but that file does not exist')
+            LOGGER.error(
+                f'current mission is "{mission.path}", but that file does not exist')
     else:
         LOGGER.error('no active mission; please load a mission first '
                      '(or just wait a moment for the server to be ready)')

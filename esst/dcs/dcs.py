@@ -90,7 +90,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             raise RuntimeError(f'dcs.exe not found: {dcs_exe}')
         # noinspection PyBroadException
         try:
-            Status.dcs_version = Win32FileInfo(str(dcs_exe.absolute())).file_version
+            Status.dcs_version = Win32FileInfo(
+                str(dcs_exe.absolute())).file_version
             # SKIPPING DCS VERSION CHECK
             # if Status.dcs_version not in KNOWN_DCS_VERSIONS:
             #     error = f'sorry, but I am unable to manage this version of DCS: {Status.dcs_version}\n' \
@@ -153,7 +154,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                 if CTX.exit:
                     return
                 if list(self._app.cpu_affinity()) != list(CFG.dcs_cpu_affinity):
-                    LOGGER.debug(f'setting DCS process affinity to: {CFG.dcs_cpu_affinity}')
+                    LOGGER.debug(
+                        f'setting DCS process affinity to: {CFG.dcs_cpu_affinity}')
                     self._app.cpu_affinity(list(CFG.dcs_cpu_affinity))
             else:
                 LOGGER.warning('no affinity given in config file')
@@ -174,7 +176,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                                  f'Choose one of: {self.valid_priorities.keys()}')
                     return
                 if self.app.nice() != self.valid_priorities[CFG.dcs_cpu_priority]:
-                    LOGGER.debug(f'setting DCS process priority to: {CFG.dcs_cpu_priority}')
+                    LOGGER.debug(
+                        f'setting DCS process priority to: {CFG.dcs_cpu_priority}')
                     self.app.nice(self.valid_priorities[CFG.dcs_cpu_priority])
             else:
                 LOGGER.warning('no priority given in config file')
@@ -216,7 +219,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             LOGGER.debug('sending socket command to DCS for graceful exit')
             LISTENER.exit_dcs()
             await asyncio.sleep(1)
-            LOGGER.debug(f'waiting on DCS to close itself (grace period: {CFG.dcs_grace_period})')
+            LOGGER.debug(
+                f'waiting on DCS to close itself (grace period: {CFG.dcs_grace_period})')
             now_ = now()
             while self.app.is_running():
                 await asyncio.sleep(1)
@@ -285,7 +289,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         while not CTX.exit:
             try:
                 if self.app and self.app.is_running():
-                    cpu_usage = int(self.app.cpu_percent(CFG.dcs_high_cpu_usage_interval))
+                    cpu_usage = int(self.app.cpu_percent(
+                        CFG.dcs_high_cpu_usage_interval))
                     mem_usage = int(self.app.memory_percent())
                     Status.dcs_cpu_usage = f'{cpu_usage}%'
                     if CTX.dcs_show_cpu_usage or CTX.dcs_show_cpu_usage_once:
@@ -320,7 +325,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         if CTX.dcs_can_start:
             await self._try_to_connect_to_existing_dcs_application()
             await self._start_new_dcs_application_if_needed()
-        cpu_monitor_thread = CTX.loop.run_in_executor(None, self.monitor_cpu_usage)
+        cpu_monitor_thread = CTX.loop.run_in_executor(
+            None, self.monitor_cpu_usage)
         cpu_affinity_thread = CTX.loop.run_in_executor(None, self.set_affinity)
         cpu_priority_thread = CTX.loop.run_in_executor(None, self.set_priority)
         while True:

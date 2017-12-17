@@ -103,7 +103,8 @@ class DCS:
     def there_are_connected_players() -> bool:
         connected_players = bool(Status.players)
         if connected_players:
-            LOGGER.debug(f'there are {len(Status.players)} connected player(s)')
+            LOGGER.debug(
+                f'there are {len(Status.players)} connected player(s)')
         else:
             LOGGER.debug('there is no connected players')
         return connected_players
@@ -111,7 +112,8 @@ class DCS:
     @staticmethod
     def check_for_connected_players() -> bool:
         if DCS.there_are_connected_players():
-            LOGGER.warning('there are connected players; cannot kill the server now')
+            LOGGER.warning(
+                'there are connected players; cannot kill the server now')
             return False
 
         return True

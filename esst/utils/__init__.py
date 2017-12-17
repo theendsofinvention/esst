@@ -58,10 +58,12 @@ def read_template(template_name: str) -> str:
 
     """
     LOGGER.debug(f'reading template: {template_name}')
-    template_path = os.path.join(os.path.dirname(__file__), 'templates', template_name)
+    template_path = os.path.join(os.path.dirname(
+        __file__), 'templates', template_name)
     if not os.path.exists(template_path):
         LOGGER.debug('template not found, trying from pkg_resource')
-        template_path = pkg_resources.resource_filename('esst', f'/dcs/templates/{template_name}')
+        template_path = pkg_resources.resource_filename(
+            'esst', f'/dcs/templates/{template_name}')
     if not os.path.exists(template_path):
         raise FileNotFoundError(template_path)
     with open(template_path) as handle_:
@@ -78,7 +80,8 @@ def get_esst_changelog_path() -> str:
     changelog_path = os.path.join(os.path.dirname(__file__), 'CHANGELOG.rst')
     if not os.path.exists(changelog_path):
         LOGGER.debug('changelog not found, trying from pkg_resource')
-        changelog_path = pkg_resources.resource_filename('esst', 'CHANGELOG.rst')
+        changelog_path = pkg_resources.resource_filename(
+            'esst', 'CHANGELOG.rst')
     if not os.path.exists(changelog_path):
         LOGGER.error('changelog not found')
     else:
@@ -179,4 +182,5 @@ class Win32FileInfo:  # pylint: disable=missing-docstring
                 if file_info.Key == b'StringFileInfo':
                     for str_table in file_info.StringTable:
                         for entry in str_table.entries.items():
-                            self.__props[entry[0].decode('latin_1')] = entry[1].decode('latin_1')
+                            self.__props[entry[0].decode(
+                                'latin_1')] = entry[1].decode('latin_1')

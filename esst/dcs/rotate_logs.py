@@ -19,7 +19,8 @@ def _log_dir() -> Path:
 def _save_old_log(old_log: Path):
     stat = old_log.stat()
     creation_time = datetime.datetime.fromtimestamp(stat.st_mtime)
-    old_log.rename(Path(old_log.parent, f'{creation_time.strftime("%Y%m%d%H%M%S")}.dcs.log'))
+    old_log.rename(
+        Path(old_log.parent, f'{creation_time.strftime("%Y%m%d%H%M%S")}.dcs.log'))
 
 
 def rotate_dcs_log():
@@ -47,7 +48,8 @@ def clean_old_logs():
     if CFG.dcs_delete_logs_older_than:
         age = parse_age_string(CFG.dcs_delete_logs_older_than)
         if not age:
-            LOGGER.error(f'invalid value for "dcs_keep_logs_for": {CFG.dcs_delete_logs_older_than}')
+            LOGGER.error(
+                f'invalid value for "dcs_keep_logs_for": {CFG.dcs_delete_logs_older_than}')
             return
         LOGGER.info('removing old DCS logs')
         log_dir = _log_dir()
