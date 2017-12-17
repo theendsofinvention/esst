@@ -37,9 +37,6 @@ raven = "*"
 requests = "*"
 "urllib3" = "*"
 ipgetter = "*"
-epab = "*"
 
 
 [dev-packages]
-
-epab = "*"
