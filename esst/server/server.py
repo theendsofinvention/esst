@@ -14,6 +14,8 @@ from esst.utils import now
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
+# pylint: disable=too-few-public-methods
+
 
 class App:
     """

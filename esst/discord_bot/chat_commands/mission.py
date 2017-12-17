@@ -20,11 +20,15 @@ def _mission_index_to_mission_name(mission_index):
     for index, mission_name in missions_manager.list_available_missions():
         if index == mission_index:
             return missions_manager.MissionPath(mission_name)
+    return None
 
 
-def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901  # pylint: disable=too-many-statements
+# pylint: disable=too-many-statements,too-many-branches,too-many-return-statements,too-many-arguments
+def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
     if name is None:
         mission = missions_manager.get_running_mission().strip_suffix()
+        if not mission:
+            return
     else:
         try:
             mission_number = int(name)
@@ -128,6 +132,7 @@ def delete(name: 'name or index of the mission to load'):
 
 @arg('-m', '--metar', nargs='+', metavar='METAR')
 @arg(protected=True)
+# pylint: disable=too-many-arguments
 def load(
         name: 'name or index of the mission to load (if not provided, will re-use the current mission)' = None,
         icao: 'update the weather from ICAO' = None,
@@ -172,6 +177,8 @@ def weather():
     Displays the weather for the currently running mission
     """
     mission = missions_manager.get_running_mission()
+    if not mission:
+        return
     if mission and Status.metar and Status.metar != 'unknown':
         error, metar = parse_metar_string(Status.metar)
         if error:

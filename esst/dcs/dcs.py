@@ -110,7 +110,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             setup_config_for_dedicated_run()
             LOGGER.debug(f'DCS version: {Status.dcs_version}')
             return True
-        except:  # pylint: disable=bare-except  # noqa: E722
+        # pylint: disable=bare-except
+        except:  # noqa: E722
             LOGGER.error('unable to retrieve version from dcs.exe')
             Status.dcs_version = 'unknown'
             raise

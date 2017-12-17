@@ -23,7 +23,7 @@ async def watch_for_exceptions():
         await asyncio.sleep(0.1)
 
 
-def _main(  # pylint: disable=too-many-locals
+def _main(  # pylint: disable=too-many-locals,too-many-arguments
         discord: bool,
         server: bool,
         dcs: bool,
@@ -149,7 +149,7 @@ def _main(  # pylint: disable=too-many-locals
 @click.option('--install-dedi-config/--no-install-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
               show_default=True)
 @click.option('--auto-mission/--no-auto-mission', help='Download latest mission', default=True, show_default=True)
-def main(  # pylint: disable=too-many-locals
+def main(  # pylint: disable=too-many-locals,too-many-arguments
         discord: bool,
         server: bool,
         dcs: bool,
@@ -161,8 +161,11 @@ def main(  # pylint: disable=too-many-locals
         callgraph: bool,):
     """Dummy entry point added to allow for callgraph context"""
     if callgraph:
-        from pycallgraph.output import GraphvizOutput
-        from pycallgraph import PyCallGraph, Config, GlobbingFilter
+        try:
+            from pycallgraph.output import GraphvizOutput
+            from pycallgraph import PyCallGraph, Config, GlobbingFilter
+        except ImportError:
+            raise RuntimeError('Please install pycallgraph first')
 
         trace_output = GraphvizOutput()
         trace_output.output_file = 'trace.png'

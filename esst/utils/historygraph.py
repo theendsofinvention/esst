@@ -269,14 +269,13 @@ def _make_history_graph(  # pylint: disable=too-many-arguments
     if show:
         plt.show()
         plt.close()
-        return
     else:
         if not save_path:
             save_path = mktemp('.png')
         plt.savefig(save_path)
-        return save_path
 
 
+# pylint: disable=too-many-arguments
 def make_history_graph(callback=None, days=0, hours=0, minutes=0, show: bool = False, save_path=None):
     """
     Creates a graph of perfs

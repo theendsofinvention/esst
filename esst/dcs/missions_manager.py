@@ -264,9 +264,11 @@ def get_running_mission() -> typing.Union['MissionPath', str]:
         if mission:
             LOGGER.debug(f'returning active mission: {mission.name}')
             return mission
-        else:
-            LOGGER.error(
-                f'current mission is "{mission.path}", but that file does not exist')
-    else:
-        LOGGER.error('no active mission; please load a mission first '
-                     '(or just wait a moment for the server to be ready)')
+
+        LOGGER.error(
+            f'current mission is "{mission.path}", but that file does not exist')
+        return ''
+
+    LOGGER.error('no active mission; please load a mission first '
+                 '(or just wait a moment for the server to be ready)')
+    return ''

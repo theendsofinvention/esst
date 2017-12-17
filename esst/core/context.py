@@ -9,7 +9,8 @@ from concurrent.futures import ProcessPoolExecutor
 from queue import Queue
 
 
-class Context:
+# TODO: Split context into the relevant modules
+class Context:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """
     Represents the global context
     """

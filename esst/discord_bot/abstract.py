@@ -11,6 +11,7 @@ import discord
 
 class AbstractDiscordCommandParser:
     @abc.abstractmethod
+    # pylint: disable=too-many-arguments
     def dispatch(self,
                  argv=None,
                  add_help_command=True,

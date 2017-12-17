@@ -1,5 +1,7 @@
 # coding=utf-8
-
+"""
+Manages Github requests
+"""
 
 import json
 import typing

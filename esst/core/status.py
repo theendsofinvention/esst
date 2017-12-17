@@ -21,7 +21,7 @@ class Status:  # pylint: disable=too-few-public-methods
     players = []
 
 
-class ServerStatus:
+class ServerStatus:  # pylint: disable=too-few-public-methods
     """
     Represents server status
     """

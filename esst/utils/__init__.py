@@ -84,8 +84,9 @@ def get_esst_changelog_path() -> str:
             'esst', 'CHANGELOG.rst')
     if not os.path.exists(changelog_path):
         LOGGER.error('changelog not found')
-    else:
-        return changelog_path
+        return ''
+
+    return changelog_path
 
 
 def get_dcs_log_file_path() -> str:

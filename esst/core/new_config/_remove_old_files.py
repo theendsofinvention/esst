@@ -6,7 +6,7 @@ Clean folders of old files
 from elib.config import ConfigProp
 
 
-class RemoveOldFile:
+class RemoveOldFile:  # pylint: disable=too-few-public-methods
     """
     Clean folders of old files
     """

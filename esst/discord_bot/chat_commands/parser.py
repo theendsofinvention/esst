@@ -155,7 +155,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
     Creates chat commands out of regular functions with argh
     """
 
-    def __init__(self,
+    def __init__(self,  # pylint: disable=too-many-arguments
                  prog=None,
                  usage=None,
                  description=None,
@@ -191,7 +191,8 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
         if message:
             DISCORD.say(message)
 
-    def dispatch(self,  # noqa: C901  # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ,too-many-branches,too-many-arguments,too-many-locals
+    def dispatch(self,  # noqa: C901
                  argv=None,
                  add_help_command=True,
                  completion=True,  # pylint: disable=unused-argument
@@ -253,7 +254,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
                 if hasattr(func, 'protected_') and not is_admin:
                     LOGGER.error(
                         f'only users with role "{CFG.discord_admin_role}" have access to this command')
-                    return
+                    return None
                 LOGGER.debug(f'running func: {func}')
                 return _execute_command(func, namespace_obj, pre_call=pre_call)
             else:
