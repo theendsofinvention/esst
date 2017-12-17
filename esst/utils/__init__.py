@@ -31,7 +31,7 @@ def sanitize_path(path: typing.Union[str, Path]) -> str:
     return str(path).replace('\\', '/')
 
 
-def create_versionned_backup(file_path):
+def create_versionned_backup(file_path: Path):
     """
     Creates a backup of a file, with a "_backup_DCS-VERSION" suffix, if the backup does not exist yet
 
@@ -39,16 +39,13 @@ def create_versionned_backup(file_path):
         file_path: file to backup
 
     """
-    file_path = os.path.abspath(file_path)
-    if not os.path.exists(file_path):
+    LOGGER.debug(f'checking for backup of {file_path}')
+    if not file_path.exists():
         raise FileNotFoundError(file_path)
-    backup_file = os.path.join(
-        os.path.dirname(file_path),
-        os.path.basename(file_path) + f'_backup_{Status.dcs_version}'
-    )
+    backup_file = Path(file_path.parent, f'{file_path.name}_backup_{Status.dcs_version}')
     if not os.path.exists(backup_file):
         LOGGER.debug(f'creating backup of "{file_path}": "{backup_file}"')
-        shutil.copy2(file_path, backup_file)
+        shutil.copy2(str(file_path), str(backup_file))
     else:
         LOGGER.debug(f'backup already exists: "{backup_file}"')
 

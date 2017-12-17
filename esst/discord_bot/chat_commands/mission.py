@@ -3,6 +3,7 @@
 """
 Meh
 """
+import pprint
 from time import sleep
 
 from emiz import build_metar_from_mission, edit_miz, parse_metar_string, retrieve_metar
@@ -10,40 +11,48 @@ from emiz import build_metar_from_mission, edit_miz, parse_metar_string, retriev
 from esst.commands import DCS, DISCORD
 from esst.core import CTX, MAIN_LOGGER, Status
 from esst.dcs import missions_manager
-
 from .arg import arg
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def _mission_index_to_mission_name(mission_index):
+    LOGGER.debug(f'converting mission index to mission name: {mission_index}')
     for index, mission_name in missions_manager.list_available_missions():
         if index == mission_index:
+            LOGGER.debug(f'mission found: {mission_name}')
             return missions_manager.MissionPath(mission_name)
+    LOGGER.debug('no mission found')
     return None
 
 
 # pylint: disable=too-many-statements,too-many-branches,too-many-return-statements,too-many-arguments
 def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
     if name is None:
-        mission = missions_manager.get_running_mission().strip_suffix()
+        mission = missions_manager.get_running_mission()
         if not mission:
+            LOGGER.error('unable to retrieve current mission')
             return
+        mission = mission.name
     else:
         try:
+            LOGGER.debug(f'trying to cast mission name into an int: {name}')
             mission_number = int(name)
         except ValueError:
+            LOGGER.debug(f'loading mission name: {name}')
             mission = missions_manager.MissionPath(name)
             if not mission:
-                LOGGER.error(f'mission file does not exist: {mission.path}')
+                LOGGER.debug(f'mission path not found: {mission.path}')
+                LOGGER.error(f'mission file not found: {mission.name}')
                 return
         else:
+            LOGGER.debug(f'loading mission number: {mission_number}')
             mission = _mission_index_to_mission_name(mission_number)
             if not mission:
-                LOGGER.error(
-                    f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
+                LOGGER.error(f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
                 return
 
+    LOGGER.info(f'loading mission file: {mission.path}')
     if metar:
         metar = ' '.join(metar)
         LOGGER.info(f'analyzing METAR string: {metar}')
@@ -51,7 +60,6 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
         if error:
             LOGGER.error(error)
             return
-        DISCORD.say(f'{metar.string()}')
     if icao:
         icao = icao.upper()
         LOGGER.info(f'obtaining METAR from: {icao}')
@@ -64,24 +72,26 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
         if error:
             LOGGER.error(error)
             return
-        DISCORD.say(f'{metar.string()}')
 
     if metar:
         info_metar = metar
+        LOGGER.info(f'METAR: {metar.string()}')
     else:
         LOGGER.info('building METAR from mission file')
-        metar_str = build_metar_from_mission(mission.path, 'XXXX')
+        metar_str = build_metar_from_mission(str(mission.path), 'XXXX')
         error, info_metar = parse_metar_string(metar_str)
         if error:
             LOGGER.error(error)
             return
-        LOGGER.info(f'{info_metar.string()}')
+        LOGGER.info(f'METAR: {info_metar.string()}')
 
-    LOGGER.debug(f'editing "{mission.path}" to "{mission.rlwx.path}"')
+    LOGGER.debug(f'editing "{mission.path}" to "{mission.auto.path}"')
     DCS.cannot_start()
     DCS.kill(force=force)
+    LOGGER.debug('waiting on DCS application to close')
     while Status.dcs_application != 'not running':
         sleep(1)
+    LOGGER.debug('DCS has closed, carrying on')
     edit_str = []
     if time:
         edit_str.append('time')
@@ -92,18 +102,21 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
         LOGGER.info(
             f'loading {mission.name} with {edit_str} (this may take a few seconds)')
     else:
-        LOGGER.info(f'loading {mission.name}')
+        LOGGER.info(f'loading {mission.name} as is (no edit)')
     try:
-        error = edit_miz(mission.path, mission.rlwx.path,
-                         metar, time, min_wind, max_wind)
+        miz_edit_options = dict(infile=str(mission.path), outfile=str(mission.auto.path), metar=metar, time=time,
+                                min_wind=min_wind, max_wind=max_wind)
+        LOGGER.debug(f'editing miz file with options: {pprint.pformat(miz_edit_options)}')
+        error = edit_miz(**miz_edit_options)
         if error:
             if error == 'nothing to do!':
+                LOGGER.debug(f'loading mission "as is": {mission.path}')
                 mission.set_as_active(info_metar.code)
             else:
                 LOGGER.error(error)
         else:
-            LOGGER.debug('mission has been successfully edited')
-            mission.rlwx.set_as_active(info_metar.code)
+            LOGGER.debug(f'mission has been successfully edited, setting as active: {mission.auto.path}')
+            mission.auto.set_as_active(info_metar.code)
     finally:
         DCS.can_start()
 
@@ -194,7 +207,7 @@ def download():
     """
     mission = missions_manager.get_running_mission()
     if mission:
-        DISCORD.send(mission.path)
+        DISCORD.send(str(mission.path))
 
 
 NAMESPACE = '!mission'

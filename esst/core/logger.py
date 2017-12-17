@@ -52,4 +52,8 @@ def setup_logging() -> logging.Logger:
 
     CONSOLE_HANDLER.setLevel(logging.DEBUG)
 
+    emiz_logger = logging.getLogger('EMIZ')
+    emiz_logger.addHandler(CONSOLE_HANDLER)
+    emiz_logger.addHandler(file_handler)
+
     return logger
