@@ -7,6 +7,12 @@ import pytest
 
 # noinspection PyUnusedLocal
 def pytest_configure(config):
+    os.environ['DCS_PATH'] = 'test'
+    os.environ['DCS_SERVER_NAME'] = 'test'
+    os.environ['DCS_SERVER_PASSWORD'] = 'test'
+    os.environ['DISCORD_BOT_NAME'] = 'test'
+    os.environ['DISCORD_CHANNEL'] = 'test'
+    os.environ['DISCORD_TOKEN'] = 'test'
     sys._called_from_test = True
 
 

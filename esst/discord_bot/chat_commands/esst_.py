@@ -2,8 +2,7 @@
 """
 Manages commands related to ESST itself
 """
-
-from esst.core import CFG, __version__
+from esst import __version__
 from esst.core.logger import get_esst_log_file_path
 from esst.discord_bot.commands import DISCORD
 from esst.utils import get_esst_changelog_path

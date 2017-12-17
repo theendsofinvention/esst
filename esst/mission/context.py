@@ -7,7 +7,7 @@ from pathlib import Path
 from . import store
 
 
-class Context:
+class MissionManagerContext:
     """
     Manages a mission change context
     """

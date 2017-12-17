@@ -3,6 +3,8 @@
 Various helper functions
 """
 import os
+from pathlib import Path
+import typing
 import datetime
 import shutil
 
@@ -14,6 +16,19 @@ from .remove_old_files import clean_all_folder
 from .github import get_latest_release
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
+
+
+def sanitize_path(path: typing.Union[str, Path]) -> str:
+    """
+    Sanitize a filesystem path
+
+    Args:
+        path: path to sanitize
+
+    Returns: sanitized path as a string
+
+    """
+    return str(path).replace('\\', '/')
 
 
 def create_versionned_backup(file_path):

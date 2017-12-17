@@ -4,6 +4,8 @@ Manages config params for auto mission
 """
 
 import inspect
+import logging
+import everett
 import os
 
 from elib.config import BaseConfig, ConfigProp
@@ -13,6 +15,7 @@ from ._dcs import DCSConfig
 from ._dcs_server import DCSServerConfig
 from ._discord_bot import DiscordConfig
 from ._remove_old_files import RemoveOldFile
+from ._validate_config import validate_config
 
 
 def parse_dcs_path(val: str) -> str:
@@ -68,14 +71,14 @@ class ESSTConfig(BaseConfig,
         """
         pass
 
-    @ConfigProp(str, default='.')
+    @ConfigProp(str, default=None)
     def saved_games_dir(self):
         """
         Path to "Saved Games" folder
         """
         pass
 
-    @ConfigProp(str, '')
+    @ConfigProp(str, 'https://85518bcfd75a400eaf3821830ec1c4b2:a622d4e7a4ab4ec9ade873ad96b8d4aa@sentry.io/206995')
     def sentry_dsn(self):
         """
         Optional Sentry DSN to send crash reports
@@ -116,3 +119,26 @@ class ESSTConfig(BaseConfig,
         Allow DCS application to actually start
         """
         pass
+
+
+def setup_config():
+    from esst.core.logger import CONSOLE_HANDLER
+    try:
+        config = ESSTConfig()
+        validate_config(config, ESSTConfig)
+        if not config.debug:
+            CONSOLE_HANDLER.setLevel(logging.INFO)
+    except everett.InvalidValueError as exception:
+        key = exception.key
+        if exception.namespace:
+            key = f'{exception.namespace}_{key}'
+        print(f'Invalid config value: {key}')
+        exit(1)
+    except everett.ConfigurationMissingError as exception:
+        key = exception.key
+        if exception.namespace:
+            key = f'{exception.namespace}_{key}'
+        print(f'Missing configuration value: {key}')
+        exit(1)
+    else:
+        return config

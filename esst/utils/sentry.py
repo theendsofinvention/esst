@@ -13,7 +13,8 @@ import raven.breadcrumbs
 import raven.conf
 import raven.handlers.logging
 
-from esst.core import MAIN_LOGGER, __version__
+from esst import __version__
+from esst.core import MAIN_LOGGER
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 

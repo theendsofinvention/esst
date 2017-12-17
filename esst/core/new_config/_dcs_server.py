@@ -11,14 +11,14 @@ class DCSServerConfig:
     """
     Manages config params for dcs server
     """
-    @ConfigProp(str, namespace=NAMESPACE)
+    @ConfigProp(str, '', namespace=NAMESPACE)
     def dcs_server_name(self) -> int:
         """
         Public name of the DCS server
         """
         pass
 
-    @ConfigProp(int, namespace=NAMESPACE)
+    @ConfigProp(int, 30, namespace=NAMESPACE)
     def dcs_server_max_players(self) -> int:
         """
         Maximum number of players allowed on the server
@@ -61,7 +61,7 @@ class DCSServerConfig:
         """
         pass
 
-    @ConfigProp(str, namespace=NAMESPACE)
+    @ConfigProp(str, '', namespace=NAMESPACE)
     def dcs_server_password(self):
         """
         Password of the server

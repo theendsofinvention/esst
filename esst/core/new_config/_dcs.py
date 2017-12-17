@@ -13,7 +13,7 @@ class DCSConfig:
     Manages config params for dcs application
     """
 
-    @ConfigProp(str, namespace=NAMESPACE)
+    @ConfigProp(str, '', namespace=NAMESPACE)
     def dcs_path(self):
         """
         Path of the DCS installation to manage

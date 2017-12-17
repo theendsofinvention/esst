@@ -9,8 +9,9 @@ import queue
 import click
 
 from esst import __version__
-from esst.core import CFG, CTX, MAIN_LOGGER
-from esst.utils.conn import monitor_connection, wan_available
+from esst.core import MAIN_LOGGER, CTX, CFG
+
+MAIN_LOGGER.debug(f'Starting ESST version {__version__}')
 
 
 async def watch_for_exceptions():
@@ -60,6 +61,7 @@ def _main(  # pylint: disable=too-many-locals,too-many-arguments
 
     # CTX.loop.set_exception_handler(_handler)
 
+    from esst.utils.conn import monitor_connection, wan_available
     CTX.wan = CTX.loop.run_until_complete(wan_available())
     CTX.loop.create_task(monitor_connection())
 

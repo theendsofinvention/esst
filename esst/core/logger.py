@@ -8,6 +8,8 @@ import logging.handlers
 import os
 import sys
 
+CONSOLE_HANDLER = logging.StreamHandler(sys.stdout)
+
 
 def get_esst_log_file_path() -> str:
     """
@@ -21,7 +23,7 @@ def get_esst_log_file_path() -> str:
     return '.esst.log'
 
 
-def setup_logging(debug: bool) -> logging.Logger:
+def setup_logging() -> logging.Logger:
     """
 
     Args:
@@ -35,8 +37,7 @@ def setup_logging(debug: bool) -> logging.Logger:
     formatter = logging.Formatter(
         '%(asctime)s %(levelname)8s %(name)s[%(lineno)d].%(funcName)s: %(message)s')
 
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
+    CONSOLE_HANDLER.setFormatter(formatter)
 
     file_handler = logging.handlers.TimedRotatingFileHandler(
         get_esst_log_file_path(),
@@ -46,12 +47,9 @@ def setup_logging(debug: bool) -> logging.Logger:
     file_handler.setFormatter(formatter)
 
     logger.setLevel(logging.DEBUG)
-    logger.addHandler(console_handler)
+    logger.addHandler(CONSOLE_HANDLER)
     logger.addHandler(file_handler)
 
-    if debug:
-        console_handler.setLevel(logging.DEBUG)
-    else:
-        console_handler.setLevel(logging.INFO)
+    CONSOLE_HANDLER.setLevel(logging.DEBUG)
 
     return logger
