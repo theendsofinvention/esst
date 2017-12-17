@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Validates config object
+"""
 
 from esst import __version__
 
@@ -13,7 +16,10 @@ MANDATORY_CONFIG_OPTIONS = [
 ]
 
 
-def validate_config(config_instance, config_base_class):
+def validate_config(config_instance):
+    """
+    Validates config object
+    """
     print('ESST version', __version__)
     print('Validating config')
     missing_values = []
@@ -27,7 +33,7 @@ def validate_config(config_instance, config_base_class):
     if missing_values:
         missing_values = '\t' + '\n\t'.join(missing_values)
         print(
-f"""
+            f"""
 The following values are missing from your configuration:
 
 {missing_values}
@@ -35,4 +41,3 @@ The following values are missing from your configuration:
 There is a "esst.yml.example" file provided with this repository to serve as a base to create your own config.
 Refer to https://github.com/132nd-vWing/ESST/blob/master/README.md for more information about setting ESST up.""")
         exit(1)
-

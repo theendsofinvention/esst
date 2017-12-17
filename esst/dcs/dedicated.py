@@ -2,8 +2,8 @@
 """
 Installs the necessary files to run in dedicated mode
 """
-import os
 from pathlib import Path
+
 import jinja2
 
 from esst.core import CFG, CTX, MAIN_LOGGER

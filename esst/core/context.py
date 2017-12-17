@@ -66,7 +66,3 @@ class Context:  # pylint: disable=too-many-instance-attributes,too-few-public-me
     server_bytes_recv_history = deque(maxlen=17280)
 
     players_history = deque(maxlen=17280)
-
-
-def setup_context():
-    return Context()

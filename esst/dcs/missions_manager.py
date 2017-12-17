@@ -3,10 +3,9 @@
 Manages missions for the server
 """
 
-import os
 import pprint
-from pathlib import Path
 import typing
+from pathlib import Path
 
 import humanize
 import requests
@@ -24,7 +23,7 @@ if not Path(MISSION_FOLDER).exists():
     LOGGER.debug(f'creating directory: {MISSION_FOLDER}')
     MISSION_FOLDER.mkdir(parents=True)
 
-AUTO_MISSION_FOLDER = MISSION_FOLDER.joinpath('AUTO')
+AUTO_MISSION_FOLDER = Path(MISSION_FOLDER.joinpath('AUTO'))
 if not AUTO_MISSION_FOLDER.exists():
     LOGGER.debug(f'creating directory: {AUTO_MISSION_FOLDER}')
     AUTO_MISSION_FOLDER.mkdir(parents=True)

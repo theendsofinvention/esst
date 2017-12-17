@@ -5,7 +5,6 @@ Manages ESST logging
 
 import logging
 import logging.handlers
-import os
 import sys
 
 CONSOLE_HANDLER = logging.StreamHandler(sys.stdout)

@@ -9,7 +9,7 @@ import queue
 import click
 
 from esst import __version__
-from esst.core import MAIN_LOGGER, CTX, CFG
+from esst.core import CFG, CTX, MAIN_LOGGER
 
 MAIN_LOGGER.debug(f'Starting ESST version {__version__}')
 

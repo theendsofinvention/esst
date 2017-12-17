@@ -5,9 +5,9 @@ Manages config params for auto mission
 
 import inspect
 import logging
-import everett
 import os
 
+import everett
 from elib.config import BaseConfig, ConfigProp
 
 from ._auto_mission import AutoMissionConfig
@@ -122,10 +122,16 @@ class ESSTConfig(BaseConfig,
 
 
 def setup_config():
+    """
+    Set up the config object
+
+    Returns: instance of ESSTConfig
+
+    """
     from esst.core.logger import CONSOLE_HANDLER
     try:
         config = ESSTConfig()
-        validate_config(config, ESSTConfig)
+        validate_config(config)
         if not config.debug:
             CONSOLE_HANDLER.setLevel(logging.INFO)
     except everett.InvalidValueError as exception:
