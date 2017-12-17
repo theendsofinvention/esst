@@ -5,11 +5,10 @@ Manages missions for the server
 
 import os
 import typing
-import warnings
 
 import humanize
 import requests
-from emiz.weather import build_metar_from_mission, set_weather_from_metar_str
+from emiz.weather import build_metar_from_mission
 from jinja2 import Template
 
 from esst.commands import DCS
@@ -157,20 +156,6 @@ def delete(mission: MissionPath):
     if os.path.exists(mission.rlwx.path):
         LOGGER.info(f'removing: {mission.rlwx.path}')
         os.unlink(mission.rlwx.path)
-
-
-# deprecated
-def __set_weather(metar_str, mission_path, output_path):
-    warnings.warn('deprecated', PendingDeprecationWarning)
-    # noinspection PyBroadException
-    try:
-        return set_weather_from_metar_str(metar_str, mission_path, output_path)
-    except Exception:  # pylint: disable=broad-except
-        LOGGER.exception('Set weather failed')
-        return {
-            'status': 'failed',
-            'error': 'Uncaught exception while setting the weather, please see the log file'
-        }
 
 
 def get_latest_mission_from_github():

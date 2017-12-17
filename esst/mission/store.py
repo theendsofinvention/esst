@@ -2,8 +2,8 @@
 """
 Manages the local repositories and mission files
 """
-import uuid
 import typing
+import uuid
 from pathlib import Path
 
 from esst.core import CFG, MAIN_LOGGER
@@ -63,7 +63,8 @@ def get_random_auto_mission_name(source_mission: Path) -> Path:
     if not source_mission.is_file():
         raise RuntimeError(f'source_mission if not a file: {source_mission}')
     if source_mission.suffix != '.miz':
-        raise RuntimeError(f'source_mission if not a MIZ file: {source_mission}')
+        raise RuntimeError(
+            f'source_mission if not a MIZ file: {source_mission}')
     _id = str(uuid.uuid4())[:8]
     _tmp_name = source_mission.stem
     _tmp_path = Path(get_auto_missions_folder(), f'{_tmp_name}_{_id}.miz')
@@ -84,4 +85,3 @@ def clean():
     """
     for file in get_auto_missions_folder().iterdir():
         yield file
-
