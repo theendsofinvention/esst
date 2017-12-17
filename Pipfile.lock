@@ -104,10 +104,8 @@
             "version": "==0.1.6"
         },
         "emiz": {
-            "hashes": [
-                "sha256:d46872c89cd620efd54ba1349cd08c5da335d61b167efdde325b6fa48da32145"
-            ],
-            "version": "==0.1.12"
+            "hashes": [],
+            "version": "==0.1.13"
         },
         "everett": {
             "hashes": [
@@ -495,9 +493,9 @@
         },
         "epab": {
             "hashes": [
-                "sha256:3d2c338b69a01214f8886b2c56f711a24245faf3c8f0b40e723e4762a6a26bd6"
+                "sha256:979139eb37e9b14f7856229dfde3856bf150640c69f4d8bb6670baf24e564587"
             ],
-            "version": "==0.1.35"
+            "version": "==0.1.36"
         },
         "execnet": {
             "hashes": [
