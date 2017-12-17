@@ -9,7 +9,7 @@ import os
 import sys
 
 
-def get_esst_log_file_path(saved_games_folder: str) -> str:
+def get_esst_log_file_path() -> str:
     """
 
     Args:
@@ -18,15 +18,14 @@ def get_esst_log_file_path(saved_games_folder: str) -> str:
     Returns: path to log file
 
     """
-    return os.path.join(saved_games_folder, 'Logs/esst.log')
+    return '.esst.log'
 
 
-def setup_logging(debug: bool, saved_games_folder: str) -> logging.Logger:
+def setup_logging(debug: bool) -> logging.Logger:
     """
 
     Args:
         debug: debug mode as a bool
-        saved_games_folder: path to the saved games folder
 
     Returns: logger instance
 
@@ -39,17 +38,16 @@ def setup_logging(debug: bool, saved_games_folder: str) -> logging.Logger:
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)
 
-    if os.path.exists(os.path.join(saved_games_folder, 'Logs')):
-        file_handler = logging.handlers.TimedRotatingFileHandler(
-            get_esst_log_file_path(saved_games_folder),
-            when='midnight',
-            backupCount=7
-        )
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
+    file_handler = logging.handlers.TimedRotatingFileHandler(
+        get_esst_log_file_path(),
+        when='midnight',
+        backupCount=7
+    )
+    file_handler.setFormatter(formatter)
 
     logger.setLevel(logging.DEBUG)
     logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
 
     if debug:
         console_handler.setLevel(logging.DEBUG)

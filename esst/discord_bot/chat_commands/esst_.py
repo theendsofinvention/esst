@@ -15,7 +15,7 @@ def log():
     """
     Show ESST log file
     """
-    DISCORD.send(get_esst_log_file_path(CFG.saved_games_dir))
+    DISCORD.send(get_esst_log_file_path())
 
 
 def changelog():
