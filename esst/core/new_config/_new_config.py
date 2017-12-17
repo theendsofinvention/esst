@@ -61,14 +61,14 @@ class ESSTConfig(BaseConfig,
     def __init__(self):
         BaseConfig.__init__(self, 'esst')
 
-    @ConfigProp(bool)
+    @ConfigProp(bool, default=False)
     def debug(self):
         """
         Outputs debug messages on the console
         """
         pass
 
-    @ConfigProp(str)
+    @ConfigProp(str, default='.')
     def saved_games_dir(self):
         """
         Path to "Saved Games" folder
