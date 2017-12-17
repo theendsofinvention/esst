@@ -24,7 +24,7 @@ def test__get_mission_folder(tmpdir):
     assert path.is_dir()
 
 
-@pytest.mark.parametrize('path', [_random_file_name() for _ in range(200)])
+@pytest.mark.parametrize('path', [_random_file_name() for _ in range(10)])
 def test__get_mission_folder_path_exists(tmpdir, path):
     Path(str(tmpdir), path).mkdir()
     path = store._get_mission_folder(str(tmpdir), path)
@@ -33,7 +33,7 @@ def test__get_mission_folder_path_exists(tmpdir, path):
     assert path.is_dir()
 
 
-@pytest.mark.parametrize('path', [_random_file_name() for _ in range(200)])
+@pytest.mark.parametrize('path', [_random_file_name() for _ in range(10)])
 def test__get_mission_folder_path_is_file(tmpdir, path):
     test_file = Path(str(tmpdir), path)
     with open(test_file, 'w') as stream:
@@ -56,7 +56,7 @@ def test_get_auto_missions_folder():
     assert path.is_dir()
 
 
-@pytest.mark.parametrize('path', [_random_file_name() for _ in range(200)])
+@pytest.mark.parametrize('path', [_random_file_name() for _ in range(10)])
 def test_get_random_auto_mission_name(path):
     orig_miz_file = Path(store.get_base_missions_folder(), f'{path}.miz')
     orig_miz_file.touch()
@@ -64,7 +64,7 @@ def test_get_random_auto_mission_name(path):
     assert random_miz.parent == store.get_auto_missions_folder()
 
 
-@pytest.mark.parametrize('path', [_random_file_name() for _ in range(200)])
+@pytest.mark.parametrize('path', [_random_file_name() for _ in range(10)])
 def test_get_random_auto_mission_name_not_a_file(path):
     orig_miz_file = Path(store.get_base_missions_folder(), path)
     orig_miz_file.mkdir()
@@ -72,7 +72,7 @@ def test_get_random_auto_mission_name_not_a_file(path):
         store.get_random_auto_mission_name(orig_miz_file)
 
 
-@pytest.mark.parametrize('path', [_random_file_name() for _ in range(200)])
+@pytest.mark.parametrize('path', [_random_file_name() for _ in range(10)])
 def test_get_random_auto_mission_name_not_a_miz_file(path):
     orig_miz_file = Path(store.get_base_missions_folder(), f'{path}.not_miz')
     orig_miz_file.touch()
@@ -80,7 +80,7 @@ def test_get_random_auto_mission_name_not_a_miz_file(path):
         store.get_random_auto_mission_name(orig_miz_file)
 
 
-@pytest.mark.parametrize('path', [_random_file_name() for _ in range(200)])
+@pytest.mark.parametrize('path', [_random_file_name() for _ in range(10)])
 def test_get_random_auto_mission_name_does_not_exist(path):
     orig_miz_file = Path(store.get_base_missions_folder(), f'{path}')
     with pytest.raises(RuntimeError):
