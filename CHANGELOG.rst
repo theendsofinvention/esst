@@ -2,6 +2,19 @@ Changelog
 =========
 
 
+0.1.58 (2017-12-17)
+-------------------
+
+Changes
+~~~~~~~
+- Add an example config file. [132nd-etcher]
+- Esst log files are now saved in ESST folder. [132nd-etcher]
+
+Fix
+~~~
+- Fix loading of wrong mission. [132nd-etcher]
+
+
 0.1.57 (2017-12-17)
 -------------------
 
