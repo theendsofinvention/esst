@@ -1,0 +1,40 @@
+debug: 'false'
+saved_games_dir: 'C:\Users\user\Saved Games\DCS'
+sentry_dsn: 'https://your_DSN'
+
+discord:
+  bot_name: 'Mr. Shiny'
+  channel: 'server'
+  token: '1234567890'
+  admin_role:
+    - 'Instructor'
+    - 'ServerAdmin'
+
+dcs:
+  path: 'C:\DCS World\bin\dcs.exe'
+  cpu_affinity:
+    - 4
+    - 5
+  cpu_priority: 'high'
+  delete_logs_older_than: '1 week ago'
+  high_cpu_usage: 100
+
+dcs_server:
+  name: 'My fancy server'
+  password: '1234'
+  max_players: 30
+
+auto_mission:
+  github_owner: 'Github username'
+  github_repo: 'Github repo'
+
+remove_files:
+  - some_folder:
+      folder: 'C:\some\folder'
+      age: '1 month ago'
+  - some_other_folder:
+      folder: 'C:\some\other\folder'
+      age: '1 week ago'
+  - a_third_one:
+      folder: 'C:\a\third\one'
+      age: '2 days ago'
