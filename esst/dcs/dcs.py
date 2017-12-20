@@ -150,14 +150,20 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         """
         Sets the DCS process CPU affinity to the CFG value
         """
+        warned = False
         while True:
             if CFG.dcs_cpu_affinity:
                 if CTX.exit:
                     return
-                if list(self._app.cpu_affinity()) != list(CFG.dcs_cpu_affinity):
-                    LOGGER.debug(
-                        f'setting DCS process affinity to: {CFG.dcs_cpu_affinity}')
-                    self._app.cpu_affinity(list(CFG.dcs_cpu_affinity))
+                try:
+                    if list(self._app.cpu_affinity()) != list(CFG.dcs_cpu_affinity):
+                        LOGGER.debug(f'setting DCS process affinity to: {CFG.dcs_cpu_affinity}')
+                        self._app.cpu_affinity(list(CFG.dcs_cpu_affinity))
+                    warned = False
+                except psutil.NoSuchProcess:
+                    if not warned:
+                        LOGGER.warning('DCS process does not exist')
+                        warned = True
             else:
                 LOGGER.warning('no affinity given in config file')
                 return
