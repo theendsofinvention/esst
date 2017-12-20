@@ -34,7 +34,7 @@ class DISCORD:
             file_path: path to the file to send
 
         """
-        LOGGER.debug(f'sending mission to Discord: {file_path}')
+        LOGGER.debug(f'sending file to Discord: {file_path}')
         CTX.discord_file_queue.put(file_path)
 
     @staticmethod
