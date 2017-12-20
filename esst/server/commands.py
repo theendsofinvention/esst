@@ -46,7 +46,10 @@ class SERVER:
     def show_graph(days, hours, minutes):
 
         def _callback(future):
-            DISCORD.send(future.result())
+            if future.result():
+                DISCORD.send(future.result())
+            else:
+                LOGGER.warning('failed to create the graph')
 
         LOGGER.debug('show cpu usage: graph')
         make_history_graph(_callback, days, hours, minutes)
