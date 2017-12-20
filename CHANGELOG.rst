@@ -2,6 +2,17 @@ Changelog
 =========
 
 
+0.1.60 (2017-12-20)
+-------------------
+
+Fix
+~~~
+- Add a catch in the DCS affinity setter for when the DCS process does
+  not exist. [132nd-etcher]
+
+  fix #67
+
+
 0.1.59 (2017-12-20)
 -------------------
 
