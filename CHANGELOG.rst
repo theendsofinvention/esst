@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+0.1.59 (2017-12-20)
+-------------------
+
+Changes
+~~~~~~~
+- Allow for disabling high CPU usage output. [132nd-etcher]
+
+
 0.1.58 (2017-12-17)
 -------------------
 
