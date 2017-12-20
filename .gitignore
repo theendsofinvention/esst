@@ -62,7 +62,7 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
+*esst.log*
 .env
 env/
 venv/
