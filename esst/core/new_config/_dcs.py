@@ -27,7 +27,7 @@ class DCSConfig:
         """
         pass
 
-    @ConfigProp(int, 80, namespace=NAMESPACE)
+    @ConfigProp(int, 0, namespace=NAMESPACE)
     def dcs_high_cpu_usage(self):
         """
         Maximum amount of CPU usage allowed before sending an alert

@@ -290,18 +290,18 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         while not CTX.exit:
             try:
                 if self.app and self.app.is_running():
-                    cpu_usage = int(self.app.cpu_percent(
-                        CFG.dcs_high_cpu_usage_interval))
+                    cpu_usage = int(self.app.cpu_percent(CFG.dcs_high_cpu_usage_interval))
                     mem_usage = int(self.app.memory_percent())
                     Status.dcs_cpu_usage = f'{cpu_usage}%'
                     if CTX.dcs_show_cpu_usage or CTX.dcs_show_cpu_usage_once:
                         DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
                         CTX.dcs_show_cpu_usage_once = False
-                    if cpu_usage > CFG.dcs_high_cpu_usage:
-                        if not Status.paused:
-                            LOGGER.warning(
-                                f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}%'
-                                f' for {CFG.dcs_high_cpu_usage_interval} seconds')
+                    if CFG.dcs_high_cpu_usage:
+                        if cpu_usage > CFG.dcs_high_cpu_usage:
+                            if not Status.paused:
+                                LOGGER.warning(
+                                    f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}%'
+                                    f' for {CFG.dcs_high_cpu_usage_interval} seconds')
 
                     now_ = now()
                     CTX.dcs_mem_history.append((now_, mem_usage))
@@ -326,8 +326,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         if CTX.dcs_can_start:
             await self._try_to_connect_to_existing_dcs_application()
             await self._start_new_dcs_application_if_needed()
-        cpu_monitor_thread = CTX.loop.run_in_executor(
-            None, self.monitor_cpu_usage)
+        cpu_monitor_thread = CTX.loop.run_in_executor(None, self.monitor_cpu_usage)
         cpu_affinity_thread = CTX.loop.run_in_executor(None, self.set_affinity)
         cpu_priority_thread = CTX.loop.run_in_executor(None, self.set_priority)
         while True:
