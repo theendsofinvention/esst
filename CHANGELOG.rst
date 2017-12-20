@@ -2,6 +2,17 @@ Changelog
 =========
 
 
+0.1.61 (2017-12-20)
+-------------------
+
+Fix
+~~~
+- Fix auto-mission being downloaded in ESST dir (thus not being
+  available for loading) [132nd-etcher]
+
+  fix #66
+
+
 0.1.60 (2017-12-20)
 -------------------
 
