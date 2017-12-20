@@ -297,11 +297,10 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                         DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
                         CTX.dcs_show_cpu_usage_once = False
                     if CFG.dcs_high_cpu_usage:
-                        if cpu_usage > CFG.dcs_high_cpu_usage:
-                            if not Status.paused:
-                                LOGGER.warning(
-                                    f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}%'
-                                    f' for {CFG.dcs_high_cpu_usage_interval} seconds')
+                        if cpu_usage > CFG.dcs_high_cpu_usage and not Status.paused:
+                            LOGGER.warning(
+                                f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}%'
+                                f' for {CFG.dcs_high_cpu_usage_interval} seconds')
 
                     now_ = now()
                     CTX.dcs_mem_history.append((now_, mem_usage))
