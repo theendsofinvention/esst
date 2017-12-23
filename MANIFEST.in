@@ -1,2 +1,2 @@
 include versioneer.py
-include esst/_esst_version.py
+include esst/_version.py
