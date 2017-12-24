@@ -72,3 +72,4 @@ avatar.png
 /emft.debug
 /esst.log.*
 esst.yml
+/Pipfile.lock
