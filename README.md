@@ -2,6 +2,9 @@
 [![master](https://ci.appveyor.com/api/projects/status/auuv6038yd4x1242/branch/master?svg=true)](https://ci.appveyor.com/project/132nd-etcher/esst/branch/master)
 [![develop](https://ci.appveyor.com/api/projects/status/auuv6038yd4x1242/branch/develop?svg=true)](https://ci.appveyor.com/project/132nd-etcher/esst/branch/develop)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e0b191c3a7b64c3d907297375a120804)](https://www.codacy.com/app/132nd-etcher/ESST?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=132nd-vWing/ESST&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/e0b191c3a7b64c3d907297375a120804)](https://www.codacy.com/app/132nd-etcher/ESST?utm_source=github.com&utm_medium=referral&utm_content=132nd-vWing/ESST&utm_campaign=Badge_Coverage)
+
 # ESST
 
 ESST stands for Etcher's Server Startup Tool.
