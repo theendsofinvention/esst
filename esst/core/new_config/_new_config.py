@@ -4,7 +4,6 @@ Manages config params for auto mission
 """
 
 import inspect
-import logging
 import os
 
 import everett
