@@ -22,7 +22,7 @@ esst=esst.__main__:main
 def main():
     try:
         shutil.copy2('./CHANGELOG.rst', './esst/CHANGELOG.rst')
-        shutil.copy2('./README.md', './esst/README.md')
+        shutil.copy2('./README.rst', './esst/README.rst')
         setup(
             name='esst',
             version=versioneer.get_version(),
@@ -65,7 +65,7 @@ def main():
         )
     finally:
         os.remove('./esst/CHANGELOG.rst')
-        os.remove('./esst/README.md')
+        os.remove('./esst/README.rst')
 
 
 if __name__ == '__main__':
