@@ -87,7 +87,7 @@ class MissionPath:
             name=CFG.dcs_server_name,
             max_players=CFG.dcs_server_max_players,
         )
-        LOGGER.debug(f'rendering settings.lua template with options: {pprint.pprint(template_option)}')
+        LOGGER.debug(f'rendering settings.lua template with options\n{pprint.pprint(template_option)}')
         content = Template(read_template('settings.lua')).render(**template_option)
         settings_file = _get_settings_file_path()
         LOGGER.debug(f'settings file path: {settings_file}')

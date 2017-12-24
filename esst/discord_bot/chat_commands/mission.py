@@ -107,7 +107,7 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
     try:
         miz_edit_options = dict(infile=str(mission.path), outfile=str(mission.auto.path), metar=metar, time=time,
                                 min_wind=min_wind, max_wind=max_wind)
-        LOGGER.debug(f'editing miz file with options: {pprint.pformat(miz_edit_options)}')
+        LOGGER.debug(f'editing miz file with options:\n{pprint.pformat(miz_edit_options)}')
         error = edit_miz(**miz_edit_options)
         if error:
             if error == 'nothing to do!':
