@@ -1,4 +1,7 @@
 
+[![master](https://ci.appveyor.com/api/projects/status/auuv6038yd4x1242/branch/master?svg=true)](https://ci.appveyor.com/project/132nd-etcher/esst/branch/master)
+[![develop](https://ci.appveyor.com/api/projects/status/auuv6038yd4x1242/branch/develop?svg=true)](https://ci.appveyor.com/project/132nd-etcher/esst/branch/develop)
+
 # ESST
 
 ESST stands for Etcher's Server Startup Tool.
