@@ -128,12 +128,9 @@ def setup_config():
     Returns: instance of ESSTConfig
 
     """
-    from esst.core.logger import CONSOLE_HANDLER
     try:
         config = ESSTConfig()
         validate_config(config)
-        if not config.debug:
-            CONSOLE_HANDLER.setLevel(logging.INFO)
     except everett.InvalidValueError as exception:
         key = exception.key
         if exception.namespace:
