@@ -5,7 +5,7 @@ MAnages UR installation path
 import typing
 from pathlib import Path
 
-from esst.core import CFG, MAIN_LOGGER, FS
+from esst.core import CFG, FS, MAIN_LOGGER
 from esst.utils import create_simple_backup
 
 try:
@@ -52,4 +52,3 @@ def discover_ur_install_path():
     FS.ur_settings_folder = Path(FS.saved_games_path, 'UniversRadio')
     FS.ur_voice_settings_file = Path(FS.ur_settings_folder, 'VoiceService.dat')
     create_simple_backup(FS.ur_voice_settings_file, file_must_exist=False)
-

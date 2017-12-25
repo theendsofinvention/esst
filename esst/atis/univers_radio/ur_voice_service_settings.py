@@ -6,7 +6,7 @@ Manages UR settings
 from pathlib import Path
 
 from esst.atis.univers_radio.ur_object import Airfield, URLinkType
-from esst.core import MAIN_LOGGER, FS
+from esst.core import FS, MAIN_LOGGER
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 

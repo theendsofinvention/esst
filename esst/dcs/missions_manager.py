@@ -14,7 +14,7 @@ from jinja2 import Template
 
 from esst.atis.atis import ATIS
 from esst.commands import DCS
-from esst.core import CFG, CTX, MAIN_LOGGER, Status, FS
+from esst.core import CFG, CTX, FS, MAIN_LOGGER, Status
 from esst.utils import create_versioned_backup, get_latest_release, read_template
 
 LOGGER = MAIN_LOGGER.getChild(__name__)

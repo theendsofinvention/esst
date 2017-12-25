@@ -5,7 +5,7 @@ Manages GameGUI hooks
 
 import os
 
-from esst.core import CTX, MAIN_LOGGER, FS
+from esst.core import CTX, FS, MAIN_LOGGER
 from esst.utils import read_template
 
 LOGGER = MAIN_LOGGER.getChild(__name__)

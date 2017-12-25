@@ -6,9 +6,8 @@ Rotates dcs.log files
 import datetime
 from pathlib import Path
 
-from esst.core import CFG, MAIN_LOGGER, FS
+from esst.core import CFG, FS, MAIN_LOGGER
 from esst.utils.remove_old_files import parse_age_string, remove_file_if_older_than
-
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 

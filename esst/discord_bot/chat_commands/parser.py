@@ -19,7 +19,7 @@ from argh.utils import get_arg_spec
 from esst.commands import DISCORD
 from esst.core import CFG, MAIN_LOGGER
 from esst.discord_bot import abstract
-from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server, atis
+from esst.discord_bot.chat_commands import atis, dcs, esst_, mission, report, server
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 

@@ -6,7 +6,7 @@ import typing
 import uuid
 from pathlib import Path
 
-from esst.core import MAIN_LOGGER, FS
+from esst.core import FS, MAIN_LOGGER
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 

@@ -8,7 +8,7 @@ from pathlib import Path
 
 import psutil
 
-from esst.core import MAIN_LOGGER, FS
+from esst.core import FS, MAIN_LOGGER
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -23,6 +23,7 @@ class URVoiceService:
 
     @staticmethod
     def is_running() -> bool:
+        """Returns UR voice service status"""
         for proc in psutil.process_iter():
             if proc.name() == PROC_NAME:
                 URVoiceService.pid = proc.pid

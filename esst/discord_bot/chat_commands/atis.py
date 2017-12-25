@@ -4,8 +4,8 @@ ATIS Discord commands group
 """
 
 from esst.atis.atis import ATIS
-from esst.atis.univers_radio.ur_voice_service import URVoiceService
 from esst.atis.univers_radio.airfields import ALL_AIRFIELDS
+from esst.atis.univers_radio.ur_voice_service import URVoiceService
 from esst.commands import DISCORD
 from esst.core import MAIN_LOGGER, Status
 from esst.discord_bot.chat_commands.arg import arg
@@ -19,8 +19,6 @@ def show(icao: list):
     Show ATIS info for a specific airfield
     """
     icao = ''.join(icao).upper()
-    print(icao)
-    print(type(icao))
     try:
         info = ATIS.get_info_for_icao(icao)
     except KeyError:
