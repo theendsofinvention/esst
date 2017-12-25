@@ -19,7 +19,7 @@ from argh.utils import get_arg_spec
 from esst.commands import DISCORD
 from esst.core import CFG, MAIN_LOGGER
 from esst.discord_bot import abstract
-from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server
+from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server, atis
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -320,7 +320,7 @@ def make_root_parser():
     """
     parser = DiscordCommandParser(
         description=DECRIPTION, prog='', add_help=False, usage='', epilog=EPILOG)
-    for module_ in [esst_, mission, server, dcs, report, ]:
+    for module_ in [esst_, mission, server, dcs, report, atis]:
         funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction)
                  if o[1].__module__ == module_.__name__ and not o[1].__name__.startswith('_')]
         parser.add_commands(
