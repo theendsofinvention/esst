@@ -11,8 +11,7 @@ from pathlib import Path
 import pefile
 import pkg_resources
 
-from esst.core import MAIN_LOGGER, Status
-from esst.utils.saved_games import SAVED_GAMES_PATH
+from esst.core import MAIN_LOGGER, Status, FS
 from .github import get_latest_release
 from .remove_old_files import clean_all_folder
 
@@ -32,17 +31,20 @@ def sanitize_path(path: typing.Union[str, Path]) -> str:
     return str(path).replace('\\', '/')
 
 
-def create_versioned_backup(file_path: Path):
+def create_versioned_backup(file_path: Path, file_must_exist: bool = True):
     """
     Creates a backup of a file, with a "_backup_DCS-VERSION" suffix, if the backup does not exist yet
 
     Args:
+        file_must_exist: fails if the file to be backed up does not exist
         file_path: file to backup
 
     """
     LOGGER.debug(f'checking for backup of {file_path}')
     if not file_path.exists():
-        raise FileNotFoundError(file_path)
+        if file_must_exist:
+            raise FileNotFoundError(file_path)
+        return
     backup_file = Path(file_path.parent, f'{file_path.name}_backup_{Status.dcs_version}')
     if not os.path.exists(backup_file):
         LOGGER.debug(f'creating backup of "{file_path}": "{backup_file}"')
@@ -106,7 +108,7 @@ def get_dcs_log_file_path() -> str:
     """
     Returns: path to DCS log file
     """
-    return os.path.join(SAVED_GAMES_PATH, 'DCS/Logs/dcs.log')
+    return os.path.join(FS.saved_games_path, 'DCS/Logs/dcs.log')
 
 
 class Win32FileInfo:

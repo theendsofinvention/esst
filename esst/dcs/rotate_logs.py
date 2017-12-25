@@ -6,15 +6,15 @@ Rotates dcs.log files
 import datetime
 from pathlib import Path
 
-from esst.core import CFG, MAIN_LOGGER
+from esst.core import CFG, MAIN_LOGGER, FS
 from esst.utils.remove_old_files import parse_age_string, remove_file_if_older_than
-from esst.utils.saved_games import SAVED_GAMES_PATH
+
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def _log_dir() -> Path:
-    return Path(SAVED_GAMES_PATH, 'DCS/logs')
+    return Path(FS.saved_games_path, 'DCS/logs')
 
 
 def _save_old_log(old_log: Path):

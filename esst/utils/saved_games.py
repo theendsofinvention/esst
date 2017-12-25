@@ -4,7 +4,7 @@ Finds Saved Games path base on registry and config
 """
 from pathlib import Path
 
-from esst.core import CFG, MAIN_LOGGER
+from esst.core import CFG, MAIN_LOGGER, FS
 
 # noinspection PyProtectedMember
 
@@ -60,4 +60,5 @@ def discover_saved_games_path() -> Path:
     return base_sg
 
 
-SAVED_GAMES_PATH = discover_saved_games_path()
+def on_start_esst():
+    FS.saved_games_path = discover_saved_games_path()

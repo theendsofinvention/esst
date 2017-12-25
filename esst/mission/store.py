@@ -6,8 +6,7 @@ import typing
 import uuid
 from pathlib import Path
 
-from esst.core import MAIN_LOGGER
-from esst.utils.saved_games import SAVED_GAMES_PATH
+from esst.core import MAIN_LOGGER, FS
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -38,7 +37,7 @@ def get_base_missions_folder() -> Path:
     Returns: Path object
 
     """
-    return _get_mission_folder(SAVED_GAMES_PATH, 'DCS/Missions/ESST')
+    return _get_mission_folder(FS.saved_games_path, 'DCS/Missions/ESST')
 
 
 def get_auto_missions_folder() -> Path:

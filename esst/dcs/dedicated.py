@@ -6,9 +6,8 @@ from pathlib import Path
 
 import jinja2
 
-from esst.core import CFG, CTX, MAIN_LOGGER
+from esst.core import CFG, CTX, MAIN_LOGGER, FS
 from esst.utils import create_versioned_backup, read_template
-from esst.utils.saved_games import SAVED_GAMES_PATH
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -27,7 +26,7 @@ def _get_me_auth_path() -> Path:
 
 
 def _write_dedi_config():
-    dedi_cfg_path = Path(SAVED_GAMES_PATH, 'DCS/Config/dedicated.lua')
+    dedi_cfg_path = Path(FS.saved_games_path, 'DCS/Config/dedicated.lua')
     if not dedi_cfg_path.exists():
         LOGGER.info(f'writing {dedi_cfg_path}')
         dedi_cfg_path.write_text(DEDI_CFG)

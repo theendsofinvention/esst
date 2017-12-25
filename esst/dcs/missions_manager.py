@@ -14,13 +14,12 @@ from jinja2 import Template
 
 from esst.atis.atis import ATIS
 from esst.commands import DCS
-from esst.core import CFG, CTX, MAIN_LOGGER, Status
+from esst.core import CFG, CTX, MAIN_LOGGER, Status, FS
 from esst.utils import create_versioned_backup, get_latest_release, read_template
-from esst.utils.saved_games import SAVED_GAMES_PATH
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
-MISSION_FOLDER = Path(SAVED_GAMES_PATH, 'DCS/Missions/ESST')
+MISSION_FOLDER = Path(FS.saved_games_path, 'DCS/Missions/ESST')
 if not Path(MISSION_FOLDER).exists():
     LOGGER.debug(f'creating directory: {MISSION_FOLDER}')
     MISSION_FOLDER.mkdir(parents=True)
@@ -114,7 +113,7 @@ class MissionPath:
 
 
 def _get_settings_file_path() -> Path:
-    return Path(SAVED_GAMES_PATH, 'DCS/Config/serverSettings.lua')
+    return Path(FS.saved_games_path, 'DCS/Config/serverSettings.lua')
 
 
 def set_active_mission(mission: str, metar: str = None):

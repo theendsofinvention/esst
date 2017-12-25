@@ -8,6 +8,7 @@ from elib.custom_logging import get_logger
 from .context import Context
 # from .config import Config
 from .new_config import ESSTConfig, setup_config, validate_config
+from .fs_paths import FS
 from .status import ServerStatus, Status
 
 MAIN_LOGGER = get_logger(

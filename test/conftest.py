@@ -1,8 +1,16 @@
 # coding=utf-8
 import os
 import sys
+from pathlib import Path
 
 import pytest
+
+
+@pytest.fixture(autouse=True, scope='function')
+def _patch_config(tmpdir):
+    from esst.core import FS
+    saved_games_path = Path(str(tmpdir), 'Saved Games').absolute()
+    FS.saved_games_path = saved_games_path
 
 
 # noinspection PyUnusedLocal

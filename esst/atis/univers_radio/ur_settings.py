@@ -6,16 +6,16 @@ Manages UR settings
 from pathlib import Path
 
 from esst.atis.univers_radio.ur_object import Airfield, URLinkType
-from esst.core import MAIN_LOGGER
+from esst.core import MAIN_LOGGER, FS
 from esst.utils import create_versioned_backup
-from esst.utils.saved_games import SAVED_GAMES_PATH
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
-_UR_FOLDER = Path(SAVED_GAMES_PATH, 'UniversRadio')
-_UR_FOLDER.mkdir(exist_ok=True)
-_UR_SETTINGS_FILE = Path(_UR_FOLDER, 'VoiceService.dat')
-create_versioned_backup(_UR_SETTINGS_FILE)
+
+def on_esst_start():
+    FS.ur_folder = Path(FS.saved_games_path, 'UniversRadio')
+    FS.ur_settings_file = Path(FS.ur_folder, 'VoiceService.dat')
+    create_versioned_backup(FS.ur_folder, file_must_exist=False)
 
 
 class ATISURSettings:
@@ -50,7 +50,7 @@ class ATISURSettings:
         """
         Writes currently known station to UR settings file
         """
-        LOGGER.debug(f'writing UR settings to: {_UR_SETTINGS_FILE}')
+        LOGGER.debug(f'writing UR settings to: {FS.ur_settings_file}')
         stations = '\n'.join(self._stations)
         full_text = f'Start of VSS DB\n{stations}\nEnd of VSS DB'
-        _UR_SETTINGS_FILE.write_text(full_text)
+        FS.ur_settings_file.write_text(full_text)
