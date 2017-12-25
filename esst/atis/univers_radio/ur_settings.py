@@ -13,9 +13,9 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def on_esst_start():
-    FS.ur_folder = Path(FS.saved_games_path, 'UniversRadio')
-    FS.ur_settings_file = Path(FS.ur_folder, 'VoiceService.dat')
-    create_versioned_backup(FS.ur_folder, file_must_exist=False)
+    FS.ur_settings_folder = Path(FS.saved_games_path, 'UniversRadio')
+    FS.ur_voice_settings_file = Path(FS.ur_settings_folder, 'VoiceService.dat')
+    create_versioned_backup(FS.ur_settings_folder, file_must_exist=False)
 
 
 class ATISURSettings:
@@ -50,7 +50,7 @@ class ATISURSettings:
         """
         Writes currently known station to UR settings file
         """
-        LOGGER.debug(f'writing UR settings to: {FS.ur_settings_file}')
+        LOGGER.debug(f'writing UR settings to: {FS.ur_voice_settings_file}')
         stations = '\n'.join(self._stations)
         full_text = f'Start of VSS DB\n{stations}\nEnd of VSS DB'
-        FS.ur_settings_file.write_text(full_text)
+        FS.ur_voice_settings_file.write_text(full_text)

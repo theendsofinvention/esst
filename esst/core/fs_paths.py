@@ -10,5 +10,6 @@ class FS:
     """
 
     saved_games_path = None
-    ur_folder = None
-    ur_settings_file = None
+    ur_settings_folder = None
+    ur_voice_settings_file = None
+    ur_install_path = None

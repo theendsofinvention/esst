@@ -62,8 +62,3 @@ def clean_old_logs():
             remove_file_if_older_than(file, age)
     else:
         LOGGER.info('not removing old logs; no age limit given in config')
-
-
-if __name__ == '__main__':
-    clean_old_logs()
-    # rotate_dcs_log()

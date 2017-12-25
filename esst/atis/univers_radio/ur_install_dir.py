@@ -5,7 +5,7 @@ MAnages UR installation path
 import typing
 from pathlib import Path
 
-from esst.core import CFG, MAIN_LOGGER
+from esst.core import CFG, MAIN_LOGGER, FS
 
 try:
     import winreg
@@ -47,7 +47,5 @@ def discover_ur_install_path() -> Path:
             _ur_install_path = _get_ur_install_path_from_registry()
 
     LOGGER.debug(f'using Saved Games path: {_ur_install_path}')
-    return _ur_install_path
+    FS.ur_install_path = discover_ur_install_path()
 
-
-UR_INSTALL_PATH = discover_ur_install_path()

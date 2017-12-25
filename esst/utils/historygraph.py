@@ -308,6 +308,9 @@ def make_history_graph(callback=None, days=0, hours=0, minutes=0, show: bool = F
 
 
 if __name__ == '__main__':
+    """
+    Debug code
+    """
     import random
 
     TIME_DELTA = datetime.timedelta(hours=5)

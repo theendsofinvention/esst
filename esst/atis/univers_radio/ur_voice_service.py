@@ -8,8 +8,7 @@ from pathlib import Path
 
 import psutil
 
-from esst.atis.univers_radio.ur_install_dir import UR_INSTALL_PATH
-from esst.core import MAIN_LOGGER
+from esst.core import MAIN_LOGGER, FS
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -21,7 +20,7 @@ class URVoiceService:
     Manages UR voice service executable
     """
 
-    exe_path = Path(UR_INSTALL_PATH, PROC_NAME)
+    exe_path = Path(FS.ur_install_path, PROC_NAME)
     pid = None
 
     @staticmethod

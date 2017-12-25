@@ -67,12 +67,3 @@ class ATIS:
         LOGGER.debug('writing UR settings')
         ur_settings.write_settings_file()
         URVoiceService.start_service()
-
-
-if __name__ == '__main__':
-    ATIS.create_mp3_from_metar('UGTB 242200Z 32029G39KT CAVOK 04/M02 Q1013 R31L/CLRD70 NOSIG')
-    # wind_dir = 60
-    # for airfield in ALL_AIRFIELDS:
-    #     active_runway = airfield.get_active_runway(wind_dir)
-    #     print(airfield.icao, active_runway.long_name(), airfield.get_available_runways())
-    # ATIS.generate('UGTB 242200Z 32029G39KT CAVOK 04/M02 Q1013 R31L/CLRD70 NOSIG')
