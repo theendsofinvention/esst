@@ -1,5 +1,7 @@
 # coding=utf-8
-# pylint: disable=missing-docstring
+"""
+Server machine commands
+"""
 
 
 import os
@@ -12,9 +14,13 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 class SERVER:
+    """
+    Server machine commands
+    """
 
     @staticmethod
     def reboot(force: bool = False):
+        """Reboots the server computer"""
         if DCS.there_are_connected_players() and not force:
             return 'there are connected players; cannot restart the server now (use "--force" to restart anyway)'
 
@@ -24,27 +30,31 @@ class SERVER:
 
     @staticmethod
     def show_cpu_usage_once():
+        """Show CPU usage once"""
         LOGGER.debug('show cpu usage once')
         CTX.server_show_cpu_usage_once = True
 
     @staticmethod
     def show_cpu_usage_once_done():
+        """Stop showing CPU usage once"""
         LOGGER.debug('show cpu usage once: done')
         CTX.server_show_cpu_usage_once = False
 
     @staticmethod
     def show_cpu_usage_start():
+        """Starts showing CPU usage continuously"""
         LOGGER.debug('show cpu usage: start')
         CTX.server_show_cpu_usage = True
 
     @staticmethod
     def show_cpu_usage_stop():
+        """Stops showing CPU usage continuously"""
         LOGGER.debug('show cpu usage: stop')
         CTX.server_show_cpu_usage = False
 
     @staticmethod
     def show_graph(days, hours, minutes):
-
+        """Show resources usage graph"""
         def _callback(future):
             if future.result():
                 DISCORD.send(future.result())

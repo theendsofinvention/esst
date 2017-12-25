@@ -6,7 +6,6 @@ Validates config object
 from esst import __version__
 
 MANDATORY_CONFIG_OPTIONS = [
-    'saved_games_dir',
     'discord_token',
     'discord_channel',
     'discord_bot_name',

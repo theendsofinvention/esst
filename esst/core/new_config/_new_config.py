@@ -14,6 +14,7 @@ from ._dcs import DCSConfig
 from ._dcs_server import DCSServerConfig
 from ._discord_bot import DiscordConfig
 from ._remove_old_files import RemoveOldFile
+from ._univers_radio import URConfig
 from ._validate_config import validate_config
 
 
@@ -37,13 +38,16 @@ def parse_dcs_path(val: str) -> str:
 
     return os.path.normpath(val)
 
+# pylint: disable=too-many-ancestors
+
 
 class ESSTConfig(BaseConfig,
                  DCSConfig,
                  DCSServerConfig,
                  AutoMissionConfig,
                  RemoveOldFile,
-                 DiscordConfig):
+                 DiscordConfig,
+                 URConfig):
     """
     Manages config params for auto mission
     """
@@ -70,7 +74,7 @@ class ESSTConfig(BaseConfig,
         """
         pass
 
-    @ConfigProp(str, default=None)
+    @ConfigProp(str, default='')
     def saved_games_dir(self):
         """
         Path to "Saved Games" folder

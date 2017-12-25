@@ -12,13 +12,15 @@ import requests
 from emiz.weather import build_metar_from_mission
 from jinja2 import Template
 
+from esst.atis.atis import ATIS
 from esst.commands import DCS
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
-from esst.utils import create_versionned_backup, get_latest_release, read_template
+from esst.utils import create_versioned_backup, get_latest_release, read_template
+from esst.utils.saved_games import SAVED_GAMES_PATH
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
-MISSION_FOLDER = Path(CFG.saved_games_dir, 'Missions/ESST')
+MISSION_FOLDER = Path(SAVED_GAMES_PATH, 'DCS/Missions/ESST')
 if not Path(MISSION_FOLDER).exists():
     LOGGER.debug(f'creating directory: {MISSION_FOLDER}')
     MISSION_FOLDER.mkdir(parents=True)
@@ -91,13 +93,14 @@ class MissionPath:
         content = Template(read_template('settings.lua')).render(**template_option)
         settings_file = _get_settings_file_path()
         LOGGER.debug(f'settings file path: {settings_file}')
-        create_versionned_backup(settings_file)
+        create_versioned_backup(settings_file)
         settings_file.write_text(content)
 
         if metar is None:
             LOGGER.debug(f'building metar from mission: {self.name}')
             metar = build_metar_from_mission(str(self.path), icao='XXXX')
             LOGGER.info(f'metar for {self.name}:\n{metar}')
+        ATIS.create_mp3_from_metar(metar)
         Status.metar = metar
 
     def __str__(self):
@@ -111,7 +114,7 @@ class MissionPath:
 
 
 def _get_settings_file_path() -> Path:
-    return Path(CFG.saved_games_dir, 'Config/serverSettings.lua')
+    return Path(SAVED_GAMES_PATH, 'DCS/Config/serverSettings.lua')
 
 
 def set_active_mission(mission: str, metar: str = None):
@@ -179,11 +182,15 @@ def get_latest_mission_from_github():
         LOGGER.debug('skipping mission update')
 
 
-def download_mission_from_discord(discord_attachment, overwrite=False, load=False, force=False):
+def download_mission_from_discord(discord_attachment,
+                                  overwrite: bool = False,
+                                  load: bool = False,
+                                  force: bool = False):
     """
     Downloads a mission from a discord message attachment
 
     Args:
+        force: force restart even with players connected
         discord_attachment: url to download the mission from
         overwrite: whether or not to overwrite an existing file
         load: whether or not to restart the server with the downloaded mission
@@ -208,8 +215,11 @@ def download_mission_from_discord(discord_attachment, overwrite=False, load=Fals
         local_file.path.write_bytes(response.content)
 
     if load:
-        local_file.set_as_active()
+        if DCS.there_are_connected_players() and not force:
+            LOGGER.error('there are connected players; cannot restart the server now (use "force" to kill anyway)')
+            return
         LOGGER.info(f'restarting the server with this mission')
+        local_file.set_as_active()
         DCS.restart(force=force)
     else:
         LOGGER.info(f'download successful, mission is now available')

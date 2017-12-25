@@ -2,18 +2,19 @@
 """
 Various helper functions
 """
-import os
-from pathlib import Path
-import typing
 import datetime
+import os
 import shutil
+import typing
+from pathlib import Path
 
 import pefile
 import pkg_resources
 
-from esst.core import MAIN_LOGGER, Status, CFG
-from .remove_old_files import clean_all_folder
+from esst.core import MAIN_LOGGER, Status
+from esst.utils.saved_games import SAVED_GAMES_PATH
 from .github import get_latest_release
+from .remove_old_files import clean_all_folder
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -31,7 +32,7 @@ def sanitize_path(path: typing.Union[str, Path]) -> str:
     return str(path).replace('\\', '/')
 
 
-def create_versionned_backup(file_path: Path):
+def create_versioned_backup(file_path: Path):
     """
     Creates a backup of a file, with a "_backup_DCS-VERSION" suffix, if the backup does not exist yet
 
@@ -105,10 +106,10 @@ def get_dcs_log_file_path() -> str:
     """
     Returns: path to DCS log file
     """
-    return os.path.join(CFG.saved_games_dir, 'Logs/dcs.log')
+    return os.path.join(SAVED_GAMES_PATH, 'DCS/Logs/dcs.log')
 
 
-class Win32FileInfo:  # pylint: disable=missing-docstring
+class Win32FileInfo:
     """
     Gets information about a Win32 portable executable
     """
@@ -121,54 +122,67 @@ class Win32FileInfo:  # pylint: disable=missing-docstring
 
     @property
     def comments(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('Comments')
 
     @property
     def internal_name(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('InternalName')
 
     @property
     def product_name(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('ProductName')
 
     @property
     def company_name(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('CompanyName')
 
     @property
     def copyright(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('LegalCopyright')
 
     @property
     def product_version(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('ProductVersion')
 
     @property
     def file_description(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('FileDescription')
 
     @property
     def trademark(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('LegalTrademarks')
 
     @property
     def private_build(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('PrivateBuild')
 
     @property
     def file_version(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('FileVersion')
 
     @property
     def fixed_version(self):
+        """Show Win32FileInfo field"""
         return self.__props.get('fixed_version')
 
     @property
     def original_filename(self) -> str:
+        """Show Win32FileInfo field"""
         return self.__props.get('OriginalFilename')
 
     @property
     def special_build(self) -> str:
+        """Show Win32FileInfo field"""
         return self.__props.get('SpecialBuild')
 
     def __read_props(self):
@@ -186,7 +200,9 @@ class Win32FileInfo:  # pylint: disable=missing-docstring
         except pefile.PEFormatError as exc:
             raise ValueError(exc.value)
         else:
+            # noinspection SpellCheckingInspection
             pvms = pe_file.VS_FIXEDFILEINFO.ProductVersionMS  # pylint: disable=no-member
+            # noinspection SpellCheckingInspection
             pvls = pe_file.VS_FIXEDFILEINFO.ProductVersionLS  # pylint: disable=no-member
             self.__props['fixed_version'] = '.'.join(
                 map(str, (_hiword(pvms), _loword(pvms), _hiword(pvls), _loword(pvls)))

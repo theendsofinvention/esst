@@ -90,8 +90,7 @@ def main(
     CTX.discord_msg_queue = queue.Queue()
 
     import ctypes
-    ctypes.windll.kernel32.SetConsoleTitleW(
-        f'ESST v{__version__} - Use CTRL+C to exit')
+    ctypes.windll.kernel32.SetConsoleTitleW(f'ESST v{__version__} - Use CTRL+C to exit')
     MAIN_LOGGER.debug(f'starting ESST {__version__}')
 
     from esst.utils import clean_all_folder

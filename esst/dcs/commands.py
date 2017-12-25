@@ -1,5 +1,7 @@
 # coding=utf-8
-# pylint: disable=missing-docstring
+"""
+Manages DCS commands
+"""
 import time
 from queue import Queue
 
@@ -32,6 +34,7 @@ class DCS:
 
     @staticmethod
     def kill(force: bool = False, queue: bool = False):
+        """Kills DCS application"""
         CANCEL_QUEUED_KILL.put(1)
         if DCS.there_are_connected_players():
             if not force:
@@ -48,7 +51,7 @@ class DCS:
 
     @staticmethod
     def queue_kill():
-
+        """Kill DCS application when all players left"""
         def _queue_kill(queue: Queue):
             while DCS.there_are_connected_players():
                 if not queue.empty():
@@ -64,32 +67,38 @@ class DCS:
 
     @staticmethod
     def show_cpu_usage_once():
+        """Show CPU usage once"""
         LOGGER.debug('show cpu usage once')
         CTX.dcs_show_cpu_usage_once = True
 
     @staticmethod
     def show_cpu_usage_once_done():
+        """Show CPU usage once"""
         LOGGER.debug('show cpu usage once: done')
         CTX.dcs_show_cpu_usage_once = False
 
     @staticmethod
     def show_cpu_usage_start():
+        """Starts showing CPU usage continuously"""
         LOGGER.debug('show cpu usage: start')
         CTX.dcs_show_cpu_usage = True
 
     @staticmethod
     def show_cpu_usage_stop():
+        """Stops showing CPU usage continuously"""
         LOGGER.debug('show cpu usage: stop')
         CTX.dcs_show_cpu_usage = False
 
     @staticmethod
     def can_start():
+        """DCS can start"""
         if not CTX.dcs_can_start:
             LOGGER.debug('DCS can start')
         CTX.dcs_can_start = True
 
     @staticmethod
     def cannot_start():
+        """DCS cannot start"""
         if CTX.dcs_can_start:
             LOGGER.debug('DCS can NOT start')
         CTX.dcs_can_start = False

@@ -2,7 +2,6 @@
 """
 Dummy abstract class to help split the Discord bot into multiple more manageable classes
 """
-#  pylint: disable=missing-docstring
 import abc
 import sys
 
@@ -10,8 +9,10 @@ import discord
 
 
 class AbstractDiscordCommandParser:
+    """
+    Generic command parser for Discord bot
+    """
     @abc.abstractmethod
-    # pylint: disable=too-many-arguments
     def dispatch(self,
                  argv=None,
                  add_help_command=True,
@@ -22,18 +23,51 @@ class AbstractDiscordCommandParser:
                  raw_output=False,
                  namespace=None,
                  skip_unknown_args=False):
+        """
+        Dispatch a command to an underlying function
+
+        Args:
+            argv: list of arguments
+            add_help_command: whether or not to add help command
+            completion: auto-completion of missing commands
+            pre_call: function to call before
+            output_file: redirect stdout
+            errors_file: redirect stderr
+            raw_output: outputs result as text
+            namespace: command namespace
+            skip_unknown_args: ignore unknown args
+        """
         pass
 
     @abc.abstractmethod
     def parse_args(self, args=None, namespace=None):
+        """
+        Parse received args
+
+        Args:
+            args: arg list
+            namespace: command namespace
+        """
         pass
 
     @abc.abstractmethod
     def format_help(self):
+        """
+        Format and return help text
+
+        """
         pass
 
     @abc.abstractmethod
     def parse_discord_message(self, message: str, is_admin: bool):
+        """
+        PArses message from Discord
+
+        Args:
+            message: message content
+            is_admin: is sender an admin?
+
+        """
         pass
 
 
@@ -45,6 +79,9 @@ class AbstractDiscordBot:
     @property
     @abc.abstractmethod
     def parser(self) -> AbstractDiscordCommandParser:
+        """
+        Command parser
+        """
         pass
 
     @property
@@ -112,9 +149,9 @@ class AbstractDiscordBot:
     @abc.abstractmethod
     def send(self, file_path: str):
         """
-        Sends a message to the channel
+        Sends a file to the channel
 
         Args:
-            message: message to send as string
+            file_path: path to file to send
         """
         pass

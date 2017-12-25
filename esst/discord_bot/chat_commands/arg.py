@@ -1,13 +1,16 @@
 # coding=utf-8
-# pylint: disable=missing-docstring
+"""
+Decorator to create commands from functions
+"""
 from argh.constants import ATTR_ARGS
 
 
-# noinspection PyMissingOrEmptyDocstring
 def arg(*args, **kwargs):
+    """
+    Decorator to create commands from functions
+    """
 
-    # noinspection PyMissingOrEmptyDocstring
-    def wrapper(func):
+    def _wrapper(func):
         if 'protected' in kwargs:
             setattr(func, 'protected_', True)
             return func
@@ -19,4 +22,4 @@ def arg(*args, **kwargs):
         setattr(func, ATTR_ARGS, declared_args)
         return func
 
-    return wrapper
+    return _wrapper

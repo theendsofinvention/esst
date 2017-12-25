@@ -14,7 +14,7 @@ def _random_file_name(size=6, chars=string.ascii_uppercase + string.digits):
 
 @pytest.fixture(autouse=True, scope='function')
 def _patch_config(monkeypatch, tmpdir):
-    monkeypatch.setattr(store.CFG, 'saved_games_dir', str(tmpdir))
+    monkeypatch.setattr(store, 'saved_games_path', str(tmpdir))
 
 
 def test__get_mission_folder(tmpdir):

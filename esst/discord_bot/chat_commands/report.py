@@ -1,5 +1,4 @@
 # coding=utf-8
-# pylint: disable=bad-whitespace,missing-docstring
 """
 Meh
 """

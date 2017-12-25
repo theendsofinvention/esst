@@ -5,11 +5,12 @@ Manages GameGUI hooks
 
 import os
 
-from esst.core import CFG, CTX, MAIN_LOGGER
+from esst.core import CTX, MAIN_LOGGER
 from esst.utils import read_template
+from esst.utils.saved_games import SAVED_GAMES_PATH
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
-FILE_PATH = os.path.join(CFG.saved_games_dir, 'Scripts/ESSTGameGUI.lua')
+FILE_PATH = os.path.join(SAVED_GAMES_PATH, 'DCS/Scripts/ESSTGameGUI.lua')
 
 
 # noinspection SpellCheckingInspection

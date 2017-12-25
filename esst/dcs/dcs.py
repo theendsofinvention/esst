@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Manages DCS application Window process
+Manages DCS application Windows process
 """
 import asyncio
 import time
@@ -50,6 +50,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
     """
     Manages DCS application Window process
     """
+    # noinspection SpellCheckingInspection
     valid_priorities = {
         'idle': psutil.IDLE_PRIORITY_CLASS,
         'below_normal': psutil.BELOW_NORMAL_PRIORITY_CLASS,
@@ -70,11 +71,12 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
         LOGGER.debug('starting DCS loop')
 
-    # noinspection PyMissingOrEmptyDocstring
     @property
-    def app(self) -> psutil.Process:  # pylint: disable=missing-docstring
+    def app(self) -> psutil.Process:
+        """Process instance"""
         return self._app
 
+    # noinspection PyMethodMayBeStatic
     async def _execute_cmd_chain(self, cmd_chain: list):
         while not CTX.exit:
             try:
@@ -84,6 +86,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             except IndexError:
                 return
 
+    # noinspection PyMethodMayBeStatic
     async def _get_dcs_version_from_executable(self):
         dcs_exe = Path(CFG.dcs_path)
         if not dcs_exe.exists():
@@ -208,6 +211,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         await self._check_if_dcs_is_running()
         rotate_dcs_log()
 
+    # noinspection PyMethodMayBeStatic
     async def _update_application_status(self, status: str):
         if Status.dcs_application != status:
             Status.dcs_application = status

@@ -1,5 +1,4 @@
 # coding=utf-8
-# pylint: disable=bad-whitespace,missing-docstring
 """
 Meh
 """
@@ -79,6 +78,7 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
         LOGGER.info(f'METAR: {metar.string()}')
     else:
         LOGGER.info('building METAR from mission file')
+        # noinspection SpellCheckingInspection
         metar_str = build_metar_from_mission(str(mission.path), 'XXXX')
         error, info_metar = parse_metar_string(metar_str)
         if error:
@@ -144,16 +144,15 @@ def delete(name: 'name or index of the mission to load'):
     missions_manager.delete(mission)
 
 
+# noinspection SpellCheckingInspection
 @arg('-m', '--metar', nargs='+', metavar='METAR')
 @arg(protected=True)
 # pylint: disable=too-many-arguments
 def load(
         name: 'name or index of the mission to load (if not provided, will re-use the current mission)' = None,
         icao: 'update the weather from ICAO' = None,
-        metar: 'update the weather from METAR string\n'
-               'WARNING: METAR string may NOT contain dashes ("-")' = None,
-        time: 'set the mission time (syntax: YYYYMMDDHHMMSS)\n'
-              'Ex: 2017/08/22 at 12:30:00 -> 20170822123000' = None,
+        metar: 'update the weather from METAR string\nWARNING: METAR string may NOT contain dashes ("-")' = None,
+        time: 'set the mission time (syntax: YYYYMMDDHHMMSS)\nEx: 2017/08/22 at 12:30:00 -> 20170822123000' = None,
         max_wind: 'maximum speed of the wind in MPS' = 40,
         min_wind: 'minimum speed of the wind in MPS' = 0,
         force: 'force server restart even with connected players' = False,

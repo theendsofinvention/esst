@@ -8,12 +8,13 @@ from pathlib import Path
 
 from esst.core import CFG, MAIN_LOGGER
 from esst.utils.remove_old_files import parse_age_string, remove_file_if_older_than
+from esst.utils.saved_games import SAVED_GAMES_PATH
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def _log_dir() -> Path:
-    return Path(CFG.saved_games_dir, 'logs')
+    return Path(SAVED_GAMES_PATH, 'DCS/logs')
 
 
 def _save_old_log(old_log: Path):

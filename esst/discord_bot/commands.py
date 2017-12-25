@@ -1,5 +1,4 @@
 # coding=utf-8
-# pylint: disable=missing-docstring
 """
 Manages Discord commands
 """
@@ -39,12 +38,14 @@ class DISCORD:
 
     @staticmethod
     def can_start():
+        """DCS can start"""
         if not CTX.discord_can_start:
             LOGGER.debug('Discord can start')
         CTX.discord_can_start = True
 
     @staticmethod
     def cannot_start():
+        """DCS cannot start"""
         if CTX.discord_can_start:
             LOGGER.debug('Discord can NOT start')
         CTX.discord_can_start = False
