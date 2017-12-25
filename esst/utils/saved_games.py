@@ -39,7 +39,7 @@ def _get_saved_games_from_registry() -> Path:
     return base_sg
 
 
-def discover_saved_games_path() -> Path:
+def discover_saved_games_path():
     """
     Tries to find Saved Games on this system
 
@@ -57,4 +57,4 @@ def discover_saved_games_path() -> Path:
             base_sg = _get_saved_games_from_registry()
 
     LOGGER.debug(f'using Saved Games path: {base_sg}')
-    FS.saved_games_path = discover_saved_games_path()
+    FS.saved_games_path = base_sg
