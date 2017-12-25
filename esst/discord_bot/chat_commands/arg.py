@@ -1,13 +1,13 @@
 # coding=utf-8
 """
-Decorator to create commands from functions
+    Decorator for Discord commands arguments
 """
 from argh.constants import ATTR_ARGS
 
 
 def arg(*args, **kwargs):
     """
-    Decorator to create commands from functions
+    Decorator for Discord commands arguments
     """
 
     def _wrapper(func):
