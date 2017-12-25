@@ -7,18 +7,11 @@ from pathlib import Path
 
 from esst.atis.univers_radio.ur_object import Airfield, URLinkType
 from esst.core import MAIN_LOGGER, FS
-from esst.utils import create_versioned_backup
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
-def on_esst_start():
-    FS.ur_settings_folder = Path(FS.saved_games_path, 'UniversRadio')
-    FS.ur_voice_settings_file = Path(FS.ur_settings_folder, 'VoiceService.dat')
-    create_versioned_backup(FS.ur_settings_folder, file_must_exist=False)
-
-
-class ATISURSettings:
+class URVoiceServiceSettings:
     """
     Manages UR settings
     """

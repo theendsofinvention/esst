@@ -9,10 +9,22 @@ from elib.tts import text_to_speech
 from emiz.weather import AVWX, parse_metar_string
 
 from esst.atis.identifier import get_random_identifier
-from esst.atis.univers_radio import ALL_AIRFIELDS, ATISURSettings, URVoiceService
+from esst.atis.univers_radio import ALL_AIRFIELDS, URVoiceServiceSettings, URVoiceService
 from esst.core import MAIN_LOGGER
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
+
+
+class ATIS_for_airfield:
+
+    def __init__(self,
+                 icao,
+                 active_runway,
+                 info_identifier,
+                 ):
+        self.icao = icao
+        self.active_runway = active_runway
+        self.info_id = info_identifier
 
 
 class ATIS:
@@ -22,8 +34,9 @@ class ATIS:
 
     current_atis = {}
 
-    def __init__(self):
-        pass
+    @classmethod
+    def get_info_for_icao(cls, icao: str) -> ATIS_for_airfield:
+        return cls.current_atis[icao]
 
     @classmethod
     def create_mp3_from_metar(cls, metar_str: str):
@@ -43,11 +56,11 @@ class ATIS:
         speech_atis = AVWX.metar_to_speech(metar_str)
         LOGGER.debug(f'ATIS speech: {speech_atis}')
 
-        ur_settings = ATISURSettings()
+        ur_settings = URVoiceServiceSettings()
 
         for airfield in ALL_AIRFIELDS:
             LOGGER.debug(f'processing airfield: {airfield.icao}')
-            atis_file = Path(f'{airfield.icao}.mp3')
+            atis_file = Path(f'{airfield.icao}.mp3').absolute()
             LOGGER.debug(f'ATIS file path: {atis_file}')
             active_runway = airfield.get_active_runway(wind_dir)
             LOGGER.debug(f'active runway: {active_runway.long_name()}')
@@ -55,10 +68,11 @@ class ATIS:
             LOGGER.debug(f'ATIS intro: {speech_intro}')
             speech_active_runway = f'Active runway {active_runway.long_name()}'
             LOGGER.debug(f'active runway speech: {speech_active_runway}')
-            speech_information = f'Advise you have information {get_random_identifier()} on first contact.'
+            information_identifier = get_random_identifier()
+            speech_information = f'Advise you have information {information_identifier} on first contact.'
             LOGGER.debug(f'speech information: {speech_information}')
             full_speech = '. '.join([speech_intro, speech_atis, speech_active_runway, speech_information])
-            cls.current_atis[airfield.icao] = full_speech
+            cls.current_atis[airfield.icao] = ATIS_for_airfield(airfield.icao, active_runway, information_identifier)
             LOGGER.debug(f'full speech: {full_speech}')
             LOGGER.debug(f'writing MP3 file for: {airfield.icao}')
             text_to_speech(full_speech, Path(atis_file), True)

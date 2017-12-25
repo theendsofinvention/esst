@@ -6,6 +6,7 @@ import typing
 from pathlib import Path
 
 from esst.core import CFG, MAIN_LOGGER, FS
+from esst.utils import create_simple_backup
 
 try:
     import winreg
@@ -29,7 +30,7 @@ def _get_ur_install_path_from_registry() -> typing.Union[Path, None]:
         return None
 
 
-def discover_ur_install_path() -> Path:
+def discover_ur_install_path():
     """
     Tries to find Saved Games on this system
 
@@ -47,5 +48,8 @@ def discover_ur_install_path() -> Path:
             _ur_install_path = _get_ur_install_path_from_registry()
 
     LOGGER.debug(f'using Saved Games path: {_ur_install_path}')
-    FS.ur_install_path = discover_ur_install_path()
+    FS.ur_install_path = _ur_install_path
+    FS.ur_settings_folder = Path(FS.saved_games_path, 'UniversRadio')
+    FS.ur_voice_settings_file = Path(FS.ur_settings_folder, 'VoiceService.dat')
+    create_simple_backup(FS.ur_voice_settings_file, file_must_exist=False)
 

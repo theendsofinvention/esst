@@ -19,12 +19,10 @@ class URVoiceService:
     """
     Manages UR voice service executable
     """
-
-    exe_path = Path(FS.ur_install_path, PROC_NAME)
     pid = None
 
     @staticmethod
-    def _get_pid() -> bool:
+    def is_running() -> bool:
         for proc in psutil.process_iter():
             if proc.name() == PROC_NAME:
                 URVoiceService.pid = proc.pid
@@ -36,9 +34,12 @@ class URVoiceService:
         """
         Starts UR voice service
         """
-        LOGGER.info('starting UR voice service')
-        os.startfile(str(URVoiceService.exe_path))
-        URVoiceService._get_pid()
+        exe_path = Path(FS.ur_install_path, PROC_NAME)
+        if not exe_path.exists():
+            raise FileNotFoundError(exe_path)
+        LOGGER.info(f'starting UR voice service: {exe_path}')
+        os.startfile(str(exe_path))
+        URVoiceService.is_running()
 
     @staticmethod
     def poll():
@@ -60,7 +61,7 @@ class URVoiceService:
                 proc = psutil.Process(URVoiceService.pid)
                 LOGGER.info('killing UR voice service')
                 proc.terminate()
-                while URVoiceService._get_pid():
+                while URVoiceService.is_running():
                     LOGGER.debug('waiting on UR voice service to close')
                     time.sleep(1)
             except FileNotFoundError:

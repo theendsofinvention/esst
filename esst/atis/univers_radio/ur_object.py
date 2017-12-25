@@ -37,6 +37,15 @@ class URFrequency:
     def __str__(self):
         return self.freq
 
+    def long_freq(self):
+        """Returns nice frequency (123.456 AM)"""
+        freq, mod = self.freq.split(';')
+        if mod == 'S':
+            mod = 'SATCOM'
+        else:
+            mod = f'{mod}M'
+        return f'{freq} {mod}'
+
 
 class URCoord:
     """
