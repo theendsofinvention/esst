@@ -53,6 +53,28 @@ def create_versioned_backup(file_path: Path, file_must_exist: bool = True):
         LOGGER.debug(f'backup already exists: "{backup_file}"')
 
 
+def create_simple_backup(file_path: Path, file_must_exist: bool = True):
+    """
+    Creates a backup of a file, with a "_backup_DCS-VERSION" suffix, if the backup does not exist yet
+
+    Args:
+        file_must_exist: fails if the file to be backed up does not exist
+        file_path: file to backup
+
+    """
+    LOGGER.debug(f'checking for backup of {file_path}')
+    if not file_path.exists():
+        if file_must_exist:
+            raise FileNotFoundError(file_path)
+        return
+    backup_file = Path(file_path.parent, f'{file_path.name}_backup')
+    if not os.path.exists(backup_file):
+        LOGGER.debug(f'creating backup of "{file_path}": "{backup_file}"')
+        shutil.copy2(str(file_path), str(backup_file))
+    else:
+        LOGGER.debug(f'backup already exists: "{backup_file}"')
+
+
 def now():
     """
 
