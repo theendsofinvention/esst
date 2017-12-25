@@ -2,6 +2,15 @@ Changelog
 =========
 
 
+0.1.67 (2017-12-25)
+-------------------
+
+New
+~~~
+- Add "!atis" command for Discord. [132nd-etcher]
+- Manage ATIS for all airfields in Caucasus. [132nd-etcher]
+
+
 0.1.63 (2017-12-20)
 -------------------
 
