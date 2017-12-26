@@ -64,6 +64,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         self._app = None
         self.process_pid = None
         self._restart_ok = True
+        self.dcs_exe = Path(CFG.dcs_path, 'bin/dcs.exe')
 
     @property
     def app(self) -> psutil.Process:
@@ -82,12 +83,11 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
     # noinspection PyMethodMayBeStatic
     async def _get_dcs_version_from_executable(self):
-        dcs_exe = Path(CFG.dcs_path)
-        if not dcs_exe.exists():
-            raise RuntimeError(f'dcs.exe not found: {dcs_exe}')
+        if not self.dcs_exe.exists():
+            raise RuntimeError(f'dcs.exe not found: {self.dcs_exe}')
         # noinspection PyBroadException
         try:
-            Status.dcs_version = Win32FileInfo(
+            Status.dcs_version = Win32FileInfo(str(self.dcs_exe.absolute())).file_version
                 str(dcs_exe.absolute())).file_version
             # SKIPPING DCS VERSION CHECK
             # if Status.dcs_version not in KNOWN_DCS_VERSIONS:
@@ -197,8 +197,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
     async def _start_new_dcs_application_if_needed(self):
 
         async def _start_dcs_app():
-            LOGGER.debug(f'starting DCS application process: {CFG.dcs_path}')
-            self._app = psutil.Popen(CFG.dcs_path)
+            LOGGER.debug(f'starting DCS application process: {self.dcs_exe}')
+            self._app = psutil.Popen(self.dcs_exe)
 
         if self.app and self.app.is_running():
             return
