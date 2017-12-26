@@ -29,7 +29,7 @@ async def wan_available(retry: int = 0):
     """
     try:
         response = requests.get('http://google.com', timeout=2)
-        # DCS.can_start()
+        DCS.unblock_start('no WAN connection available')
         DISCORD.can_start()
         return bool(response.ok)
     except requests.exceptions.RequestException:
@@ -39,8 +39,8 @@ async def wan_available(retry: int = 0):
             result = await wan_available(retry + 1)
             return result
         LOGGER.debug(f'Internet connection loss detected, no more retry')
-        # DCS.cannot_start()
         DISCORD.cannot_start()
+        DCS.block_start('no WAN connection available')
         return False
 
 

@@ -86,7 +86,7 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
         LOGGER.info(f'METAR: {info_metar.string()}')
 
     LOGGER.debug(f'editing "{mission.path}" to "{mission.auto.path}"')
-    DCS.cannot_start()
+    DCS.block_start('loading mission')
     DCS.kill(force=force)
     LOGGER.debug('waiting on DCS application to close')
     while Status.dcs_application != 'not running':
@@ -118,7 +118,7 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
             LOGGER.debug(f'mission has been successfully edited, setting as active: {mission.auto.path}')
             mission.auto.set_as_active(info_metar.code)
     finally:
-        DCS.can_start()
+        DCS.unblock_start('loading mission')
 
 
 @arg(protected=True)

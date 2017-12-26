@@ -3,12 +3,15 @@
 Manages DCS commands
 """
 import time
+import threading
 from queue import Queue
 
 from esst.core import CTX, MAIN_LOGGER, Status
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 CANCEL_QUEUED_KILL = Queue()
+
+_DCS_LOCK = threading.Lock()
 
 
 class DCS:
@@ -90,18 +93,32 @@ class DCS:
         CTX.dcs_show_cpu_usage = False
 
     @staticmethod
-    def can_start():
-        """DCS can start"""
-        if not CTX.dcs_can_start:
-            LOGGER.debug('DCS can start')
-        CTX.dcs_can_start = True
+    def block_start(reason: str):
+        """
+        Prevents DCS from starting
+
+        Args:
+            reason: reason for preventing DCS to start
+        """
+        with _DCS_LOCK:
+            CTX.dcs_blocker.append(reason)
 
     @staticmethod
-    def cannot_start():
-        """DCS cannot start"""
-        if CTX.dcs_can_start:
-            LOGGER.debug('DCS can NOT start')
-        CTX.dcs_can_start = False
+    def unblock_start(reason: str):
+        """
+        Allow DCS to start
+
+        Args:
+            reason: reason that was preventing DCS to start
+        """
+        with _DCS_LOCK:
+            if reason in CTX.dcs_blocker:
+                CTX.dcs_blocker.remove(reason)
+
+    @staticmethod
+    def dcs_cannot_start() -> list:
+        """Returns the list of reasons preventing DCS to start"""
+        return CTX.dcs_blocker
 
     @staticmethod
     def there_are_connected_players() -> bool:

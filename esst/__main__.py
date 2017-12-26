@@ -80,7 +80,9 @@ def main(
     CTX.start_dcs_loop = dcs and CFG.start_dcs_loop
     CTX.start_listener_loop = listener and CFG.start_listener_loop
 
-    CTX.dcs_can_start = start_dcs and CFG.dcs_can_start
+    if not (start_dcs and CFG.dcs_can_start):
+        CTX.dcs_blocker.append('config')
+
     CTX.dcs_setup_dedi_config = install_dedi_config
     CTX.dcs_install_hooks = install_hooks
     CTX.dcs_auto_mission = auto_mission

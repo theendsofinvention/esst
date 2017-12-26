@@ -164,7 +164,7 @@ def get_latest_mission_from_github():
     """
     if CTX.dcs_auto_mission:
         LOGGER.debug('getting latest mission from Github')
-        DCS.cannot_start()
+        DCS.block_start('loading mission')
         if CFG.auto_mission_github_repo and CFG.auto_mission_github_owner:
             LOGGER.debug('looking for newer mission file')
             latest_version, asset_name, download_url = get_latest_release(
@@ -182,7 +182,7 @@ def get_latest_mission_from_github():
                     LOGGER.error('failed to download latest mission')
         else:
             LOGGER.error('no config values given for [auto mission]')
-        DCS.can_start()
+        DCS.unblock_start('loading mission')
     else:
         LOGGER.debug('skipping mission update')
 

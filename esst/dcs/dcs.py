@@ -17,6 +17,7 @@ from . import missions_manager, mission_editor_lua, autoexec_cfg
 from .dedicated import setup_config_for_dedicated_run
 from .game_gui import install_game_gui_hooks
 from .rotate_logs import rotate_dcs_log
+from .commands import DCS
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
@@ -66,6 +67,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         self.process_pid = None
         self._restart_ok = True
         self.dcs_exe = core.FS.get_dcs_exe(core.CFG.dcs_path)
+        self._blockers_warned = set()
         # self._additional_parameters = []
 
     @property
@@ -334,7 +336,14 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         await core.CTX.loop.run_in_executor(None, missions_manager.initial_setup)
 
         LOGGER.debug('starting DCS monitoring thread')
-        if core.CTX.dcs_can_start:
+        if DCS.dcs_cannot_start():
+            blockers = ", ".join(DCS.dcs_cannot_start())
+            if blockers not in self._blockers_warned:
+                self._blockers_warned.add(blockers)
+                LOGGER.warning(f'DCS is prevented to start by: {", ".join(DCS.dcs_cannot_start())}')
+        else:
+            if self._blockers_warned:
+                self._blockers_warned = set()
             await self._try_to_connect_to_existing_dcs_application()
             await self._start_new_dcs_application_if_needed()
         cpu_monitor_thread = core.CTX.loop.run_in_executor(None, self.monitor_cpu_usage)
@@ -347,7 +356,14 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                 await cpu_affinity_thread
                 await cpu_priority_thread
                 break
-            if core.CTX.dcs_can_start:
+            if DCS.dcs_cannot_start():
+                blockers = ", ".join(DCS.dcs_cannot_start())
+                if blockers not in self._blockers_warned:
+                    self._blockers_warned.add(blockers)
+                    LOGGER.warning(f'DCS is prevented to start by: {", ".join(DCS.dcs_cannot_start())}')
+            else:
+                if self._blockers_warned:
+                    self._blockers_warned = set()
                 await self._check_if_dcs_is_running()
                 if not self.process_pid:
                     LOGGER.debug('DCS has stopped, re-starting')

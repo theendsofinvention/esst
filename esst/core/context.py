@@ -47,6 +47,7 @@ class Context:  # pylint: disable=too-many-instance-attributes,too-few-public-me
     dcs_auto_mission = True
 
     dcs_can_start = False
+    dcs_blocker = []
     dcs_show_cpu_usage = False
     dcs_show_cpu_usage_once = False
     dcs_do_kill = False
