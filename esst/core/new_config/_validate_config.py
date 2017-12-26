@@ -5,6 +5,8 @@ Validates config object
 
 import logging
 
+from ._new_config import ESSTConfig
+
 MAIN_LOGGER = logging.getLogger('ESST')
 
 MANDATORY_CONFIG_OPTIONS = [
@@ -17,7 +19,7 @@ MANDATORY_CONFIG_OPTIONS = [
 ]
 
 
-def validate_config(config_instance):
+def validate_config(config_instance: ESSTConfig):
     """
     Validates config object
     """
