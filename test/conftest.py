@@ -13,8 +13,8 @@ def _patch_config(tmpdir):
     FS.ur_install_path = Path(str(tmpdir), 'UniversRadio').absolute()
 
 
-# noinspection PyUnusedLocal
 def pytest_configure(config):
+    print('pytest args: ', config.args)
     os.environ['DCS_PATH'] = 'test'
     os.environ['DCS_SERVER_NAME'] = 'test'
     os.environ['DCS_SERVER_PASSWORD'] = 'test'
@@ -24,8 +24,8 @@ def pytest_configure(config):
     sys._called_from_test = True
 
 
-# noinspection PyUnusedLocal,SpellCheckingInspection
 def pytest_unconfigure(config):
+    print('pytest args: ', config.args)
     # noinspection PyUnresolvedReferences,PyProtectedMember
     del sys._called_from_test
 
