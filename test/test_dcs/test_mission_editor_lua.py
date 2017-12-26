@@ -884,7 +884,7 @@ def test_mission_editor_lua_does_not_exist():
         mission_editor_lua.inject_mission_editor_code('.')
 
 
-@given(text=st.text(min_size=800, max_size=1000, alphabet=string.printable))
+@given(text=st.text(min_size=400, max_size=600, alphabet=string.printable))
 @settings(max_examples=20)
 def test_wrong_content(text):
     Path('./MissionEditor').mkdir(exist_ok=True)
@@ -892,5 +892,5 @@ def test_wrong_content(text):
     template_file.write_text(text, encoding='utf8')
     assert mission_editor_lua.INJECT_TEMPLATE not in template_file.read_text(encoding='utf8')
     assert not mission_editor_lua.inject_mission_editor_code('.')
-    assert Path('./MissionEditor/MissionEditor.lua_backup').exists()
+    assert Path('./MissionEditor/MissionEditor.lua_backup_unknown').exists()
     assert mission_editor_lua.INJECT_TEMPLATE not in template_file.read_text(encoding='utf8')

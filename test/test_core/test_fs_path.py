@@ -23,7 +23,9 @@ def test_ensure_path():
 
 
 def test_dcs_autoexec():
-    assert isinstance(FS.get_dcs_autoexec_file(), Path)
+    FS.saved_games_path = '.'
+    Path('./DCS/Config').mkdir(parents=True)
+    assert isinstance(FS.get_dcs_autoexec_file('.'), Path)
 
 
 @given(text=st.text(alphabet=string.printable, min_size=0, max_size=20))
