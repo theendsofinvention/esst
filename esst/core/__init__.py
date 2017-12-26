@@ -12,7 +12,8 @@ from esst import __version__
 from .context import Context
 from .fs_paths import FS
 # from .config import Config
-from .new_config import ESSTConfig, setup_config, validate_config
+from .new_config import ESSTConfig, validate_config
+from .new_config.setup_config import setup_config
 from .status import ServerStatus, Status
 
 MAIN_LOGGER = elib.get_logger(
@@ -36,4 +37,5 @@ for handler in MAIN_LOGGER.handlers:
     ELIB_LOGGER.addHandler(handler)
 
 CTX = Context()
+MAIN_LOGGER.info('reading config')
 CFG = setup_config()

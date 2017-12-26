@@ -15,7 +15,6 @@ from ._dcs_server import DCSServerConfig
 from ._discord_bot import DiscordConfig
 from ._remove_old_files import RemoveOldFile
 from ._univers_radio import URConfig
-from ._validate_config import validate_config
 
 
 # pylint: disable=too-many-ancestors
@@ -100,29 +99,3 @@ class ESSTConfig(BaseConfig,
         Allow DCS application to actually start
         """
         pass
-
-
-def setup_config():
-    """
-    Set up the config object
-
-    Returns: instance of ESSTConfig
-
-    """
-    try:
-        config = ESSTConfig()
-        validate_config(config)
-    except everett.InvalidValueError as exception:
-        key = exception.key
-        if exception.namespace:
-            key = f'{exception.namespace}_{key}'
-        print(f'Invalid config value: {key}')
-        exit(1)
-    except everett.ConfigurationMissingError as exception:
-        key = exception.key
-        if exception.namespace:
-            key = f'{exception.namespace}_{key}'
-        print(f'Missing configuration value: {key}')
-        exit(1)
-    else:
-        return config
