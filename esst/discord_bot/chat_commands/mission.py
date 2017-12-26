@@ -33,7 +33,6 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
         if not mission:
             LOGGER.error('unable to retrieve current mission')
             return
-        mission = mission.name
     else:
         try:
             LOGGER.debug(f'trying to cast mission name into an int: {name}')
