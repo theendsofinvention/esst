@@ -19,15 +19,21 @@ from esst.utils import create_versioned_backup, get_latest_release, read_templat
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
-MISSION_FOLDER = Path(FS.saved_games_path, 'DCS/Missions/ESST')
-if not Path(MISSION_FOLDER).exists():
-    LOGGER.debug(f'creating directory: {MISSION_FOLDER}')
-    MISSION_FOLDER.mkdir(parents=True)
 
-AUTO_MISSION_FOLDER = Path(MISSION_FOLDER.joinpath('AUTO'))
-if not AUTO_MISSION_FOLDER.exists():
-    LOGGER.debug(f'creating directory: {AUTO_MISSION_FOLDER}')
-    AUTO_MISSION_FOLDER.mkdir(parents=True)
+def _get_mission_folder() -> Path:
+    mission_folder = Path(FS.saved_games_path, 'DCS/Missions/ESST')
+    if not Path(mission_folder).exists():
+        LOGGER.debug(f'creating directory: {mission_folder}')
+        mission_folder.mkdir(parents=True)
+    return mission_folder
+
+
+def _get_auto_mission_folder() -> Path:
+    auto_mission_folder = Path(_get_mission_folder().joinpath('AUTO'))
+    if not auto_mission_folder.exists():
+        LOGGER.debug(f'creating directory: {auto_mission_folder}')
+        auto_mission_folder.mkdir(parents=True)
+    return auto_mission_folder
 
 
 class MissionPath:
@@ -58,10 +64,10 @@ class MissionPath:
         """
         Returns: MissionPath object for the auto mission
         """
-        if self._path.parent == AUTO_MISSION_FOLDER:
+        if self._path.parent == _get_auto_mission_folder():
             return self
 
-        return MissionPath(Path(AUTO_MISSION_FOLDER).joinpath(self._path.name))
+        return MissionPath(Path(_get_auto_mission_folder()).joinpath(self._path.name))
 
     @property
     def path(self) -> Path:
@@ -165,7 +171,7 @@ def get_latest_mission_from_github():
                 CFG.auto_mission_github_owner, CFG.auto_mission_github_repo
             )
             LOGGER.debug(f'latest release: {latest_version}')
-            local_file = MissionPath(Path(MISSION_FOLDER, f'AUTO_{asset_name}'))
+            local_file = MissionPath(Path(_get_mission_folder(), f'AUTO_{asset_name}'))
             if not local_file:
                 LOGGER.info(f'downloading new mission: {asset_name}')
                 req = requests.get(download_url)
@@ -197,7 +203,7 @@ def download_mission_from_discord(discord_attachment,
     url = discord_attachment['url']
     size = discord_attachment['size']
     filename = discord_attachment['filename']
-    local_file = MissionPath(Path(MISSION_FOLDER, filename))
+    local_file = MissionPath(Path(_get_mission_folder(), filename))
 
     overwriting = ''
     if local_file:
@@ -229,7 +235,7 @@ def list_available_missions():
     Generator that yields available mission in ESST's mission dir
     """
     count = 1
-    for file in MISSION_FOLDER.glob('*.miz'):
+    for file in _get_mission_folder().glob('*.miz'):
         yield count, file
         count += 1
 
