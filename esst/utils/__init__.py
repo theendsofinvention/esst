@@ -31,7 +31,29 @@ def sanitize_path(path: typing.Union[str, Path]) -> str:
     return str(path).replace('\\', '/')
 
 
-def create_versioned_backup(file_path: Path, file_must_exist: bool = True):
+def ensure_path(path: typing.Union[str, Path]):
+    """
+    Ensures Path instance
+
+    Args:
+        path: Path or String
+
+    Returns: Path
+    """
+    if isinstance(path, str):
+        path = Path(path)
+    return path
+
+
+def _do_backup(original: Path, backup: Path):
+    if not backup.exists():
+        LOGGER.debug(f'creating backup of "{original.absolute()}" -> "{backup.absolute()}"')
+        shutil.copy2(str(original.absolute()), str(backup.absolute()))
+    else:
+        LOGGER.debug(f'backup already exists: "{backup.absolute()}"')
+
+
+def create_versioned_backup(file_path: typing.Union[str, Path], file_must_exist: bool = True):
     """
     Creates a backup of a file, with a "_backup_DCS-VERSION" suffix, if the backup does not exist yet
 
@@ -40,20 +62,17 @@ def create_versioned_backup(file_path: Path, file_must_exist: bool = True):
         file_path: file to backup
 
     """
+    file_path = ensure_path(file_path)
     LOGGER.debug(f'checking for backup of {file_path}')
     if not file_path.exists():
         if file_must_exist:
             raise FileNotFoundError(file_path)
         return
     backup_file = Path(file_path.parent, f'{file_path.name}_backup_{Status.dcs_version}')
-    if not os.path.exists(backup_file):
-        LOGGER.debug(f'creating backup of "{file_path}": "{backup_file}"')
-        shutil.copy2(str(file_path), str(backup_file))
-    else:
-        LOGGER.debug(f'backup already exists: "{backup_file}"')
+    _do_backup(file_path, backup_file)
 
 
-def create_simple_backup(file_path: Path, file_must_exist: bool = True):
+def create_simple_backup(file_path: typing.Union[str, Path], file_must_exist: bool = True):
     """
     Creates a backup of a file, with a "_backup_DCS-VERSION" suffix, if the backup does not exist yet
 
@@ -62,17 +81,14 @@ def create_simple_backup(file_path: Path, file_must_exist: bool = True):
         file_path: file to backup
 
     """
+    file_path = ensure_path(file_path)
     LOGGER.debug(f'checking for backup of {file_path}')
     if not file_path.exists():
         if file_must_exist:
             raise FileNotFoundError(file_path)
         return
     backup_file = Path(file_path.parent, f'{file_path.name}_backup')
-    if not os.path.exists(backup_file):
-        LOGGER.debug(f'creating backup of "{file_path}": "{backup_file}"')
-        shutil.copy2(str(file_path), str(backup_file))
-    else:
-        LOGGER.debug(f'backup already exists: "{backup_file}"')
+    _do_backup(file_path, backup_file)
 
 
 def now():
