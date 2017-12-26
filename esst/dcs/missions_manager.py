@@ -277,6 +277,7 @@ def initial_setup():
     if isinstance(mission, MissionPath):
         LOGGER.info(f'building METAR for initial mission: {mission.orig_name}')
         metar = build_metar_from_mission(str(mission.path))
+        Status.metar = metar
         ATIS.create_mp3_from_metar(metar)
     else:
         LOGGER.error('no initial mission found')
