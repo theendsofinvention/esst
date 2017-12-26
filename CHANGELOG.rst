@@ -2,6 +2,17 @@ Changelog
 =========
 
 
+0.1.69 (2017-12-26)
+-------------------
+
+Fix
+~~~
+- Fix issue when setting CPU priority for a closed DCS process. [132nd-
+  etcher]
+
+  fix #70
+
+
 0.1.68 (2017-12-26)
 -------------------
 
