@@ -31,21 +31,11 @@ def sanitize_path(path: typing.Union[str, Path]) -> str:
     return str(path).replace('\\', '/')
 
 
-def ensure_path(path: typing.Union[str, Path]):
-    """
-    Ensures Path instance
-
-    Args:
-        path: Path or String
-
-    Returns: Path
-    """
-    if isinstance(path, str):
-        path = Path(path)
-    return path
-
-
 def _do_backup(original: Path, backup: Path):
+    LOGGER.debug(f'checking for backup of {original.absolute()}')
+    if not original.exists():
+        LOGGER.debug(f'original does no exist, skipping backup: {original.absolute()}')
+        return
     if not backup.exists():
         LOGGER.debug(f'creating backup of "{original.absolute()}" -> "{backup.absolute()}"')
         shutil.copy2(str(original.absolute()), str(backup.absolute()))
@@ -62,12 +52,7 @@ def create_versioned_backup(file_path: typing.Union[str, Path], file_must_exist:
         file_path: file to backup
 
     """
-    file_path = ensure_path(file_path)
-    LOGGER.debug(f'checking for backup of {file_path}')
-    if not file_path.exists():
-        if file_must_exist:
-            raise FileNotFoundError(file_path)
-        return
+    file_path = FS.ensure_path(file_path, must_exist=file_must_exist)
     backup_file = Path(file_path.parent, f'{file_path.name}_backup_{Status.dcs_version}')
     _do_backup(file_path, backup_file)
 
@@ -81,12 +66,7 @@ def create_simple_backup(file_path: typing.Union[str, Path], file_must_exist: bo
         file_path: file to backup
 
     """
-    file_path = ensure_path(file_path)
-    LOGGER.debug(f'checking for backup of {file_path}')
-    if not file_path.exists():
-        if file_must_exist:
-            raise FileNotFoundError(file_path)
-        return
+    file_path = FS.ensure_path(file_path, must_exist=file_must_exist)
     backup_file = Path(file_path.parent, f'{file_path.name}_backup')
     _do_backup(file_path, backup_file)
 
