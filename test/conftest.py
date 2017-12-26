@@ -6,13 +6,6 @@ from pathlib import Path
 import pytest
 
 
-@pytest.fixture(autouse=True, scope='function')
-def _patch_config(tmpdir):
-    from esst.core import FS
-    FS.saved_games_path = Path(str(tmpdir), 'Saved Games').absolute()
-    FS.ur_install_path = Path(str(tmpdir), 'UniversRadio').absolute()
-
-
 def pytest_configure(config):
     print('pytest args: ', config.args)
     os.environ['DCS_PATH'] = 'test'
@@ -32,6 +25,9 @@ def pytest_unconfigure(config):
 
 @pytest.fixture(autouse=True)
 def cleandir(request, tmpdir):
+    from esst.core import FS
+    FS.saved_games_path = Path(str(tmpdir), 'Saved Games').absolute()
+    FS.ur_install_path = Path(str(tmpdir), 'UniversRadio').absolute()
     if 'nocleandir' in request.keywords:
         yield
     else:
