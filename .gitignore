@@ -71,6 +71,6 @@ avatar.png
 *.ini
 /emft.debug
 /esst.log.*
-esst.yml
+esst.yml*
 /Pipfile.lock
 *.mp3
