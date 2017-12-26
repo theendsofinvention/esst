@@ -25,7 +25,7 @@ class DISCORD:
         CTX.discord_msg_queue.put(message[:1].upper() + message[1:])
 
     @staticmethod
-    def send(file_path: str):
+    def send_file(file_path: str):
         """
         Sends a file to the active channel
 

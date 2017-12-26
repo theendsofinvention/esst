@@ -203,7 +203,7 @@ def download():
     """
     mission = missions_manager.get_running_mission()
     if mission:
-        DISCORD.send(str(mission.path))
+        DISCORD.send_file(str(mission.path))
 
 
 NAMESPACE = '!mission'

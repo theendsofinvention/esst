@@ -57,7 +57,7 @@ class SERVER:
         """Show resources usage graph"""
         def _callback(future):
             if future.result():
-                DISCORD.send(future.result())
+                DISCORD.send_file(future.result())
             else:
                 LOGGER.warning('failed to create the graph')
 

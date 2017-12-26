@@ -69,7 +69,7 @@ def log():
     """
     Show DCS log file
     """
-    DISCORD.send(get_dcs_log_file_path())
+    DISCORD.send_file(get_dcs_log_file_path())
 
 
 NAMESPACE = '!dcs'

@@ -13,7 +13,7 @@ def log():
     """
     Show ESST log file
     """
-    DISCORD.send('esst.log')
+    DISCORD.send_file('esst.log')
 
 
 def changelog():
@@ -22,7 +22,7 @@ def changelog():
     """
     changelog_path = get_esst_changelog_path()
     if changelog_path:
-        DISCORD.send(changelog_path)
+        DISCORD.send_file(changelog_path)
 
 
 def version():
