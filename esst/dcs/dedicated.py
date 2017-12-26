@@ -19,7 +19,7 @@ DEDI_CFG = r"""dedicated =
 
 
 def _get_me_auth_path() -> Path:
-    me_auth_path = Path(Path(CFG.dcs_path).parent.parent, 'MissionEditor/modules/me_authorization.lua')
+    me_auth_path = Path(CFG.dcs_path, 'MissionEditor/modules/me_authorization.lua')
     if not me_auth_path.exists():
         raise FileNotFoundError(str(me_auth_path))
     return me_auth_path
