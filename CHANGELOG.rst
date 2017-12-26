@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+0.1.68 (2017-12-26)
+-------------------
+
+Fix
+~~~
+- Make information identifiers more clear to the ear. [132nd-etcher]
+
+
 0.1.67 (2017-12-25)
 -------------------
 
