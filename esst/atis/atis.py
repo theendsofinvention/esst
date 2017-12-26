@@ -53,7 +53,7 @@ class ATIS:
         speech_active_runway = f'Active runway {active_runway.long_name()}'
         LOGGER.debug(f'active runway speech: {speech_active_runway}')
         information_identifier = get_random_identifier()
-        speech_information = f'Advise you have information {information_identifier} on first contact.'
+        speech_information = f'Advise you have information, {information_identifier}, on first contact.'
         LOGGER.debug(f'speech information: {speech_information}')
         full_speech = '. '.join([speech_intro, speech_atis, speech_active_runway, speech_information])
         cls.current_atis[airfield.icao] = ATISForAirfield(airfield.icao, active_runway, information_identifier)
