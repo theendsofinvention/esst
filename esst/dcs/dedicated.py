@@ -3,6 +3,7 @@
 Installs the necessary files to run in dedicated mode
 """
 from pathlib import Path
+import typing
 
 import jinja2
 
@@ -25,8 +26,8 @@ def _get_me_auth_path() -> Path:
     return me_auth_path
 
 
-def _write_dedi_config():
-    dedi_cfg_path = Path(FS.saved_games_path, 'DCS/Config/dedicated.lua')
+def _write_dedi_config(dcs_path: typing.Union[str, Path]):
+    dedi_cfg_path = Path(FS.get_saved_games_variant(dcs_path), 'Config/dedicated.lua')
     if not dedi_cfg_path.exists():
         LOGGER.info(f'writing {dedi_cfg_path}')
         dedi_cfg_path.write_text(DEDI_CFG)
@@ -40,7 +41,7 @@ def _write_auth_file():
     _get_me_auth_path().write_text(jinja2.Template(content).render(server_name=CFG.discord_bot_name))
 
 
-def setup_config_for_dedicated_run():
+def setup_config_for_dedicated_run(dcs_path: typing.Union[str, Path]):
     """
     Setup the server to automatically starts in multiplayer mode when DCS starts
     """
@@ -48,7 +49,7 @@ def setup_config_for_dedicated_run():
         LOGGER.debug('setting up dedicated config')
         create_versioned_backup(_get_me_auth_path())
         _write_auth_file()
-        _write_dedi_config()
+        _write_dedi_config(dcs_path)
         LOGGER.debug('setting up dedicated config: all done!')
     else:
         LOGGER.debug('skipping installation of dedicated config')

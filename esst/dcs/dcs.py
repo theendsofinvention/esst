@@ -89,8 +89,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         elif simplified_version >= 158:
             mission_editor_lua.inject_mission_editor_code(core.CFG.dcs_path)
             autoexec_cfg.inject_silent_crash_report(core.CFG.dcs_path)
-            setup_config_for_dedicated_run()
-        setup_config_for_dedicated_run()
+        setup_config_for_dedicated_run(core.CFG.dcs_path)
         return True
 
     async def _check_if_dcs_is_running(self):
