@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+0.1.71 (2017-12-26)
+-------------------
+
+Fix
+~~~
+- Infer METAR and ATIS at DCS startup (default mission) [132nd-etcher]
+
+
 0.1.69 (2017-12-26)
 -------------------
 
