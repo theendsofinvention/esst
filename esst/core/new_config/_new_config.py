@@ -15,6 +15,7 @@ from ._dcs_server import DCSServerConfig
 from ._discord_bot import DiscordConfig
 from ._remove_old_files import RemoveOldFile
 from ._univers_radio import URConfig
+from ._atis import ATISConfig
 
 
 # pylint: disable=too-many-ancestors
@@ -24,7 +25,8 @@ class ESSTConfig(BaseConfig,
                  AutoMissionConfig,
                  RemoveOldFile,
                  DiscordConfig,
-                 URConfig):
+                 URConfig,
+                 ATISConfig):
     """
     Manages config params for auto mission
     """

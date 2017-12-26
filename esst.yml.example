@@ -10,6 +10,9 @@ discord:
     - 'Instructor'
     - 'ServerAdmin'
 
+atis:
+  create: 'true'
+
 dcs:
   path: 'C:\DCS World\'
   saved_games_variant: 'DCS'

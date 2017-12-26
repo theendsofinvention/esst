@@ -10,9 +10,9 @@ from emiz.weather import AVWX, parse_metar_string
 
 from esst.atis.identifier import get_random_identifier
 from esst.atis.univers_radio import ALL_AIRFIELDS, URVoiceService, URVoiceServiceSettings
-from esst.core import MAIN_LOGGER
+from esst import core
 
-LOGGER = MAIN_LOGGER.getChild(__name__)
+LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 class ATISForAirfield:
@@ -67,6 +67,9 @@ class ATIS:
         """
         Create MP3 from METAR
         """
+        if not core.CFG.atis_create:
+            LOGGER.info('skipping ATIS creation as per config')
+            return
         URVoiceService.kill()
         LOGGER.info(f'creating ATIS from METAR: {metar_str}')
         LOGGER.debug('parsing METAR string')
