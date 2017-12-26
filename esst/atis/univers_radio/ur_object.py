@@ -94,8 +94,7 @@ class Runway:
         try:
             return int(f'{self._heading}0')
         except ValueError:
-            print(self._heading)
-            raise
+            raise ValueError(self._heading)
 
     def __str__(self):
         return f'{self._heading}{self._qualifier}'
