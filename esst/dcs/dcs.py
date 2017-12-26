@@ -177,7 +177,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
         async def _start_dcs_app():
             LOGGER.debug(f'starting DCS application process: {self.dcs_exe}')
-            self._app = psutil.Popen(self.dcs_exe)
+            self._app = psutil.Popen(str(self.dcs_exe.absolute()))
 
         if self.app and self.app.is_running():
             return
