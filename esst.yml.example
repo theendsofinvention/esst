@@ -11,7 +11,8 @@ discord:
     - 'ServerAdmin'
 
 dcs:
-  path: 'C:\DCS World\bin\dcs.exe'
+  path: 'C:\DCS World\'
+  saved_games_variant: 'DCS'
   cpu_affinity:
     - 4
     - 5
