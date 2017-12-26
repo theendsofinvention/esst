@@ -18,29 +18,7 @@ from ._univers_radio import URConfig
 from ._validate_config import validate_config
 
 
-def parse_dcs_path(val: str) -> str:
-    """
-    Checks that a value passed for DCS_PATH is valid
-
-    Args:
-        val: value
-
-    Raises:
-        ValueError: if value is incorrect
-
-    Returns: value is value is correct
-    """
-    if not os.path.exists(val):
-        raise ValueError(f'DCS_PATH does not exist: {val}')
-
-    if not os.path.basename(val) == 'dcs.exe':
-        raise ValueError(f'DCS_PATH should point to "dcs.exe"')
-
-    return os.path.normpath(val)
-
 # pylint: disable=too-many-ancestors
-
-
 class ESSTConfig(BaseConfig,
                  DCSConfig,
                  DCSServerConfig,
