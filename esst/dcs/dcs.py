@@ -21,16 +21,6 @@ from .commands import DCS
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
-KNOWN_DCS_VERSIONS = [
-    '1.5.6.5199',
-    '1.5.7.8899',
-    '1.5.7.9459',
-    '1.5.7.10175',
-]
-
-
-# => 2.1.1.8491: use DCS.exe --old-login
-
 
 async def get_dcs_process_pid():
     """
@@ -99,19 +89,6 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         elif simplified_version >= 158:
             mission_editor_lua.inject_mission_editor_code(core.CFG.dcs_path)
             autoexec_cfg.inject_silent_crash_report(core.CFG.dcs_path)
-        exit(0)
-        if core.Status.dcs_version not in KNOWN_DCS_VERSIONS:
-            error = f'sorry, but I am unable to manage this version of DCS: {core.Status.dcs_version}\n' \
-                    f'This safety check exists so ESST does not screw your DCS installation by ' \
-                    f'installing hooks into an unsupported DCS installation.'
-            LOGGER.error(error)
-            if core.CTX.sentry:
-                core.CTX.sentry.captureMessage(
-                    'Unmanaged DCS version',
-                    data={'extra': {'version': core.Status.dcs_version}})
-                core.CTX.exit = True
-            return False
-        else:
             setup_config_for_dedicated_run()
         setup_config_for_dedicated_run()
         return True
