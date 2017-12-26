@@ -164,7 +164,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                         self._app.cpu_affinity(list(CFG.dcs_cpu_affinity))
                     warned = False
                 except psutil.NoSuchProcess:
-                    if not warned:
+                    if not CTX.exit and not warned:
                         LOGGER.warning('DCS process does not exist')
                         warned = True
             else:
@@ -176,6 +176,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         """
         Sets the DCS process CPU priority to the CFG value
         """
+        warned = False
         time.sleep(15)
         while True:
             if CFG.dcs_cpu_priority:
@@ -185,10 +186,15 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                     LOGGER.error(f'invalid priority: {CFG.dcs_cpu_priority}\n'
                                  f'Choose one of: {self.valid_priorities.keys()}')
                     return
-                if self.app.nice() != self.valid_priorities[CFG.dcs_cpu_priority]:
-                    LOGGER.debug(
-                        f'setting DCS process priority to: {CFG.dcs_cpu_priority}')
-                    self.app.nice(self.valid_priorities[CFG.dcs_cpu_priority])
+                try:
+                    if self.app.nice() != self.valid_priorities[CFG.dcs_cpu_priority]:
+                        LOGGER.debug(
+                            f'setting DCS process priority to: {CFG.dcs_cpu_priority}')
+                        self.app.nice(self.valid_priorities[CFG.dcs_cpu_priority])
+                except psutil.NoSuchProcess:
+                    if not CTX.exit and not warned:
+                        LOGGER.warning('DCS process does not exist')
+                        warned = True
             else:
                 LOGGER.warning('no priority given in config file')
                 return
