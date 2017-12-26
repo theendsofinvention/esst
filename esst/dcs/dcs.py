@@ -65,12 +65,6 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         self.process_pid = None
         self._restart_ok = True
 
-        if not CTX.start_dcs_loop:
-            LOGGER.debug('skipping startup of DCS loop')
-            return
-
-        LOGGER.debug('starting DCS loop')
-
     @property
     def app(self) -> psutil.Process:
         """Process instance"""
