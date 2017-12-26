@@ -189,16 +189,13 @@ def weather():
     """
     Displays the weather for the currently running mission
     """
-    mission = missions_manager.get_running_mission()
-    if not mission:
-        return
-    if mission and Status.metar and Status.metar != 'unknown':
+    if Status.metar and Status.metar != 'unknown':
         error, metar = parse_metar_string(Status.metar)
         if error:
             LOGGER.error(error)
             return
         else:
-            DISCORD.say(f'Weather for {mission.name}:\n{metar.string()}')
+            DISCORD.say(f'{metar.string()}')
 
 
 def download():
