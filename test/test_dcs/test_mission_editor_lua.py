@@ -1,13 +1,11 @@
 # coding=utf-8
-import pytest
 import string
-from hypothesis import given, strategies as st, settings
 from pathlib import Path
 
-import elib.custom_random
+import pytest
+from hypothesis import given, settings, strategies as st
 
 from esst.dcs import mission_editor_lua
-
 
 TEMPLATE = """
 __DO_NOT_ERASE_DEBRIEF_LOG__ = true;
@@ -869,8 +867,11 @@ def test_injection():
     template_file.write_text(TEMPLATE, encoding='utf8')
     assert mission_editor_lua.INJECT_TEMPLATE not in template_file.read_text(encoding='utf8')
     assert mission_editor_lua.inject_mission_editor_code('.')
-    assert Path('./MissionEditor/MissionEditor.lua_backup').exists()
-    assert mission_editor_lua.INJECT_TEMPLATE in template_file.read_text(encoding='utf8')
+    assert Path('./MissionEditor/MissionEditor.lua_backup_unknown').exists()
+    content = template_file.read_text(encoding='utf8')
+    assert mission_editor_lua.INJECT_TEMPLATE in content
+    assert mission_editor_lua.inject_mission_editor_code('.')
+    assert content == template_file.read_text(encoding='utf8')
 
 
 def test_dcs_does_not_exist():

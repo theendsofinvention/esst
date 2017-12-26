@@ -41,8 +41,7 @@ INJECT_TEMPLATE = """function onShowMainInterface()
     --
     -- END DEDICATED CODE - ADD UP TO THIS LINE  
     
-end
-"""
+end"""
 
 RE_INJECT = re.compile(
     r"""^function onShowMainInterface\(\)\n--.*(?:\n^.*?)*^end$""",
