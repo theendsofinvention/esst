@@ -4,6 +4,9 @@ Validates config object
 """
 
 from esst import __version__
+import logging
+
+MAIN_LOGGER = logging.getLogger('ESST')
 
 MANDATORY_CONFIG_OPTIONS = [
     'discord_token',
@@ -19,8 +22,7 @@ def validate_config(config_instance):
     """
     Validates config object
     """
-    print('ESST version', __version__)
-    print('Validating config')
+    MAIN_LOGGER.debug('validating config')
     missing_values = []
     for attrib_name in dir(config_instance):
         if not attrib_name.startswith('_'):
@@ -31,7 +33,7 @@ def validate_config(config_instance):
 
     if missing_values:
         missing_values = '\t' + '\n\t'.join(missing_values)
-        print(
+        MAIN_LOGGER.error(
             f"""
 The following values are missing from your configuration:
 
