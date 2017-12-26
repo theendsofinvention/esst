@@ -60,7 +60,7 @@ def inject_mission_editor_code(dcs_path: typing.Union[str, Path]) -> bool:
         Bool indicating success of the operation
 
     """
-    dcs_path = utils.ensure_path(dcs_path)
+    dcs_path = core.FS.ensure_path(dcs_path)
 
     LOGGER.debug(f'injecting MissionEditor.lua code in DCS installation: {dcs_path.absolute()}')
     if not dcs_path.exists():
@@ -72,7 +72,7 @@ def inject_mission_editor_code(dcs_path: typing.Union[str, Path]) -> bool:
         raise FileNotFoundError(mission_editor_lua_path.absolute())
 
     LOGGER.debug('backing up MissionEditor.lua')
-    utils.create_simple_backup(mission_editor_lua_path)
+    utils.create_versioned_backup(mission_editor_lua_path)
 
     LOGGER.debug('injecting code')
     output, count = RE_INJECT.subn(INJECT_TEMPLATE, mission_editor_lua_path.read_text(encoding='utf8'))

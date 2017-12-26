@@ -14,12 +14,12 @@ def test_ensure_path():
 
     with pytest.raises(RuntimeError):
         # noinspection PyTypeChecker
-        FS._ensure_path(FS.saved_games_path)
+        FS.ensure_path(FS.saved_games_path)
 
     with pytest.raises(FileNotFoundError):
-        FS._ensure_path('./test')
+        FS.ensure_path('./test')
 
-    assert isinstance(FS._ensure_path('./test', must_exist=False), Path)
+    assert isinstance(FS.ensure_path('./test', must_exist=False), Path)
 
 
 def test_dcs_autoexec():
