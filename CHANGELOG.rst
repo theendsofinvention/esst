@@ -2,6 +2,15 @@ Changelog
 =========
 
 
+0.1.73 (2017-12-26)
+-------------------
+
+Fix
+~~~
+- Fix bug when using the "!mission load" command without a mission
+  name/number. [132nd-etcher]
+
+
 0.1.71 (2017-12-26)
 -------------------
 
