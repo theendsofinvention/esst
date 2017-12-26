@@ -9,15 +9,16 @@ from pathlib import Path
 import psutil
 
 from esst.commands import DISCORD, LISTENER
-from esst.core import CFG, CTX, MAIN_LOGGER, Status
+# from esst.core import CFG, CTX, MAIN_LOGGER, Status
+from esst import core
 from esst.utils import Win32FileInfo, now
 
-from . import missions_manager
+from . import missions_manager, mission_editor_lua, autoexec_cfg
 from .dedicated import setup_config_for_dedicated_run
 from .game_gui import install_game_gui_hooks
 from .rotate_logs import rotate_dcs_log
 
-LOGGER = MAIN_LOGGER.getChild(__name__)
+LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 KNOWN_DCS_VERSIONS = [
     '1.5.6.5199',
@@ -64,7 +65,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         self._app = None
         self.process_pid = None
         self._restart_ok = True
-        self.dcs_exe = Path(CFG.dcs_path, 'bin/dcs.exe')
+        self.dcs_exe = core.FS.get_dcs_exe(core.CFG.dcs_path)
+        # self._additional_parameters = []
 
     @property
     def app(self) -> psutil.Process:
@@ -73,7 +75,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
     # noinspection PyMethodMayBeStatic
     async def _execute_cmd_chain(self, cmd_chain: list):
-        while not CTX.exit:
+        while not core.CTX.exit:
             try:
                 cmd = cmd_chain.pop(0)
                 await cmd()
@@ -86,32 +88,31 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         if not self.dcs_exe.exists():
             raise RuntimeError(f'dcs.exe not found: {self.dcs_exe}')
         # noinspection PyBroadException
-        try:
-            Status.dcs_version = Win32FileInfo(str(self.dcs_exe.absolute())).file_version
-                str(dcs_exe.absolute())).file_version
-            # SKIPPING DCS VERSION CHECK
-            # if Status.dcs_version not in KNOWN_DCS_VERSIONS:
-            #     error = f'sorry, but I am unable to manage this version of DCS: {Status.dcs_version}\n' \
-            #             f'This safety check exists so ESST does not screw your DCS installation by ' \
-            #             f'installing hooks into an unsupported DCS installation.'
-            #     LOGGER.error(error)
-            #     if CTX.sentry:
-            #         CTX.sentry.captureMessage(
-            #             'Unmanaged DCS version',
-            #             data={'extra': {'version': Status.dcs_version}})
-            #     CTX.exit = True
-            #     return False
-            # else:
-            #     setup_config_for_dedicated_run()
-            ####################################
+        core.Status.dcs_version = Win32FileInfo(str(self.dcs_exe.absolute())).file_version
+        LOGGER.debug(f'DCS version: {core.Status.dcs_version}')
+        simplified_version = int(''.join(core.Status.dcs_version.split('.')[:3]))
+        LOGGER.debug(f'simplified version: {simplified_version}')
+        if simplified_version <= 157:
+            pass
+        elif simplified_version >= 158:
+            mission_editor_lua.inject_mission_editor_code(core.CFG.dcs_path)
+            autoexec_cfg.inject_silent_crash_report(core.CFG.dcs_path)
+        exit(0)
+        if core.Status.dcs_version not in KNOWN_DCS_VERSIONS:
+            error = f'sorry, but I am unable to manage this version of DCS: {core.Status.dcs_version}\n' \
+                    f'This safety check exists so ESST does not screw your DCS installation by ' \
+                    f'installing hooks into an unsupported DCS installation.'
+            LOGGER.error(error)
+            if core.CTX.sentry:
+                core.CTX.sentry.captureMessage(
+                    'Unmanaged DCS version',
+                    data={'extra': {'version': core.Status.dcs_version}})
+                core.CTX.exit = True
+            return False
+        else:
             setup_config_for_dedicated_run()
-            LOGGER.debug(f'DCS version: {Status.dcs_version}')
-            return True
-        # pylint: disable=bare-except
-        except:  # noqa: E722
-            LOGGER.error('unable to retrieve version from dcs.exe')
-            Status.dcs_version = 'unknown'
-            raise
+        setup_config_for_dedicated_run()
+        return True
 
     async def _check_if_dcs_is_running(self):
         self.process_pid = await get_dcs_process_pid()
@@ -133,7 +134,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
         async def _wait_for_process():
             while True:
-                if CTX.exit:
+                if core.CTX.exit:
                     return
                 await asyncio.sleep(0.1)
                 if self.app.is_running():
@@ -149,16 +150,16 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         """
         warned = False
         while True:
-            if CFG.dcs_cpu_affinity:
-                if CTX.exit:
+            if core.CFG.dcs_cpu_affinity:
+                if core.CTX.exit:
                     return
                 try:
-                    if list(self._app.cpu_affinity()) != list(CFG.dcs_cpu_affinity):
-                        LOGGER.debug(f'setting DCS process affinity to: {CFG.dcs_cpu_affinity}')
-                        self._app.cpu_affinity(list(CFG.dcs_cpu_affinity))
+                    if list(self._app.cpu_affinity()) != list(core.CFG.dcs_cpu_affinity):
+                        LOGGER.debug(f'setting DCS process affinity to: {core.CFG.dcs_cpu_affinity}')
+                        self._app.cpu_affinity(list(core.CFG.dcs_cpu_affinity))
                     warned = False
                 except psutil.NoSuchProcess:
-                    if not CTX.exit and not warned:
+                    if not core.CTX.exit and not warned:
                         LOGGER.warning('DCS process does not exist')
                         warned = True
             else:
@@ -173,20 +174,20 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         warned = False
         time.sleep(15)
         while True:
-            if CFG.dcs_cpu_priority:
-                if CTX.exit:
+            if core.CFG.dcs_cpu_priority:
+                if core.CTX.exit:
                     return
-                if CFG.dcs_cpu_priority not in self.valid_priorities.keys():
-                    LOGGER.error(f'invalid priority: {CFG.dcs_cpu_priority}\n'
+                if core.CFG.dcs_cpu_priority not in self.valid_priorities.keys():
+                    LOGGER.error(f'invalid priority: {core.CFG.dcs_cpu_priority}\n'
                                  f'Choose one of: {self.valid_priorities.keys()}')
                     return
                 try:
-                    if self.app.nice() != self.valid_priorities[CFG.dcs_cpu_priority]:
+                    if self.app.nice() != self.valid_priorities[core.CFG.dcs_cpu_priority]:
                         LOGGER.debug(
-                            f'setting DCS process priority to: {CFG.dcs_cpu_priority}')
-                        self.app.nice(self.valid_priorities[CFG.dcs_cpu_priority])
+                            f'setting DCS process priority to: {core.CFG.dcs_cpu_priority}')
+                        self.app.nice(self.valid_priorities[core.CFG.dcs_cpu_priority])
                 except psutil.NoSuchProcess:
-                    if not CTX.exit and not warned:
+                    if not core.CTX.exit and not warned:
                         LOGGER.warning('DCS process does not exist')
                         warned = True
             else:
@@ -213,8 +214,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
     # noinspection PyMethodMayBeStatic
     async def _update_application_status(self, status: str):
-        if Status.dcs_application != status:
-            Status.dcs_application = status
+        if core.Status.dcs_application != status:
+            core.Status.dcs_application = status
             LOGGER.info(f'DCS application is {status}')
             if status == 'starting':
                 LISTENER.monitor_server_startup_start()
@@ -231,11 +232,11 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             LISTENER.exit_dcs()
             await asyncio.sleep(1)
             LOGGER.debug(
-                f'waiting on DCS to close itself (grace period: {CFG.dcs_grace_period})')
+                f'waiting on DCS to close itself (grace period: {core.CFG.dcs_grace_period})')
             now_ = now()
             while self.app.is_running():
                 await asyncio.sleep(1)
-                if now() - now_ > CFG.dcs_grace_period:
+                if now() - now_ > core.CFG.dcs_grace_period:
                     LOGGER.debug('grace period time out!')
                     return False
 
@@ -255,7 +256,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
             return True
 
-        CTX.dcs_do_kill = False
+        core.CTX.dcs_do_kill = False
         await self._check_if_dcs_is_running()
         if not self.app or not self.app.is_running():
             LOGGER.debug('DCS process was not running')
@@ -272,18 +273,18 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         """
         Restarts DCS application
         """
-        if CTX.exit:
+        if core.CTX.exit:
             LOGGER.debug('restart interrupted by exit signal')
             return
-        CTX.dcs_do_restart = False
+        core.CTX.dcs_do_restart = False
         LOGGER.info('restarting DCS')
         await self.kill_running_app()
-        Status.mission_file = 'unknown'
-        Status.server_age = 'unknown'
-        Status.mission_time = 'unknown'
-        Status.paused = 'unknown'
-        Status.mission_name = 'unknown'
-        Status.players = []
+        core.Status.mission_file = 'unknown'
+        core.Status.server_age = 'unknown'
+        core.Status.mission_time = 'unknown'
+        core.Status.paused = 'unknown'
+        core.Status.mission_name = 'unknown'
+        core.Status.players = []
         self._app = None
         self.process_pid = None
         cmd_chain = [
@@ -297,24 +298,24 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
 
         Threshold is set via the config value "DCS_HIGH_CPU_USAGE", and it defaults to 80%
         """
-        while not CTX.exit:
+        while not core.CTX.exit:
             try:
                 if self.app and self.app.is_running():
-                    cpu_usage = int(self.app.cpu_percent(CFG.dcs_high_cpu_usage_interval))
+                    cpu_usage = int(self.app.cpu_percent(core.CFG.dcs_high_cpu_usage_interval))
                     mem_usage = int(self.app.memory_percent())
-                    Status.dcs_cpu_usage = f'{cpu_usage}%'
-                    if CTX.dcs_show_cpu_usage or CTX.dcs_show_cpu_usage_once:
+                    core.Status.dcs_cpu_usage = f'{cpu_usage}%'
+                    if core.CTX.dcs_show_cpu_usage or core.CTX.dcs_show_cpu_usage_once:
                         DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
-                        CTX.dcs_show_cpu_usage_once = False
-                    if CFG.dcs_high_cpu_usage:
-                        if cpu_usage > CFG.dcs_high_cpu_usage and not Status.paused:
+                        core.CTX.dcs_show_cpu_usage_once = False
+                    if core.CFG.dcs_high_cpu_usage:
+                        if cpu_usage > core.CFG.dcs_high_cpu_usage and not core.Status.paused:
                             LOGGER.warning(
-                                f'DCS cpu usage has been higher than {CFG.dcs_high_cpu_usage}%'
-                                f' for {CFG.dcs_high_cpu_usage_interval} seconds')
+                                f'DCS cpu usage has been higher than {core.CFG.dcs_high_cpu_usage}%'
+                                f' for {core.CFG.dcs_high_cpu_usage_interval} seconds')
 
                     now_ = now()
-                    CTX.dcs_mem_history.append((now_, mem_usage))
-                    CTX.dcs_cpu_history.append((now_, cpu_usage))
+                    core.CTX.dcs_mem_history.append((now_, mem_usage))
+                    core.CTX.dcs_cpu_history.append((now_, cpu_usage))
 
             except psutil.NoSuchProcess:
                 pass
@@ -323,37 +324,37 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         """
         Entry point of the thread
         """
-        if not CTX.start_dcs_loop:
+        if not core.CTX.start_dcs_loop:
             LOGGER.debug('skipping DCS application loop')
             return
         if not await self._get_dcs_version_from_executable():
             return
-        await CTX.loop.run_in_executor(None, install_game_gui_hooks)
-        await CTX.loop.run_in_executor(None, missions_manager.get_latest_mission_from_github)
-        await CTX.loop.run_in_executor(None, missions_manager.initial_setup)
+        await core.CTX.loop.run_in_executor(None, install_game_gui_hooks)
+        await core.CTX.loop.run_in_executor(None, missions_manager.get_latest_mission_from_github)
+        await core.CTX.loop.run_in_executor(None, missions_manager.initial_setup)
 
         LOGGER.debug('starting DCS monitoring thread')
-        if CTX.dcs_can_start:
+        if core.CTX.dcs_can_start:
             await self._try_to_connect_to_existing_dcs_application()
             await self._start_new_dcs_application_if_needed()
-        cpu_monitor_thread = CTX.loop.run_in_executor(None, self.monitor_cpu_usage)
-        cpu_affinity_thread = CTX.loop.run_in_executor(None, self.set_affinity)
-        cpu_priority_thread = CTX.loop.run_in_executor(None, self.set_priority)
+        cpu_monitor_thread = core.CTX.loop.run_in_executor(None, self.monitor_cpu_usage)
+        cpu_affinity_thread = core.CTX.loop.run_in_executor(None, self.set_affinity)
+        cpu_priority_thread = core.CTX.loop.run_in_executor(None, self.set_priority)
         while True:
-            if CTX.exit:
+            if core.CTX.exit:
                 LOGGER.debug('interrupted by exit signal')
                 await cpu_monitor_thread
                 await cpu_affinity_thread
                 await cpu_priority_thread
                 break
-            if CTX.dcs_can_start:
+            if core.CTX.dcs_can_start:
                 await self._check_if_dcs_is_running()
                 if not self.process_pid:
                     LOGGER.debug('DCS has stopped, re-starting')
                     await self.restart()
-            if CTX.dcs_do_kill:
+            if core.CTX.dcs_do_kill:
                 await self.kill_running_app()
-            if CTX.dcs_do_restart:
+            if core.CTX.dcs_do_restart:
                 await self.restart()
             await asyncio.sleep(0.1)
 
