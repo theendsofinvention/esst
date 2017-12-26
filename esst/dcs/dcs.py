@@ -15,7 +15,7 @@ from esst.utils import Win32FileInfo, now
 
 from .dedicated import setup_config_for_dedicated_run
 from .game_gui import install_game_gui_hooks
-from .missions_manager import get_latest_mission_from_github
+from . import missions_manager
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
@@ -329,7 +329,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         if not await self._get_dcs_version_from_executable():
             return
         await CTX.loop.run_in_executor(None, install_game_gui_hooks)
-        await CTX.loop.run_in_executor(None, get_latest_mission_from_github)
+        await CTX.loop.run_in_executor(None, missions_manager.get_latest_mission_from_github)
+        await CTX.loop.run_in_executor(None, missions_manager.initial_setup)
 
         LOGGER.debug('starting DCS monitoring thread')
         if CTX.dcs_can_start:

@@ -246,19 +246,37 @@ def get_running_mission() -> typing.Union['MissionPath', str]:
     Returns: currently running mission as a MissionPath instance
 
     """
+    mission = None
     if Status.mission_file and Status.mission_file != 'unknown':
         mission_path = Path(Status.mission_file)
         if mission_path.parent == 'AUTO':
             mission_path = Path(mission_path.parent.parent, mission_path.name)
         mission = MissionPath(mission_path)
-        if mission:
-            LOGGER.debug(f'returning active mission: {mission.name}')
-            return mission
 
-        LOGGER.error(
-            f'current mission is "{mission.path}", but that file does not exist')
-        return ''
+    else:
+        dcs_settings = _get_settings_file_path().read_text()
+        for line in dcs_settings.split('\n'):
+            if '[1]' in line:
+                mission = MissionPath(line.split('"')[1])
+                break
 
-    LOGGER.error('no active mission; please load a mission first '
-                 '(or just wait a moment for the server to be ready)')
+    if mission:
+        LOGGER.debug(f'returning active mission: {mission.name}')
+        return mission
+
+    LOGGER.error(f'current mission is "{mission.path}", but that file does not exist')
     return ''
+
+
+def initial_setup():
+    """
+    Runs at the start of the DCS loop, to initialize the first mission
+    """
+    LOGGER.debug('initializing first mission')
+    mission = get_running_mission()
+    if isinstance(mission, MissionPath):
+        LOGGER.info(f'building METAR for initial mission: {mission.orig_name}')
+        metar = build_metar_from_mission(str(mission.path))
+        ATIS.create_mp3_from_metar(metar)
+    else:
+        LOGGER.error('no initial mission found')
