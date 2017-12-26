@@ -3,15 +3,17 @@
 Globals
 """
 import logging.handlers
-# noinspection PyUnresolvedReferences
-import emiz, elib
 
+import elib
+# noinspection PyUnresolvedReferences
+import emiz
+
+from esst import __version__
 from .context import Context
+from .fs_paths import FS
 # from .config import Config
 from .new_config import ESSTConfig, setup_config, validate_config
-from .fs_paths import FS
 from .status import ServerStatus, Status
-from esst import __version__
 
 MAIN_LOGGER = elib.get_logger(
     logger_name='ESST',

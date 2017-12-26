@@ -3,7 +3,6 @@
 Validates config object
 """
 
-from esst import __version__
 import logging
 
 MAIN_LOGGER = logging.getLogger('ESST')
