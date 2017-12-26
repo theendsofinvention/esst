@@ -21,10 +21,11 @@ class SERVER:
     @staticmethod
     def reboot(force: bool = False):
         """Reboots the server computer"""
-        if DCS.there_are_connected_players() and not force:
-            return 'there are connected players; cannot restart the server now (use "--force" to restart anyway)'
-
-        LOGGER.warning('forcing restart with connected players')
+        if DCS.there_are_connected_players():
+            if not force:
+                return 'there are connected players; cannot restart the server now (use "--force" to restart anyway)'
+            else:
+                LOGGER.warning('forcing restart with connected players')
         os.system('shutdown /r /t 30 /c "Reboot initialized by ESST"')
         return ''
 
