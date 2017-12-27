@@ -66,11 +66,6 @@ def main(
 
     CTX.loop = asyncio.get_event_loop()
 
-    def _handler(_, context):
-        MAIN_LOGGER.error(f'error in event loop: {context["message"]}')
-
-    # CTX.loop.set_exception_handler(_handler)
-
     from esst.utils.conn import monitor_connection, wan_available
     CTX.wan = CTX.loop.run_until_complete(wan_available())
     CTX.loop.create_task(monitor_connection())

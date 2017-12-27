@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-MAnages UR installation path
+Manages UR installation path
 """
 import typing
 from pathlib import Path

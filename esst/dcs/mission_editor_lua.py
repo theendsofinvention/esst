@@ -10,6 +10,7 @@ from esst import core, utils
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
+# noinspection SpellCheckingInspection
 INJECT_TEMPLATE = """function onShowMainInterface()
 --print("--onShowMainInterface()---")
     if tooltipSkin_ == nil then

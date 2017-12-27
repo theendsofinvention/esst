@@ -49,6 +49,7 @@ def _get_function_from_namespace_obj(namespace_obj):
 
 
 def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
+    # noinspection SpellCheckingInspection
     """
     Assumes that `function` is a callable.  Tries different approaches
     to call it (with `namespace_obj` or with ordinary signature).
@@ -67,6 +68,7 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
     def _flat_key(key):
         return key.replace('-', '_')
 
+    # noinspection SpellCheckingInspection
     def _call():
         # Actually call the function
         if getattr(func, ATTR_EXPECTS_NAMESPACE_OBJECT, False):
@@ -82,8 +84,9 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
             spec = get_arg_spec(func)
 
             positional = [all_input[k] for k in spec.args]
-            kwonly = getattr(spec, 'kwonlyargs', [])
-            keywords = dict((k, all_input[k]) for k in kwonly)
+            # noinspection SpellCheckingInspection
+            kw_only = getattr(spec, 'kwonlyargs', [])
+            keywords = dict((k, all_input[k]) for k in kw_only)
 
             # *args
             if spec.varargs:
@@ -93,7 +96,7 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
             varkw = getattr(spec, 'varkw', getattr(spec, 'keywords', []))
             if varkw:
                 not_kwargs = [DEST_FUNCTION] + \
-                             spec.args + [spec.varargs] + kwonly
+                             spec.args + [spec.varargs] + kw_only
                 for k in vars(namespace_obj):
                     if k.startswith('_') or k in not_kwargs:
                         continue
@@ -111,6 +114,7 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
             if result_ is not None:
                 yield result_
 
+    # noinspection SpellCheckingInspection
     wrappable_exceptions = [CommandError, Exception]
     wrappable_exceptions += getattr(func, ATTR_WRAPPED_EXCEPTIONS, [])
 
@@ -120,8 +124,7 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
         return '\n'.join(result)
     except tuple(wrappable_exceptions) as exc:  # pylint: disable=catching-non-exception
         processor = getattr(func, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
-                            lambda exc: '{0.__class__.__name__}: {0}'  # pylint: disable=unnecessary-lambda
-                            .format(exc))
+                            lambda exc_: '{0.__class__.__name__}: {0}'.format(exc_))
 
         LOGGER.error(compat.text_type(processor(exc)))
         LOGGER.exception(exc)
@@ -150,6 +153,7 @@ class HelpFormatter(argparse.RawDescriptionHelpFormatter):
         return super(HelpFormatter, self).add_usage(usage, actions, groups, prefix)
 
 
+# noinspection SpellCheckingInspection
 class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParser):
     """
     Creates chat commands out of regular functions with argh

@@ -2,7 +2,6 @@
 """
 Manages DCS autoexec.cfg file
 """
-import pprint
 import typing
 from pathlib import Path
 

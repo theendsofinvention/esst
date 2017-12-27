@@ -1,8 +1,10 @@
 # coding=utf-8
-
+"""
+Tests for esst.core.FS
+"""
 import pytest
 import string
-from hypothesis import given, strategies as st, settings
+from hypothesis import given, strategies as st
 
 from pathlib import Path
 

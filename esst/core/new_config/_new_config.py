@@ -60,6 +60,7 @@ class ESSTConfig(BaseConfig,
         """
         pass
 
+    # noinspection SpellCheckingInspection
     @ConfigProp(str, 'https://85518bcfd75a400eaf3821830ec1c4b2:a622d4e7a4ab4ec9ade873ad96b8d4aa@sentry.io/206995')
     def sentry_dsn(self):
         """

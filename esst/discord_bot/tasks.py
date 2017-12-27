@@ -37,6 +37,7 @@ class DiscordTasks(AbstractDiscordBot):  # pylint: disable=abstract-method
 
     @catch_exc
     async def send(self, file_path: str):
+        """Sends a file to a Discord channel"""
         if self.client and self.client.is_logged_in and self.channel:
             # noinspection PyUnresolvedReferences
             await self.client.send_file(self.channel, file_path, content='There you go:')

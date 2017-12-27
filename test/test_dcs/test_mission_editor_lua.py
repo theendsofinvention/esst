@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Tests for esst.dcs.mission_editor_lua
+"""
 import string
 from pathlib import Path
 

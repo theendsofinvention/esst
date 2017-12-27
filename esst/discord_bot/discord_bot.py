@@ -35,30 +35,37 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
 
     @property
     def parser(self) -> AbstractDiscordCommandParser:
+        """Chat command parser"""
         return self._parser
 
     @property
     def channel(self) -> discord.Channel:
+        """Active channel"""
         return self._channel
 
     @property
     def user(self) -> discord.User:
+        """User object owned by the bot"""
         return self._user
 
     @property
     def member(self) -> discord.Member:
+        """Member object owned bu the bot"""
         return self._member
 
     @property
     def server(self) -> discord.Server:
+        """Server object for the bot"""
         return self._server
 
     @property
     def client(self) -> discord.Client:
+        """Client object for the bot"""
         return self._client
 
     @property
     def ready(self) -> bool:
+        """True when the bot is initialized"""
         return bool(self._ready)
 
     def __init__(self):
@@ -218,11 +225,6 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         if not CFG.discord_token:
             LOGGER.error('missing Discord token in config, cannot start bot')
             return
-
-        def _pass_exception():
-            # LOGGER.exception('Discord bot error')
-            if CTX.sentry:
-                CTX.sentry.captureException(True)
 
         if not CTX.start_discord_loop:
             LOGGER.debug('skipping Discord loop')

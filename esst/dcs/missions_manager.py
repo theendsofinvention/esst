@@ -103,6 +103,7 @@ class MissionPath:
 
         if metar is None:
             LOGGER.debug(f'building metar from mission: {self.name}')
+            # noinspection SpellCheckingInspection
             metar = build_metar_from_mission(str(self.path), icao='XXXX')
             LOGGER.info(f'metar for {self.name}:\n{metar}')
         ATIS.create_mp3_from_metar(metar)

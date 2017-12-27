@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Tests from esst.dcs.autoexec_cfg
+"""
 
 import pytest
 import string

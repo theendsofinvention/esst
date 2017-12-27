@@ -88,7 +88,8 @@ class Sentry(raven.Client):
             self.extra_context({context_name: context_provider.get_context()})
         super(Sentry, self).captureMessage(message, **kwargs)
 
-    def captureException(self, exc_info=None, **kwargs):  # noqa: N802
+    def captureException(self, exc_info=None, **kwargs):
+        """Captures an exception"""
         self.set_context()
 
         LOGGER.debug('capturing exception')
@@ -106,8 +107,8 @@ def filter_breadcrumbs(_logger, level, msg, *args, **kwargs):  # pylint: disable
         _logger: originating logger
         level: record level
         msg: record message
-        *args: meh
-        **kwargs: meh
+        *args: logging args
+        **kwargs: logging kwargs
 
     """
     skip_lvl = []
