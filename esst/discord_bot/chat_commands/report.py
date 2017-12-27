@@ -4,22 +4,19 @@ Meh
 """
 import uuid
 
-from esst.commands import DISCORD
-from esst.core import CTX, MAIN_LOGGER
+from esst import commands, core, utils
 
-from .arg import arg
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
+LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 def _send(msg, ctx):
-    if msg and CTX.sentry:
-        CTX.sentry.captureMessage(
+    if msg and core.CTX.sentry:
+        core.CTX.sentry.captureMessage(
             ctx + '_' + str(uuid.uuid4()), data={'extra': {'text': ' '.join(msg)}})
-        DISCORD.say('Thank you !')
+        commands.DISCORD.say('Thank you !')
 
 
-@arg('message', nargs='+', metavar='ISSUE')
+@utils.arg('message', nargs='+', metavar='ISSUE')
 def issue(message):
     """
     Send feedback about an issue with ESST
@@ -27,7 +24,7 @@ def issue(message):
     _send(message, 'ISSUE')
 
 
-@arg('message', nargs='+', metavar='SUGGESTION')
+@utils.arg('message', nargs='+', metavar='SUGGESTION')
 def suggestion(message):
     """
     Suggest a new feature

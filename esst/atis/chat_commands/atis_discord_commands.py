@@ -1,0 +1,52 @@
+# coding=utf-8
+"""
+ATIS Discord commands group
+"""
+
+from esst import core, utils
+from .._univers_radio import URVoiceService
+from .._atis_get_info import get_info_for_icao
+from .._atis_airfields import ALL_AIRFIELDS
+
+LOGGER = core.MAIN_LOGGER.getChild(__name__)
+
+
+@utils.arg('icao', nargs=1)
+def show(icao: list):
+    """
+    Show ATIS info for a specific airfield
+    """
+    icao = ''.join(icao).upper()
+    try:
+        info = get_info_for_icao(icao)
+    except KeyError:
+        LOGGER.error(f'ICAO not found in the list of currently active ATIS: {icao}')
+        return
+    running = 'running' if URVoiceService.is_running() else 'not running'
+    info_str = f'UR voice service is {running}\n\n' \
+               f'Metar: {core.Status.metar}\n' \
+               f'Active runway: {info.active_runway}\n' \
+               f'Information ID: {info.info_id}'
+    LOGGER.info(info_str)
+
+
+def status():
+    """
+    Show UR voice service status
+    """
+    status_ = 'running' if URVoiceService.is_running() else 'not running'
+    LOGGER.info(f'UniversRadio voice service is {status_}')
+
+
+def frequencies():
+    """
+    Shows frequencies for the ATIS in Georgia
+    """
+    output = ['List of ATIS frequencies in Georgia:']
+    for airfield in ALL_AIRFIELDS:
+        output.append(f'{airfield.name}: {airfield.atis_freq.long_freq()}')
+    LOGGER.info('\n'.join(output))
+
+
+NAMESPACE = '!atis'
+TITLE = 'Manage ATIS service'

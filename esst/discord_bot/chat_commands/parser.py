@@ -16,12 +16,12 @@ from argh.dispatching import ArghNamespace
 from argh.exceptions import CommandError
 from argh.utils import get_arg_spec
 
-from esst.commands import DISCORD
-from esst.core import CFG, MAIN_LOGGER
+from esst import core, commands
+import esst.atis.chat_commands.atis_discord_commands
 from esst.discord_bot import abstract
-from esst.discord_bot.chat_commands import atis, dcs, esst_, mission, report, server
+from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server
 
-LOGGER = MAIN_LOGGER.getChild(__name__)
+LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 def _cancel_execution(*_):
@@ -93,7 +93,7 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
             varkw = getattr(spec, 'varkw', getattr(spec, 'keywords', []))
             if varkw:
                 not_kwargs = [DEST_FUNCTION] + \
-                    spec.args + [spec.varargs] + kwonly
+                             spec.args + [spec.varargs] + kwonly
                 for k in vars(namespace_obj):
                     if k.startswith('_') or k in not_kwargs:
                         continue
@@ -189,7 +189,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
 
     def _print_message(self, message, _=None):
         if message:
-            DISCORD.say(message)
+            commands.DISCORD.say(message)
 
     # pylint: disable=arguments-differ,too-many-branches,too-many-arguments,too-many-locals
     def dispatch(self,  # noqa: C901
@@ -253,7 +253,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
             if func:
                 if hasattr(func, 'protected_') and not is_admin:
                     LOGGER.error(
-                        f'only users with role "{CFG.discord_admin_role}" have access to this command')
+                        f'only users with role "{core.CFG.discord_admin_role}" have access to this command')
                     return None
                 LOGGER.debug(f'running func: {func}')
                 return _execute_command(func, namespace_obj, pre_call=pre_call)
@@ -265,14 +265,35 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
             pass
 
     def exit(self, _=0, message=None):
+        """
+        This was supposed to exit the program in case of error; in this case, we simply print the message
+
+        Args:
+            _: exit code (useless)
+            message: exit message
+
+        """
         if message:
             self._print_message(message)
 
     def error(self, message):
+        """error(message: string)
+
+        Prints a usage message incorporating the message to stderr and
+        exits.
+
+        If you override this in a subclass, it should not return -- it
+        should either exit or raise an exception.
+        """
         self._print_message(message)
         raise SystemExit(-1)
 
     def parse_args(self, args=None, namespace=None):
+        """
+        Wrapper for :meth:`argparse.ArgumentParser.parse_args`.  If `namespace`
+        is not defined, :class:`argh.dispatching.ArghNamespace` is used.
+        This is required for functions to be properly used as commands.
+        """
         if len(args) == 1:
             args.append('--help')
         try:
@@ -281,9 +302,22 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
             pass
 
     def format_help(self):  # pylint: disable=useless-super-delegation
+        """
+        I'm not sure about this one, this is an experiment
+
+        """
+        LOGGER.warning('formatting help')
         return super(DiscordCommandParser, self).format_help()
 
     def parse_discord_message(self, message: str, is_admin: bool):
+        """
+        PArses message from Discord
+
+        Args:
+            message: message content
+            is_admin: is sender an admin?
+
+        """
         if message.startswith('!'):
 
             if message == '!help':
@@ -293,7 +327,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
                 self.dispatch(formatted_args, is_admin=is_admin)
 
 
-DECRIPTION = """
+DESCRIPTION = """
 To get help on a specific command, use the "--help" option.
 
 Ex:
@@ -319,8 +353,8 @@ def make_root_parser():
 
     """
     parser = DiscordCommandParser(
-        description=DECRIPTION, prog='', add_help=False, usage='', epilog=EPILOG)
-    for module_ in [esst_, mission, server, dcs, report, atis]:
+        description=DESCRIPTION, prog='', add_help=False, usage='', epilog=EPILOG)
+    for module_ in [esst_, mission, server, dcs, report, esst.atis.chat_commands.atis_discord_commands]:
         funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction)
                  if o[1].__module__ == module_.__name__ and not o[1].__name__.startswith('_')]
         parser.add_commands(

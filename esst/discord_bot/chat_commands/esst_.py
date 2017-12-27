@@ -2,43 +2,39 @@
 """
 Manages commands related to ESST itself
 """
-from esst import __version__
-from esst.discord_bot.commands import DISCORD
-from esst.utils import get_esst_changelog_path
-
-from .arg import arg
+from esst import __version__, commands, utils
 
 
 def log():
     """
     Show ESST log file
     """
-    DISCORD.send_file('esst.log')
+    commands.DISCORD.send_file('esst.log')
 
 
 def changelog():
     """
     Show ESST changelog file
     """
-    changelog_path = get_esst_changelog_path()
+    changelog_path = utils.get_esst_changelog_path()
     if changelog_path:
-        DISCORD.send_file(changelog_path)
+        commands.DISCORD.send_file(changelog_path)
 
 
 def version():
     """
     Show ESST version
     """
-    DISCORD.say(f'ESST v{__version__}')
+    commands.DISCORD.say(f'ESST v{__version__}')
 
 
-@arg(protected=True)
+@utils.arg(protected=True)
 def restart():
     """
     Restart ESST (protected)
 
     """
-    DISCORD.say('This command is not yet implemented')
+    commands.DISCORD.say('This command is not yet implemented')
 
 
 NAMESPACE = '!esst'
