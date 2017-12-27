@@ -5,10 +5,10 @@ Manages UR settings
 
 from pathlib import Path
 
-from esst.atis.univers_radio.ur_object import Airfield, URLinkType
-from esst.core import FS, MAIN_LOGGER
+from ._ur_object import Airfield, URLinkType
+from esst import core
 
-LOGGER = MAIN_LOGGER.getChild(__name__)
+LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 class URVoiceServiceSettings:
@@ -43,7 +43,7 @@ class URVoiceServiceSettings:
         """
         Writes currently known station to UR settings file
         """
-        LOGGER.debug(f'writing UR settings to: {FS.ur_voice_settings_file}')
+        LOGGER.debug(f'writing UR settings to: {core.FS.ur_voice_settings_file}')
         stations = '\n'.join(self._stations)
         full_text = f'Start of VSS DB\n{stations}\nEnd of VSS DB'
-        FS.ur_voice_settings_file.write_text(full_text)
+        core.FS.ur_voice_settings_file.write_text(full_text)
