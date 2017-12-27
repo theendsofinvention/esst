@@ -8,16 +8,23 @@ import shutil
 import typing
 from pathlib import Path
 
+import ipgetter
 import pefile
 import pkg_resources
 
-from esst.core import MAIN_LOGGER, Status, FS
+from esst.core import FS, MAIN_LOGGER, Status
+from .arg import arg
 from .github import get_latest_release
 from .remove_old_files import clean_all_folder
-from .arg import arg
-from .conn import external_ip
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
+
+
+def external_ip():
+    """
+    Returns: external IP of this machine
+    """
+    return ipgetter.IPgetter().get_externalip()
 
 
 def sanitize_path(path: typing.Union[str, Path]) -> str:
