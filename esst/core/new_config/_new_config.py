@@ -4,18 +4,16 @@ Manages config params for auto mission
 """
 
 import inspect
-import os
 
-import everett
 from elib.config import BaseConfig, ConfigProp
 
+from ._atis import ATISConfig
 from ._auto_mission import AutoMissionConfig
 from ._dcs import DCSConfig
 from ._dcs_server import DCSServerConfig
 from ._discord_bot import DiscordConfig
 from ._remove_old_files import RemoveOldFile
 from ._univers_radio import URConfig
-from ._atis import ATISConfig
 
 
 # pylint: disable=too-many-ancestors

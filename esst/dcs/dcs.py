@@ -4,20 +4,15 @@ Manages DCS application Windows process
 """
 import asyncio
 import time
-from pathlib import Path
 
 import psutil
 
-from esst.commands import DISCORD, LISTENER
-# from esst.core import CFG, CTX, MAIN_LOGGER, Status
-from esst import core
-from esst.utils import Win32FileInfo, now
-
-from . import missions_manager, mission_editor_lua, autoexec_cfg
+from esst import core, commands, utils
+from . import autoexec_cfg, mission_editor_lua, missions_manager
+from .commands import DCS
 from .dedicated import setup_config_for_dedicated_run
 from .game_gui import install_game_gui_hooks
 from .rotate_logs import rotate_dcs_log
-from .commands import DCS
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
@@ -80,7 +75,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
         if not self.dcs_exe.exists():
             raise RuntimeError(f'dcs.exe not found: {self.dcs_exe}')
         # noinspection PyBroadException
-        core.Status.dcs_version = Win32FileInfo(str(self.dcs_exe.absolute())).file_version
+        core.Status.dcs_version = utils.Win32FileInfo(str(self.dcs_exe.absolute())).file_version
         LOGGER.debug(f'DCS version: {core.Status.dcs_version}')
         simplified_version = int(''.join(core.Status.dcs_version.split('.')[:3]))
         LOGGER.debug(f'simplified version: {simplified_version}')
@@ -196,7 +191,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             core.Status.dcs_application = status
             LOGGER.info(f'DCS application is {status}')
             if status == 'starting':
-                LISTENER.monitor_server_startup_start()
+                commands.LISTENER.monitor_server_startup_start()
 
     async def kill_running_app(self):  # noqa: C901
         """
@@ -207,14 +202,14 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             if not self.app or not self.app.is_running():
                 return True
             LOGGER.debug('sending socket command to DCS for graceful exit')
-            LISTENER.exit_dcs()
+            commands.LISTENER.exit_dcs()
             await asyncio.sleep(1)
             LOGGER.debug(
                 f'waiting on DCS to close itself (grace period: {core.CFG.dcs_grace_period})')
-            now_ = now()
+            now_ = utils.now()
             while self.app.is_running():
                 await asyncio.sleep(1)
-                if now() - now_ > core.CFG.dcs_grace_period:
+                if utils.now() - now_ > core.CFG.dcs_grace_period:
                     LOGGER.debug('grace period time out!')
                     return False
 
@@ -226,10 +221,10 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                 return True
             LOGGER.debug('killing dcs.exe application')
             self.app.kill()
-            now_ = now()
+            now_ = utils.now()
             while self.app.is_running():
                 await asyncio.sleep(1)
-                if now() - now_ > 10:
+                if utils.now() - now_ > 10:
                     return False
 
             return True
@@ -283,7 +278,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                     mem_usage = int(self.app.memory_percent())
                     core.Status.dcs_cpu_usage = f'{cpu_usage}%'
                     if core.CTX.dcs_show_cpu_usage or core.CTX.dcs_show_cpu_usage_once:
-                        DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
+                        commands.DISCORD.say(f'DCS cpu usage: {cpu_usage}%')
                         core.CTX.dcs_show_cpu_usage_once = False
                     if core.CFG.dcs_high_cpu_usage:
                         if cpu_usage > core.CFG.dcs_high_cpu_usage and not core.Status.paused:
@@ -291,7 +286,7 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
                                 f'DCS cpu usage has been higher than {core.CFG.dcs_high_cpu_usage}%'
                                 f' for {core.CFG.dcs_high_cpu_usage_interval} seconds')
 
-                    now_ = now()
+                    now_ = utils.now()
                     core.CTX.dcs_mem_history.append((now_, mem_usage))
                     core.CTX.dcs_cpu_history.append((now_, cpu_usage))
 

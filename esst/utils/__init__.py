@@ -15,6 +15,7 @@ from esst.core import MAIN_LOGGER, Status, FS
 from .github import get_latest_release
 from .remove_old_files import clean_all_folder
 from .arg import arg
+from .conn import external_ip
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
 

@@ -12,16 +12,13 @@ import requests
 from emiz.weather import build_metar_from_mission
 from jinja2 import Template
 
-from esst.atis.atis import ATIS
-from esst.commands import DCS
-from esst.core import CFG, CTX, FS, MAIN_LOGGER, Status
-from esst.utils import create_versioned_backup, get_latest_release, read_template
+from esst import commands, core, utils, atis
 
-LOGGER = MAIN_LOGGER.getChild(__name__)
+LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 def _get_mission_folder() -> Path:
-    mission_folder = Path(FS.saved_games_path, 'DCS/Missions/ESST')
+    mission_folder = Path(core.FS.saved_games_path, 'DCS/Missions/ESST')
     if not Path(mission_folder).exists():
         LOGGER.debug(f'creating directory: {mission_folder}')
         mission_folder.mkdir(parents=True)
@@ -90,15 +87,15 @@ class MissionPath:
             return
         template_option = dict(
             mission_file_path=str(self.path).replace('\\', '/'),
-            passwd=CFG.dcs_server_password,
-            name=CFG.dcs_server_name,
-            max_players=CFG.dcs_server_max_players,
+            passwd=core.CFG.dcs_server_password,
+            name=core.CFG.dcs_server_name,
+            max_players=core.CFG.dcs_server_max_players,
         )
         LOGGER.debug(f'rendering settings.lua template with options\n{pprint.pprint(template_option)}')
-        content = Template(read_template('settings.lua')).render(**template_option)
+        content = Template(utils.read_template('settings.lua')).render(**template_option)
         settings_file = _get_settings_file_path()
         LOGGER.debug(f'settings file path: {settings_file}')
-        create_versioned_backup(settings_file)
+        utils.create_versioned_backup(settings_file)
         settings_file.write_text(content)
 
         if metar is None:
@@ -106,8 +103,8 @@ class MissionPath:
             # noinspection SpellCheckingInspection
             metar = build_metar_from_mission(str(self.path), icao='XXXX')
             LOGGER.info(f'metar for {self.name}:\n{metar}')
-        ATIS.create_mp3_from_metar(metar)
-        Status.metar = metar
+        atis.generate_atis(metar)
+        core.Status.metar = metar
 
     def __str__(self):
         return str(self.path)
@@ -120,7 +117,7 @@ class MissionPath:
 
 
 def _get_settings_file_path() -> Path:
-    return Path(FS.saved_games_path, 'DCS/Config/serverSettings.lua')
+    return Path(core.FS.saved_games_path, 'DCS/Config/serverSettings.lua')
 
 
 def set_active_mission(mission: str, metar: str = None):
@@ -142,7 +139,7 @@ def delete(mission: MissionPath):
     """
     Removes a mission from the filesystem.
 
-    Also removes leftover RLWX artifacts
+    Also removes leftover AUTO artifacts
 
     Args:
         mission: MissionPath instance to remove
@@ -163,13 +160,13 @@ def get_latest_mission_from_github():
     The repository needs to have releases (tagged)
     The function will download the first MIZ file found in the latest release
     """
-    if CTX.dcs_auto_mission:
+    if core.CTX.dcs_auto_mission:
         LOGGER.debug('getting latest mission from Github')
-        DCS.block_start('loading mission')
-        if CFG.auto_mission_github_repo and CFG.auto_mission_github_owner:
+        commands.DCS.block_start('loading mission')
+        if core.CFG.auto_mission_github_repo and core.CFG.auto_mission_github_owner:
             LOGGER.debug('looking for newer mission file')
-            latest_version, asset_name, download_url = get_latest_release(
-                CFG.auto_mission_github_owner, CFG.auto_mission_github_repo
+            latest_version, asset_name, download_url = utils.get_latest_release(
+                core.CFG.auto_mission_github_owner, core.CFG.auto_mission_github_repo
             )
             LOGGER.debug(f'latest release: {latest_version}')
             local_file = MissionPath(Path(_get_mission_folder(), f'AUTO_{asset_name}'))
@@ -183,7 +180,7 @@ def get_latest_mission_from_github():
                     LOGGER.error('failed to download latest mission')
         else:
             LOGGER.error('no config values given for [auto mission]')
-        DCS.unblock_start('loading mission')
+        commands.DCS.unblock_start('loading mission')
     else:
         LOGGER.debug('skipping mission update')
 
@@ -221,12 +218,12 @@ def download_mission_from_discord(discord_attachment,
         local_file.path.write_bytes(response.content)
 
     if load:
-        if DCS.there_are_connected_players() and not force:
+        if commands.DCS.there_are_connected_players() and not force:
             LOGGER.error('there are connected players; cannot restart the server now (use "force" to kill anyway)')
             return
         LOGGER.info(f'restarting the server with this mission')
         local_file.set_as_active()
-        DCS.restart(force=force)
+        commands.DCS.restart(force=force)
     else:
         LOGGER.info(f'download successful, mission is now available')
 
@@ -248,8 +245,8 @@ def get_running_mission() -> typing.Union['MissionPath', str]:
 
     """
     mission = None
-    if Status.mission_file and Status.mission_file != 'unknown':
-        mission_path = Path(Status.mission_file)
+    if core.Status.mission_file and core.Status.mission_file != 'unknown':
+        mission_path = Path(core.Status.mission_file)
         if mission_path.parent == 'AUTO':
             mission_path = Path(mission_path.parent.parent, mission_path.name)
         mission = MissionPath(mission_path)
@@ -278,7 +275,7 @@ def initial_setup():
     if isinstance(mission, MissionPath):
         LOGGER.info(f'building METAR for initial mission: {mission.orig_name}')
         metar = build_metar_from_mission(str(mission.path))
-        Status.metar = metar
-        ATIS.create_mp3_from_metar(metar)
+        core.Status.metar = metar
+        atis.generate_atis(metar)
     else:
         LOGGER.error('no initial mission found')

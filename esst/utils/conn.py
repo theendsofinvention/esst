@@ -8,10 +8,10 @@ import ipgetter
 import requests
 import requests.exceptions
 
-from esst.commands import DCS, DISCORD
-from esst.core import CTX, MAIN_LOGGER
+from esst import commands, core
 
-LOGGER = MAIN_LOGGER.getChild(__name__)
+
+LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 def external_ip():
@@ -29,8 +29,8 @@ async def wan_available(retry: int = 0):
     """
     try:
         response = requests.get('http://google.com', timeout=2)
-        DCS.unblock_start('no WAN connection available')
-        DISCORD.can_start()
+        commands.DCS.unblock_start('no WAN connection available')
+        commands.DISCORD.can_start()
         return bool(response.ok)
     except requests.exceptions.RequestException:
         if retry < 5:
@@ -39,8 +39,8 @@ async def wan_available(retry: int = 0):
             result = await wan_available(retry + 1)
             return result
         LOGGER.debug(f'Internet connection loss detected, no more retry')
-        DISCORD.cannot_start()
-        DCS.block_start('no WAN connection available')
+        commands.DISCORD.cannot_start()
+        commands.DCS.block_start('no WAN connection available')
         return False
 
 
@@ -51,19 +51,19 @@ async def monitor_connection():
     """
     LOGGER.debug('starting connection monitoring loop')
 
-    while not CTX.exit:
+    while not core.CTX.exit:
 
         current_status = await wan_available()
 
-        if current_status != CTX.wan:
+        if current_status != core.CTX.wan:
             if current_status:
                 LOGGER.debug('connected to the Internet')
-                DISCORD.say(
+                commands.DISCORD.say(
                     'I just lost internet connection, server is scheduled to be restarted')
             else:
                 LOGGER.warning('internet connection lost !')
-                DCS.kill(force=False, queue=True)
-            CTX.wan = current_status
+                commands.DCS.kill(force=False, queue=True)
+            core.CTX.wan = current_status
 
         await asyncio.sleep(10)
 
