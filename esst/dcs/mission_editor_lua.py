@@ -45,7 +45,7 @@ INJECT_TEMPLATE = """function onShowMainInterface()
 end"""
 
 RE_INJECT = re.compile(
-    r"""^function onShowMainInterface\(\)\n--.*(?:\n^.*?)*^end$""",
+    r"""^function onShowMainInterface\(\)\n\s*--.*(?:\n^.*?)*^end$""",
     re.MULTILINE
 )
 
