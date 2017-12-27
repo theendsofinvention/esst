@@ -7,7 +7,8 @@ import time
 
 import psutil
 
-from esst import core, commands, utils
+from esst import commands, core, utils
+
 from . import autoexec_cfg, mission_editor_lua, missions_manager
 from .commands import DCS
 from .dedicated import setup_config_for_dedicated_run
@@ -33,7 +34,8 @@ async def get_dcs_process_pid():
     return False
 
 
-class App:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
+# pylint: disable=too-few-public-methods,too-many-instance-attributes
+class App:
     """
     Manages DCS application Window process
     """
@@ -293,7 +295,8 @@ class App:  # pylint: disable=too-few-public-methods,too-many-instance-attribute
             except psutil.NoSuchProcess:
                 pass
 
-    async def run(self):
+    # pylint: disable=too-many-branches
+    async def run(self):  # noqa: C901
         """
         Entry point of the thread
         """

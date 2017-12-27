@@ -2,8 +2,8 @@
 """
 Installs the necessary files to run in dedicated mode
 """
-from pathlib import Path
 import typing
+from pathlib import Path
 
 import jinja2
 

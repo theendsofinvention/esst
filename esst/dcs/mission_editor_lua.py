@@ -21,8 +21,8 @@ INJECT_TEMPLATE = """function onShowMainInterface()
     prepareMissionPath()
     mmw.setLastWallpaper()
     openReturnScreen()
-    
-    -- START DEDICATED CODE -  ADD FROM THIS LINE    
+
+    -- START DEDICATED CODE -  ADD FROM THIS LINE
     --
     if grgFirstRun == nil then
         grgFirstRun = true
@@ -32,7 +32,7 @@ INJECT_TEMPLATE = """function onShowMainInterface()
         local Tools = require('tools')
         local mpConfig = Tools.safeDoFile(lfs.writedir() .. 'Config/serverSettings.lua', false)
         local dediConfig = Tools.safeDoFile(lfs.writedir() .. 'Config/dedicated.lua', false)
-        
+
          if dediConfig and dediConfig.dedicated ~= nil and dediConfig.dedicated["enabled"] == true then
            net.set_name(dediConfig.dedicated["name"])
            net.start_server(mpConfig.cfg)
@@ -40,8 +40,8 @@ INJECT_TEMPLATE = """function onShowMainInterface()
         end
     end
     --
-    -- END DEDICATED CODE - ADD UP TO THIS LINE  
-    
+    -- END DEDICATED CODE - ADD UP TO THIS LINE
+
 end"""
 
 RE_INJECT = re.compile(

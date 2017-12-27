@@ -12,7 +12,7 @@ import requests
 from emiz.weather import build_metar_from_mission
 from jinja2 import Template
 
-from esst import commands, core, utils, atis
+from esst import atis, commands, core, utils
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 

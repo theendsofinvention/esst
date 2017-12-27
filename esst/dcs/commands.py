@@ -2,8 +2,8 @@
 """
 Manages DCS commands
 """
-import time
 import threading
+import time
 from queue import Queue
 
 from esst.core import CTX, MAIN_LOGGER, Status

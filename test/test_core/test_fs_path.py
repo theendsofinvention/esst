@@ -2,11 +2,12 @@
 """
 Tests for esst.core.FS
 """
-import pytest
 import string
-from hypothesis import given, strategies as st
-
 from pathlib import Path
+
+import pytest
+from hypothesis import strategies as st
+from hypothesis import given
 
 from esst.core import FS
 
@@ -90,7 +91,3 @@ def test_saved_games_no_variant():
 
     Path(saved_games, 'DCS.openalpha').mkdir()
     assert isinstance(FS.get_saved_games_variant('./DCS'), Path)
-
-
-
-

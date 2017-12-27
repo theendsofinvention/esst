@@ -3,4 +3,4 @@
 Manages all that is related to the DCS application
 """
 
-from . import missions_manager
+from . import missions_manager, autoexec_cfg

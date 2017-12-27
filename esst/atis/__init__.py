@@ -49,7 +49,3 @@ def init_module():
     if _core.CTX.sentry:
         _core.CTX.sentry.register_context(context_name='ATIS', context_provider=_ATISStatus)
         _core.CTX.sentry.register_context(context_name='UR', context_provider=_URStatus)
-
-
-ATIS_STATUS = _ATISStatus
-UR_STATUS = _URStatus

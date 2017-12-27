@@ -5,8 +5,7 @@ Commands related to managing the server computer
 
 import humanize
 
-
-from esst import core, commands, utils
+from esst import commands, core, utils
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 

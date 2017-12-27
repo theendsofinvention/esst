@@ -3,7 +3,6 @@
 Manages all FileSystem path for ESST
 """
 import typing
-
 from pathlib import Path
 
 
@@ -103,4 +102,3 @@ class FS:
         else:
             variant = ''
         return FS.ensure_path(Path(FS.saved_games_path, f'DCS{variant}'))
-
