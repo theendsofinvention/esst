@@ -66,9 +66,9 @@ def main(
 
     CTX.loop = asyncio.get_event_loop()
 
-    from esst.utils.conn import monitor_connection, wan_available
-    CTX.wan = CTX.loop.run_until_complete(wan_available())
-    CTX.loop.create_task(monitor_connection())
+    import esst.wan
+    CTX.wan = CTX.loop.run_until_complete(esst.wan.wan_available())
+    CTX.loop.create_task(esst.wan.monitor_connection())
 
     CTX.start_discord_loop = discord and CFG.start_discord_loop
     CTX.start_server_loop = server and CFG.start_server_loop
