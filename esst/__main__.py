@@ -96,8 +96,8 @@ def main(
     from esst.utils import saved_games
     saved_games.discover_saved_games_path()
 
-    from esst.atis.univers_radio import ur_install_dir
-    ur_install_dir.discover_ur_install_path()
+    from esst import atis
+    atis.init_module()
 
     import esst.discord_bot.discord_bot
     discord_loop = esst.discord_bot.discord_bot.App()
