@@ -74,6 +74,8 @@ def generate_atis(metar_str: str,
         exclude_icao = [icao.upper() for icao in exclude_icao]
 
     for airfield in ALL_AIRFIELDS:
+        if core.CTX.exit:
+            break
         if include_icao and airfield.icao.upper() not in include_icao:
             LOGGER(f'skipping not included ICAO: {airfield.icao}')
             continue
