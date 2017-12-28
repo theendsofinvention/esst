@@ -2,6 +2,21 @@ Changelog
 =========
 
 
+0.1.76 (2017-12-28)
+-------------------
+
+New
+~~~
+- Implemented !esst restart command. [132nd-etcher]
+
+Fix
+~~~
+- Fix affinity & priority setting bug when DCS does not exist. [132nd-
+  etcher]
+- Fix bound socket issue at start. [132nd-etcher]
+- Auto-mission name. [132nd-etcher]
+
+
 0.1.75 (2017-12-28)
 -------------------
 
