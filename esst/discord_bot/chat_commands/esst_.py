@@ -2,8 +2,7 @@
 """
 Manages commands related to ESST itself
 """
-from esst import __version__, commands, utils, core
-
+from esst import __version__, commands, core, utils
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 

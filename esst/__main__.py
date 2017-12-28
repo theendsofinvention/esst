@@ -2,8 +2,8 @@
 """
 Main entry point
 """
-import os
 import asyncio
+import os
 import queue
 from pathlib import Path
 
