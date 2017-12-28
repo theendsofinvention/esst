@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+0.1.75 (2017-12-28)
+-------------------
+
+Fix
+~~~
+- Fix crash when URVoiceService was already running. [132nd-etcher]
+
+  fix #71
+
+
 0.1.74 (2017-12-28)
 -------------------
 
