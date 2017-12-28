@@ -137,6 +137,10 @@ class App:
                     if not core.CTX.exit and not warned:
                         LOGGER.warning('DCS process does not exist')
                         warned = True
+                except AttributeError:
+                    if not core.CTX.exit and not warned:
+                        LOGGER.warning('DCS process does not exist')
+                        warned = True
             else:
                 LOGGER.warning('no affinity given in config file')
                 return
@@ -162,6 +166,10 @@ class App:
                             f'setting DCS process priority to: {core.CFG.dcs_cpu_priority}')
                         self.app.nice(self.valid_priorities[core.CFG.dcs_cpu_priority])
                 except psutil.NoSuchProcess:
+                    if not core.CTX.exit and not warned:
+                        LOGGER.warning('DCS process does not exist')
+                        warned = True
+                except AttributeError:
                     if not core.CTX.exit and not warned:
                         LOGGER.warning('DCS process does not exist')
                         warned = True
