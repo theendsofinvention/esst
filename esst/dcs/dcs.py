@@ -183,9 +183,9 @@ class App:
             _start_dcs_app,
             self._wait_for_dcs_to_start,
         ]
+        rotate_dcs_log()
         await self._execute_cmd_chain(cmd_chain)
         await self._check_if_dcs_is_running()
-        rotate_dcs_log()
 
     # noinspection PyMethodMayBeStatic
     async def _update_application_status(self, status: str):
