@@ -9,7 +9,7 @@ from pathlib import Path
 
 import humanize
 import requests
-from emiz.weather import build_metar_from_mission
+import emiz.weather
 from jinja2 import Template
 
 from esst import atis, commands, core, utils
@@ -101,7 +101,7 @@ class MissionPath:
         if metar is None:
             LOGGER.debug(f'building metar from mission: {self.name}')
             # noinspection SpellCheckingInspection
-            metar = build_metar_from_mission(str(self.path), icao='XXXX')
+            metar = emiz.weather.mizfile.get_metar_from_mission(str(self.path), icao='XXXX')
             LOGGER.info(f'metar for {self.name}:\n{metar}')
         atis.generate_atis(metar)
         core.Status.metar = metar
@@ -274,7 +274,7 @@ def initial_setup():
     mission = get_running_mission()
     if isinstance(mission, MissionPath):
         LOGGER.info(f'building METAR for initial mission: {mission.orig_name}')
-        metar = build_metar_from_mission(str(mission.path))
+        metar = emiz.weather.mizfile.get_metar_from_mission(str(mission.path))
         core.Status.metar = metar
         atis.generate_atis(metar)
     else:

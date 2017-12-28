@@ -5,7 +5,8 @@ Meh
 import pprint
 from time import sleep
 
-import emiz
+import emiz.weather
+import emiz.edit_miz
 
 from esst import commands, core, dcs, utils
 
@@ -51,19 +52,19 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
     if metar:
         metar = ' '.join(metar)
         LOGGER.info(f'analyzing METAR string: {metar}')
-        error, metar = emiz.parse_metar_string(metar)
+        error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar)
         if error:
             LOGGER.error(error)
             return
     if icao:
         icao = icao.upper()
         LOGGER.info(f'obtaining METAR from: {icao}')
-        error, metar_str = emiz.retrieve_metar(icao)
+        error, metar_str = emiz.weather.noaa.retrieve_metar(icao)
         if error:
             LOGGER.error(error)
             return
         LOGGER.info(f'analyzing METAR string: {metar_str}')
-        error, metar = emiz.parse_metar_string(metar_str)
+        error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar_str)
         if error:
             LOGGER.error(error)
             return
@@ -74,8 +75,8 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
     else:
         LOGGER.info('building METAR from mission file')
         # noinspection SpellCheckingInspection
-        metar_str = emiz.build_metar_from_mission(str(mission.path), 'XXXX')
-        error, info_metar = emiz.parse_metar_string(metar_str)
+        metar_str = emiz.weather.mizfile.get_metar_from_mission(str(mission.path), 'XXXX')
+        error, info_metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar_str)
         if error:
             LOGGER.error(error)
             return
@@ -103,7 +104,7 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
         miz_edit_options = dict(infile=str(mission.path), outfile=str(mission.auto.path), metar=metar, time=time,
                                 min_wind=min_wind, max_wind=max_wind)
         LOGGER.debug(f'editing miz file with options:\n{pprint.pformat(miz_edit_options)}')
-        error = emiz.edit_miz(**miz_edit_options)
+        error = emiz.edit_miz.edit_miz(**miz_edit_options)
         if error:
             if error == 'nothing to do!':
                 LOGGER.debug(f'loading mission "as is": {mission.path}')
@@ -185,7 +186,7 @@ def weather():
     Displays the weather for the currently running mission
     """
     if core.Status.metar and core.Status.metar != 'unknown':
-        error, metar = emiz.parse_metar_string(core.Status.metar)
+        error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(core.Status.metar)
         if error:
             LOGGER.error(error)
             return

@@ -55,7 +55,7 @@ def generate_atis(metar_str: str,
     LOGGER.debug('parsing METAR string')
     # noinspection SpellCheckingInspection
     metar_str = metar_str.replace('XXXX', 'UGTB')
-    error, metar = emiz.weather.parse_metar_string(metar_str)
+    error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar_str)
     if error:
         LOGGER.error('failed to parse METAR')
         raise RuntimeError(metar)
