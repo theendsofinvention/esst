@@ -52,6 +52,13 @@ class ESSTConfig(BaseConfig,
         pass
 
     @ConfigProp(str, default='')
+    def restart(self):
+        """
+        Outputs debug messages on the console
+        """
+        pass
+
+    @ConfigProp(str, default='')
     def saved_games_dir(self):
         """
         Path to "Saved Games" folder

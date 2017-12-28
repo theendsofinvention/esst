@@ -2,9 +2,10 @@
 """
 Main entry point
 """
-
+import os
 import asyncio
 import queue
+from pathlib import Path
 
 import click
 
@@ -142,6 +143,11 @@ def main(
     )
 
     CTX.loop.run_until_complete(futures)
+    if CTX.restart and CFG.restart:
+        MAIN_LOGGER.debug(f'restart command: {CFG.restart}')
+        bat = Path('./restart.bat')
+        bat.write_text(CFG.restart)
+        os.startfile(str(bat.absolute()))
     MAIN_LOGGER.debug('all done !')
 
 

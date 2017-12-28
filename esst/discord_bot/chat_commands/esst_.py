@@ -2,7 +2,10 @@
 """
 Manages commands related to ESST itself
 """
-from esst import __version__, commands, utils
+from esst import __version__, commands, utils, core
+
+
+LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 def log():
@@ -34,7 +37,12 @@ def restart():
     Restart ESST (protected)
 
     """
-    commands.DISCORD.say('This command is not yet implemented')
+    if not core.CFG.restart:
+        LOGGER.error('no restart command given in config')
+    else:
+        LOGGER.info('restarting ESST')
+        core.CTX.restart = True
+        core.CTX.exit = True
 
 
 NAMESPACE = '!esst'
