@@ -5,8 +5,8 @@ Meh
 import pprint
 from time import sleep
 
-import emiz.weather
 import emiz.edit_miz
+import emiz.weather
 
 from esst import commands, core, dcs, utils
 

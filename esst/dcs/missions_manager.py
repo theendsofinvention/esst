@@ -7,9 +7,9 @@ import pprint
 import typing
 from pathlib import Path
 
+import emiz.weather
 import humanize
 import requests
-import emiz.weather
 from jinja2 import Template
 
 from esst import atis, commands, core, utils
