@@ -169,7 +169,7 @@ def get_latest_mission_from_github():
                 core.CFG.auto_mission_github_owner, core.CFG.auto_mission_github_repo
             )
             LOGGER.debug(f'latest release: {latest_version}')
-            local_file = MissionPath(Path(_get_mission_folder(), f'AUTO_{asset_name}'))
+            local_file = MissionPath(Path(_get_mission_folder(), f'{asset_name}'))
             if not local_file:
                 LOGGER.info(f'downloading new mission: {asset_name}')
                 req = requests.get(download_url)
