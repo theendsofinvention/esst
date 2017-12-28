@@ -2,6 +2,35 @@ Changelog
 =========
 
 
+0.1.74 (2017-12-28)
+-------------------
+
+New
+~~~
+- Add config option to control ATIS creation. [132nd-etcher]
+
+Changes
+~~~~~~~
+- Dev add base classes to export Sentry context. [132nd-etcher]
+- Update example config file. [132nd-etcher]
+- "dcs_path" config value now points to the root of the DCS
+  installation. [132nd-etcher]
+
+Fix
+~~~
+- Fix a very, very unlikely bug in the DCS loop. [132nd-etcher]
+
+  fix #59
+- Rotate logs before the start of DCS. [132nd-etcher]
+
+  fix #62
+- Ensure MissionEditor.lua content doesn't change at each run. [132nd-
+  etcher]
+- Fix erroneous message on server reboot without connect players.
+  [132nd-etcher]
+- Read "dcs_can_start" value from config at startup. [132nd-etcher]
+
+
 0.1.73 (2017-12-26)
 -------------------
 
