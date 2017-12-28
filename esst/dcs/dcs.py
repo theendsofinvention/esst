@@ -295,6 +295,11 @@ class App:
             except psutil.NoSuchProcess:
                 pass
 
+            # I didn't think it could, happen, but of course it did ...
+            # See https://github.com/132nd-vWing/ESST/issues/59
+            except AttributeError:
+                pass
+
     # pylint: disable=too-many-branches
     async def run(self):  # noqa: C901
         """
