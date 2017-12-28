@@ -125,8 +125,10 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
     # pylint: disable=catching-non-exception
     except tuple(wrappable_exceptions) as exc:
         # pylint: disable=unnecessary-lambda
-        processor = getattr(func, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
-                            lambda exc_: '{0.__class__.__name__}: {0}'.format(exc_))
+        processor = getattr(
+            func, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
+            lambda exc_: '{0.__class__.__name__}: {0}'.format(exc_)
+        )
 
         LOGGER.error(compat.text_type(processor(exc)))
         LOGGER.exception(exc)
