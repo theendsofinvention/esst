@@ -109,47 +109,40 @@ def main(
     server_loop = esst.server.server.App()
 
     from esst.listener import DCSListener
-    try:
-        listener_loop = DCSListener()
-    except OSError as exc:
-        if exc.errno == 10048:
-            MAIN_LOGGER.error(
-                'cannot bind socket, maybe another instance of ESST is already running?')
-            exit(-1)
-    else:
+    listener_loop = DCSListener()
 
-        futures = asyncio.gather(
-            CTX.loop.create_task(discord_loop.run()),
-            CTX.loop.create_task(dcs_loop.run()),
-            CTX.loop.create_task(listener_loop.run()),
-            CTX.loop.create_task(server_loop.run()),
-            CTX.loop.create_task(watch_for_exceptions()),
-        )
+    futures = asyncio.gather(
+        CTX.loop.create_task(discord_loop.run()),
+        CTX.loop.create_task(dcs_loop.run()),
+        CTX.loop.create_task(listener_loop.run()),
+        CTX.loop.create_task(server_loop.run()),
+        CTX.loop.create_task(watch_for_exceptions()),
+    )
 
-        def sigint_handler(*_):
-            """
-            Catches exit signal (triggered byu CTRL+C)
+    def sigint_handler(*_):
+        """
+        Catches exit signal (triggered byu CTRL+C)
 
-            Args:
-                *_: frame
+        Args:
+            *_: frame
 
-            """
-            MAIN_LOGGER.info(
-                'ESST has been interrupted by user request, shutting down')
-            CTX.exit = True
+        """
+        MAIN_LOGGER.info(
+            'ESST has been interrupted by user request, shutting down')
+        CTX.exit = True
 
-        import signal
-        signal.signal(signal.SIGINT, sigint_handler)
-        CTX.loop.run_until_complete(futures)
-        MAIN_LOGGER.debug('main loop is done, killing DCS')
+    import signal
+    signal.signal(signal.SIGINT, sigint_handler)
+    CTX.loop.run_until_complete(futures)
+    MAIN_LOGGER.debug('main loop is done, killing DCS')
 
-        futures = asyncio.gather(
-            CTX.loop.create_task(dcs_loop.kill_running_app()),
-            CTX.loop.create_task(listener_loop.run_until_dcs_is_closed()),
-        )
+    futures = asyncio.gather(
+        CTX.loop.create_task(dcs_loop.kill_running_app()),
+        CTX.loop.create_task(listener_loop.run_until_dcs_is_closed()),
+    )
 
-        CTX.loop.run_until_complete(futures)
-        MAIN_LOGGER.debug('all done !')
+    CTX.loop.run_until_complete(futures)
+    MAIN_LOGGER.debug('all done !')
 
 
 if __name__ == '__main__':

@@ -134,7 +134,14 @@ class DCSListener:
             LOGGER.debug('skipping startup of socket loop')
             return
 
-        self.sock.bind(self.server_address)
+        try:
+            self.sock.bind(self.server_address)
+        except socket.error as exc:
+            if exc.errno == 10048:
+                MAIN_LOGGER.error(
+                    'cannot bind socket, maybe another instance of ESST is already running?')
+                exit(-1)
+
         self.sock.settimeout(1)
 
         while not CTX.exit:
