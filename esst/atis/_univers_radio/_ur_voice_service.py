@@ -57,7 +57,7 @@ class URVoiceService:
         """
         Kills UR voice service
         """
-        if URVoiceService.pid:
+        if URVoiceService.is_running():
             try:
                 proc = psutil.Process(URVoiceService.pid)
                 LOGGER.info('killing UR voice service')
@@ -66,4 +66,6 @@ class URVoiceService:
                     LOGGER.debug('waiting on UR voice service to close')
                     time.sleep(1)
             except FileNotFoundError:
-                LOGGER.debug('UR voice service not started')
+                pass
+            except psutil.NoSuchProcess:
+                pass
