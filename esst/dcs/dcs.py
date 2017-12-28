@@ -55,6 +55,7 @@ class App:
         self._restart_ok = True
         self.dcs_exe = core.FS.get_dcs_exe(core.CFG.dcs_path)
         self._blockers_warned = set()
+        self._warned = False
         # self._additional_parameters = []
 
     @property
@@ -119,28 +120,31 @@ class App:
         await _wait_for_process()
         LOGGER.debug('process is ready')
 
+    def _work_with_dcs_process(self, func):
+        if core.CTX.exit:
+            return
+        try:
+            func()
+            self._warned = False
+        except (psutil.NoSuchProcess, AttributeError):
+            if not core.CTX.exit and not self._warned:
+                LOGGER.warning('DCS process does not exist')
+                self._warned = True
+
     def set_affinity(self):
         """
         Sets the DCS process CPU affinity to the CFG value
         """
-        warned = False
+        def _command():
+            if list(self._app.cpu_affinity()) != list(core.CFG.dcs_cpu_affinity):
+                LOGGER.debug(f'setting DCS process affinity to: {core.CFG.dcs_cpu_affinity}')
+                self._app.cpu_affinity(list(core.CFG.dcs_cpu_affinity))
+
         while True:
             if core.CFG.dcs_cpu_affinity:
                 if core.CTX.exit:
                     return
-                try:
-                    if list(self._app.cpu_affinity()) != list(core.CFG.dcs_cpu_affinity):
-                        LOGGER.debug(f'setting DCS process affinity to: {core.CFG.dcs_cpu_affinity}')
-                        self._app.cpu_affinity(list(core.CFG.dcs_cpu_affinity))
-                    warned = False
-                except psutil.NoSuchProcess:
-                    if not core.CTX.exit and not warned:
-                        LOGGER.warning('DCS process does not exist')
-                        warned = True
-                except AttributeError:
-                    if not core.CTX.exit and not warned:
-                        LOGGER.warning('DCS process does not exist')
-                        warned = True
+                self._work_with_dcs_process(_command)
             else:
                 LOGGER.warning('no affinity given in config file')
                 return
@@ -150,7 +154,11 @@ class App:
         """
         Sets the DCS process CPU priority to the CFG value
         """
-        warned = False
+        def _command():
+            if self.app.nice() != self.valid_priorities[core.CFG.dcs_cpu_priority]:
+                LOGGER.debug(
+                    f'setting DCS process priority to: {core.CFG.dcs_cpu_priority}')
+                self.app.nice(self.valid_priorities[core.CFG.dcs_cpu_priority])
         time.sleep(15)
         while True:
             if core.CFG.dcs_cpu_priority:
@@ -160,19 +168,7 @@ class App:
                     LOGGER.error(f'invalid priority: {core.CFG.dcs_cpu_priority}\n'
                                  f'Choose one of: {self.valid_priorities.keys()}')
                     return
-                try:
-                    if self.app.nice() != self.valid_priorities[core.CFG.dcs_cpu_priority]:
-                        LOGGER.debug(
-                            f'setting DCS process priority to: {core.CFG.dcs_cpu_priority}')
-                        self.app.nice(self.valid_priorities[core.CFG.dcs_cpu_priority])
-                except psutil.NoSuchProcess:
-                    if not core.CTX.exit and not warned:
-                        LOGGER.warning('DCS process does not exist')
-                        warned = True
-                except AttributeError:
-                    if not core.CTX.exit and not warned:
-                        LOGGER.warning('DCS process does not exist')
-                        warned = True
+                self._work_with_dcs_process(_command)
             else:
                 LOGGER.warning('no priority given in config file')
                 return
