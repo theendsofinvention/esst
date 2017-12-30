@@ -314,7 +314,6 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
         I'm not sure about this one, this is an experiment
 
         """
-        LOGGER.warning('formatting help')
         return super(DiscordCommandParser, self).format_help()
 
     def parse_discord_message(self, message: str, is_admin: bool):
