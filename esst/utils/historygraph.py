@@ -9,10 +9,30 @@ from collections import namedtuple
 from tempfile import mktemp
 
 import humanize
-from matplotlib import pyplot as plt
-from matplotlib import gridspec, ticker
 
 from esst.core import CTX
+
+PLT = GRID_SPEC = TICKER = None
+
+
+# https://stackoverflow.com/questions/4931376/generating-matplotlib-graphs-without-a-running-x-server/4935945#4935945
+# noinspection SpellCheckingInspection
+def _init_mpl():
+    """
+    This is a very stupid hack to go around Matplotlib being stupid about Tkinter.
+    My linters don't like import statements mixed within the code, so this will do.
+    """
+    global PLT, GRID_SPEC, TICKER  # pylint: disable=global-statement
+    import matplotlib as mpl
+    mpl.use('Agg')
+    from matplotlib import pyplot as plt_
+    from matplotlib import gridspec as grd_, ticker as tick_
+    PLT = plt_
+    GRID_SPEC = grd_
+    TICKER = tick_
+
+
+_init_mpl()
 
 GraphValues = namedtuple('GraphValues', ['server_cpu_history',
                                          'server_mem_history',
@@ -122,18 +142,18 @@ def _plot_axis(grid_spec, grid_pos,  # pylint: disable=too-many-arguments
                y_format_func,
                visible_x_labels=False,
                share_x=None):
-    axis = plt.subplot(grid_spec[grid_pos], sharex=share_x)
+    axis = PLT.subplot(grid_spec[grid_pos], sharex=share_x)
     axis.set_title(title)
-    plt.setp(axis.get_xticklabels(), visible=visible_x_labels)
+    PLT.setp(axis.get_xticklabels(), visible=visible_x_labels)
     axis.set_ylabel(y_label_text)
 
     for line in values_to_plot:
         assert isinstance(line, PlotLine)
         line_, = axis.plot(*line.values, line.style)
-        plt.setp(line_, label=line.label)
+        PLT.setp(line_, label=line.label)
     _add_players_count_to_axis(axis, values.players_history)
-    axis.xaxis.set_major_formatter(ticker.FuncFormatter(_x_format_func))
-    axis.yaxis.set_major_formatter(ticker.FuncFormatter(y_format_func))
+    axis.xaxis.set_major_formatter(TICKER.FuncFormatter(_x_format_func))
+    axis.yaxis.set_major_formatter(TICKER.FuncFormatter(y_format_func))
     axis.grid(True)
     axis.set_xlim(right=now)
 
@@ -225,10 +245,10 @@ def _add_players_count_to_axis(axis, players_history):
     max_player_count = max(
         max((players_count for players_count in players_history[1])), 10)
     ax_players.set_ylim([0, max_player_count + (max_player_count / 4)])
-    ax_players.yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
+    ax_players.yaxis.set_major_locator(TICKER.MaxNLocator(integer=True))
     ax_players.set_ylabel('Connected players')
     players_history, = ax_players.plot(*players_history, 'k.', )
-    plt.setp(players_history, label='Players count')
+    PLT.setp(players_history, label='Players count')
 
     lines, labels = axis.get_legend_handles_labels()
     lines2, labels2 = ax_players.get_legend_handles_labels()
@@ -256,24 +276,24 @@ def _make_history_graph(  # pylint: disable=too-many-arguments
 
     values = process_values(values_to_process, time_delta)
 
-    figure = plt.figure(figsize=(18, 12))
-    grid_spec = gridspec.GridSpec(3, 1, height_ratios=[1, 1, 1])
+    figure = PLT.figure(figsize=(18, 12))
+    grid_spec = GRID_SPEC.GridSpec(3, 1, height_ratios=[1, 1, 1])
 
     ax_server = _plot_server(grid_spec, values, now)
     _plot_dcs(grid_spec, values, now, share_x=ax_server)
     _plot_bandwidth(grid_spec, values, now, share_x=ax_server)
 
-    plt.tight_layout()
+    PLT.tight_layout()
     figure.tight_layout()
 
     if show:
-        plt.show()
-        plt.close()
+        PLT.show()
+        PLT.close()
         return None
     else:
         if not save_path:
             save_path = mktemp('.png')
-        plt.savefig(save_path)
+        PLT.savefig(save_path)
         return save_path
 
 
