@@ -2,6 +2,16 @@ Changelog
 =========
 
 
+0.1.79 (2018-01-15)
+-------------------
+
+Fix
+~~~
+- Fix DCS API hook for 1.5.8. [132nd-etcher]
+
+  "!dcs status" command will work again, as will the "soft kill" command used to restart DCS
+
+
 0.1.76 (2017-12-28)
 -------------------
 
