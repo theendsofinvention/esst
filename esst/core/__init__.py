@@ -16,7 +16,7 @@ from .new_config import ESSTConfig, validate_config
 from .new_config.setup_config import setup_config
 from .status import ServerStatus, Status
 
-MAIN_LOGGER = elib.get_logger(
+MAIN_LOGGER = elib.custom_logging.get_logger(
     logger_name='ESST',
     log_to_file='esst.log',
     rotate_logs=True,
