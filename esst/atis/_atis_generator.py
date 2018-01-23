@@ -62,6 +62,7 @@ def generate_atis(metar_str: str,
     wind_dir = metar.wind_dir.value()
     LOGGER.debug(f'wind direction: {wind_dir}')
     speech_atis = emiz.weather.AVWX.metar_to_speech(metar_str)
+    core.CTX.atis_speech = speech_atis
     LOGGER.debug(f'ATIS speech: {speech_atis}')
 
     ur_settings = URVoiceServiceSettings()
