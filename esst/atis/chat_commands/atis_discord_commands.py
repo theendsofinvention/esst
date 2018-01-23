@@ -27,7 +27,7 @@ def show(icao: list):
     info_str = f'UR voice service is {running}\n\n' \
                f'Metar: {core.Status.metar}\n' \
                f'Active runway: {info.active_runway}\n' \
-               f'Information ID: {info.info_id}\n' \
+               f'Information ID: {info.info_letter}\n' \
                f'ATIS speech: {core.CTX.atis_speech}'
     LOGGER.info(info_str)
 

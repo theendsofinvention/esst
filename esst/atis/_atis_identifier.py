@@ -20,4 +20,5 @@ def get_random_identifier():
     Returns: random identifier for ATIS
 
     """
-    return PHONETIC[random_string(1, string.ascii_uppercase)]
+    letter = random_string(1, string.ascii_uppercase)
+    return PHONETIC[letter], letter

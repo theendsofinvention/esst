@@ -29,7 +29,7 @@ def _build_speech_for_airfield(airfield, wind_dir, speech_atis, ur_settings) -> 
     LOGGER.debug(f'ATIS intro: {speech_intro}')
     speech_active_runway = f'Active runway {active_runway.long_name()}'
     LOGGER.debug(f'active runway speech: {speech_active_runway}')
-    information_identifier = get_random_identifier()
+    information_identifier, information_letter = get_random_identifier()
     speech_information = f'Advise you have information, {information_identifier}, on first contact.'
     LOGGER.debug(f'speech information: {speech_information}')
     full_speech = '. '.join([speech_intro, speech_atis, speech_active_runway, speech_information])
@@ -37,7 +37,7 @@ def _build_speech_for_airfield(airfield, wind_dir, speech_atis, ur_settings) -> 
     LOGGER.debug(f'writing MP3 file for: {airfield.icao}')
     elib.tts.text_to_speech(full_speech, Path(atis_file), True)
     ur_settings.add_station(airfield)
-    return ATISForAirfield(airfield.icao, active_runway, information_identifier)
+    return ATISForAirfield(airfield.icao, active_runway, information_identifier, information_letter)
 
 
 def generate_atis(metar_str: str,
