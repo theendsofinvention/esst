@@ -2,6 +2,22 @@ Changelog
 =========
 
 
+0.1.80 (2018-01-23)
+-------------------
+
+New
+~~~
+- Add full ATIS speech to "!atis show" command. [132nd-etcher]
+
+  fix #77
+
+Fix
+~~~
+- Fix wrong ATIS for UGKS. [132nd-etcher]
+
+  fix #72
+
+
 0.1.79 (2018-01-15)
 -------------------
 
