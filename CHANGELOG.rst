@@ -2,6 +2,17 @@ Changelog
 =========
 
 
+0.1.83 (2018-01-23)
+-------------------
+
+Fix
+~~~
+- Show correct ATIS identification letter with "!atis show <ICAO>"
+  [132nd-etcher]
+
+  fix #76
+
+
 0.1.80 (2018-01-23)
 -------------------
 
