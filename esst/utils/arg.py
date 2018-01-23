@@ -3,7 +3,6 @@
 Decorator for Discord commands arguments
 """
 from argh.constants import ATTR_ARGS
-
 from esst import core
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)

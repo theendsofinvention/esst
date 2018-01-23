@@ -3,7 +3,6 @@
 Manages Discord chat commands
 """
 import discord
-
 from esst.core import CFG, MAIN_LOGGER
 from esst.dcs import missions_manager
 from esst.discord_bot import abstract

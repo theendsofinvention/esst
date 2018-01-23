@@ -7,7 +7,6 @@ import datetime
 import time
 
 import psutil
-
 from esst.commands import DISCORD
 from esst.core import CTX, MAIN_LOGGER, ServerStatus
 from esst.utils import now

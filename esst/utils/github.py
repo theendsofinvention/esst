@@ -7,7 +7,6 @@ import json
 import typing
 
 import requests
-
 from esst.core import MAIN_LOGGER
 
 LOGGER = MAIN_LOGGER.getChild(__name__)

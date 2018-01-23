@@ -9,14 +9,13 @@ import sys
 from types import GeneratorType
 
 import argh
+import esst.atis.chat_commands.atis_discord_commands
 from argh import compat
 from argh.constants import (ATTR_EXPECTS_NAMESPACE_OBJECT, ATTR_WRAPPED_EXCEPTIONS, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
                             DEST_FUNCTION)
 from argh.dispatching import ArghNamespace
 from argh.exceptions import CommandError
 from argh.utils import get_arg_spec
-
-import esst.atis.chat_commands.atis_discord_commands
 from esst import commands, core
 from esst.discord_bot import abstract
 from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server

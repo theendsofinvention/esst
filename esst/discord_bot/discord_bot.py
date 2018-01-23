@@ -11,7 +11,6 @@ import aiohttp
 import aiohttp.errors
 import discord
 import websockets.exceptions
-
 from esst.core import CFG, CTX, MAIN_LOGGER
 
 from .abstract import AbstractDiscordBot, AbstractDiscordCommandParser

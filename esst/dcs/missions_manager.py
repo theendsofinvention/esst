@@ -10,9 +10,8 @@ from pathlib import Path
 import emiz.weather
 import humanize
 import requests
-from jinja2 import Template
-
 from esst import atis, commands, core, utils
+from jinja2 import Template
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 

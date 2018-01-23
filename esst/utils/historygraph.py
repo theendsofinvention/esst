@@ -9,7 +9,6 @@ from collections import namedtuple
 from tempfile import mktemp
 
 import humanize
-
 from esst.core import CTX
 
 PLT = GRID_SPEC = TICKER = None
