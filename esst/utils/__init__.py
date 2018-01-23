@@ -100,12 +100,10 @@ def read_template(template_name: str) -> str:
 
     """
     LOGGER.debug(f'reading template: {template_name}')
-    template_path = os.path.join(os.path.dirname(
-        __file__), 'templates', template_name)
+    template_path = os.path.join(os.path.dirname(__file__), 'templates', template_name)
     if not os.path.exists(template_path):
         LOGGER.debug('template not found, trying from pkg_resource')
-        template_path = pkg_resources.resource_filename(
-            'esst', f'/dcs/templates/{template_name}')
+        template_path = pkg_resources.resource_filename('esst', f'/dcs/templates/{template_name}')
     if not os.path.exists(template_path):
         raise FileNotFoundError(template_path)
     with open(template_path) as handle_:
