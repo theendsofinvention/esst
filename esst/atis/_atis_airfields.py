@@ -55,7 +55,7 @@ URKA = Airfield('URKA', 'Anapa - Vityazevo',
                 URFrequency('121.400;A'),
                 '04,22')
 # noinspection SpellCheckingInspection
-URKG = Airfield('UGKS', 'Geledzhik',
+URKG = Airfield('URKG', 'Geledzhik',
                 URCoord('44.592300', '38.023300', '82'),
                 URFrequency('126.400;A'),
                 '04,22')
