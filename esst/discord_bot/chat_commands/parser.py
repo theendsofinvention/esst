@@ -95,8 +95,7 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
             # **kwargs
             varkw = getattr(spec, 'varkw', getattr(spec, 'keywords', []))
             if varkw:
-                not_kwargs = [DEST_FUNCTION] + \
-                    spec.args + [spec.varargs] + kw_only
+                not_kwargs = [DEST_FUNCTION] + spec.args + [spec.varargs] + kw_only
                 for k in vars(namespace_obj):
                     if k.startswith('_') or k in not_kwargs:
                         continue
