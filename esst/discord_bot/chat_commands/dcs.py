@@ -4,6 +4,7 @@ Commands related to managing the DSC application
 """
 
 import humanize
+
 from esst import commands, core, utils
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)

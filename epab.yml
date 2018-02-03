@@ -6,5 +6,4 @@ doc:
 
 test:
   runner_options:
-  av_runner_options:
-    - '--long'
+  av_runner_options: '--long'

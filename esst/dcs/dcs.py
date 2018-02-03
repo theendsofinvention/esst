@@ -6,6 +6,7 @@ import asyncio
 import time
 
 import psutil
+
 from esst import commands, core, utils
 
 from . import autoexec_cfg, mission_editor_lua, missions_manager

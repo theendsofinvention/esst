@@ -6,9 +6,10 @@ import string
 from pathlib import Path
 
 import pytest
-from esst.core import FS
 from hypothesis import strategies as st
 from hypothesis import given
+
+from esst.core import FS
 
 
 def test_ensure_path():

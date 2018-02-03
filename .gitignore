@@ -74,3 +74,4 @@ avatar.png
 esst.yml*
 /Pipfile.lock
 *.mp3
+/.gitchangelog.rc
