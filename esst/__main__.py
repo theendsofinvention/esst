@@ -8,6 +8,7 @@ import queue
 from pathlib import Path
 
 import click
+
 from esst import __version__
 from esst.core import CFG, CTX, MAIN_LOGGER
 

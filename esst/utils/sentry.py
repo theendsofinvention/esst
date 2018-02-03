@@ -12,6 +12,7 @@ import raven
 import raven.breadcrumbs
 import raven.conf
 import raven.handlers.logging
+
 from esst import __version__
 from esst.core import MAIN_LOGGER
 
