@@ -13,20 +13,20 @@ test_requirements = [str(r.req) for r in
 
 CLASSIFIERS = filter(None, map(str.strip,
                                """
-'Development Status :: 3 - Alpha',
-'Environment :: Win32 (MS Windows)',
-'Intended Audience :: End Users/Desktop',
-'Natural Language :: English',
-'Operating System :: Microsoft :: Windows :: Windows 7',
-'Operating System :: Microsoft :: Windows :: Windows 8',
-'Operating System :: Microsoft :: Windows :: Windows 8.1',
-'Operating System :: Microsoft :: Windows :: Windows 10',
-'License :: OSI Approved :: MIT License',
-'Programming Language :: Python :: 3.6',
-'Programming Language :: Python :: 3.7',
-'Topic :: Games/Entertainment :: Simulation',
-'Topic :: System :: Systems Administration',
-'Topic :: Utilities',
+Development Status :: 3 - Alpha
+Environment :: Win32 (MS Windows)
+Intended Audience :: End Users/Desktop
+Natural Language :: English
+Operating System :: Microsoft :: Windows :: Windows 7
+Operating System :: Microsoft :: Windows :: Windows 8
+Operating System :: Microsoft :: Windows :: Windows 8.1
+Operating System :: Microsoft :: Windows :: Windows 10
+License :: OSI Approved :: MIT License
+Programming Language :: Python :: 3.6
+Programming Language :: Python :: 3.7
+Topic :: Games/Entertainment :: Simulation
+Topic :: System :: Systems Administration
+Topic :: Utilities
 """.splitlines()))
 
 entry_points = '''
