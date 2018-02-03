@@ -14,11 +14,11 @@ from esst.core import CTX, MAIN_LOGGER
 LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
-def _pass_exception(exc):
+def _pass_exception(exc: Exception):
     LOGGER.error(exc)
     # LOGGER.exception('Discord bot error')
-    if CTX.sentry:
-        CTX.sentry.captureException(True)
+    # if CTX.sentry:
+    #     CTX.sentry.captureException(exc)
 
 
 def catch_exc(func):
@@ -37,7 +37,11 @@ def catch_exc(func):
                 websockets.exceptions.InvalidURI,
                 HTTPException) as exc:
             _pass_exception(exc)
-        except (aiohttp.ClientError, ConnectionError, OSError, aiohttp.ClientOSError) as exc:
+        except (aiohttp.ClientError,
+                ConnectionError,
+                OSError,
+                aiohttp.ClientOSError,
+                aiohttp.ClientResponseError) as exc:
             await asyncio.sleep(10)
             while not CTX.wan:
                 await asyncio.sleep(2)
