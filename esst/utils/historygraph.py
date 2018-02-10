@@ -149,6 +149,7 @@ def _plot_axis(grid_spec, grid_pos,  # pylint: disable=too-many-arguments
     return axis
 
 
+# pylint: disable=too-many-arguments
 def _get_axis(
         grid_spec,
         now,
