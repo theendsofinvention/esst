@@ -10,7 +10,7 @@ from pathlib import Path
 import click
 
 from esst import __version__
-from esst.core import CFG, CTX, MAIN_LOGGER
+from esst.core import CFG, CTX, MAIN_LOGGER, fs_paths
 
 MAIN_LOGGER.debug(f'Starting ESST version {__version__}')
 
@@ -91,11 +91,10 @@ def main(
     ctypes.windll.kernel32.SetConsoleTitleW(f'ESST v{__version__} - Use CTRL+C to exit')
     MAIN_LOGGER.debug(f'starting ESST {__version__}')
 
+    fs_paths.init_fs(CFG)
+
     from esst.utils import clean_all_folder
     clean_all_folder()
-
-    from esst.utils import saved_games
-    saved_games.discover_saved_games_path()
 
     from esst import atis
     atis.init_module()
@@ -103,7 +102,8 @@ def main(
     import esst.discord_bot.discord_bot
     discord_loop = esst.discord_bot.discord_bot.App()
 
-    import esst.dcs.dcs
+    import esst.dcs
+
     dcs_loop = esst.dcs.dcs.App()
 
     import esst.server.server

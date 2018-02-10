@@ -2,8 +2,24 @@
 """
 Manages all FileSystem path for ESST
 """
+import logging
 import typing
 from pathlib import Path
+
+
+try:
+    import winreg
+except ImportError:
+    from unittest.mock import MagicMock
+
+    winreg = MagicMock()
+import elib
+
+from esst.core.new_config import ESSTConfig
+
+LOGGER = logging.getLogger('ESST').getChild(__name__)
+
+A_REG = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
 
 
 class FS:
@@ -11,79 +27,55 @@ class FS:
     Manages all FileSystem path for ESST
     """
 
-    dcs_path = None
+    dcs_path: str = None
+    dcs_exe: Path = None
+    dcs_autoexec_file: Path = None
+    dcs_hook_path: Path = None
+    dcs_mission_folder: Path = None
+    dcs_server_settings: Path = None
+    dcs_logs_dir: Path = None
 
-    saved_games_path = None
+    mission_editor_lua_file: Path = None
 
-    ur_settings_folder = None
-    ur_voice_settings_file = None
-    ur_install_path = None
+    saved_games_path: str = None
+    variant_saved_games_path: str = None
+
+    ur_settings_folder: str = None
+    ur_voice_settings_file: str = None
+    ur_install_path: str = None
 
     @staticmethod
-    def ensure_path(path: typing.Union[str, Path], must_exist=True) -> Path:
+    def _reset():
+        """Testing only"""
+        FS.dcs_path = None
+        FS.dcs_exe = None
+        FS.dcs_autoexec_file = None
+        FS.mission_editor_lua_file = None
+        FS.saved_games_path = None
+        FS.variant_saved_games_path = None
+        FS.ur_install_path = None
+        FS.ur_settings_folder = None
+        FS.ur_install_path = None
+
+    @staticmethod
+    def ensure_path(path: typing.Union[str, Path], path_name: str, must_exist=True) -> Path:
         """
         Makes sure that "path" is a Path instance, and (optionally) exists
 
         Args:
             path: str or Path to check
+            path_name: human friendly description of the path
             must_exist: raises FileNotFoundError if True and path does not exist
 
         Returns: Path instance
 
         """
         if path is None:
-            raise RuntimeError(f'path uninitialized: {path}')
-        if isinstance(path, str):
-            path = Path(path)
-        if must_exist and not path.exists():
-            raise FileNotFoundError(path)
-        return path
+            raise RuntimeError(f'path uninitialized: {path_name}')
+        return elib.path.ensure_path(path, must_exist=must_exist)
 
     @staticmethod
-    def get_dcs_autoexec_file(dcs_path: typing.Union[str, Path]) -> Path:
-        """
-        Returns the "autoexec.cfg" file for this DCS installation
-
-        Args:
-            dcs_path: path to the DCS installation
-
-        Returns: Path instance for the autoexec file
-
-        """
-        return FS.get_saved_games_variant(dcs_path).joinpath('Config/autoexec.cfg')
-
-    @staticmethod
-    def get_mission_editor_lua_file(dcs_path: typing.Union[str, Path]) -> Path:
-        """
-        Returns the "MissionEditor.lua" file for this DCS installation
-
-        Args:
-            dcs_path: path to the DCS installation
-
-        Returns: Path instance for the MissionEditor.lua
-
-        """
-        dcs_path = FS.ensure_path(dcs_path)
-        path = Path(dcs_path, 'MissionEditor/MissionEditor.lua')
-        return FS.ensure_path(path)
-
-    @staticmethod
-    def get_dcs_exe(dcs_path: typing.Union[str, Path]) -> Path:
-        """
-        Returns the "dcs.exe" file for this DCS installation
-
-        Args:
-            dcs_path: path to the DCS installation
-
-        Returns: Path instance for the dcs.exe
-
-        """
-        dcs_path = FS.ensure_path(dcs_path)
-        dcs_exe = Path(dcs_path, 'bin/dcs.exe')
-        return FS.ensure_path(dcs_exe)
-
-    @staticmethod
-    def get_saved_games_variant(dcs_path: typing.Union[str, Path]) -> Path:
+    def get_saved_games_variant(dcs_path: typing.Union[str, Path] = None) -> Path:
         """
         Infers Saved Games dir specific to this DCS installation by reading the (optional) "dcs_variant.txt"
         file that is contained at the root of the DCS installation
@@ -94,11 +86,124 @@ class FS:
         Returns: Path instance for the Saved Games/DCS[variant] dir
 
         """
-        FS.ensure_path(FS.saved_games_path)
-        dcs_path = FS.ensure_path(dcs_path)
+        if dcs_path is None:
+            dcs_path = FS.ensure_path(FS.dcs_path, 'dcs path')
+        FS.ensure_path(FS.saved_games_path, 'saved games')
+
+        dcs_path = elib.path.ensure_dir(dcs_path)
         variant_path = Path(dcs_path, 'dcs_variant.txt')
         if variant_path.exists():
             variant = f'.{variant_path.read_text(encoding="utf8")}'
         else:
             variant = ''
-        return FS.ensure_path(Path(FS.saved_games_path, f'DCS{variant}'))
+        return elib.path.ensure_dir(FS.saved_games_path, f'DCS{variant}')
+
+    @staticmethod
+    def _get_saved_games_from_registry() -> Path:
+        LOGGER.debug('searching for base "Saved Games" folder')
+        try:
+            LOGGER.debug('trying "User Shell Folders"')
+            with winreg.OpenKey(A_REG, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders") as key:
+                # noinspection SpellCheckingInspection
+                base_sg = Path(winreg.QueryValueEx(key, "{4C5C32FF-BB9D-43B0-B5B4-2D72E54EAAA4}")[0])
+                LOGGER.debug('found in "User Shell Folders"')
+        except FileNotFoundError:
+            LOGGER.debug('failed, trying "Shell Folders"')
+            try:
+                with winreg.OpenKey(A_REG, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders") as key:
+                    # noinspection SpellCheckingInspection
+                    base_sg = Path(winreg.QueryValueEx(key, "{4C5C32FF-BB9D-43B0-B5B4-2D72E54EAAA4}")[0])
+                    LOGGER.debug('found in "Shell Folders"')
+            except FileNotFoundError:
+                LOGGER.debug('darn it, another fail, falling back to "~"')
+                base_sg = Path('~').expanduser().abspath()
+        return base_sg
+
+    @staticmethod
+    def discover_saved_games_path(cfg: ESSTConfig):
+        """
+        Tries to find Saved Games on this system
+
+        Returns: Saved Games dir
+        """
+        if not cfg.saved_games_dir:
+            LOGGER.debug('no Saved Games path in Config, looking it up')
+            return FS._get_saved_games_from_registry()
+
+        else:
+            LOGGER.debug('Saved Games path found in Config')
+            base_sg = Path(cfg.saved_games_dir)
+            if not base_sg.is_dir():
+                LOGGER.error(f'Saved Games dir provided in config file is invalid: {base_sg}')
+                return FS._get_saved_games_from_registry()
+
+
+def init_fs(cfg: ESSTConfig):
+    LOGGER.debug('init')
+
+    try:
+
+        FS.saved_games_path = FS.discover_saved_games_path(cfg)
+        LOGGER.debug(f'Saved Games path: {FS.saved_games_path}')
+
+        FS.dcs_path = elib.path.ensure_dir(
+            cfg.dcs_path
+        ).absolute()
+        LOGGER.debug(f'DCS path: {FS.dcs_path}')
+
+        FS.dcs_exe = elib.path.ensure_file(
+            FS.dcs_path,
+            'bin/dcs.exe'
+        ).absolute()
+        LOGGER.debug(f'DCS exe: {FS.dcs_exe}')
+
+        FS.variant_saved_games_path = FS.get_saved_games_variant(
+            FS.dcs_path
+        ).absolute()
+        LOGGER.debug(f'Saved Games variant: {FS.variant_saved_games_path}')
+
+        FS.dcs_autoexec_file = Path(
+            FS.variant_saved_games_path,
+            'Config/autoexec.cfg'
+        ).absolute()
+        LOGGER.debug(f'DCS autoexec: {FS.dcs_autoexec_file}')
+
+        FS.mission_editor_lua_file = elib.path.ensure_file(
+            FS.dcs_path,
+            'MissionEditor/MissionEditor.lua'
+        ).absolute()
+        LOGGER.debug(f'Mission Editor lua file: {FS.mission_editor_lua_file}')
+
+        FS.dcs_hook_path = elib.path.ensure_file(
+            FS.variant_saved_games_path,
+            'Scripts/Hooks/esst.lua',
+            must_exist=False
+        ).absolute()
+        LOGGER.debug(f'DCS hook: {FS.dcs_hook_path}')
+
+        FS.dcs_mission_folder = elib.path.ensure_dir(
+            FS.variant_saved_games_path,
+            'Missions/ESST',
+            must_exist=False,
+            create=True
+        ).absolute()
+        LOGGER.debug(f'DCS mission folder: {FS.dcs_mission_folder}')
+
+        FS.dcs_server_settings = elib.path.ensure_file(
+            FS.variant_saved_games_path,
+            'Config/serverSettings.lua',
+            must_exist=False
+        ).absolute()
+        LOGGER.debug(f'DCS server settings: {FS.dcs_server_settings}')
+
+        FS.dcs_logs_dir = elib.path.ensure_path(
+            FS.variant_saved_games_path,
+            'logs',
+            must_exist=False,
+        )
+        LOGGER.debug(f'DCS log folder: {FS.dcs_logs_dir}')
+
+    except FileNotFoundError as exc:
+        LOGGER.exception(f'Unable to find the following file: {exc.args[0]}')
+    else:
+        LOGGER.debug('FS paths initialised')

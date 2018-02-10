@@ -10,11 +10,11 @@ import emiz
 
 from esst import __version__
 from .context import Context
-from .fs_paths import FS
 # from .config import Config
 from .new_config import ESSTConfig, validate_config
 from .new_config.setup_config import setup_config
 from .status import ServerStatus, Status
+from .fs_paths import FS
 
 MAIN_LOGGER = elib.custom_logging.get_logger(
     logger_name='ESST',

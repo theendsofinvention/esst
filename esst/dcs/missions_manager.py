@@ -18,11 +18,7 @@ LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 def _get_mission_folder() -> Path:
-    mission_folder = Path(core.FS.saved_games_path, 'DCS/Missions/ESST')
-    if not Path(mission_folder).exists():
-        LOGGER.debug(f'creating directory: {mission_folder}')
-        mission_folder.mkdir(parents=True)
-    return mission_folder
+    return core.FS.dcs_mission_folder
 
 
 def _get_auto_mission_folder() -> Path:
@@ -117,7 +113,8 @@ class MissionPath:
 
 
 def _get_settings_file_path() -> Path:
-    return Path(core.FS.saved_games_path, 'DCS/Config/serverSettings.lua')
+    return core.FS.dcs_server_settings
+    # return Path(core.FS.saved_games_path, 'DCS/Config/serverSettings.lua')
 
 
 def set_active_mission(mission: str, metar: str = None):
@@ -252,11 +249,16 @@ def get_running_mission() -> typing.Union['MissionPath', str]:
         mission = MissionPath(mission_path)
 
     else:
-        dcs_settings = _get_settings_file_path().read_text()
-        for line in dcs_settings.split('\n'):
-            if '[1]' in line:
-                mission = MissionPath(line.split('"')[1])
-                break
+        try:
+            dcs_settings = _get_settings_file_path().read_text()
+        except FileNotFoundError:
+            LOGGER.error('please start a DCS server at least once before using ESST')
+            exit(1)
+        else:
+            for line in dcs_settings.split('\n'):
+                if '[1]' in line:
+                    mission = MissionPath(line.split('"')[1])
+                    break
 
     if mission:
         LOGGER.debug(f'returning active mission: {mission.name}')

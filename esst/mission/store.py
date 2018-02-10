@@ -37,7 +37,7 @@ def get_base_missions_folder() -> Path:
     Returns: Path object
 
     """
-    return _get_mission_folder(FS.saved_games_path, 'DCS/Missions/ESST')
+    return FS.dcs_mission_folder
 
 
 def get_auto_missions_folder() -> Path:

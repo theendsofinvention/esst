@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pytest
 
+from esst import core
+
 
 def pytest_configure(config):
     """
@@ -32,6 +34,13 @@ def pytest_unconfigure(config):
     print('pytest args: ', config.args)
     # noinspection PyUnresolvedReferences,PyProtectedMember
     del sys._called_from_test
+
+
+@pytest.fixture(autouse=True)
+def _reset_fs():
+    core.FS._reset()
+    yield
+    core.FS._reset()
 
 
 @pytest.fixture(autouse=True)

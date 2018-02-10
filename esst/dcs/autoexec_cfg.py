@@ -25,7 +25,8 @@ def inject_silent_crash_report(dcs_path: typing.Union[str, Path]) -> bool:
 
     """
 
-    autoexec_path = core.FS.get_dcs_autoexec_file(dcs_path)
+    core.FS.ensure_path(core.FS.saved_games_path, 'saved games')
+    autoexec_path = core.FS.ensure_path(core.FS.dcs_autoexec_file, 'dcs autoexec file', must_exist=False)
     utils.create_versioned_backup(autoexec_path, file_must_exist=False)
 
     if autoexec_path.exists():

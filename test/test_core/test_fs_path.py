@@ -17,37 +17,12 @@ def test_ensure_path():
 
     with pytest.raises(RuntimeError):
         # noinspection PyTypeChecker
-        FS.ensure_path(FS.saved_games_path)
+        FS.ensure_path(FS.saved_games_path, 'test')
 
     with pytest.raises(FileNotFoundError):
-        FS.ensure_path('./test')
+        FS.ensure_path('./test', 'test')
 
-    assert isinstance(FS.ensure_path('./test', must_exist=False), Path)
-
-
-def test_dcs_autoexec():
-    FS.saved_games_path = '.'
-    Path('./DCS/Config').mkdir(parents=True)
-    assert isinstance(FS.get_dcs_autoexec_file('.'), Path)
-
-
-@given(text=st.text(alphabet=string.printable, min_size=0, max_size=20))
-def test_mission_editor_lua(text):
-    with pytest.raises(FileNotFoundError):
-        FS.get_mission_editor_lua_file('./test')
-    Path('./MissionEditor').mkdir(exist_ok=True)
-    Path('./MissionEditor/MissionEditor.lua').write_text(text)
-    assert isinstance(FS.get_mission_editor_lua_file('.'), Path)
-
-
-def test_dcs_exe_path():
-    with pytest.raises(FileNotFoundError):
-        FS.get_dcs_exe('.')
-    Path('./bin').mkdir()
-    with pytest.raises(FileNotFoundError):
-        FS.get_dcs_exe('.')
-    Path('./bin/dcs.exe').touch()
-    assert isinstance(FS.get_dcs_exe('.'), Path)
+    assert isinstance(FS.ensure_path('./test', 'test', must_exist=False), Path)
 
 
 def test_saved_games_no_variant():

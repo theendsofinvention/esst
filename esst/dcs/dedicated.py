@@ -27,7 +27,7 @@ def _get_me_auth_path() -> Path:
 
 
 def _write_dedi_config(dcs_path: typing.Union[str, Path]):
-    dedi_cfg_path = Path(FS.get_saved_games_variant(dcs_path), 'Config/dedicated.lua')
+    dedi_cfg_path = Path(FS.variant_saved_games_path, 'Config/dedicated.lua')
     if not dedi_cfg_path.exists():
         LOGGER.info(f'writing {dedi_cfg_path}')
         dedi_cfg_path.write_text(DEDI_CFG)
