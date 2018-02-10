@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from esst.mission import store
 from esst import core
+from esst.mission import store
 
 
 @pytest.fixture(autouse=True)

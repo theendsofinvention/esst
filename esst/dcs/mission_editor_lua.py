@@ -3,10 +3,6 @@
 Inject more code into DCS 1.5.8 and 2.x (new login mechanism)
 """
 import re
-import typing
-from pathlib import Path
-
-import elib
 
 from esst import core, utils
 
@@ -52,7 +48,7 @@ RE_INJECT = re.compile(
 )
 
 
-def inject_mission_editor_code(dcs_path: typing.Union[str, Path]) -> bool:
+def inject_mission_editor_code() -> bool:
     """
     Injects code needed for the new login method in MissionEditor.lua
 
@@ -63,12 +59,12 @@ def inject_mission_editor_code(dcs_path: typing.Union[str, Path]) -> bool:
         Bool indicating success of the operation
 
     """
-    dcs_path = elib.path.ensure_dir(dcs_path)
+
     core.FS.ensure_path(core.FS.mission_editor_lua_file, 'mission editor lua file')
 
-    LOGGER.debug(f'injecting MissionEditor.lua code in DCS installation: {dcs_path.absolute()}')
-    if not dcs_path.exists():
-        raise FileNotFoundError(dcs_path.absolute())
+    LOGGER.debug(f'injecting MissionEditor.lua code in DCS installation: {core.FS.dcs_path}')
+    if not core.FS.dcs_path.exists():
+        raise FileNotFoundError(core.FS.dcs_path)
 
     LOGGER.debug(f'MissionEditor.lua path: {core.FS.mission_editor_lua_file}')
     if not core.FS.mission_editor_lua_file.exists():

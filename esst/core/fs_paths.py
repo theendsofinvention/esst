@@ -6,6 +6,9 @@ import logging
 import typing
 from pathlib import Path
 
+import elib
+
+from esst.core.new_config import ESSTConfig
 
 try:
     import winreg
@@ -13,9 +16,7 @@ except ImportError:
     from unittest.mock import MagicMock
 
     winreg = MagicMock()
-import elib
 
-from esst.core.new_config import ESSTConfig
 
 LOGGER = logging.getLogger('ESST').getChild(__name__)
 
@@ -136,9 +137,18 @@ class FS:
             if not base_sg.is_dir():
                 LOGGER.error(f'Saved Games dir provided in config file is invalid: {base_sg}')
                 return FS._get_saved_games_from_registry()
+            else:
+                return base_sg
 
 
 def init_fs(cfg: ESSTConfig):
+    """
+    Initializes File System paths
+
+    Args:
+        cfg: ESST configuration
+
+    """
     LOGGER.debug('init')
 
     try:
@@ -200,7 +210,7 @@ def init_fs(cfg: ESSTConfig):
             FS.variant_saved_games_path,
             'logs',
             must_exist=False,
-        )
+        ).absolute()
         LOGGER.debug(f'DCS log folder: {FS.dcs_logs_dir}')
 
     except FileNotFoundError as exc:

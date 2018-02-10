@@ -82,9 +82,9 @@ class App:
         if simplified_version <= 157:
             pass
         elif simplified_version >= 158:
-            mission_editor_lua.inject_mission_editor_code(core.CFG.dcs_path)
-            autoexec_cfg.inject_silent_crash_report(core.CFG.dcs_path)
-        setup_config_for_dedicated_run(core.CFG.dcs_path)
+            mission_editor_lua.inject_mission_editor_code()
+            autoexec_cfg.inject_silent_crash_report()
+        setup_config_for_dedicated_run()
         return True
 
     async def _check_if_dcs_is_running(self):
@@ -103,7 +103,7 @@ class App:
             self._app = psutil.Process(self.process_pid)
             await self._wait_for_dcs_to_start()
 
-    async def _wait_for_dcs_to_start(self):  # noqa: C901
+    async def _wait_for_dcs_to_start(self):
 
         async def _wait_for_process():
             while True:

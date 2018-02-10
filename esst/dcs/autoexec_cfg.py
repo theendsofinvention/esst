@@ -2,18 +2,15 @@
 """
 Manages DCS autoexec.cfg file
 """
-import typing
-from pathlib import Path
 
 from esst import core, utils
 
 _LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
-
 _SILENT_CRASH_REPORT = '''\ncrash_report_mode = "silent"\n'''
 
 
-def inject_silent_crash_report(dcs_path: typing.Union[str, Path]) -> bool:
+def inject_silent_crash_report() -> bool:
     """
     Injects code needed for the new login method in MissionEditor.lua
 

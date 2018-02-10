@@ -23,7 +23,7 @@ def test_injection():
     Path('./DCS/Config').mkdir(parents=True)
     autoexec_file = Path('./DCS/Config/autoexec.cfg')
     assert not autoexec_file.exists()
-    dcs.autoexec_cfg.inject_silent_crash_report('.')
+    dcs.autoexec_cfg.inject_silent_crash_report()
     assert autoexec_file.exists()
     assert autoexec_file.read_text('utf8').endswith(dcs.autoexec_cfg._SILENT_CRASH_REPORT)
 
@@ -40,7 +40,7 @@ def test_no_dcs_saved_games_path():
 def test_no_config_path():
     Path('./DCS').mkdir(parents=True)
     with pytest.raises(FileNotFoundError) as exc_info:
-        dcs.autoexec_cfg.inject_silent_crash_report('.')
+        dcs.autoexec_cfg.inject_silent_crash_report()
 
     assert 'Config' in str(exc_info)
 
@@ -52,10 +52,10 @@ def test_existing_file(text):
     autoexec_file = Path('./DCS/Config/autoexec.cfg')
     autoexec_file.write_text(text, encoding='utf8')
     assert autoexec_file.exists()
-    assert dcs.autoexec_cfg.inject_silent_crash_report('.')
+    assert dcs.autoexec_cfg.inject_silent_crash_report()
     assert autoexec_file.exists()
     content = autoexec_file.read_text('utf8')
     assert content.endswith(dcs.autoexec_cfg._SILENT_CRASH_REPORT)
-    assert dcs.autoexec_cfg.inject_silent_crash_report('.')
+    assert dcs.autoexec_cfg.inject_silent_crash_report()
     # Make sure the content does not change
     assert autoexec_file.read_text('utf8') == content

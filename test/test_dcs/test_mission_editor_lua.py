@@ -9,8 +9,8 @@ import pytest
 from hypothesis import strategies as st
 from hypothesis import given, settings
 
-from esst.dcs import mission_editor_lua
 from esst import core
+from esst.dcs import mission_editor_lua
 
 TEMPLATE = Path('./test/test_files/MissionEditor.lua').read_text(encoding='utf8')
 
