@@ -76,17 +76,6 @@ def process_values(values_to_process: GraphValues, time_delta: float) -> GraphVa
     if not values_to_process.players_history:
         players_history = [(time_delta, 0)]
     else:
-        # players_history = []
-        # for data in CTX.players_history:
-        #     if data[0] < time_delta:
-        #         continue
-        #     if not players_history:
-        #         players_history.append(data)
-        #     else:
-        #         if data[1] != players_history[-1][1]:
-        #             players_history.append(data)
-        # if CTX.players_history[-1] not in players_history:
-        #     players_history.append(CTX.players_history[-1])
         players_history = [
             data for data in values_to_process.players_history if data[0] >= time_delta]
     if not server_cpu_history:
@@ -160,83 +149,86 @@ def _plot_axis(grid_spec, grid_pos,  # pylint: disable=too-many-arguments
     return axis
 
 
-def _plot_server(grid_spec, values, now):
-    lines_to_plot = {
-        PlotLine(
-            values=values.server_cpu_history,
-            style='r',
-            label='CPU'
-        ),
-        PlotLine(
-            values=values.server_mem_history,
-            style='b',
-            label='Memory'
-        ),
-    }
+def _get_axis(
+        grid_spec,
+        now,
+        values,
+        values_list: typing.List[typing.Any],
+        labels_list: typing.List[str],
+        title: str,
+        y_label: str,
+        visible_x: bool,
+        y_format_func: callable,
+        share_x=None,
+):
+    lines_to_plot = set()
+    for _values, _label in zip(values_list, labels_list):
+        lines_to_plot.add(
+            PlotLine(
+                values=_values,
+                style='r',
+                label=_label
+            )
+        )
     axis = _plot_axis(grid_spec,
                       now=now,
                       values_to_plot=lines_to_plot,
                       grid_pos=0,
-                      title='Server stats',
-                      y_label_text='Percentage used',
+                      title=title,
+                      y_label_text=y_label,
                       values=values,
-                      visible_x_labels=False,
-                      share_x=None,
-                      y_format_func=_y_format_func_percent)
+                      visible_x_labels=visible_x,
+                      share_x=share_x,
+                      y_format_func=y_format_func)
+    return axis
+
+
+def _plot_server(grid_spec, values, now):
+    axis = _get_axis(
+        grid_spec=grid_spec,
+        now=now,
+        values=values,
+        values_list=[values.server_cpu_history, values.server_mem_history],
+        labels_list=['CPU', 'Memory'],
+        title='Server stats',
+        y_label='Percentage used',
+        visible_x=False,
+        y_format_func=_y_format_func_percent,
+    )
     axis.set_ylim([0, 100])
     return axis
 
 
 def _plot_dcs(grid_spec, values, now, share_x=None):
-    lines_to_plot = {
-        PlotLine(
-            values=values.dcs_cpu_history,
-            style='r',
-            label='CPU'
-        ),
-        PlotLine(
-            values=values.dcs_mem_history,
-            style='b',
-            label='Memory'
-        ),
-    }
-    axis = _plot_axis(grid_spec,
-                      now=now,
-                      values_to_plot=lines_to_plot,
-                      grid_pos=1,
-                      title='DCS stats',
-                      y_label_text='Percentage used',
-                      values=values,
-                      visible_x_labels=False,
-                      share_x=share_x,
-                      y_format_func=_y_format_func_percent)
+    axis = _get_axis(
+        grid_spec=grid_spec,
+        now=now,
+        values=values,
+        values_list=[values.dcs_cpu_history, values.dcs_mem_history],
+        labels_list=['CPU', 'Memory'],
+        title='DCS stats',
+        y_label='Percentage used',
+        visible_x=False,
+        y_format_func=_y_format_func_percent,
+        share_x=share_x
+    )
     axis.set_ylim([0, 100])
     return axis
 
 
 def _plot_bandwidth(grid_spec, values, now, share_x=None):
-    lines_to_plot = {
-        PlotLine(
-            values=values.server_bytes_sent_history,
-            style='r',
-            label='Bytes sent'
-        ),
-        PlotLine(
-            values=values.server_bytes_recv_history,
-            style='b',
-            label='Bytes received'
-        ),
-    }
-    axis = _plot_axis(grid_spec,
-                      now=now,
-                      values_to_plot=lines_to_plot,
-                      grid_pos=2,
-                      title='Network stats',
-                      y_label_text='Bytes sent/received',
-                      values=values,
-                      visible_x_labels=True,
-                      share_x=share_x,
-                      y_format_func=_y_format_func_bytes, )
+    axis = _get_axis(
+        grid_spec=grid_spec,
+        now=now,
+        values=values,
+        values_list=[values.server_bytes_sent_history, values.server_bytes_recv_history],
+        labels_list=['CPU', 'Memory'],
+        title='Bytes sent',
+        y_label='Bytes received',
+        visible_x=True,
+        y_format_func=_y_format_func_bytes,
+        share_x=share_x
+    )
     return axis
 
 
