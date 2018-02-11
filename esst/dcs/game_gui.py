@@ -23,7 +23,6 @@ def _remove_old_file():
 
 
 def _install_hook():
-
     hook_folder = elib.path.ensure_dir(FS.variant_saved_games_path, 'Scripts/Hooks', must_exist=False, create=True)
     LOGGER.debug(f'hooks folder: {hook_folder}')
     esst_hook_path = elib.path.ensure_file(hook_folder, 'esst.lua', must_exist=False)
@@ -32,7 +31,6 @@ def _install_hook():
     LOGGER.debug('writing ESST hook to file')
     with open(esst_hook_path, 'w') as stream:
         stream.write(read_template('game_gui.lua'))
-
 
 
 def install_game_gui_hooks():
