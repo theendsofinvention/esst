@@ -32,7 +32,7 @@ def test_no_dcs_saved_games_path():
     core.FS.saved_games_path = None
     core.FS.dcs_autoexec_file = './autoexec.cfg'
     with pytest.raises(RuntimeError) as exc_info:
-        dcs.autoexec_cfg.inject_silent_crash_report('./some/dir')
+        dcs.autoexec_cfg.inject_silent_crash_report()
 
     assert 'path uninitialized: saved games' in str(exc_info)
 
