@@ -6,8 +6,8 @@ import string
 from pathlib import Path
 
 import pytest
-from hypothesis import strategies as st
 from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from esst.dcs import mission_editor_lua
 
