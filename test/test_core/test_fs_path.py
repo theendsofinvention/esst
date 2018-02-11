@@ -12,6 +12,15 @@ from hypothesis import strategies as st
 from esst.core import FS
 
 
+@pytest.fixture(autouse=True)
+def _setup():
+    FS.saved_games_path = './Saved Games'
+    FS.dcs_path = './DCS'
+    Path('./Saved Games').mkdir()
+    Path('./DCS').mkdir()
+
+
+
 def test_ensure_path():
     FS.saved_games_path = None
 
@@ -22,23 +31,32 @@ def test_ensure_path():
     with pytest.raises(FileNotFoundError):
         FS.ensure_path('./test', 'test')
 
-    assert isinstance(FS.ensure_path('./test', 'test', must_exist=False), Path)
 
 
-def test_saved_games_no_variant():
+def test_saved_games_not_found():
+    Path('./Saved Games').rmdir()
     with pytest.raises(FileNotFoundError) as exc:
-        FS.get_saved_games_variant('.')
-    assert 'Saved Games' in str(exc)
+        FS.get_saved_games_variant()
+    assert str(exc).endswith('FileNotFoundError: Saved Games')
 
-    saved_games = Path('./Saved Games')
-    saved_games.mkdir()
+
+def test_no_dcs_dir_in_saved_games():
+    with pytest.raises(FileNotFoundError) as exc:
+        FS.get_saved_games_variant()
+    assert str(exc).endswith('FileNotFoundError: Saved Games\\DCS')
+
+
+def test_no_dcs_dir():
+    pass
+
+
+
+
+def test_saved_games_no_dcs():
 
     with pytest.raises(FileNotFoundError) as exc:
         FS.get_saved_games_variant('./DCS')
     assert 'DCS' in str(exc)
-
-    dcs = Path('./DCS')
-    dcs.mkdir()
 
     with pytest.raises(FileNotFoundError) as exc:
         FS.get_saved_games_variant('.')

@@ -97,7 +97,7 @@ class FS:
             variant = f'.{variant_path.read_text(encoding="utf8")}'
         else:
             variant = ''
-        return elib.path.ensure_dir(FS.saved_games_path, f'DCS{variant}')
+        return elib.path.ensure_dir(FS.saved_games_path, f'DCS{variant}').absolute()
 
     @staticmethod
     def _get_saved_games_from_registry() -> Path:
