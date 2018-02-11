@@ -131,14 +131,14 @@ class FS:
             LOGGER.debug('no Saved Games path in Config, looking it up')
             return FS._get_saved_games_from_registry()
 
-        else:
-            LOGGER.debug('Saved Games path found in Config')
-            base_sg = Path(cfg.saved_games_dir)
-            if not base_sg.is_dir():
-                LOGGER.error(f'Saved Games dir provided in config file is invalid: {base_sg}')
-                return FS._get_saved_games_from_registry()
-            else:
-                return base_sg
+
+        LOGGER.debug('Saved Games path found in Config')
+        base_sg = Path(cfg.saved_games_dir)
+        if not base_sg.is_dir():
+            LOGGER.error(f'Saved Games dir provided in config file is invalid: {base_sg}')
+            return FS._get_saved_games_from_registry()
+
+        return base_sg
 
 
 def init_fs(cfg: ESSTConfig):
