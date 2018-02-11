@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from esst import core
+# from esst import core
 
 
 def pytest_configure(config):
@@ -36,11 +36,24 @@ def pytest_unconfigure(config):
     del sys._called_from_test
 
 
+# @pytest.fixture(autouse=True)
+# def _reset_fs():
+#     core.FS._reset()
+#     yield
+#     core.FS._reset()
+
+
 @pytest.fixture(autouse=True)
-def _reset_fs():
-    core.FS._reset()
+def _dummy_config():
+    Path('./esst.yml').write_text("""
+dcs_path: './DCS'
+dcs_server_name: 'server_name'
+dcs_server_password: 'server_pwd'
+discord_bot_name: 'bot_name'
+discord_channel: 'channel'
+discord_token: 'token'
+    """)
     yield
-    core.FS._reset()
 
 
 @pytest.fixture(autouse=True)
@@ -53,9 +66,9 @@ def cleandir(request, tmpdir):
         tmpdir: Pytest tmpdir fixture
 
     """
-    from esst.core import FS
-    FS.saved_games_path = Path(str(tmpdir), 'Saved Games').absolute()
-    FS.ur_install_path = Path(str(tmpdir), 'UniversRadio').absolute()
+    # from esst.core import FS
+    # FS.saved_games_path = Path(str(tmpdir), 'Saved Games').absolute()
+    # FS.ur_install_path = Path(str(tmpdir), 'UniversRadio').absolute()
     if 'nocleandir' in request.keywords:
         yield
     else:
