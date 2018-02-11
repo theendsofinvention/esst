@@ -61,35 +61,18 @@ def process_values(values_to_process: GraphValues, time_delta: float) -> GraphVa
     Returns: processed values
 
     """
-    server_cpu_history = [
-        data for data in values_to_process.server_cpu_history if data[0] >= time_delta]
-    server_mem_history = [
-        data for data in values_to_process.server_mem_history if data[0] >= time_delta]
-    server_bytes_sent_history = [
-        data for data in values_to_process.server_bytes_sent_history if data[0] >= time_delta]
-    server_bytes_recv_history = [
-        data for data in values_to_process.server_bytes_recv_history if data[0] >= time_delta]
-    dcs_cpu_history = [
-        data for data in values_to_process.dcs_cpu_history if data[0] >= time_delta]
-    dcs_mem_history = [
-        data for data in values_to_process.dcs_mem_history if data[0] >= time_delta]
-    if not values_to_process.players_history:
-        players_history = [(time_delta, 0)]
-    else:
-        players_history = [
-            data for data in values_to_process.players_history if data[0] >= time_delta]
-    if not server_cpu_history:
-        server_cpu_history = [(time_delta, 0)]
-    if not server_mem_history:
-        server_mem_history = [(time_delta, 0)]
-    if not server_bytes_sent_history:
-        server_bytes_sent_history = [(time_delta, 0)]
-    if not server_bytes_recv_history:
-        server_bytes_recv_history = [(time_delta, 0)]
-    if not dcs_mem_history:
-        dcs_mem_history = [(time_delta, 0)]
-    if not dcs_cpu_history:
-        dcs_cpu_history = [(time_delta, 0)]
+
+    def _process(values):
+        return [data for data in values if data[0] >= time_delta] or [(time_delta, 0)]
+
+    server_cpu_history = _process(values_to_process.server_cpu_history)
+    server_mem_history = _process(values_to_process.server_mem_history)
+    server_bytes_sent_history = _process(values_to_process.server_bytes_sent_history)
+    server_bytes_recv_history = _process(values_to_process.server_bytes_recv_history)
+    dcs_cpu_history = _process(values_to_process.dcs_cpu_history)
+    dcs_mem_history = _process(values_to_process.dcs_mem_history)
+    players_history = _process(values_to_process.players_history)
+
     return GraphValues(
         server_cpu_history=zip(*server_cpu_history),
         server_mem_history=zip(*server_mem_history),
@@ -149,11 +132,12 @@ def _plot_axis(grid_spec, grid_pos,  # pylint: disable=too-many-arguments
     return axis
 
 
-# pylint: disable=too-many-arguments
+# pylint: disable=too-many-arguments,too-many-locals
 def _get_axis(
         grid_spec,
         now,
         values,
+        grid_pos,
         values_list: typing.List[typing.Any],
         labels_list: typing.List[str],
         title: str,
@@ -163,18 +147,19 @@ def _get_axis(
         share_x=None,
 ):
     lines_to_plot = set()
+    styles = ['r', 'b']
     for _values, _label in zip(values_list, labels_list):
         lines_to_plot.add(
             PlotLine(
                 values=_values,
-                style='r',
+                style=styles.pop(),
                 label=_label
             )
         )
     axis = _plot_axis(grid_spec,
                       now=now,
                       values_to_plot=lines_to_plot,
-                      grid_pos=0,
+                      grid_pos=grid_pos,
                       title=title,
                       y_label_text=y_label,
                       values=values,
@@ -189,6 +174,7 @@ def _plot_server(grid_spec, values, now):
         grid_spec=grid_spec,
         now=now,
         values=values,
+        grid_pos=0,
         values_list=[values.server_cpu_history, values.server_mem_history],
         labels_list=['CPU', 'Memory'],
         title='Server stats',
@@ -205,6 +191,7 @@ def _plot_dcs(grid_spec, values, now, share_x=None):
         grid_spec=grid_spec,
         now=now,
         values=values,
+        grid_pos=1,
         values_list=[values.dcs_cpu_history, values.dcs_mem_history],
         labels_list=['CPU', 'Memory'],
         title='DCS stats',
@@ -222,8 +209,9 @@ def _plot_bandwidth(grid_spec, values, now, share_x=None):
         grid_spec=grid_spec,
         now=now,
         values=values,
+        grid_pos=2,
         values_list=[values.server_bytes_sent_history, values.server_bytes_recv_history],
-        labels_list=['CPU', 'Memory'],
+        labels_list=['Bytes sent', 'Bytes received'],
         title='Bytes sent',
         y_label='Bytes received',
         visible_x=True,
@@ -331,15 +319,21 @@ if __name__ == '__main__':
 
     PLAYER_COUNT = 0
     CTX.players_history.append((NOW - TOTAL_SECONDS, 0))
-    for time_stamp in range(TOTAL_SECONDS, 0, -5):
+    SKIP = 0
+    for time_stamp in range(TOTAL_SECONDS, 0, -10):
         CTX.server_mem_history.append(
             (NOW - time_stamp, random.randint(60, 70)))
         CTX.dcs_cpu_history.append((NOW - time_stamp, random.randint(20, 30)))
         CTX.dcs_mem_history.append((NOW - time_stamp, random.randint(60, 70)))
-        CTX.server_bytes_recv_history.append(
-            (NOW - time_stamp, random.randint(0, 50000000)))
-        CTX.server_bytes_sent_history.append(
-            (NOW - time_stamp, random.randint(0, 50000000)))
+
+        SKIP += 1
+        if SKIP > 20:
+            SKIP = 0
+            CTX.server_bytes_recv_history.append(
+                (NOW - time_stamp, random.randint(0, 50000000)))
+            CTX.server_bytes_sent_history.append(
+                (NOW - time_stamp, random.randint(0, 50000000)))
+
         if time_stamp <= int(TOTAL_SECONDS / 2):
             CTX.server_cpu_history.append(
                 (NOW - time_stamp, random.randint(20, 30)))
@@ -353,4 +347,4 @@ if __name__ == '__main__':
     TIME_DELTA = datetime.datetime.now() - TIME_DELTA
     TIME_DELTA = TIME_DELTA.timestamp()
 
-    make_history_graph(minutes=5, show=True)
+    make_history_graph(hours=5, save_path='./test.png')

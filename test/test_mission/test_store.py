@@ -8,7 +8,13 @@ from pathlib import Path
 
 import pytest
 
+from esst import core
 from esst.mission import store
+
+
+@pytest.fixture(autouse=True)
+def _setup():
+    core.FS.dcs_mission_folder = Path('.')
 
 
 def _random_file_name(size=6, chars=string.ascii_uppercase + string.digits):

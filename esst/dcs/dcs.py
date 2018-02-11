@@ -53,7 +53,6 @@ class App:
         self._app = None
         self.process_pid = None
         self._restart_ok = True
-        self.dcs_exe = core.FS.get_dcs_exe(core.CFG.dcs_path)
         self._blockers_warned = set()
         self._warned = False
         # self._additional_parameters = []
@@ -75,19 +74,17 @@ class App:
 
     # noinspection PyMethodMayBeStatic
     async def _get_dcs_version_from_executable(self):
-        if not self.dcs_exe.exists():
-            raise RuntimeError(f'dcs.exe not found: {self.dcs_exe}')
         # noinspection PyBroadException
-        core.Status.dcs_version = utils.Win32FileInfo(str(self.dcs_exe.absolute())).file_version
+        core.Status.dcs_version = utils.Win32FileInfo(str(core.FS.dcs_exe)).file_version
         LOGGER.debug(f'DCS version: {core.Status.dcs_version}')
         simplified_version = int(''.join(core.Status.dcs_version.split('.')[:3]))
         LOGGER.debug(f'simplified version: {simplified_version}')
         if simplified_version <= 157:
             pass
         elif simplified_version >= 158:
-            mission_editor_lua.inject_mission_editor_code(core.CFG.dcs_path)
-            autoexec_cfg.inject_silent_crash_report(core.CFG.dcs_path)
-        setup_config_for_dedicated_run(core.CFG.dcs_path)
+            mission_editor_lua.inject_mission_editor_code()
+            autoexec_cfg.inject_silent_crash_report()
+        setup_config_for_dedicated_run()
         return True
 
     async def _check_if_dcs_is_running(self):
@@ -106,7 +103,7 @@ class App:
             self._app = psutil.Process(self.process_pid)
             await self._wait_for_dcs_to_start()
 
-    async def _wait_for_dcs_to_start(self):  # noqa: C901
+    async def _wait_for_dcs_to_start(self):
 
         async def _wait_for_process():
             while True:
@@ -177,8 +174,8 @@ class App:
     async def _start_new_dcs_application_if_needed(self):
 
         async def _start_dcs_app():
-            LOGGER.debug(f'starting DCS application process: {self.dcs_exe}')
-            self._app = psutil.Popen(str(self.dcs_exe.absolute()))
+            LOGGER.debug(f'starting DCS application process: {core.FS.dcs_exe}')
+            self._app = psutil.Popen(str(core.FS.dcs_exe))
 
         if self.app and self.app.is_running():
             return

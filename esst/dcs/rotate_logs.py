@@ -13,7 +13,7 @@ LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def _log_dir() -> Path:
-    return Path(FS.saved_games_path, 'DCS/logs')
+    return FS.dcs_logs_dir
 
 
 def _save_old_log(old_log: Path):
