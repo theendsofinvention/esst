@@ -17,7 +17,6 @@ except ImportError:
 
     winreg = MagicMock()
 
-
 LOGGER = logging.getLogger('ESST').getChild(__name__)
 
 A_REG = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
@@ -130,7 +129,6 @@ class FS:
         if not cfg.saved_games_dir:
             LOGGER.debug('no Saved Games path in Config, looking it up')
             return FS._get_saved_games_from_registry()
-
 
         LOGGER.debug('Saved Games path found in Config')
         base_sg = Path(cfg.saved_games_dir)
