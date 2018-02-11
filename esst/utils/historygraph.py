@@ -132,7 +132,7 @@ def _plot_axis(grid_spec, grid_pos,  # pylint: disable=too-many-arguments
     return axis
 
 
-# pylint: disable=too-many-arguments
+# pylint: disable=too-many-arguments,too-many-locals
 def _get_axis(
         grid_spec,
         now,
@@ -319,16 +319,16 @@ if __name__ == '__main__':
 
     PLAYER_COUNT = 0
     CTX.players_history.append((NOW - TOTAL_SECONDS, 0))
-    skip = 0
+    SKIP = 0
     for time_stamp in range(TOTAL_SECONDS, 0, -10):
         CTX.server_mem_history.append(
             (NOW - time_stamp, random.randint(60, 70)))
         CTX.dcs_cpu_history.append((NOW - time_stamp, random.randint(20, 30)))
         CTX.dcs_mem_history.append((NOW - time_stamp, random.randint(60, 70)))
 
-        skip += 1
-        if skip > 20:
-            skip = 0
+        SKIP += 1
+        if SKIP > 20:
+            SKIP = 0
             CTX.server_bytes_recv_history.append(
                 (NOW - time_stamp, random.randint(0, 50000000)))
             CTX.server_bytes_sent_history.append(
