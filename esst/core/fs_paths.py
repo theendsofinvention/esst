@@ -139,6 +139,86 @@ class FS:
         return base_sg
 
 
+def _init_saved_games(cfg):
+    FS.saved_games_path = FS.discover_saved_games_path(cfg)
+    LOGGER.debug(f'Saved Games path: {FS.saved_games_path}')
+
+
+def _init_dcs_path(cfg):
+    FS.dcs_path = elib.path.ensure_dir(
+        cfg.dcs_path
+    ).absolute()
+    LOGGER.debug(f'DCS path: {FS.dcs_path}')
+
+
+def _init_dcs_exe():
+    FS.dcs_exe = elib.path.ensure_file(
+        FS.dcs_path,
+        'bin/dcs.exe'
+    ).absolute()
+    LOGGER.debug(f'DCS exe: {FS.dcs_exe}')
+
+
+def _init_saved_games_variant():
+    FS.variant_saved_games_path = FS.get_saved_games_variant(
+        FS.dcs_path
+    ).absolute()
+    LOGGER.debug(f'Saved Games variant: {FS.variant_saved_games_path}')
+
+
+def _init_autoexec_cfg():
+    FS.dcs_autoexec_file = Path(
+        FS.variant_saved_games_path,
+        'Config/autoexec.cfg'
+    ).absolute()
+    LOGGER.debug(f'DCS autoexec: {FS.dcs_autoexec_file}')
+
+
+def _init_mission_editor_lua():
+    FS.mission_editor_lua_file = elib.path.ensure_file(
+        FS.dcs_path,
+        'MissionEditor/MissionEditor.lua'
+    ).absolute()
+    LOGGER.debug(f'Mission Editor lua file: {FS.mission_editor_lua_file}')
+
+
+def _init_hooks():
+    FS.dcs_hook_path = elib.path.ensure_file(
+        FS.variant_saved_games_path,
+        'Scripts/Hooks/esst.lua',
+        must_exist=False
+    ).absolute()
+    LOGGER.debug(f'DCS hook: {FS.dcs_hook_path}')
+
+
+def _init_mission_folder():
+    FS.dcs_mission_folder = elib.path.ensure_dir(
+        FS.variant_saved_games_path,
+        'Missions/ESST',
+        must_exist=False,
+        create=True
+    ).absolute()
+    LOGGER.debug(f'DCS mission folder: {FS.dcs_mission_folder}')
+
+
+def _init_server_settings():
+    FS.dcs_server_settings = elib.path.ensure_file(
+        FS.variant_saved_games_path,
+        'Config/serverSettings.lua',
+        must_exist=False
+    ).absolute()
+    LOGGER.debug(f'DCS server settings: {FS.dcs_server_settings}')
+
+
+def _init_logs_folder():
+    FS.dcs_logs_dir = elib.path.ensure_path(
+        FS.variant_saved_games_path,
+        'logs',
+        must_exist=False,
+    ).absolute()
+    LOGGER.debug(f'DCS log folder: {FS.dcs_logs_dir}')
+
+
 def init_fs(cfg: ESSTConfig):
     """
     Initializes File System paths
@@ -148,64 +228,14 @@ def init_fs(cfg: ESSTConfig):
 
     """
     LOGGER.debug('init')
-
-    FS.saved_games_path = FS.discover_saved_games_path(cfg)
-    LOGGER.debug(f'Saved Games path: {FS.saved_games_path}')
-
-    FS.dcs_path = elib.path.ensure_dir(
-        cfg.dcs_path
-    ).absolute()
-    LOGGER.debug(f'DCS path: {FS.dcs_path}')
-
-    FS.dcs_exe = elib.path.ensure_file(
-        FS.dcs_path,
-        'bin/dcs.exe'
-    ).absolute()
-    LOGGER.debug(f'DCS exe: {FS.dcs_exe}')
-
-    FS.variant_saved_games_path = FS.get_saved_games_variant(
-        FS.dcs_path
-    ).absolute()
-    LOGGER.debug(f'Saved Games variant: {FS.variant_saved_games_path}')
-
-    FS.dcs_autoexec_file = Path(
-        FS.variant_saved_games_path,
-        'Config/autoexec.cfg'
-    ).absolute()
-    LOGGER.debug(f'DCS autoexec: {FS.dcs_autoexec_file}')
-
-    FS.mission_editor_lua_file = elib.path.ensure_file(
-        FS.dcs_path,
-        'MissionEditor/MissionEditor.lua'
-    ).absolute()
-    LOGGER.debug(f'Mission Editor lua file: {FS.mission_editor_lua_file}')
-
-    FS.dcs_hook_path = elib.path.ensure_file(
-        FS.variant_saved_games_path,
-        'Scripts/Hooks/esst.lua',
-        must_exist=False
-    ).absolute()
-    LOGGER.debug(f'DCS hook: {FS.dcs_hook_path}')
-
-    FS.dcs_mission_folder = elib.path.ensure_dir(
-        FS.variant_saved_games_path,
-        'Missions/ESST',
-        must_exist=False,
-        create=True
-    ).absolute()
-    LOGGER.debug(f'DCS mission folder: {FS.dcs_mission_folder}')
-
-    FS.dcs_server_settings = elib.path.ensure_file(
-        FS.variant_saved_games_path,
-        'Config/serverSettings.lua',
-        must_exist=False
-    ).absolute()
-    LOGGER.debug(f'DCS server settings: {FS.dcs_server_settings}')
-
-    FS.dcs_logs_dir = elib.path.ensure_path(
-        FS.variant_saved_games_path,
-        'logs',
-        must_exist=False,
-    ).absolute()
-    LOGGER.debug(f'DCS log folder: {FS.dcs_logs_dir}')
+    _init_saved_games(cfg)
+    _init_dcs_path(cfg)
+    _init_dcs_exe()
+    _init_saved_games_variant()
+    _init_autoexec_cfg()
+    _init_mission_editor_lua()
+    _init_hooks()
+    _init_mission_folder()
+    _init_server_settings()
+    _init_logs_folder()
     LOGGER.debug('FS paths initialised')
