@@ -154,6 +154,7 @@ def _get_axis(
         grid_spec,
         now,
         values,
+        grid_pos,
         values_list: typing.List[typing.Any],
         labels_list: typing.List[str],
         title: str,
@@ -163,18 +164,19 @@ def _get_axis(
         share_x=None,
 ):
     lines_to_plot = set()
+    styles = ['r', 'b']
     for _values, _label in zip(values_list, labels_list):
         lines_to_plot.add(
             PlotLine(
                 values=_values,
-                style='r',
+                style=styles.pop(),
                 label=_label
             )
         )
     axis = _plot_axis(grid_spec,
                       now=now,
                       values_to_plot=lines_to_plot,
-                      grid_pos=0,
+                      grid_pos=grid_pos,
                       title=title,
                       y_label_text=y_label,
                       values=values,
@@ -189,6 +191,7 @@ def _plot_server(grid_spec, values, now):
         grid_spec=grid_spec,
         now=now,
         values=values,
+        grid_pos=0,
         values_list=[values.server_cpu_history, values.server_mem_history],
         labels_list=['CPU', 'Memory'],
         title='Server stats',
@@ -205,6 +208,7 @@ def _plot_dcs(grid_spec, values, now, share_x=None):
         grid_spec=grid_spec,
         now=now,
         values=values,
+        grid_pos=1,
         values_list=[values.dcs_cpu_history, values.dcs_mem_history],
         labels_list=['CPU', 'Memory'],
         title='DCS stats',
@@ -222,8 +226,9 @@ def _plot_bandwidth(grid_spec, values, now, share_x=None):
         grid_spec=grid_spec,
         now=now,
         values=values,
+        grid_pos=2,
         values_list=[values.server_bytes_sent_history, values.server_bytes_recv_history],
-        labels_list=['CPU', 'Memory'],
+        labels_list=['Bytes sent', 'Bytes received'],
         title='Bytes sent',
         y_label='Bytes received',
         visible_x=True,
@@ -353,4 +358,4 @@ if __name__ == '__main__':
     TIME_DELTA = datetime.datetime.now() - TIME_DELTA
     TIME_DELTA = TIME_DELTA.timestamp()
 
-    make_history_graph(minutes=5, show=True)
+    make_history_graph(hours=5, save_path='./test.png')
