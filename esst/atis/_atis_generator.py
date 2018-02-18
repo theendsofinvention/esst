@@ -3,6 +3,7 @@
 Generates ATIS from METAR
 """
 
+import threading
 import typing
 from pathlib import Path
 
@@ -10,7 +11,6 @@ import elib.tts
 import emiz.weather
 
 from esst import core
-
 from ._atis_airfields import ALL_AIRFIELDS
 from ._atis_identifier import get_random_identifier
 from ._atis_objects import ATISForAirfield
@@ -21,21 +21,21 @@ LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 def _build_speech_for_airfield(airfield, wind_dir, speech_atis, ur_settings) -> ATISForAirfield:
-    LOGGER.debug(f'processing airfield: {airfield.icao}')
+    LOGGER.debug(f'{airfield.icao}: processing')
     atis_file = Path(f'{airfield.icao}.mp3').absolute()
-    LOGGER.debug(f'ATIS file path: {atis_file}')
+    LOGGER.debug(f'{airfield.icao}: ATIS file path: {atis_file}')
     active_runway = airfield.get_active_runway(wind_dir)
-    LOGGER.debug(f'active runway: {active_runway.long_name()}')
-    speech_intro = f'ATIS for {airfield.name}'
-    LOGGER.debug(f'ATIS intro: {speech_intro}')
+    LOGGER.debug(f'{airfield.icao}: active runway: {active_runway.long_name()}')
+    speech_intro = f'{airfield.icao}: ATIS for {airfield.name}'
+    LOGGER.debug(f'{airfield.icao}: ATIS intro: {speech_intro}')
     speech_active_runway = f'Active runway {active_runway.long_name()}'
-    LOGGER.debug(f'active runway speech: {speech_active_runway}')
+    LOGGER.debug(f'{airfield.icao}: active runway speech: {speech_active_runway}')
     information_identifier, information_letter = get_random_identifier()
     speech_information = f'Advise you have information, {information_identifier}, on first contact.'
-    LOGGER.debug(f'speech information: {speech_information}')
+    LOGGER.debug(f'{airfield.icao}: speech information: {speech_information}')
     full_speech = '. '.join([speech_intro, speech_atis, speech_active_runway, speech_information])
-    LOGGER.debug(f'full speech: {full_speech}')
-    LOGGER.debug(f'writing MP3 file for: {airfield.icao}')
+    LOGGER.debug(f'{airfield.icao}: full speech: {full_speech}')
+    LOGGER.debug(f'{airfield.icao}: writing MP3 file for: {airfield.icao}')
     elib.tts.text_to_speech(full_speech, Path(atis_file), True)
     ur_settings.add_station(airfield)
     return ATISForAirfield(airfield.icao, active_runway, information_identifier, information_letter)
@@ -74,16 +74,25 @@ def generate_atis(metar_str: str,
     if exclude_icao:
         exclude_icao = [icao.upper() for icao in exclude_icao]
 
+    threads = []
     for airfield in ALL_AIRFIELDS:
         if core.CTX.exit:
             break
         if include_icao and airfield.icao.upper() not in include_icao:
-            LOGGER(f'skipping not included ICAO: {airfield.icao}')
+            LOGGER(f'{airfield.icao}: skipping (not included)')
             continue
         if exclude_icao and airfield.icao.upper() in exclude_icao:
-            LOGGER(f'skipping excluded ICAO: {airfield.icao}')
+            LOGGER(f'{airfield.icao}: skipping (excluded)')
             continue
-        active_atis[airfield.icao] = _build_speech_for_airfield(airfield, wind_dir, speech_atis, ur_settings)
+
+        thread = threading.Thread(
+            target=_build_speech_for_airfield,
+            args=(airfield, wind_dir, speech_atis, ur_settings)
+        )
+        threads.append(thread)
+        thread.start()
+    for job in threads:
+        job.join()
 
     list_of_active_icao = ', '.join(active_atis.keys())
     LOGGER.debug(f'generated {len(active_atis)} ATIS for: {list_of_active_icao})')
