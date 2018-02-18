@@ -315,19 +315,19 @@ Credits
 -  `Pikey <https://forums.eagle.ru/member.php?u=62835>`__
 
 .. |OSI| image:: https://badges.frapsoft.com/os/v3/open-source-200x33.png?v=103
-	:target: https://github.com/ellerbrock/open-source-badges/
+    :target: https://github.com/ellerbrock/open-source-badges/
     :alt: '<3 Open Source'
 .. |license| image:: https://img.shields.io/github/license/132nd-etcher/esst.svg
-	:target: https://www.gnu.org/licenses/gpl-3.0.en.html
-	:alt: 'License'
+    :target: https://www.gnu.org/licenses/gpl-3.0.en.html
+    :alt: 'License'
 .. |av| image:: https://img.shields.io/appveyor/ci/132nd-etcher/esst/master.svg?label=master
     :target: https://ci.appveyor.com/project/132nd-etcher/esst
     :alt: 'Appveyor build'
 .. |codacy| image:: https://api.codacy.com/project/badge/Grade/e0b191c3a7b64c3d907297375a120804
-	:target: https://www.codacy.com/app/132nd-etcher/ESST
+    :target: https://www.codacy.com/app/132nd-etcher/ESST
     :alt: 'Codacy grade'
 .. |coverage| image:: https://api.codacy.com/project/badge/Coverage/e0b191c3a7b64c3d907297375a120804
-	:target: https://www.codacy.com/app/132nd-etcher/ESST
+    :target: https://www.codacy.com/app/132nd-etcher/ESST
     :alt: 'Codacy coverage'
 .. |graph| image:: https://graphs.waffle.io/132nd-etcher/esst/throughput.svg
     :target: https://waffle.io/132nd-etcher/esst/metrics/throughput
@@ -335,14 +335,14 @@ Credits
 .. |requires| image:: https://requires.io/github/132nd-vWing/ESST/requirements.svg?branch=master
     :target: https://requires.io/github/132nd-vWing/ESST/requirements/?branch=master
     :alt: 'Requires.io'
-.. |ccissues| image:: https://img.shields.io/codeclimate/issues/github/132nd-etcher/esst.svg
-    :target: https://codeclimate.com/github/132nd-etcher/esst
+.. |ccissues| image:: https://img.shields.io/codeclimate/issues/github/132nd-vWing/ESST.svg
+    :target: https://codeclimate.com/github/132nd-vWing/esst
     :alt: 'CodeClimate issues'
-.. |ccmain| image:: https://img.shields.io/codeclimate/maintainability/132nd-etcher/essts.svg
-    :target: https://codeclimate.com/github/132nd-etcher/esst
+.. |ccmain| image:: https://img.shields.io/codeclimate/maintainability/132nd-vWing/ESST.svg
+    :target: https://codeclimate.com/github/132nd-vWing/esst
     :alt: 'CodeClimate maintainability'
-.. |bch| image:: https://bettercodehub.com/edge/badge/132nd-etcher/esst?branch=master
-    :target: https://bettercodehub.com/results/132nd-etcher/esst
+.. |bch| image:: https://bettercodehub.com/edge/badge/132nd-vWing/ESST?branch=master
+    :target: https://bettercodehub.com/results/132nd-vWing/ESST
     :alt: 'BetterCodeHub'
 .. |bp| image:: https://bestpractices.coreinfrastructure.org/projects/1380/badge
     :target: https://bestpractices.coreinfrastructure.org/projects/1380
