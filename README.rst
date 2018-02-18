@@ -7,9 +7,16 @@ ESST stands for Etcher's Server Startup Tool.
 |OSI|
 
 |license|
+|av|
+|codacy|
+|coverage|
+|ccissues|
+|ccmain|
+|requires|
+|bch|
+|bp|
 
-|av_master| |av_develop|
-|codacy| |coverage|
+|graph|
 
 Important
 ---------
@@ -309,14 +316,38 @@ Credits
 
 
 .. |OSI| image:: https://badges.frapsoft.com/os/v3/open-source-200x33.png?v=103
-   :target: https://github.com/ellerbrock/open-source-badges/
-.. |license| image:: https://img.shields.io/github/license/132nd-etcher/ELIB.svg
-   :target: https://www.gnu.org/licenses/gpl-3.0.en.html
-.. |av_master| image:: https://img.shields.io/appveyor/ci/132nd-etcher/esst/master.svg?label=master
-   :target: https://ci.appveyor.com/project/132nd-etcher/epab
-.. |av_develop| image:: https://img.shields.io/appveyor/ci/132nd-etcher/esst/develop.svg?label=develop
-   :target: https://ci.appveyor.com/project/132nd-etcher/epab
+	:target: https://github.com/ellerbrock/open-source-badges/
+    :alt: '<3 Open Source'
+.. |license| image:: https://img.shields.io/github/license/132nd-etcher/esst.svg
+	:target: https://www.gnu.org/licenses/gpl-3.0.en.html
+	:alt: 'License'
+.. |av| image:: https://img.shields.io/appveyor/ci/132nd-etcher/esst/master.svg?label=master
+    :target: https://ci.appveyor.com/project/132nd-etcher/esst
+    :alt: 'Appveyor build'
 .. |codacy| image:: https://img.shields.io/codacy/grade/e0b191c3a7b64c3d907297375a120804.svg
-   :target: https://www.codacy.com/app/132nd-etcher/epab
+	:target: https://www.codacy.com/app/132nd-etcher/esst
+    :alt: 'Codacy grade'
 .. |coverage| image:: https://img.shields.io/codacy/coverage/e0b191c3a7b64c3d907297375a120804.svg
-   :target: https://www.codacy.com/app/132nd-etcher/epab
+	:target: https://www.codacy.com/app/132nd-etcher/esst
+    :alt: 'Codacy coverage'
+.. |graph| image:: https://graphs.waffle.io/132nd-etcher/esst/throughput.svg
+    :target: https://waffle.io/132nd-etcher/esst/metrics/throughput
+    :alt: 'Throughput Graph'
+.. |requires| image:: https://requires.io/github/132nd-etcher/esst/requirements.svg?branch=master
+    :target: https://requires.io/github/132nd-etcher/esst/requirements/?branch=master
+    :alt: 'Requires.io'
+.. |ccissues| image:: https://img.shields.io/codeclimate/issues/github/132nd-etcher/esst.svg
+    :target: https://codeclimate.com/github/132nd-etcher/esst
+    :alt: 'CodeClimate issues'
+.. |ccmain| image:: https://img.shields.io/codeclimate/maintainability/132nd-etcher/essts.svg
+    :target: https://codeclimate.com/github/132nd-etcher/esst
+    :alt: 'CodeClimate maintainability'
+.. |bch| image:: https://bettercodehub.com/edge/badge/132nd-etcher/esst?branch=master
+    :target: https://bettercodehub.com/results/132nd-etcher/esst
+    :alt: 'BetterCodeHub'
+.. |bp| image:: https://bestpractices.coreinfrastructure.org/projects/1380/badge
+    :target: https://bestpractices.coreinfrastructure.org/projects/1380
+    :alt: 'OSI Best Practices'
+.. |cf| image:: https://www.codefactor.io/repository/github/132nd-etcher/esst/badge
+    :target: https://www.codefactor.io/repository/github/132nd-etcher/esst
+    :alt: 'CodeFactor'
