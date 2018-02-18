@@ -15,6 +15,7 @@ ESST stands for Etcher's Server Startup Tool.
 |requires|
 |bch|
 |bp|
+|cf|
 
 |graph|
 
