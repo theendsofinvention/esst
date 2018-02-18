@@ -1,7 +1,7 @@
 ESST
 ====
 
-ESST stands for Etcher's Server Startup Tool.
+Etcher's Server Startup Tool.
 
 
 |OSI|
@@ -337,17 +337,17 @@ Credits
 .. |graph| image:: https://graphs.waffle.io/132nd-etcher/esst/throughput.svg
     :target: https://waffle.io/132nd-etcher/esst/metrics/throughput
     :alt: 'Throughput Graph'
-.. |requires| image:: https://requires.io/github/132nd-vWing/esst/requirements.svg?branch=master
-    :target: https://requires.io/github/132nd-vWing/esst/requirements/?branch=master
+.. |requires| image:: https://requires.io/github/132nd-vWing/ESST/requirements.svg?branch=master
+    :target: https://requires.io/github/132nd-vWing/ESST/requirements/?branch=master
     :alt: 'Requires.io'
-.. |ccissues| image:: https://img.shields.io/codeclimate/issues/github/132nd-etcher/esst.svg
-    :target: https://codeclimate.com/github/132nd-etcher/esst
+.. |ccissues| image:: https://img.shields.io/codeclimate/issues/github/132nd-vWing/ESST.svg
+    :target: https://codeclimate.com/github/132nd-vWing/ESST
     :alt: 'CodeClimate issues'
-.. |ccmain| image:: https://img.shields.io/codeclimate/maintainability/132nd-etcher/essts.svg
-    :target: https://codeclimate.com/github/132nd-etcher/esst
+.. |ccmain| image:: https://img.shields.io/codeclimate/maintainability/132nd-vWing/ESST.svg
+    :target: https://codeclimate.com/github/132nd-vWing/ESST
     :alt: 'CodeClimate maintainability'
-.. |bch| image:: https://bettercodehub.com/edge/badge/132nd-etcher/esst?branch=master
-    :target: https://bettercodehub.com/results/132nd-etcher/esst
+.. |bch| image:: https://bettercodehub.com/edge/badge/132nd-vWing/ESST?branch=master
+    :target: https://bettercodehub.com/results/132nd-vWing/ESST
     :alt: 'BetterCodeHub'
 .. |bp| image:: https://bestpractices.coreinfrastructure.org/projects/1380/badge
     :target: https://bestpractices.coreinfrastructure.org/projects/1380
