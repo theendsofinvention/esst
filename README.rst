@@ -314,7 +314,6 @@ Credits
 -  `Ciribob <https://forums.eagle.ru/member.php?u=112175>`__
 -  `Pikey <https://forums.eagle.ru/member.php?u=62835>`__
 
-
 .. |OSI| image:: https://badges.frapsoft.com/os/v3/open-source-200x33.png?v=103
 	:target: https://github.com/ellerbrock/open-source-badges/
     :alt: '<3 Open Source'
@@ -324,17 +323,17 @@ Credits
 .. |av| image:: https://img.shields.io/appveyor/ci/132nd-etcher/esst/master.svg?label=master
     :target: https://ci.appveyor.com/project/132nd-etcher/esst
     :alt: 'Appveyor build'
-.. |codacy| image:: https://img.shields.io/codacy/grade/e0b191c3a7b64c3d907297375a120804.svg
+.. |codacy| image:: https://api.codacy.com/project/badge/Grade/e0b191c3a7b64c3d907297375a120804
 	:target: https://www.codacy.com/app/132nd-etcher/ESST
     :alt: 'Codacy grade'
-.. |coverage| image:: https://img.shields.io/codacy/coverage/e0b191c3a7b64c3d907297375a120804.svg
+.. |coverage| image:: https://api.codacy.com/project/badge/Coverage/e0b191c3a7b64c3d907297375a120804
 	:target: https://www.codacy.com/app/132nd-etcher/ESST
     :alt: 'Codacy coverage'
 .. |graph| image:: https://graphs.waffle.io/132nd-etcher/esst/throughput.svg
     :target: https://waffle.io/132nd-etcher/esst/metrics/throughput
     :alt: 'Throughput Graph'
-.. |requires| image:: https://requires.io/github/132nd-vWing/esst/requirements.svg?branch=master
-    :target: https://requires.io/github/132nd-vWing/esst/requirements/?branch=master
+.. |requires| image:: https://requires.io/github/132nd-vWing/ESST/requirements.svg?branch=master
+    :target: https://requires.io/github/132nd-vWing/ESST/requirements/?branch=master
     :alt: 'Requires.io'
 .. |ccissues| image:: https://img.shields.io/codeclimate/issues/github/132nd-etcher/esst.svg
     :target: https://codeclimate.com/github/132nd-etcher/esst
