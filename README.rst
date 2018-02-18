@@ -336,10 +336,10 @@ Credits
     :target: https://requires.io/github/132nd-vWing/ESST/requirements/?branch=master
     :alt: 'Requires.io'
 .. |ccissues| image:: https://img.shields.io/codeclimate/issues/github/132nd-vWing/ESST.svg
-    :target: https://codeclimate.com/github/132nd-vWing/esst
+    :target: https://codeclimate.com/github/132nd-vWing/ESST
     :alt: 'CodeClimate issues'
 .. |ccmain| image:: https://img.shields.io/codeclimate/maintainability/132nd-vWing/ESST.svg
-    :target: https://codeclimate.com/github/132nd-vWing/esst
+    :target: https://codeclimate.com/github/132nd-vWing/ESST
     :alt: 'CodeClimate maintainability'
 .. |bch| image:: https://bettercodehub.com/edge/badge/132nd-vWing/ESST?branch=master
     :target: https://bettercodehub.com/results/132nd-vWing/ESST
