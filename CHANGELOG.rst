@@ -1,5 +1,67 @@
 Changelog
 =========
+0.1.87 (2018-02-18)
+-------------------
+Changes
+~~~~~~~
+- Atis multiprocessing (#93) [132nd-etcher]
+  * reduce ATIS generation time
+  Down from ~40 seconds to ~3 seconds
+  * update reqs
+  * update reqs
+0.1.87a+atis-multiprocessing3 (2018-02-18)
+------------------------------------------
+- Update reqs. [132nd-etcher]
+- Update reqs. [132nd-etcher]
+- Reduce ATIS generation time. [132nd-etcher]
+  Down from ~40 seconds to ~3 seconds
+0.1.86 (2018-02-11)
+-------------------
+Fix
+~~~
+- Fix saved games folder (#91) [132nd-etcher]
+  * major refactor
+  * linting
+  * variant should return absolute path
+  * remove unnecessary else clauses
+  * fix tests
+  * linting
+  * fix a few issues with the historygraph
+  * ignore test files
+  * simplify historygraph
+  * linting
+  * remove useless try block
+  * slight refac of fs_paths init
+  * fix tests
+  * reduce complexity
+  * linting
+  fix #89
+0.1.86a+89-saved-games-folder16 (2018-02-11)
+--------------------------------------------
+- Linting. [132nd-etcher]
+- Reduce complexity. [132nd-etcher]
+0.1.86a+89-saved-games-folder14 (2018-02-11)
+--------------------------------------------
+- Fix tests. [132nd-etcher]
+- Slight refac of fs_paths init. [132nd-etcher]
+- Remove useless try block. [132nd-etcher]
+- Linting. [132nd-etcher]
+- Simplify historygraph. [132nd-etcher]
+- Ignore test files. [132nd-etcher]
+- Fix a few issues with the historygraph. [132nd-etcher]
+- Linting. [132nd-etcher]
+- Fix tests. [132nd-etcher]
+- Remove unnecessary else clauses. [132nd-etcher]
+- Variant should return absolute path. [132nd-etcher]
+- Linting. [132nd-etcher]
+- Major refactor. [132nd-etcher]
+0.1.85a+clean-dupes4 (2018-02-11)
+---------------------------------
+- Clean duplicate code. [132nd-etcher]
+0.1.84a+setuptools-scm3 (2018-02-03)
+------------------------------------
+- Linting. [132nd-etcher]
+- Remove versioneer. [132nd-etcher]
 0.1.83 (2018-01-23)
 -------------------
 Fix
