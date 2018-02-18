@@ -6,6 +6,7 @@ ESST stands for Etcher's Server Startup Tool.
 
 |OSI|
 
+|status|
 |license|
 |av|
 |codacy|
@@ -316,19 +317,22 @@ Credits
 
 
 .. |OSI| image:: https://badges.frapsoft.com/os/v3/open-source-200x33.png?v=103
-	:target: https://github.com/ellerbrock/open-source-badges/
+    :target: https://github.com/ellerbrock/open-source-badges/
     :alt: '<3 Open Source'
+.. |status| image:: https://img.shields.io/pypi/status/esst.svg
+    :target: https://pypi.python.org/pypi/esst/
+    :alt: 'Cheese shop'
 .. |license| image:: https://img.shields.io/github/license/132nd-etcher/esst.svg
-	:target: https://www.gnu.org/licenses/gpl-3.0.en.html
-	:alt: 'License'
+    :target: https://www.gnu.org/licenses/gpl-3.0.en.html
+    :alt: 'License'
 .. |av| image:: https://img.shields.io/appveyor/ci/132nd-etcher/esst/master.svg?label=master
     :target: https://ci.appveyor.com/project/132nd-etcher/esst
     :alt: 'Appveyor build'
 .. |codacy| image:: https://img.shields.io/codacy/grade/e0b191c3a7b64c3d907297375a120804.svg
-	:target: https://www.codacy.com/app/132nd-etcher/ESST
+    :target: https://www.codacy.com/app/132nd-etcher/ESST
     :alt: 'Codacy grade'
 .. |coverage| image:: https://img.shields.io/codacy/coverage/e0b191c3a7b64c3d907297375a120804.svg
-	:target: https://www.codacy.com/app/132nd-etcher/ESST
+    :target: https://www.codacy.com/app/132nd-etcher/ESST
     :alt: 'Codacy coverage'
 .. |graph| image:: https://graphs.waffle.io/132nd-etcher/esst/throughput.svg
     :target: https://waffle.io/132nd-etcher/esst/metrics/throughput
