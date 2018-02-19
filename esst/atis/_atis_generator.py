@@ -26,7 +26,7 @@ def _build_speech_for_airfield(airfield, wind_dir, speech_atis, ur_settings) -> 
     LOGGER.debug(f'{airfield.icao}: ATIS file path: {atis_file}')
     active_runway = airfield.get_active_runway(wind_dir)
     LOGGER.debug(f'{airfield.icao}: active runway: {active_runway.long_name()}')
-    speech_intro = f'{airfield.icao}: ATIS for {airfield.name}'
+    speech_intro = f'ATIS for {airfield.name}'
     LOGGER.debug(f'{airfield.icao}: ATIS intro: {speech_intro}')
     speech_active_runway = f'Active runway {active_runway.long_name()}'
     LOGGER.debug(f'{airfield.icao}: active runway speech: {speech_active_runway}')
