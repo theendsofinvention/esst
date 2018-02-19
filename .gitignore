@@ -76,3 +76,4 @@ esst.yml*
 *.mp3
 /.gitchangelog.rc
 /*.png
+/doitall.cmd
