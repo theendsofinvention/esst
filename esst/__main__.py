@@ -8,6 +8,7 @@ import queue
 from pathlib import Path
 
 import click
+import elib
 
 from esst import __version__
 from esst.core import CFG, CTX, MAIN_LOGGER, fs_paths
@@ -58,6 +59,8 @@ def main(
         start_dcs: start the server thread, but not the actual DCS app
         auto_mission: downloads the latest mission from Github
     """
+    if CFG.debug:
+        elib.custom_logging.set_handler_level('ESST', 'ch', 'debug')
 
     if CFG.sentry_dsn:
         from esst.utils.sentry import Sentry
