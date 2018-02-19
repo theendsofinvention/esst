@@ -44,66 +44,15 @@ class ESSTConfig(BaseConfig,
     def __init__(self):
         BaseConfig.__init__(self, 'esst')
 
-    @ConfigProp(bool, default=False)
-    def debug(self):
-        """
-        Outputs debug messages on the console
-        """
-        pass
-
-    @ConfigProp(str, default='')
-    def restart(self):
-        """
-        Outputs debug messages on the console
-        """
-        pass
-
-    @ConfigProp(str, default='')
-    def saved_games_dir(self):
-        """
-        Path to "Saved Games" folder
-        """
-        pass
-
+    debug = ConfigProp(bool, default='false')
+    restart = ConfigProp(str, default='')
+    saved_games_dir = ConfigProp(str, default='')
     # noinspection SpellCheckingInspection
-    @ConfigProp(str, 'https://85518bcfd75a400eaf3821830ec1c4b2:a622d4e7a4ab4ec9ade873ad96b8d4aa@sentry.io/206995')
-    def sentry_dsn(self):
-        """
-        Optional Sentry DSN to send crash reports
-        """
-        pass
-
-    @ConfigProp(bool, True)
-    def start_server_loop(self):
-        """
-        Starts the server loop ("server" is the machine on which DCS is running)
-        """
-        pass
-
-    @ConfigProp(bool, True)
-    def start_dcs_loop(self):
-        """
-        Starts the DCS loop
-        """
-        pass
-
-    @ConfigProp(bool, True)
-    def start_discord_loop(self):
-        """
-        Starts the Discord bot loop
-        """
-        pass
-
-    @ConfigProp(bool, True)
-    def start_listener_loop(self):
-        """
-        Starts the listening socket loop
-        """
-        pass
-
-    @ConfigProp(bool, True)
-    def dcs_can_start(self):
-        """
-        Allow DCS application to actually start
-        """
-        pass
+    sentry_dsn = ConfigProp(
+        str,
+        default='https://85518bcfd75a400eaf3821830ec1c4b2:a622d4e7a4ab4ec9ade873ad96b8d4aa@sentry.io/206995'
+    )
+    start_server_loop = ConfigProp(bool, default='true')
+    start_dcs_loop = ConfigProp(bool, default='true')
+    start_discord_loop = ConfigProp(bool, default='true')
+    start_listener_loop = ConfigProp(bool, default='true')

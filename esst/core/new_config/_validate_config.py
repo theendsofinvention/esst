@@ -25,6 +25,7 @@ def validate_config(config_instance: ESSTConfig):
     """
     MAIN_LOGGER.debug('validating config')
     missing_values = []
+    print(config_instance.dcs_path)
     for attrib_name in dir(config_instance):
         if not attrib_name.startswith('_'):
             attrib = getattr(config_instance, attrib_name)
