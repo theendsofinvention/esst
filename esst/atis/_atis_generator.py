@@ -6,6 +6,7 @@ Generates ATIS from METAR
 import threading
 import typing
 from pathlib import Path
+import re
 
 import elib.tts
 import emiz.weather
@@ -15,12 +16,27 @@ from ._atis_airfields import ALL_AIRFIELDS
 from ._atis_identifier import get_random_identifier
 from ._atis_objects import ATISForAirfield
 from ._atis_status import Status
-from ._univers_radio import URVoiceService, URVoiceServiceSettings
+from ._univers_radio import URVoiceService, URVoiceServiceSettings, Airfield
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
+RE_CLOUD_COVER = re.compile(r'(SKC|FEW|BKN|OVC|NSC)[\d]{3}\. ')
 
-def _build_speech_for_airfield(airfield, wind_dir, speech_atis, ur_settings) -> ATISForAirfield:
+
+def _cleanup_full_speech(full_speech: str) -> str:
+    match = RE_CLOUD_COVER.search(full_speech)
+    if match:
+        full_speech = RE_CLOUD_COVER.sub('', full_speech)
+
+    return full_speech
+
+
+def _build_speech_for_airfield(
+        airfield: Airfield,
+        wind_dir: int,
+        speech_atis: str,
+        ur_settings: URVoiceServiceSettings
+) -> ATISForAirfield:
     LOGGER.debug(f'{airfield.icao}: processing')
     atis_file = Path(f'{airfield.icao}.mp3').absolute()
     LOGGER.debug(f'{airfield.icao}: ATIS file path: {atis_file}')
@@ -34,16 +50,20 @@ def _build_speech_for_airfield(airfield, wind_dir, speech_atis, ur_settings) -> 
     speech_information = f'Advise you have information, {information_identifier}, on first contact.'
     LOGGER.debug(f'{airfield.icao}: speech information: {speech_information}')
     full_speech = '. '.join([speech_intro, speech_atis, speech_active_runway, speech_information])
+    full_speech = _cleanup_full_speech(full_speech)
     LOGGER.debug(f'{airfield.icao}: full speech: {full_speech}')
     LOGGER.debug(f'{airfield.icao}: writing MP3 file for: {airfield.icao}')
+    print(full_speech)
     elib.tts.text_to_speech(full_speech, Path(atis_file), True)
     ur_settings.add_station(airfield)
     return ATISForAirfield(airfield.icao, active_runway, information_identifier, information_letter)
 
 
-def generate_atis(metar_str: str,
-                  include_icao: typing.List[str] = None,
-                  exclude_icao: typing.List[str] = None):
+def generate_atis(
+        metar_str: str,
+        include_icao: typing.List[str] = None,
+        exclude_icao: typing.List[str] = None
+):
     """
     Create MP3 from METAR
     """
@@ -55,11 +75,12 @@ def generate_atis(metar_str: str,
     LOGGER.debug('parsing METAR string')
     # noinspection SpellCheckingInspection
     metar_str = metar_str.replace('XXXX', 'UGTB')
+    metar_str = 'KORD 041656Z 19020G26KT 6SM -SHRA BKN070 12/08 A3016 RMK AO2'
     error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar_str)
     if error:
         LOGGER.error('failed to parse METAR')
         raise RuntimeError(metar)
-    wind_dir = metar.wind_dir.value()
+    wind_dir = int(metar.wind_dir.value())
     LOGGER.debug(f'wind direction: {wind_dir}')
     speech_atis = emiz.weather.AVWX.metar_to_speech(metar_str)
     core.CTX.atis_speech = speech_atis
@@ -73,6 +94,9 @@ def generate_atis(metar_str: str,
 
     if exclude_icao:
         exclude_icao = [icao.upper() for icao in exclude_icao]
+
+    atis = _build_speech_for_airfield(ALL_AIRFIELDS[0], wind_dir, speech_atis, ur_settings)
+    exit(0)
 
     threads = []
     for airfield in ALL_AIRFIELDS:
