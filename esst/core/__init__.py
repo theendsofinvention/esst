@@ -18,9 +18,9 @@ from .fs_paths import FS
 
 MAIN_LOGGER = elib.custom_logging.get_logger(
     logger_name='ESST',
-    log_to_file='esst.log',
-    rotate_logs=True,
+    log_to_file=True,
 )
+elib.custom_logging.set_handler_level('EMIZ.ESST', 'ch', 'info')
 
 MAIN_LOGGER.info(f'ESST version {__version__}')
 
