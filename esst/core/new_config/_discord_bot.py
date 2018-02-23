@@ -17,8 +17,6 @@ Type "!help" for a list of available commands
 """
 
 
-
-
 class DiscordConfig:
     """
     Manages config params for auto mission
