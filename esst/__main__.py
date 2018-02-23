@@ -3,9 +3,7 @@
 Main entry point
 """
 import asyncio
-import os
 import queue
-from pathlib import Path
 
 import click
 import elib
@@ -39,7 +37,6 @@ def _setup_sentry():
         CTX.sentry.register_context('Config', CFG)
 
 
-
 # pylint: disable=too-many-locals,too-many-arguments
 @click.group(invoke_without_command=True)  # noqa: C901
 @click.option('--discord/--no-discord', default=True, help='Starts the Discord bot loop', show_default=True)
@@ -59,7 +56,7 @@ def main(
         start_dcs: bool,
         install_hooks: bool,
         install_dedi_config: bool,
-        auto_mission: bool,):
+        auto_mission: bool, ):
     """
     Main entry point
 
@@ -155,7 +152,7 @@ def main(
     )
 
     CTX.loop.run_until_complete(futures)
-    
+
     MAIN_LOGGER.debug('all done !')
 
 
