@@ -3,11 +3,10 @@
 Main entry point
 """
 import asyncio
-import os
 import queue
-from pathlib import Path
 
 import click
+import elib
 
 from esst import __version__
 from esst.core import CFG, CTX, MAIN_LOGGER, fs_paths
@@ -23,6 +22,19 @@ async def watch_for_exceptions():
         if CTX.exit:
             break
         await asyncio.sleep(0.1)
+
+
+def _setup_logging():
+    if CFG.debug:
+        elib.custom_logging.set_handler_level('ESST', 'ch', 'debug')
+
+
+def _setup_sentry():
+    if CFG.sentry_dsn:
+        from esst.utils.sentry import Sentry
+        CTX.sentry = Sentry(CFG.sentry_dsn)
+        CTX.sentry.register_context('App context', CTX)
+        CTX.sentry.register_context('Config', CFG)
 
 
 # pylint: disable=too-many-locals,too-many-arguments
@@ -44,7 +56,7 @@ def main(
         start_dcs: bool,
         install_hooks: bool,
         install_dedi_config: bool,
-        auto_mission: bool,):
+        auto_mission: bool, ):
     """
     Main entry point
 
@@ -58,12 +70,9 @@ def main(
         start_dcs: start the server thread, but not the actual DCS app
         auto_mission: downloads the latest mission from Github
     """
+    _setup_logging()
 
-    if CFG.sentry_dsn:
-        from esst.utils.sentry import Sentry
-        CTX.sentry = Sentry(CFG.sentry_dsn)
-        CTX.sentry.register_context('App context', CTX)
-        CTX.sentry.register_context('Config', CFG)
+    _setup_sentry()
 
     CTX.loop = asyncio.get_event_loop()
 
@@ -143,11 +152,7 @@ def main(
     )
 
     CTX.loop.run_until_complete(futures)
-    if CTX.restart and CFG.restart:
-        MAIN_LOGGER.debug(f'restart command: {CFG.restart}')
-        bat = Path('./restart.bat')
-        bat.write_text(CFG.restart)
-        os.startfile(str(bat.absolute()))
+
     MAIN_LOGGER.debug('all done !')
 
 
