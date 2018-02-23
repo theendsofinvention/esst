@@ -12,23 +12,6 @@ class AutoMissionConfig:
     """
     Manages config params for auto mission
     """
-    @ConfigProp(str, namespace=NAMESPACE, default='')
-    def auto_mission_github_token(self):
-        """
-        Optional Github token to perform the requests (allow to bypass the API rate limitation)
-        """
-        pass
-
-    @ConfigProp(str, namespace=NAMESPACE, default='')
-    def auto_mission_github_owner(self):
-        """
-        Name of the user/organization that owns the repo
-        """
-        pass
-
-    @ConfigProp(str, namespace=NAMESPACE, default='')
-    def auto_mission_github_repo(self):
-        """
-        Name of the repo
-        """
-        pass
+    auto_mission_github_token = ConfigProp(str, namespace=NAMESPACE, default='')
+    auto_mission_github_owner = ConfigProp(str, namespace=NAMESPACE, default='')
+    auto_mission_github_repo = ConfigProp(str, namespace=NAMESPACE, default='')
