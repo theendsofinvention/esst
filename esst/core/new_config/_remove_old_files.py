@@ -11,9 +11,4 @@ class RemoveOldFile:  # pylint: disable=too-few-public-methods
     Clean folders of old files
     """
 
-    @ConfigProp(list, default='')
-    def remove_files(self) -> list:
-        """
-        List of folders to clean
-        """
-        pass
+    remove_files = ConfigProp(list, default='')

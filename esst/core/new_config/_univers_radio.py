@@ -14,9 +14,4 @@ class URConfig:
     Manages config params for Univers Radio
     """
 
-    @ConfigProp(str, '', namespace=NAMESPACE)
-    def ur_path(self):
-        """
-        Path of the UR installation
-        """
-        pass
+    ur_path = ConfigProp(str, default='', namespace=NAMESPACE)

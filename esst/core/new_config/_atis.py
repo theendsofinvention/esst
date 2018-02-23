@@ -14,9 +14,4 @@ class ATISConfig:
     Manages config params for Univers Radio
     """
 
-    @ConfigProp(bool, True, namespace=NAMESPACE)
-    def atis_create(self):
-        """
-        Path of the UR installation
-        """
-        pass
+    atis_create = ConfigProp(bool, default='true', namespace=NAMESPACE)
