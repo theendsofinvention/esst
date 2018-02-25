@@ -96,9 +96,6 @@ def generate_atis(
     if exclude_icao:
         exclude_icao = [icao.upper() for icao in exclude_icao]
 
-    atis = _build_speech_for_airfield(ALL_AIRFIELDS[0], wind_dir, speech_atis, ur_settings)
-    exit(0)
-
     threads = []
     for airfield in ALL_AIRFIELDS:
         if core.CTX.exit:
