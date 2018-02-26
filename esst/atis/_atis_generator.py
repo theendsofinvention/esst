@@ -4,6 +4,7 @@ Generates ATIS from METAR
 """
 
 import threading
+import queue
 import typing
 from pathlib import Path
 import re
@@ -36,8 +37,9 @@ def _build_speech_for_airfield(
         airfield: Airfield,
         wind_dir: int,
         speech_atis: str,
-        ur_settings: URVoiceServiceSettings
-) -> ATISForAirfield:
+        ur_settings: URVoiceServiceSettings,
+        atis_queue: queue.Queue,
+):
     LOGGER.debug(f'{airfield.icao}: processing')
     atis_file = Path(f'{airfield.icao}.mp3').absolute()
     LOGGER.debug(f'{airfield.icao}: ATIS file path: {atis_file}')
@@ -54,10 +56,9 @@ def _build_speech_for_airfield(
     full_speech = _cleanup_full_speech(full_speech)
     LOGGER.debug(f'{airfield.icao}: full speech: {full_speech}')
     LOGGER.debug(f'{airfield.icao}: writing MP3 file for: {airfield.icao}')
-    print(full_speech)
     elib.tts.text_to_speech(full_speech, Path(atis_file), True)
     ur_settings.add_station(airfield)
-    return ATISForAirfield(airfield.icao, active_runway, information_identifier, information_letter)
+    atis_queue.put(ATISForAirfield(airfield.icao, active_runway, information_identifier, information_letter))
 
 
 def generate_atis(
@@ -76,7 +77,6 @@ def generate_atis(
     LOGGER.debug('parsing METAR string')
     # noinspection SpellCheckingInspection
     metar_str = metar_str.replace('XXXX', 'UGTB')
-    metar_str = 'KORD 041656Z 19020G26KT 6SM -SHRA BKN070 12/08 A3016 RMK AO2'
     error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar_str)
     if error:
         LOGGER.error('failed to parse METAR')
@@ -88,7 +88,7 @@ def generate_atis(
     LOGGER.debug(f'ATIS speech: {speech_atis}')
 
     ur_settings = URVoiceServiceSettings()
-    active_atis = {}
+    Status.active_atis = {}
 
     if include_icao:
         include_icao = [icao.upper() for icao in include_icao]
@@ -97,6 +97,7 @@ def generate_atis(
         exclude_icao = [icao.upper() for icao in exclude_icao]
 
     threads = []
+    atis_queue = queue.Queue()
     for airfield in ALL_AIRFIELDS:
         if core.CTX.exit:
             break
@@ -109,16 +110,23 @@ def generate_atis(
 
         thread = threading.Thread(
             target=_build_speech_for_airfield,
-            args=(airfield, wind_dir, speech_atis, ur_settings)
+            args=(airfield, wind_dir, speech_atis, ur_settings, atis_queue)
         )
         threads.append(thread)
         thread.start()
     for job in threads:
         job.join()
 
-    list_of_active_icao = ', '.join(active_atis.keys())
-    LOGGER.debug(f'generated {len(active_atis)} ATIS for: {list_of_active_icao})')
-    Status.active_atis = active_atis
+    while True:
+        try:
+            atis_for_airfield = atis_queue.get(block=False)
+        except queue.Empty:
+            break
+        assert isinstance(atis_for_airfield, ATISForAirfield)
+        Status.active_atis[atis_for_airfield.icao] = atis_for_airfield
+
+    list_of_active_icao = ', '.join(list(Status.active_atis.keys()))
+    LOGGER.debug(f'generated {len(Status.active_atis)} ATIS for: {list_of_active_icao})')
 
     LOGGER.debug('writing UR settings')
     ur_settings.write_settings_file()
