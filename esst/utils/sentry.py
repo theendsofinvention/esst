@@ -30,6 +30,7 @@ class Sentry(raven.Client):
         raven.Client.__init__(
             self,
             f'{dsn}?ca_certs={certifi.where()}',
+            release=__version__,
         )
         if self.is_enabled():
             LOGGER.info('Sentry is ready')
