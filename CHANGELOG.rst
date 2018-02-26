@@ -1,5 +1,69 @@
 Changelog
 =========
+0.1.91 (2018-02-26)
+-------------------
+Fix
+~~~
+- Atis speech (#99) [132nd-etcher]
+  * fix ICAO included in the start of the ATIS speech
+  * fix ATIS speech
+  * remove debug code
+  * add current version as Sentry release
+  * fix "!atis show" command
+  fix #97
+  * update reqs
+  fix #98
+  fix #100
+  * simplify generate_atis
+  * linting
+0.1.91a+ATIS-speech11 (2018-02-26)
+----------------------------------
+- Linting. [132nd-etcher]
+- Simplify generate_atis. [132nd-etcher]
+- Update reqs. [132nd-etcher]
+  fix #98
+  fix #100
+- Fix "!atis show" command. [132nd-etcher]
+  fix #97
+- Add current version as Sentry release. [132nd-etcher]
+0.1.91a+ATIS-speech6 (2018-02-25)
+---------------------------------
+- Remove debug code. [132nd-etcher]
+- Fix ATIS speech. [132nd-etcher]
+- Fix ICAO included in the start of the ATIS speech. [132nd-etcher]
+0.1.90a+update-logger9 (2018-02-23)
+-----------------------------------
+- Update reqs. [132nd-etcher]
+0.1.90a+update-logger8 (2018-02-23)
+-----------------------------------
+- Update reqs. [132nd-etcher]
+- Update reqs. [132nd-etcher]
+- Linting. [132nd-etcher]
+- Simplify main entry point. [132nd-etcher]
+0.1.90a+update-logger4 (2018-02-23)
+-----------------------------------
+- Update logging to latest elib version. [132nd-etcher]
+- Update reqs. [132nd-etcher]
+- Update logging for latest version of ELIB. [132nd-etcher]
+0.1.89a+update-config12 (2018-02-23)
+------------------------------------
+- Update reqs. [132nd-etcher]
+0.1.89a+update-config11 (2018-02-23)
+------------------------------------
+- Linting. [132nd-etcher]
+- Linting. [132nd-etcher]
+- Update reqs. [132nd-etcher]
+- Remove debug line. [132nd-etcher]
+- Update config for latest version of ELIB. [132nd-etcher]
+0.1.89a+readme-derps5 (2018-02-18)
+----------------------------------
+- Update README.rst. [132nd-etcher]
+0.1.89a+readme-derps4 (2018-02-18)
+----------------------------------
+- Update README.rst. [132nd-etcher]
+0.1.89a+readme-derps3 (2018-02-18)
+----------------------------------
+- Update readme. [132nd-etcher]
 0.1.87 (2018-02-18)
 -------------------
 Changes
