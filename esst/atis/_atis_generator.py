@@ -3,22 +3,21 @@
 Generates ATIS from METAR
 """
 
-import threading
 import queue
+import re
+import threading
 import typing
 from pathlib import Path
-import re
 
 import elib.tts
 import emiz.weather
 
 from esst import core
-
 from ._atis_airfields import ALL_AIRFIELDS
 from ._atis_identifier import get_random_identifier
 from ._atis_objects import ATISForAirfield
 from ._atis_status import Status
-from ._univers_radio import URVoiceService, URVoiceServiceSettings, Airfield
+from ._univers_radio import Airfield, URVoiceService, URVoiceServiceSettings
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
@@ -61,6 +60,17 @@ def _build_speech_for_airfield(
     atis_queue.put(ATISForAirfield(airfield.icao, active_runway, information_identifier, information_letter))
 
 
+def _update_status(atis_queue: queue.Queue):
+    Status.active_atis = {}
+    while True:
+        try:
+            atis_for_airfield = atis_queue.get(block=False)
+        except queue.Empty:
+            break
+        assert isinstance(atis_for_airfield, ATISForAirfield)
+        Status.active_atis[atis_for_airfield.icao] = atis_for_airfield
+
+
 def generate_atis(
         metar_str: str,
         include_icao: typing.List[str] = None,
@@ -88,7 +98,6 @@ def generate_atis(
     LOGGER.debug(f'ATIS speech: {speech_atis}')
 
     ur_settings = URVoiceServiceSettings()
-    Status.active_atis = {}
 
     if include_icao:
         include_icao = [icao.upper() for icao in include_icao]
@@ -117,13 +126,7 @@ def generate_atis(
     for job in threads:
         job.join()
 
-    while True:
-        try:
-            atis_for_airfield = atis_queue.get(block=False)
-        except queue.Empty:
-            break
-        assert isinstance(atis_for_airfield, ATISForAirfield)
-        Status.active_atis[atis_for_airfield.icao] = atis_for_airfield
+    _update_status(atis_queue)
 
     list_of_active_icao = ', '.join(list(Status.active_atis.keys()))
     LOGGER.debug(f'generated {len(Status.active_atis)} ATIS for: {list_of_active_icao})')
