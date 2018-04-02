@@ -116,7 +116,7 @@ class FS:
                     LOGGER.debug('found in "Shell Folders"')
             except FileNotFoundError:
                 LOGGER.debug('darn it, another fail, falling back to "~"')
-                base_sg = Path('~').expanduser().abspath()
+                base_sg = Path('~').expanduser().absolute()
         return base_sg
 
     @staticmethod

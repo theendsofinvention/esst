@@ -77,3 +77,4 @@ esst.yml*
 /.gitchangelog.rc
 /*.png
 /doitall.cmd
+/.pytest_cache/
