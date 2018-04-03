@@ -61,7 +61,7 @@ URKG = Airfield('URKG', 'Geledzhik',
                 '04,22')
 # noinspection SpellCheckingInspection
 URKH = Airfield('URKH', 'Maykop - Khanskaya',
-                URCoord('44.68.300', '40.032501', '590'),
+                URCoord('44.681400', '40.032501', '590'),
                 URFrequency('125.300;A'),
                 '04,22')
 # noinspection SpellCheckingInspection
