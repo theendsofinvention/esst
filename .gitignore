@@ -78,3 +78,4 @@ esst.yml*
 /*.png
 /doitall.cmd
 /.pytest_cache/
+/esst/web/main.html
