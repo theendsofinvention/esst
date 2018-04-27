@@ -79,3 +79,4 @@ esst.yml*
 /doitall.cmd
 /.pytest_cache/
 /esst/web/main.html
+*.log
