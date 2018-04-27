@@ -24,14 +24,19 @@ async def get_dcs_process_pid():
 
     Returns: "DCS.exe" PID or False
     """
-    for process in psutil.process_iter():
-        try:
-            if process.name().lower() == 'dcs.exe':
-                return process.pid
-        except psutil.NoSuchProcess:
-            pass
+    try:
+        for process in psutil.process_iter():
+            try:
+                if process.name().lower() == 'dcs.exe':
+                    return process.pid
+            except psutil.NoSuchProcess:
+                pass
 
-    return False
+        return False
+    except OSError:
+        asyncio.sleep(5)
+        return await get_dcs_process_pid()
+
 
 
 # pylint: disable=too-few-public-methods,too-many-instance-attributes
