@@ -3,13 +3,38 @@
 Etcher's Simple Server Tools
 """
 
-from pip.req import parse_requirements
 from setuptools import find_packages, setup
 
-requirements = [str(r.req) for r in
-                parse_requirements('requirements.txt', session=False)]
-test_requirements = [str(r.req) for r in
-                     parse_requirements('requirements-dev.txt', session=False)]
+requirements = [
+    'argh',
+    'certifi',
+    'click',
+    'configobj',
+    'discord.py',
+    'emiz',
+    'everett',
+    'humanize',
+    'jinja2',
+    'matplotlib',
+    'metar',
+    'mpmath',
+    'natsort',
+    'numpy',
+    'parsedatetime',
+    'pefile',
+    'psutil',
+    'python-dateutil',
+    'pytz',
+    'pyyaml',
+    'raven',
+    'requests',
+    'urllib3',
+    'ipgetter',
+    'inflect',
+]
+test_requirements = [
+    'epab',
+]
 
 CLASSIFIERS = filter(None, map(str.strip,
                                """

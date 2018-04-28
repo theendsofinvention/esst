@@ -72,10 +72,10 @@ avatar.png
 /emft.debug
 /esst.log.*
 esst.yml*
-/Pipfile.lock
 *.mp3
 /.gitchangelog.rc
 /*.png
 /doitall.cmd
 /.pytest_cache/
 /esst/web/main.html
+*.log
