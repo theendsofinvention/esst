@@ -38,7 +38,6 @@ async def get_dcs_process_pid():
         return await get_dcs_process_pid()
 
 
-
 # pylint: disable=too-few-public-methods,too-many-instance-attributes
 class App:
     """
@@ -137,6 +136,7 @@ class App:
         """
         Sets the DCS process CPU affinity to the CFG value
         """
+
         def _command():
             if list(self._app.cpu_affinity()) != list(core.CFG.dcs_cpu_affinity):
                 LOGGER.debug(f'setting DCS process affinity to: {core.CFG.dcs_cpu_affinity}')
@@ -156,11 +156,13 @@ class App:
         """
         Sets the DCS process CPU priority to the CFG value
         """
+
         def _command():
             if self.app.nice() != self.valid_priorities[core.CFG.dcs_cpu_priority]:
                 LOGGER.debug(
                     f'setting DCS process priority to: {core.CFG.dcs_cpu_priority}')
                 self.app.nice(self.valid_priorities[core.CFG.dcs_cpu_priority])
+
         time.sleep(15)
         while True:
             if core.CFG.dcs_cpu_priority:
