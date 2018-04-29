@@ -3,7 +3,6 @@ ESST
 
 Etcher's Server Startup Tool.
 
-
 |OSI|
 
 |status|

@@ -1,5 +1,48 @@
 Changelog
 =========
+(unreleased)
+------------
+Fix
+~~~
+- Fix pagefile issue when probing for dcs.exe (#111) [132nd-etcher]
+  * ignore log files
+  * fix pagefile saturation issue
+  * linting
+  * unignore pipfile.lock
+  * fix setup.py fir pip 10.0.0
+2018.04.28.1a1+feature/110 (2018-04-28)
+---------------------------------------
+- Fix setup.py fir pip 10.0.0. [132nd-etcher]
+- Unignore pipfile.lock. [132nd-etcher]
+- Linting. [132nd-etcher]
+- Fix pagefile saturation issue. [132nd-etcher]
+- Ignore log files. [132nd-etcher]
+2018.4.5.1 (2018-04-05)
+-----------------------
+Changes
+~~~~~~~
+- Atis freqs (#109) [132nd-etcher]
+  * ignore main.html
+  * change all ATIS frequencies from .400 to .300
+  * fix Maykop location
+2018.4.3.1a1+feature/atis_freqs (2018-04-03)
+--------------------------------------------
+- Fix Maykop location. [132nd-etcher]
+- Change all ATIS frequencies from .400 to .300. [132nd-etcher]
+- Ignore main.html. [132nd-etcher]
+2018.4.2.1 (2018-04-02)
+-----------------------
+Fix
+~~~
+- Emiz error (#107) [132nd-etcher]
+  * ignore pytest cache
+  * update reqs
+  * fix error in fs_paths
+2018.4.2.1a1+feature/106-emiz_error (2018-04-02)
+------------------------------------------------
+- Fix error in fs_paths. [132nd-etcher]
+- Update reqs. [132nd-etcher]
+- Ignore pytest cache. [132nd-etcher]
 0.1.91 (2018-02-26)
 -------------------
 Fix
