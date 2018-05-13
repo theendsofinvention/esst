@@ -28,7 +28,7 @@ UG27 = Airfield('UG27', 'Vaziani',
 UGKO = Airfield('UGKO', 'Kutaisi - Kopitnari',
                 URCoord('42.178699', '42.483101', '147'),
                 URFrequency('134.300;A'),
-                '07,25')
+                '08,26')
 # noinspection SpellCheckingInspection
 UGKS = Airfield('UGKS', 'Senaki - Kolkhi',
                 URCoord('42.240101', '42.052101', '42'),
