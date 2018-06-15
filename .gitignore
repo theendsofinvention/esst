@@ -79,3 +79,7 @@ esst.yml*
 /.pytest_cache/
 /esst/web/main.html
 *.log
+.idea/
+/dist/
+/build/
+__pycache__
