@@ -32,7 +32,6 @@ requests = "*"
 "urllib3" = "*"
 ipgetter = "*"
 inflect = "*"
-epab = "*"
 
 [dev-packages]
 epab = "*"
