@@ -114,18 +114,18 @@ def _plot_axis(grid_spec, grid_pos,  # pylint: disable=too-many-arguments
                y_format_func,
                visible_x_labels=False,
                share_x=None):
-    axis = PLT.subplot(grid_spec[grid_pos], sharex=share_x)
+    axis = PLT.subplot(grid_spec[grid_pos], sharex=share_x)  # type: ignore
     axis.set_title(title)
-    PLT.setp(axis.get_xticklabels(), visible=visible_x_labels)
+    PLT.setp(axis.get_xticklabels(), visible=visible_x_labels)  # type: ignore
     axis.set_ylabel(y_label_text)
 
     for line in values_to_plot:
         assert isinstance(line, PlotLine)
         line_, = axis.plot(*line.values, line.style)
-        PLT.setp(line_, label=line.label)
+        PLT.setp(line_, label=line.label)  # type: ignore
     _add_players_count_to_axis(axis, values.players_history)
-    axis.xaxis.set_major_formatter(TICKER.FuncFormatter(_x_format_func))
-    axis.yaxis.set_major_formatter(TICKER.FuncFormatter(y_format_func))
+    axis.xaxis.set_major_formatter(TICKER.FuncFormatter(_x_format_func))  # type: ignore
+    axis.yaxis.set_major_formatter(TICKER.FuncFormatter(y_format_func))  # type: ignore
     axis.grid(True)
     axis.set_xlim(right=now)
 
@@ -143,7 +143,7 @@ def _get_axis(
         title: str,
         y_label: str,
         visible_x: bool,
-        y_format_func: callable,
+        y_format_func: typing.Callable,
         share_x=None,
 ):
     lines_to_plot = set()
@@ -257,24 +257,24 @@ def _make_history_graph(  # pylint: disable=too-many-arguments
 
     values = process_values(values_to_process, time_delta)
 
-    figure = PLT.figure(figsize=(18, 12))
-    grid_spec = GRID_SPEC.GridSpec(3, 1, height_ratios=[1, 1, 1])
+    figure = PLT.figure(figsize=(18, 12))  # type: ignore
+    grid_spec = GRID_SPEC.GridSpec(3, 1, height_ratios=[1, 1, 1])  # type: ignore
 
     ax_server = _plot_server(grid_spec, values, now)
     _plot_dcs(grid_spec, values, now, share_x=ax_server)
     _plot_bandwidth(grid_spec, values, now, share_x=ax_server)
 
-    PLT.tight_layout()
+    PLT.tight_layout()  # type: ignore
     figure.tight_layout()
 
     if show:
-        PLT.show()
-        PLT.close()
+        PLT.show()  # type: ignore
+        PLT.close()  # type: ignore
         return None
     else:
         if not save_path:
             save_path = mktemp('.png')
-        PLT.savefig(save_path)
+        PLT.savefig(save_path)  # type: ignore
         return save_path
 
 
@@ -344,7 +344,7 @@ if __name__ == '__main__':
                 continue
         CTX.players_history.append((NOW - time_stamp, PLAYER_COUNT))
 
-    TIME_DELTA = datetime.datetime.now() - TIME_DELTA
-    TIME_DELTA = TIME_DELTA.timestamp()
+    TIME_DELTA = datetime.datetime.now() - TIME_DELTA  # type: ignore
+    TIME_DELTA = TIME_DELTA.timestamp()  # type: ignore
 
     make_history_graph(hours=5, save_path='./test.png')

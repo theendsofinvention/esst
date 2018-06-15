@@ -2,6 +2,7 @@
 """
 Dummy class to facilitate the passing of information between other classes
 """
+import typing
 
 
 class Status:  # pylint: disable=too-few-public-methods
@@ -18,7 +19,7 @@ class Status:  # pylint: disable=too-few-public-methods
     mission_time = 'unknown'
     paused = 'unknown'
     mission_name = 'unknown'
-    players = []
+    players: set = set()
 
 
 class ServerStatus:  # pylint: disable=too-few-public-methods

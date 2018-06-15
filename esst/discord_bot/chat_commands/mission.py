@@ -3,6 +3,7 @@
 Meh
 """
 import pprint
+import typing
 from time import sleep
 
 import emiz.edit_miz
@@ -119,9 +120,9 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
 
 
 @utils.arg(protected=True)
-def delete(name: 'name or index of the mission to load'):
+def delete(name: str):
     """
-    Removes a mission file from the server (protected)
+    Removes a mission file from the server
     """
     try:
         mission_number = int(name)
@@ -141,17 +142,26 @@ def delete(name: 'name or index of the mission to load'):
 
 
 # noinspection SpellCheckingInspection
-@utils.arg('-m', '--metar', nargs='+', metavar='METAR')
+@utils.arg('--force', help='force server restart even with connected players')
+@utils.arg('--min-wind', help='minimum speed of the wind in MPS')
+@utils.arg('--max-wind', help='maximum speed of the wind in MPS')
+@utils.arg('-t', '--time',
+           help='set the mission time (syntax: YYYYMMDDHHMMSS)\nExample: 2017/08/22 at 12:30:00 -> 20170822123000')
+@utils.arg('-m', '--metar', nargs='+', metavar='METAR',
+           help='update the weather from METAR string\nWARNING: METAR string may NOT contain dashes ("-")')
+@utils.arg('-i', '--icao', help='update the weather from a given (real life) ICAO')
+@utils.arg('-n', '--name',
+           help='name or index of the mission to load (if not provided, will re-use the current mission)')
 @utils.arg(protected=True)
 # pylint: disable=too-many-arguments
 def load(
-        name: 'name or index of the mission to load (if not provided, will re-use the current mission)' = None,
-        icao: 'update the weather from ICAO' = None,
-        metar: 'update the weather from METAR string\nWARNING: METAR string may NOT contain dashes ("-")' = None,
-        time: 'set the mission time (syntax: YYYYMMDDHHMMSS)\nEx: 2017/08/22 at 12:30:00 -> 20170822123000' = None,
-        max_wind: 'maximum speed of the wind in MPS' = 40,
-        min_wind: 'minimum speed of the wind in MPS' = 0,
-        force: 'force server restart even with connected players' = False,
+        name: typing.Union[str, int] = None,
+        icao: str = None,
+        metar: str = None,
+        time: str = None,
+        max_wind: int = 40,
+        min_wind: int = 0,
+        force: bool = False,
 
 ):
     """

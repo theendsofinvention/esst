@@ -27,22 +27,22 @@ class FS:
     Manages all FileSystem path for ESST
     """
 
-    dcs_path: str = None
-    dcs_exe: Path = None
-    dcs_autoexec_file: Path = None
-    dcs_hook_path: Path = None
-    dcs_mission_folder: Path = None
-    dcs_server_settings: Path = None
-    dcs_logs_dir: Path = None
+    dcs_path: Path = None  # type: ignore
+    dcs_exe: Path = None  # type: ignore
+    dcs_autoexec_file: Path = None  # type: ignore
+    dcs_hook_path: Path = None  # type: ignore
+    dcs_mission_folder: Path = None  # type: ignore
+    dcs_server_settings: Path = None  # type: ignore
+    dcs_logs_dir: Path = None  # type: ignore
 
-    mission_editor_lua_file: Path = None
+    mission_editor_lua_file: Path = None  # type: ignore
 
-    saved_games_path: str = None
-    variant_saved_games_path: str = None
+    saved_games_path: str = None  # type: ignore
+    variant_saved_games_path: str = None  # type: ignore
 
-    ur_settings_folder: str = None
-    ur_voice_settings_file: str = None
-    ur_install_path: str = None
+    ur_settings_folder: str = None  # type: ignore
+    ur_voice_settings_file: str = None  # type: ignore
+    ur_install_path: str = None  # type: ignore
 
     @staticmethod
     def _reset():
@@ -90,8 +90,8 @@ class FS:
             dcs_path = FS.ensure_path(FS.dcs_path, 'dcs path')
         FS.ensure_path(FS.saved_games_path, 'saved games')
 
-        dcs_path = elib.path.ensure_dir(dcs_path)
-        variant_path = Path(dcs_path, 'dcs_variant.txt')
+        dcs_path_as_path = elib.path.ensure_dir(dcs_path)
+        variant_path = Path(dcs_path_as_path, 'dcs_variant.txt')
         if variant_path.exists():
             variant = f'.{variant_path.read_text(encoding="utf8")}'
         else:

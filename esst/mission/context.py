@@ -16,7 +16,7 @@ class MissionManagerContext:
             self,
             original_mission_path: Path,
             originator: str,
-    ):
+    ) -> None:
         self._original_path = original_mission_path
         self._originator = originator
         self._tmp_path = store.get_random_auto_mission_name(self._original_path)

@@ -17,11 +17,11 @@ def show(icao: list):
     """
     Show ATIS info for a specific airfield
     """
-    icao = ''.join(icao).upper()
+    icao_str = ''.join(icao).upper()
     try:
-        info = get_info_for_icao(icao)
+        info = get_info_for_icao(icao_str)
     except KeyError:
-        LOGGER.error(f'ICAO not found in the list of currently active ATIS: {icao}')
+        LOGGER.error(f'ICAO not found in the list of currently active ATIS: {icao_str}')
         return
     running = 'running' if URVoiceService.is_running() else 'not running'
     info_str = f'UR voice service is {running}\n\n' \

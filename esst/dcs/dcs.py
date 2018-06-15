@@ -174,7 +174,7 @@ class App:
                     return
                 self._work_with_dcs_process(_command)
             else:
-                LOGGER.warning('no priority given in config file')
+                LOGGER.warning('no CPU priority given in config file for dcs.exe')
                 return
             time.sleep(30)
 

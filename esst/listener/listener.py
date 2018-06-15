@@ -47,7 +47,7 @@ class DCSListener:
         if Status.paused != data.get('paused'):
             if not data.get('paused'):
                 LOGGER.info('DCS server is ready!')
-        players = data.get('players')
+        players = data.get('players', set())
         if players != Status.players:
             players, old_players = set(players), set(Status.players)
             joined = players - old_players
@@ -57,12 +57,12 @@ class DCSListener:
             if left:
                 LOGGER.info(f'player(s) left: {", ".join(left)}')
         self.last_ping = time.time()
-        Status.server_age = data.get('time')
-        Status.mission_time = data.get('model_time')
-        Status.paused = data.get('paused')
-        Status.mission_file = data.get('mission_filename')
-        Status.mission_name = data.get('mission_name')
-        Status.players = data.get('players')
+        Status.server_age = data.get('time', 'unknown')
+        Status.mission_time = data.get('model_time', 'unknown')
+        Status.paused = data.get('paused', 'unknown')
+        Status.mission_file = data.get('mission_filename', 'unknown')
+        Status.mission_name = data.get('mission_name', 'unknown')
+        Status.players = data.get('players', set())
 
         CTX.players_history.append((now(), len(Status.players)))
 

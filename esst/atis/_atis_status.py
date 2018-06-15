@@ -14,4 +14,4 @@ class Status(esst.utils.sentry_context.SentryClassContext):
         pass
 
     univers_radio = 'unknown'
-    active_atis = 'unknown'
+    active_atis: dict = {}

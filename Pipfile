@@ -1,17 +1,12 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [requires]
-
 python_version = "3.6"
 
-
 [packages]
-
 argh = "*"
 certifi = "*"
 click = "*"
@@ -37,8 +32,7 @@ requests = "*"
 "urllib3" = "*"
 ipgetter = "*"
 inflect = "*"
-
+epab = "*"
 
 [dev-packages]
-
 epab = "*"

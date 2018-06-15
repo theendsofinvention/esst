@@ -107,7 +107,7 @@ def generate_atis(
         exclude_icao = [icao.upper() for icao in exclude_icao]
 
     threads = []
-    atis_queue = queue.Queue()
+    atis_queue: queue.Queue = queue.Queue()
     for airfield in ALL_AIRFIELDS:
         if core.CTX.exit:
             break
