@@ -6,6 +6,7 @@ Etcher's Simple Server Tools
 from setuptools import find_packages, setup
 
 requirements = [
+    'attrs',
     'argh',
     'certifi',
     'click',
