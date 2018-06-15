@@ -84,3 +84,5 @@ esst.yml*
 /build/
 __pycache__
 .mypy_cache
+.coverage*
+htmlcov

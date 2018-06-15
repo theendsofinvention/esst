@@ -2,7 +2,6 @@
 """
 Dummy class to facilitate the passing of information between other classes
 """
-import typing
 
 
 class Status:  # pylint: disable=too-few-public-methods
