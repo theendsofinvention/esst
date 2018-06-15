@@ -9,7 +9,7 @@ from queue import Queue
 from esst.core import CTX, MAIN_LOGGER, Status
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
-CANCEL_QUEUED_KILL = Queue()
+CANCEL_QUEUED_KILL: Queue = Queue()
 
 _DCS_LOCK = threading.Lock()
 

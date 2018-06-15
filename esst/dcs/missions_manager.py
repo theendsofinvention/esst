@@ -34,7 +34,7 @@ class MissionPath:
     Represents a MIZ file managed by ESST
     """
 
-    def __init__(self, mission: typing.Union[str, Path]):
+    def __init__(self, mission: typing.Union[str, Path]) -> None:
         self._path = Path(mission)
         self._orig_name = self._path.stem
 
@@ -87,7 +87,7 @@ class MissionPath:
             name=core.CFG.dcs_server_name,
             max_players=core.CFG.dcs_server_max_players,
         )
-        LOGGER.debug(f'rendering settings.lua template with options\n{pprint.pprint(template_option)}')
+        LOGGER.debug(f'rendering settings.lua template with options\n{pprint.pformat(template_option)}')
         content = Template(utils.read_template('settings.lua')).render(**template_option)
         settings_file = _get_settings_file_path()
         LOGGER.debug(f'settings file path: {settings_file}')
@@ -99,8 +99,9 @@ class MissionPath:
             # noinspection SpellCheckingInspection
             metar = emiz.weather.mizfile.get_metar_from_mission(str(self.path), icao='XXXX')
             LOGGER.info(f'metar for {self.name}:\n{metar}')
-        atis.generate_atis(metar)
-        core.Status.metar = metar
+        else:
+            atis.generate_atis(metar)
+            core.Status.metar = metar
 
     def __str__(self):
         return str(self.path)
@@ -117,19 +118,19 @@ def _get_settings_file_path() -> Path:
     # return Path(core.FS.saved_games_path, 'DCS/Config/serverSettings.lua')
 
 
-def set_active_mission(mission: str, metar: str = None):
+def set_active_mission(mission_path_as_str: str, metar: str = None):
     """
     Sets the mission as active in "serverSettings.lua"
 
     Args:
-        mission: path or name of the MIZ file
+        mission_path_as_str: path or name of the MIZ file
         metar: METAR string for this mission
     """
-    LOGGER.debug(f'setting active mission: {mission}')
+    LOGGER.debug(f'setting active mission: {mission_path_as_str}')
     if metar:
         LOGGER.debug(f'using METAR: {metar}')
-    mission = MissionPath(mission)
-    mission.set_as_active(metar)
+    mission_path = MissionPath(mission_path_as_str)
+    mission_path.set_as_active(metar)
 
 
 def delete(mission: MissionPath):
@@ -264,7 +265,7 @@ def get_running_mission() -> typing.Union['MissionPath', str]:
         LOGGER.debug(f'returning active mission: {mission.name}')
         return mission
 
-    LOGGER.error(f'current mission is "{mission.path}", but that file does not exist')
+    LOGGER.error(f'current mission is "{mission}", but that file does not exist')
     return ''
 
 

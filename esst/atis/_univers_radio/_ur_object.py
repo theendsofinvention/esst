@@ -29,7 +29,7 @@ class URFrequency:
     """
     ur_freq_re = re.compile(r'^\d{3}\.\d{3};[ASF]$')
 
-    def __init__(self, freq: str):
+    def __init__(self, freq: str) -> None:
         if not URFrequency.ur_freq_re.match(freq):
             raise ValueError()
         self.freq = freq
@@ -54,7 +54,7 @@ class URCoord:
     ur_coord_re = re.compile(r'^\d{2}\.\d{6}$')
     ur_elev_re = re.compile(r'^\d+$')
 
-    def __init__(self, lat: str, long: str, elev: str):
+    def __init__(self, lat: str, long: str, elev: str) -> None:
         if not URCoord.ur_coord_re.match(lat):
             raise ValueError(f'invalid latitude: {lat}')
         if not URCoord.ur_coord_re.match(long):
@@ -75,7 +75,7 @@ class Runway:
     Represents one or multiple runways
     """
 
-    def __init__(self, heading: str):
+    def __init__(self, heading: str) -> None:
         if 'L' in heading.upper():
             self._qualifier = 'L'
             self._long_qualifier = ' left'
@@ -114,12 +114,12 @@ class Airfield:
     Represents an airfield, complete with ICAO, name, ATIS frequency and available runways
     """
 
-    def __init__(self, icao: str, name: str, coord: URCoord, atis_freq: URFrequency, runways: str):
+    def __init__(self, icao: str, name: str, coord: URCoord, atis_freq: URFrequency, runways: str) -> None:
         self.atis_freq = atis_freq
         self.coord = coord
         self.icao = icao
         self.name = name
-        self.runways = []
+        self.runways: list = []
         for runway in runways.split(','):
             self.runways.append(Runway(runway))
 

@@ -50,13 +50,7 @@ def discover_ur_install_path():
             _ur_install_path = _get_ur_install_path_from_registry()
 
     LOGGER.debug(f'using Saved Games path: {_ur_install_path}')
-    core.FS.ur_install_path = \
-        URStatus.install_path = \
-        _ur_install_path
-    core.FS.ur_settings_folder = \
-        URStatus.settings_folder = \
-        Path(core.FS.saved_games_path, 'UniversRadio')
-    core.FS.ur_voice_settings_file = \
-        URStatus.voice_settings_file = \
-        Path(core.FS.ur_settings_folder, 'VoiceService.dat')
+    core.FS.ur_install_path = URStatus.install_path = _ur_install_path
+    core.FS.ur_settings_folder = URStatus.settings_folder = Path(core.FS.saved_games_path, 'UniversRadio')
+    core.FS.ur_voice_settings_file = URStatus.voice_settings_file = Path(core.FS.ur_settings_folder, 'VoiceService.dat')
     utils.create_simple_backup(core.FS.ur_voice_settings_file, file_must_exist=False)

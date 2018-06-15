@@ -74,11 +74,12 @@ def main(
 
     _setup_sentry()
 
-    CTX.loop = asyncio.get_event_loop()
+    loop = asyncio.get_event_loop()
+    CTX.loop = loop
 
     import esst.wan
-    CTX.wan = CTX.loop.run_until_complete(esst.wan.wan_available())
-    CTX.loop.create_task(esst.wan.monitor_connection())
+    CTX.wan = loop.run_until_complete(esst.wan.wan_available())
+    loop.create_task(esst.wan.monitor_connection())
 
     CTX.start_discord_loop = discord and CFG.start_discord_loop
     CTX.start_server_loop = server and CFG.start_server_loop
@@ -92,8 +93,8 @@ def main(
     CTX.dcs_install_hooks = install_hooks
     CTX.dcs_auto_mission = auto_mission
 
-    CTX.loop = asyncio.get_event_loop()
-    # CTX.loop.set_debug(True)
+    loop = asyncio.get_event_loop()
+    # loop.set_debug(True)
     CTX.discord_msg_queue = queue.Queue()
 
     import ctypes
@@ -122,11 +123,11 @@ def main(
     listener_loop = DCSListener()
 
     futures = asyncio.gather(
-        CTX.loop.create_task(discord_loop.run()),
-        CTX.loop.create_task(dcs_loop.run()),
-        CTX.loop.create_task(listener_loop.run()),
-        CTX.loop.create_task(server_loop.run()),
-        CTX.loop.create_task(watch_for_exceptions()),
+        loop.create_task(discord_loop.run()),
+        loop.create_task(dcs_loop.run()),
+        loop.create_task(listener_loop.run()),
+        loop.create_task(server_loop.run()),
+        loop.create_task(watch_for_exceptions()),
     )
 
     def sigint_handler(*_):
@@ -143,15 +144,15 @@ def main(
 
     import signal
     signal.signal(signal.SIGINT, sigint_handler)
-    CTX.loop.run_until_complete(futures)
+    loop.run_until_complete(futures)
     MAIN_LOGGER.debug('main loop is done, killing DCS')
 
-    futures = asyncio.gather(
-        CTX.loop.create_task(dcs_loop.kill_running_app()),
-        CTX.loop.create_task(listener_loop.run_until_dcs_is_closed()),
+    futures = asyncio.gather(  # type: ignore
+        loop.create_task(dcs_loop.kill_running_app()),
+        loop.create_task(listener_loop.run_until_dcs_is_closed()),
     )
 
-    CTX.loop.run_until_complete(futures)
+    loop.run_until_complete(futures)
 
     MAIN_LOGGER.debug('all done !')
 
