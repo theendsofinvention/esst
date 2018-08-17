@@ -4,6 +4,12 @@ Declares all airfields in Caucasus
 """
 from ._univers_radio import Airfield, URCoord, URFrequency
 
+
+# noinspection SpellCheckingInspection
+ABCD = Airfield('ABCD', 'Test airfield',
+                URCoord('41.929501', '41.871101', '59'),  # "(x, y, elev)" in ED coord format, can be safely ignored (UR only)
+                URFrequency('133.300;A'),  # can be safely ignored (UR only)
+                '07,25')  # available runways
 # noinspection SpellCheckingInspection
 UG5X = Airfield('UG5X', 'Kobuleti',
                 URCoord('41.929501', '41.871101', '59'),
@@ -111,4 +117,5 @@ XRMF = Airfield('XRMF', 'Mozdok',
                 '08,26')
 
 ALL_AIRFIELDS = [UG23, UG24, UG27, UG5X, UGKO, UGKS, UGSB, UGSS, UGTB, URKG,
-                 URKH, URKK, URKL, URKN, URKW, URMM, URMN, URMO, URSS, XRMF]
+                 URKH, URKK, URKL, URKN, URKW, URMM, URMN, URMO, URSS, XRMF,
+                 ABCD]
