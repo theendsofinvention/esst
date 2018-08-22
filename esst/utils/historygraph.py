@@ -271,11 +271,11 @@ def _make_history_graph(  # pylint: disable=too-many-arguments
         PLT.show()  # type: ignore
         PLT.close()  # type: ignore
         return None
-    else:
-        if not save_path:
-            save_path = mktemp('.png')
-        PLT.savefig(save_path)  # type: ignore
-        return save_path
+
+    if not save_path:
+        save_path = mktemp('.png')
+    PLT.savefig(save_path)  # type: ignore
+    return save_path
 
 
 # pylint: disable=too-many-arguments
