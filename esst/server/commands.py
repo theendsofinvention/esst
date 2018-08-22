@@ -24,8 +24,8 @@ class SERVER:
         if DCS.there_are_connected_players():
             if not force:
                 return 'there are connected players; cannot restart the server now (use "--force" to restart anyway)'
-            else:
-                LOGGER.warning('forcing restart with connected players')
+
+            LOGGER.warning('forcing restart with connected players')
         os.system('shutdown /r /t 30 /c "Reboot initialized by ESST"')
         return ''
 

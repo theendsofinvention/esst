@@ -200,8 +200,8 @@ def weather():
         if error:
             LOGGER.error(error)
             return
-        else:
-            commands.DISCORD.say(f'{metar.string()}')
+
+        commands.DISCORD.say(f'{metar.string()}')
 
 
 def download():

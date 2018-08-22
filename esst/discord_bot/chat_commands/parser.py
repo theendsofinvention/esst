@@ -264,9 +264,9 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
                     return None
                 LOGGER.debug(f'running func: {func}')
                 return _execute_command(func, namespace_obj, pre_call=pre_call)
-            else:
-                # no commands declared, can't dispatch; display help message
-                return [self.format_usage()]
+
+            # no commands declared, can't dispatch; display help message
+            return [self.format_usage()]
 
         except SystemExit:
             pass
