@@ -34,4 +34,4 @@ ipgetter = "*"
 inflect = "*"
 
 [dev-packages]
-epab = ">=2018.6.15.1"
+epab = ">=2018.09.09.2"

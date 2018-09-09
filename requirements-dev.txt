@@ -15,7 +15,7 @@ docopt==0.6.2
 dparse==0.4.1
 elib-config==2018.9.2.1
 elib-run==2018.9.9.1
-epab==2018.9.9.1
+epab==2018.9.9.2
 execnet==1.5.0; python_version != '3.3.*'
 faker==0.9.0
 flake8==3.5.0
@@ -72,4 +72,4 @@ vcrpy==1.13.0; python_version >= '3.4.1'
 watchdog==0.9.0
 wheel==0.31.1; python_version != '3.3.*'
 wrapt==1.10.11
-yarl==1.2.6; python_version >= '3.4'
+yarl==1.2.6; python_version >= '3.4.1'
