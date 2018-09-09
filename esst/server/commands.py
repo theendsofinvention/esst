@@ -26,7 +26,7 @@ class SERVER:
                 return 'there are connected players; cannot restart the server now (use "--force" to restart anyway)'
 
             LOGGER.warning('forcing restart with connected players')
-        os.system('shutdown /r /t 30 /c "Reboot initialized by ESST"')
+        os.system('shutdown /r /t 30 /c "Reboot initialized by ESST"')   # nosec
         return ''
 
     @staticmethod

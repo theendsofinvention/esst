@@ -11,7 +11,7 @@ import elib
 from esst import __version__
 from esst.core import CFG, CTX, MAIN_LOGGER, fs_paths
 
-MAIN_LOGGER.debug(f'Starting ESST version {__version__}')
+MAIN_LOGGER.debug('Starting ESST version %s', __version__)
 
 
 async def watch_for_exceptions():
@@ -98,8 +98,8 @@ def main(
     CTX.discord_msg_queue = queue.Queue()
 
     import ctypes
-    ctypes.windll.kernel32.SetConsoleTitleW(f'ESST v{__version__} - Use CTRL+C to exit')
-    MAIN_LOGGER.debug(f'starting ESST {__version__}')
+    ctypes.windll.kernel32.SetConsoleTitleW('ESST v%s - Use CTRL+C to exit', __version__)
+    MAIN_LOGGER.debug('starting ESST %s', __version__)
 
     fs_paths.init_fs(CFG)
 

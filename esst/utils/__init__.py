@@ -134,110 +134,44 @@ def get_dcs_log_file_path() -> str:
     """
     Returns: path to DCS log file
     """
-    return os.path.join(FS.dcs_logs_dir, 'dcs.log')
+    return os.path.join(str(FS.dcs_logs_dir.absolute()), 'dcs.log')
 
 
-class Win32FileInfo:
+def _parse_file_info(file_info_list) -> typing.Optional[str]:
+    for _file_info in file_info_list:
+        if _file_info.Key == b'StringFileInfo':  # pragma: no branch
+            for string in _file_info.StringTable:  # pragma: no branch
+                print(string.entries.keys())
+                if b'FileVersion' in string.entries.keys():  # pragma: no branch
+                    file_version = string.entries[b'FileVersion'].decode('utf8')
+                    return file_version
+    return None
+
+
+# pylint: disable=inconsistent-return-statements
+def get_product_version(path: typing.Union[str, Path]) -> str:
     """
-    Gets information about a Win32 portable executable
+    Get version info from executable
+
+    Args:
+        path: path to the executable
+
+    Returns: VersionInfo
     """
+    path = Path(path).absolute()
+    pe_info = pefile.PE(str(path))
 
-    def __init__(self, _path):
+    try:
+        for file_info in pe_info.FileInfo:  # pragma: no branch
+            if isinstance(file_info, list):
+                result = _parse_file_info(file_info)
+                if result:
+                    return result
+            else:
+                result = _parse_file_info(pe_info.FileInfo)
+                if result:
+                    return result
 
-        self.__path = os.path.abspath(_path)
-        self.__props = None
-        self.__read_props()
-
-    @property
-    def comments(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('Comments')
-
-    @property
-    def internal_name(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('InternalName')
-
-    @property
-    def product_name(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('ProductName')
-
-    @property
-    def company_name(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('CompanyName')
-
-    @property
-    def copyright(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('LegalCopyright')
-
-    @property
-    def product_version(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('ProductVersion')
-
-    @property
-    def file_description(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('FileDescription')
-
-    @property
-    def trademark(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('LegalTrademarks')
-
-    @property
-    def private_build(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('PrivateBuild')
-
-    @property
-    def file_version(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('FileVersion')
-
-    @property
-    def fixed_version(self):
-        """Show Win32FileInfo field"""
-        return self.__props.get('fixed_version')
-
-    @property
-    def original_filename(self) -> str:
-        """Show Win32FileInfo field"""
-        return self.__props.get('OriginalFilename')
-
-    @property
-    def special_build(self) -> str:
-        """Show Win32FileInfo field"""
-        return self.__props.get('SpecialBuild')
-
-    def __read_props(self):
-
-        def _loword(dword):
-            return dword & 0x0000ffff
-
-        def _hiword(dword):
-            return dword >> 16
-
-        self.__props = {}
-
-        try:
-            pe_file = pefile.PE(self.__path)
-        except pefile.PEFormatError as exc:
-            raise ValueError(exc.value)
-        else:
-            # noinspection SpellCheckingInspection
-            pvms = pe_file.VS_FIXEDFILEINFO.ProductVersionMS  # pylint: disable=no-member
-            # noinspection SpellCheckingInspection
-            pvls = pe_file.VS_FIXEDFILEINFO.ProductVersionLS  # pylint: disable=no-member
-            self.__props['fixed_version'] = '.'.join(
-                map(str, (_hiword(pvms), _loword(pvms), _hiword(pvls), _loword(pvls)))
-            )
-            for file_info in pe_file.FileInfo:
-                if file_info.Key == b'StringFileInfo':
-                    for str_table in file_info.StringTable:
-                        for entry in str_table.entries.items():
-                            self.__props[entry[0].decode(
-                                'latin_1')] = entry[1].decode('latin_1')
+        raise RuntimeError(f'unable to obtain version from {path}')
+    except (KeyError, AttributeError) as exc:
+        raise RuntimeError(f'unable to obtain version from {path}') from exc

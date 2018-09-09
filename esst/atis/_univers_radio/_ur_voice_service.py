@@ -39,7 +39,7 @@ class URVoiceService:
         if not exe_path.exists():
             raise FileNotFoundError(exe_path)
         LOGGER.info(f'starting UR voice service: {exe_path}')
-        os.startfile(str(exe_path))
+        os.startfile(str(exe_path))  # nosec
         URVoiceService.is_running()
 
     @staticmethod

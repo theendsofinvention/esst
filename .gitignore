@@ -86,3 +86,8 @@ __pycache__
 .mypy_cache
 .coverage*
 htmlcov
+.venv
+*.toml.example
+packages_esst.png
+classes_esst.png
+.eggs

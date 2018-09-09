@@ -35,11 +35,12 @@ def validate_config(config_instance: ESSTConfig):
     if missing_values:
         missing_values_str = '\t' + '\n\t'.join(missing_values)
         MAIN_LOGGER.error(
-            f"""
+            """
 The following values are missing from your configuration:
 
-{missing_values_str}
+%s
 
 There is a "esst.yml.example" file provided with this repository to serve as a base to create your own config.
-Refer to https://github.com/132nd-vWing/ESST/blob/master/README.md for more information about setting ESST up.""")
+Refer to https://github.com/132nd-vWing/ESST/blob/master/README.md for more information about setting ESST up.""",
+            missing_values_str)
         exit(1)
