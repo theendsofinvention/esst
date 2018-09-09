@@ -138,7 +138,7 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
     ):
         members = list(self.server.members)
         members.remove(self._member)
-        random_member = random.choice(members)
+        random_member = random.choice(members)  # nosec
         await self.client.change_presence(
             game=discord.Game(
                 name=f'with {random_member.display_name}',

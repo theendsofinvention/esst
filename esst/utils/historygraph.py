@@ -120,7 +120,6 @@ def _plot_axis(grid_spec, grid_pos,  # pylint: disable=too-many-arguments
     axis.set_ylabel(y_label_text)
 
     for line in values_to_plot:
-        assert isinstance(line, PlotLine)
         line_, = axis.plot(*line.values, line.style)
         PLT.setp(line_, label=line.label)  # type: ignore
     _add_players_count_to_axis(axis, values.players_history)
@@ -273,7 +272,8 @@ def _make_history_graph(  # pylint: disable=too-many-arguments
         return None
 
     if not save_path:
-        save_path = mktemp('.png')
+        # FIXME
+        save_path = mktemp('.png')  # nosec
     PLT.savefig(save_path)  # type: ignore
     return save_path
 
@@ -322,23 +322,23 @@ if __name__ == '__main__':
     SKIP = 0
     for time_stamp in range(TOTAL_SECONDS, 0, -10):
         CTX.server_mem_history.append(
-            (NOW - time_stamp, random.randint(60, 70)))
-        CTX.dcs_cpu_history.append((NOW - time_stamp, random.randint(20, 30)))
-        CTX.dcs_mem_history.append((NOW - time_stamp, random.randint(60, 70)))
+            (NOW - time_stamp, random.randint(60, 70)))  # nosec
+        CTX.dcs_cpu_history.append((NOW - time_stamp, random.randint(20, 30)))  # nosec
+        CTX.dcs_mem_history.append((NOW - time_stamp, random.randint(60, 70)))  # nosec
 
         SKIP += 1
         if SKIP > 20:
             SKIP = 0
             CTX.server_bytes_recv_history.append(
-                (NOW - time_stamp, random.randint(0, 50000000)))
+                (NOW - time_stamp, random.randint(0, 50000000)))  # nosec
             CTX.server_bytes_sent_history.append(
-                (NOW - time_stamp, random.randint(0, 50000000)))
+                (NOW - time_stamp, random.randint(0, 50000000)))  # nosec
 
         if time_stamp <= int(TOTAL_SECONDS / 2):
             CTX.server_cpu_history.append(
-                (NOW - time_stamp, random.randint(20, 30)))
-        if random.randint(0, 100) > 99:
-            PLAYER_COUNT += random.choice([-1, 1])
+                (NOW - time_stamp, random.randint(20, 30)))  # nosec
+        if random.randint(0, 100) > 99:  # nosec
+            PLAYER_COUNT += random.choice([-1, 1])  # nosec
             if PLAYER_COUNT < 0:
                 PLAYER_COUNT = 0
                 continue

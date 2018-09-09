@@ -68,7 +68,6 @@ def _update_status(atis_queue: queue.Queue):
             atis_for_airfield = atis_queue.get(block=False)
         except queue.Empty:
             break
-        assert isinstance(atis_for_airfield, ATISForAirfield)
         Status.active_atis[atis_for_airfield.icao] = atis_for_airfield
 
 

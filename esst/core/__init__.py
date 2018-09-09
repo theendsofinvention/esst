@@ -24,14 +24,14 @@ MAIN_LOGGER = elib.custom_logging.get_logger(
 )
 elib.custom_logging.set_root_logger(MAIN_LOGGER)
 
-MAIN_LOGGER.info(f'ESST version {__version__}')
+MAIN_LOGGER.info('ESST version %s', __version__)
 
 EMIZ_LOGGER = logging.getLogger('EMIZ')
 ELIB_LOGGER = logging.getLogger('ELIB')
 
 for logger in (EMIZ_LOGGER, ELIB_LOGGER):
     for handler in logger.handlers:
-        MAIN_LOGGER.debug(f'removing {handler} from {logger}')
+        MAIN_LOGGER.debug('removing %s from %s', handler, logger.name)
         logger.removeHandler(handler)
 
 for handler in MAIN_LOGGER.handlers:
