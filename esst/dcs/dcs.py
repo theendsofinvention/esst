@@ -79,7 +79,7 @@ class App:
     # noinspection PyMethodMayBeStatic
     async def _get_dcs_version_from_executable(self):
         # noinspection PyBroadException
-        core.Status.dcs_version = utils.Win32FileInfo(str(core.FS.dcs_exe)).file_version
+        core.Status.dcs_version = utils.get_product_version(str(core.FS.dcs_exe))
         LOGGER.debug(f'DCS version: {core.Status.dcs_version}')
         simplified_version = int(''.join(core.Status.dcs_version.split('.')[:3]))
         LOGGER.debug(f'simplified version: {simplified_version}')
