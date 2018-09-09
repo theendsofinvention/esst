@@ -5,8 +5,6 @@ Clean folders of old files
 import datetime
 import os
 
-import parsedatetime
-
 from esst.core import CFG, MAIN_LOGGER
 
 LOGGER = MAIN_LOGGER.getChild(__name__)
@@ -22,11 +20,13 @@ def parse_age_string(age_str):
     Returns: datetime timestamp
 
     """
-    time_struct, parse_status = parsedatetime.Calendar().parse(age_str)
-    if parse_status != 1:
-        LOGGER.error(f'unable to parse age: {age_str}')
-        return False
-    return datetime.datetime(*time_struct[:6]).timestamp()
+    # FIXME
+    return
+    # time_struct, parse_status = parsedatetime.Calendar().parse(age_str)
+    # if parse_status != 1:
+    #     LOGGER.error(f'unable to parse age: {age_str}')
+    #     return False
+    # return datetime.datetime(*time_struct[:6]).timestamp()
 
 
 def remove_file_if_older_than(file_path, age):
@@ -49,6 +49,8 @@ def remove_file_if_older_than(file_path, age):
 
 
 def _remove_old_files_from_folder(folder, age):
+    LOGGER.warning('removal of old files has been temporarily disabled')
+    return
     LOGGER.info(f'cleaning folder "{folder}" of all files older than {age}')
 
     age = parse_age_string(age)

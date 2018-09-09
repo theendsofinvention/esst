@@ -21,7 +21,6 @@ requirements = [
     'mpmath',
     'natsort',
     'numpy',
-    'parsedatetime',
     'pefile',
     'psutil',
     'python-dateutil',
