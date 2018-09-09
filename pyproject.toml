@@ -175,7 +175,11 @@ entry_point = "esst/__main__.py"
 # value type: List of strings
 # This configuration is optional and comes with a default setting
 # default: []
-# data_files = 
+data_files =  [
+    "esst/dcs/templates/settings.lua;esst/dcs/templates",
+    "esst/dcs/templates/me_authorization.lua;esst/dcs/templates",
+    "esst/dcs/templates/game_gui.lua;esst/dcs/templates",
+]
 
 
 [tool.epab.doc]
