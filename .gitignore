@@ -88,3 +88,6 @@ __pycache__
 htmlcov
 .venv
 *.toml.example
+packages_esst.png
+classes_esst.png
+.eggs
