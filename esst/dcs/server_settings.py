@@ -2,9 +2,9 @@
 """
 Manages "Saved Games/DCS/Config/serverSettings.lua"
 """
-import sys
 import pprint
 import re
+import sys
 import typing
 from pathlib import Path
 

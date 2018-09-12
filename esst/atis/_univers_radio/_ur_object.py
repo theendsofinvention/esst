@@ -70,7 +70,6 @@ class URCoord:
 
 
 class Runway:
-
     """
     Represents one or multiple runways
     """

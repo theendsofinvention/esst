@@ -13,7 +13,7 @@ import ipgetter
 import pefile
 import pkg_resources
 
-from esst.core import MAIN_LOGGER, Status, FS
+from esst.core import FS, MAIN_LOGGER, Status
 from .arg import arg
 from .github import get_latest_release
 from .remove_old_files import clean_all_folder

@@ -12,6 +12,7 @@ class LISTENER:
     """
     Commands for the socket listener
     """
+
     @staticmethod
     def monitor_server_startup_start():
         """Starts monitoring DCS startup"""

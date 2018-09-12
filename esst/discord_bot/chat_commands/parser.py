@@ -10,8 +10,10 @@ from types import GeneratorType
 
 import argh
 from argh import compat
-from argh.constants import (ATTR_EXPECTS_NAMESPACE_OBJECT, ATTR_WRAPPED_EXCEPTIONS, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
-                            DEST_FUNCTION)
+from argh.constants import (
+    ATTR_EXPECTS_NAMESPACE_OBJECT, ATTR_WRAPPED_EXCEPTIONS, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
+    DEST_FUNCTION,
+)
 from argh.dispatching import ArghNamespace
 from argh.exceptions import CommandError
 from argh.utils import get_arg_spec

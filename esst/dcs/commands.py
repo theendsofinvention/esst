@@ -55,6 +55,7 @@ class DCS:
     @staticmethod
     def queue_kill():
         """Kill DCS application when all players left"""
+
         def _queue_kill(queue: Queue):
             while DCS.there_are_connected_players():
                 if not queue.empty():

@@ -3,7 +3,6 @@
 Connection with sentry.io
 """
 
-
 import logging
 import sys
 

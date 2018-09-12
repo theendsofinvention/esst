@@ -12,6 +12,7 @@ class AbstractDiscordCommandParser:
     """
     Generic command parser for Discord bot
     """
+
     @abc.abstractmethod
     def dispatch(self,
                  argv=None,

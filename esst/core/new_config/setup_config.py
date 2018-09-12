@@ -3,6 +3,7 @@
 Set up Config object
 """
 import sys
+
 import everett
 
 from ._new_config import ESSTConfig

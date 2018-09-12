@@ -3,7 +3,6 @@
 Server machine commands
 """
 
-
 import os
 
 from esst.commands import DCS, DISCORD
@@ -26,7 +25,7 @@ class SERVER:
                 return 'there are connected players; cannot restart the server now (use "--force" to restart anyway)'
 
             LOGGER.warning('forcing restart with connected players')
-        os.system('shutdown /r /t 30 /c "Reboot initialized by ESST"')   # nosec
+        os.system('shutdown /r /t 30 /c "Reboot initialized by ESST"')  # nosec
         return ''
 
     @staticmethod
@@ -56,6 +55,7 @@ class SERVER:
     @staticmethod
     def show_graph(days, hours, minutes):
         """Show resources usage graph"""
+
         def _callback(future):
             if future.result():
                 DISCORD.send_file(future.result())

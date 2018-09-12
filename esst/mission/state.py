@@ -3,7 +3,6 @@
 Holds current state of the mission manager
 """
 
-
 # class MissionManagerOperation:
 #
 #     def __init__(self, operation_name):
