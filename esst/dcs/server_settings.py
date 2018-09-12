@@ -70,3 +70,6 @@ def _get_current_mission_path() -> str:
             match = _CURRENT_MIS_RE.match(line)
             if match:
                 return match.group('mission_path')
+
+        LOGGER.error('please start a DCS server at least once before using ESST')
+        sys.exit(1)
