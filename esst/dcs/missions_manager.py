@@ -2,17 +2,16 @@
 """
 Manages missions for the server
 """
-
-import pprint
+import sys
 import typing
 from pathlib import Path
 
 import emiz.weather
 import humanize
 import requests
-from jinja2 import Template
 
 from esst import atis, commands, core, utils
+from esst.dcs.server_settings import write_server_settings
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
@@ -81,18 +80,8 @@ class MissionPath:
         if not self:
             LOGGER.error(f'mission file not found: {self.path}')
             return
-        template_option = dict(
-            mission_file_path=str(self.path).replace('\\', '/'),
-            passwd=core.CFG.dcs_server_password,
-            name=core.CFG.dcs_server_name,
-            max_players=core.CFG.dcs_server_max_players,
-        )
-        LOGGER.debug(f'rendering settings.lua template with options\n{pprint.pformat(template_option)}')
-        content = Template(utils.read_template('settings.lua')).render(**template_option)
-        settings_file = _get_settings_file_path()
-        LOGGER.debug(f'settings file path: {settings_file}')
-        utils.create_versioned_backup(settings_file)
-        settings_file.write_text(content)
+
+        write_server_settings(str(self.path).replace('\\', '/'))
 
         if metar is None:
             LOGGER.debug(f'building metar from mission: {self.name}')
@@ -251,10 +240,10 @@ def get_running_mission() -> typing.Union['MissionPath', str]:
 
     else:
         try:
-            dcs_settings = _get_settings_file_path().read_text()
+            dcs_settings = Path(core.FS.dcs_server_settings).read_text()
         except FileNotFoundError:
             LOGGER.error('please start a DCS server at least once before using ESST')
-            exit(1)
+            sys.exit(1)
         else:
             for line in dcs_settings.split('\n'):
                 if '[1]' in line:

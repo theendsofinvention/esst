@@ -5,10 +5,10 @@ Manages a UDP socket and does two things:
 1. Retrieve incoming messages from DCS and update :py:class:`esst.core.status.status`
 2. Sends command to the DCS application via the socket
 """
-
 import asyncio
 import json
 import socket
+import sys
 import time
 
 from esst.core import CFG, CTX, MAIN_LOGGER, Status
@@ -140,7 +140,7 @@ class DCSListener:
             if exc.errno == 10048:
                 MAIN_LOGGER.error(
                     'cannot bind socket, maybe another instance of ESST is already running?')
-                exit(-1)
+                sys.exit(-1)
 
         self.sock.settimeout(1)
 
