@@ -46,7 +46,7 @@ def pytest_unconfigure(config):
 
 @pytest.fixture(autouse=True)
 def _dummy_config():
-    Path('./esst.yml').write_text("""
+    Path('./esst_test.yml').write_text("""
 dcs_path: './DCS'
 dcs_server_name: 'server_name'
 dcs_server_password: 'server_pwd'
