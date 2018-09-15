@@ -10,7 +10,7 @@ from contextlib import contextmanager
 from esst.core import CTX
 
 # TODO: this needs to be a config value later on when I switch to TOML & elib_config
-_RANGE = range(20000, 65536)
+_RANGE = range(50000, 60000)
 
 
 @contextmanager
