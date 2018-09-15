@@ -103,8 +103,9 @@ def main(
 
     fs_paths.init_fs(CFG)
 
-    from esst.utils import clean_all_folder
+    from esst.utils import clean_all_folder, assign_ports
     clean_all_folder()
+    assign_ports()
 
     from esst import atis
     atis.init_module()

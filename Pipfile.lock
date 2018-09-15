@@ -710,10 +710,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:ea7cfd3aeb1544732d08bd9cfba40c5b78e3a91e17b1a0698ab81bfc5554c628",
-                "sha256:f6d67f04abfb2b4bea7afc7fa6c18cf4c523a67956e455668be9ae42bccc21ad"
+                "sha256:74b32991f8e08e4f2f84858b919eca253becfaec4b3fa5fcff7fdbd70d5d78b1",
+                "sha256:c2ce42dd8361e6d392276006d757532562463c8642b1086709584200b7fd7758"
             ],
-            "version": "==0.9.0"
+            "markers": "python_version >= '2.7' and python_version != '3.1.*' and python_version != '3.0.*' and python_version != '3.2.*'",
+            "version": "==0.9.1"
         },
         "flake8": {
             "hashes": [
@@ -751,11 +752,11 @@
         },
         "hypothesis": {
             "hashes": [
-                "sha256:0b6d0c348fa6ebc475626571dff0eb5cf118e098cb25a54c82d40c303ddae4cd",
-                "sha256:57329f7e361c1e2ddded5a759cc0347a245269cd47345322b818b16680f47bf0",
-                "sha256:7112e161bdc615fe8a9912887eded3a3c77708086082d8817a29a322a34fd3f1"
+                "sha256:568eb2acfd1545714a1d136cfb3967e9e3608227027181afc6653ec3fe4d1b02",
+                "sha256:7e5f8b3d6c78a34a8fa6e995e5c1808fefe42a5a7aeed050b9ce8c3ce118a365",
+                "sha256:ffa37bc51a5c414d7ea79b773c6aa00e3cea99340270695ec2045fc2c902d6a3"
             ],
-            "version": "==3.71.3"
+            "version": "==3.71.5"
         },
         "idna": {
             "hashes": [
@@ -1205,7 +1206,7 @@
                 "sha256:f17495e6fe3d377e3faac68121caef6f974fcb9e046bc075bcff40d8e5cc69a4",
                 "sha256:f85900b9cca0c67767bb61b2b9bd53208aaa7373dae633dbe25d179b4bf38aa7"
             ],
-            "markers": "python_version >= '3.4'",
+            "markers": "python_version >= '3.4.1'",
             "version": "==1.2.6"
         }
     }
