@@ -38,10 +38,10 @@ class DCSListener:
         LOGGER.debug('starting socket thread')
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.server_address = ('localhost', 10333)
+        self.server_address = ('localhost', CTX.listener_server_port)
 
         self.cmd_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.cmd_address = ('localhost', 10334)
+        self.cmd_address = ('localhost', CTX.listener_cmd_port)
 
     def _parse_ping(self, data: dict):
         if Status.paused != data.get('paused'):

@@ -29,8 +29,11 @@ def _install_hook():
     LOGGER.debug(f'ESST hook path: {esst_hook_path}')
     elib.path.ensure_dir(esst_hook_path.parent, must_exist=False, create=True)
     LOGGER.debug('writing ESST hook to file')
-    with open(esst_hook_path, 'w') as stream:
-        stream.write(read_template('game_gui.lua'))
+    template_text: str = read_template('game_gui.lua')
+    template_text = template_text.replace('{{ listener_server_port }}', str(CTX.listener_server_port))
+    template_text = template_text.replace('{{ listener_cmd_port }}', str(CTX.listener_cmd_port))
+    with open(str(esst_hook_path), 'w') as stream:
+        stream.write(template_text)
 
 
 def install_game_gui_hooks():

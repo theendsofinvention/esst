@@ -15,6 +15,7 @@ import pkg_resources
 
 from esst.core import FS, MAIN_LOGGER, Status
 from .arg import arg
+from .find_port import assign_ports
 from .github import get_latest_release
 from .remove_old_files import clean_all_folder
 
