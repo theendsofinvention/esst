@@ -8,11 +8,11 @@ import time
 import psutil
 
 from esst import commands, core, utils
-
-from . import autoexec_cfg, mission_editor_lua, missions_manager
+from . import autoexec_cfg, mission_editor_lua, missions_manager, server_settings
 from .commands import DCS
 from .dedicated import setup_config_for_dedicated_run
 from .game_gui import install_game_gui_hooks
+
 # from .rotate_logs import rotate_dcs_log
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
@@ -319,6 +319,7 @@ class App:
         if not await self._get_dcs_version_from_executable():
             return
         await core.CTX.loop.run_in_executor(None, install_game_gui_hooks)
+        await core.CTX.loop.run_in_executor(None, server_settings.write_server_settings)
         await core.CTX.loop.run_in_executor(None, missions_manager.get_latest_mission_from_github)
         await core.CTX.loop.run_in_executor(None, missions_manager.initial_setup)
 

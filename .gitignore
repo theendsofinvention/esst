@@ -91,3 +91,4 @@ htmlcov
 packages_esst.png
 classes_esst.png
 .eggs
+logs/

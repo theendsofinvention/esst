@@ -1,6 +1,6 @@
 cfg =
 {
-    ["isPublic"] = true,
+    ["isPublic"] = {{ is_public }},
     ["missionList"] =
     {
         [1] = "{{ mission_file_path }}",
@@ -9,20 +9,20 @@ cfg =
     ["port"] = "10308",
     ["advanced"] =
     {
-        ["event_Role"] = false,
-        ["allow_ownship_export"] = true,
-        ["allow_object_export"] = true,
-        ["pause_on_load"] = false,
-        ["event_Connect"] = true,
-        ["event_Ejecting"] = false,
-        ["event_Kill"] = false,
-        ["event_Takeoff"] = false,
-        ["pause_without_clients"] = false,
-        ["client_outbound_limit"] = 0,
-        ["event_Crash"] = false,
-        ["client_inbound_limit"] = 0,
-        ["resume_mode"] = 1,
-        ["allow_sensor_export"] = true,
+        ["event_Role"] = {{ event_role }},
+        ["allow_ownship_export"] = {{ allow_ownship_export }},
+        ["allow_object_export"] = {{ allow_object_export }},
+        ["pause_on_load"] = {{ pause_on_load }},
+        ["event_Connect"] = {{ event_connect }},
+        ["event_Ejecting"] = {{ event_ejecting }},
+        ["event_Kill"] = {{ event_kill }},
+        ["event_Takeoff"] = {{ event_takeoff }},
+        ["pause_without_clients"] = {{ pause_without_clients }},
+        ["client_outbound_limit"] = {{ client_outbound_limit }},
+        ["event_Crash"] = {{ event_crash }},
+        ["client_inbound_limit"] = {{ client_inbound_limit }},
+        ["resume_mode"] = {{ resume_mode }},
+        ["allow_sensor_export"] = {{ allow_sensor_export }},
     }, -- end of ["advanced"]
     ["password"] = "{{ passwd }}",
     ["require_pure_clients"] = false,

@@ -2,6 +2,7 @@
 """
 Set up Config object
 """
+import sys
 
 import everett
 
@@ -24,12 +25,12 @@ def setup_config():
         if exception.namespace:
             key = f'{exception.namespace}_{key}'
         print(f'Invalid config value: {key}')
-        exit(1)
+        sys.exit(1)
     except everett.ConfigurationMissingError as exception:
         key = exception.key
         if exception.namespace:
             key = f'{exception.namespace}_{key}'
         print(f'Missing configuration value: {key}')
-        exit(1)
+        sys.exit(1)
     else:
         return config

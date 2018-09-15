@@ -6,7 +6,6 @@ Manages UR settings
 from pathlib import Path
 
 from esst import core
-
 from ._ur_object import Airfield, URLinkType
 
 LOGGER = core.MAIN_LOGGER.getChild(__name__)
