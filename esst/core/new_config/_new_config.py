@@ -2,8 +2,8 @@
 """
 Manages config params for auto mission
 """
-import sys
 import inspect
+import sys
 
 from elib.config import BaseConfig, ConfigProp
 
