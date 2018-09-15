@@ -61,6 +61,8 @@ class Context:  # pylint: disable=too-many-instance-attributes,too-few-public-me
 
     listener_cmd_queue: Queue = Queue()
     listener_monitor_server_startup = False
+    listener_server_port = -1
+    listener_cmd_port = -1
 
     server_show_cpu_usage = False
     server_show_cpu_usage_once = False
