@@ -2,7 +2,7 @@
 """
 Manages config params for auto mission
 """
-
+import sys
 import inspect
 
 from elib.config import BaseConfig, ConfigProp
@@ -42,7 +42,11 @@ class ESSTConfig(BaseConfig,
         }
 
     def __init__(self):
-        BaseConfig.__init__(self, 'esst')
+        if hasattr(sys, '_called_from_test'):
+            package_name: str = 'esst_test'
+        else:
+            package_name: str = 'esst'
+        BaseConfig.__init__(self, package_name)
 
     debug = ConfigProp(bool, default='false')
     restart = ConfigProp(str, default='')
