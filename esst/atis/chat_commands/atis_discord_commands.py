@@ -46,7 +46,7 @@ def frequencies():
     """
     output = ['List of ATIS frequencies in Georgia:']
     for airfield in ALL_AIRFIELDS:
-        output.append(f'{airfield.name}: {airfield.atis_freq.long_freq()}')
+        output.append(f'{airfield.icao} {airfield.name}: {airfield.atis_freq.long_freq()}')
     LOGGER.info('\n'.join(output))
 
 
