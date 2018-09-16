@@ -12,7 +12,7 @@ cycler==0.10.0
 delegator.py==0.1.0
 discord.py==0.16.12
 elib==2018.9.2.2
-emiz==2018.8.22.2
+emiz==2018.9.15.1
 everett==0.9
 future==0.16.0
 gitdb2==2.0.4

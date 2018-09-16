@@ -128,10 +128,10 @@
         },
         "emiz": {
             "hashes": [
-                "sha256:a74ad2abc8359174d73ec7e700c5bc93d0c5d6aca60a47fc052e9026ba253f1c"
+                "sha256:707ede6fdbd4ee61a0f1974ad41364238e0d6137ce4ec6c4ede1b0bb5d918bd0"
             ],
             "index": "pypi",
-            "version": "==2018.8.22.2"
+            "version": "==2018.9.15.1"
         },
         "everett": {
             "hashes": [
