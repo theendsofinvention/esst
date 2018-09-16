@@ -17,7 +17,7 @@ elib-config==2018.9.16.1
 elib-run==2018.9.9.1
 epab==2018.9.16.2
 execnet==1.5.0; python_version != '3.2.*'
-faker==0.9.1
+faker==0.9.1; python_version != '3.2.*'
 flake8==3.5.0
 future==0.16.0
 gitchangelog==3.0.3
@@ -46,10 +46,10 @@ pyparsing==2.2.0
 pytest-cache==1.0; python_version != '3.2.*'
 pytest-cov==2.6.0; python_version != '3.2.*'
 pytest-deadfixtures==2.0.1; python_version != '3.2.*'
-pytest-faker==2.0.0
+pytest-faker==2.0.0; python_version != '3.2.*'
 pytest-pycharm==0.5.0; python_version != '3.2.*'
 pytest-repeat==0.7.0; python_version != '3.2.*'
-pytest-vcr==0.3.0; python_version >= '3.4.1'
+pytest-vcr==0.3.0
 pytest-watch==4.2.0; python_version != '3.2.*'
 pytest==3.8.0; python_version != '3.2.*'
 python-dateutil==2.7.3
@@ -64,11 +64,11 @@ smmap2==2.0.4
 stevedore==1.29.0
 text-unidecode==1.2
 toml==0.9.6
-tqdm==4.26.0; python_version >= '2.6'
+tqdm==4.26.0; python_version != '3.1.*'
 twine==1.11.0; python_version < '4'
 typed-ast==1.1.0; python_version < '3.7' and implementation_name == 'cpython'
 urllib3==1.23
-vcrpy==1.13.0; python_version >= '3.4.1'
+vcrpy==1.13.0
 watchdog==0.9.0
 wheel==0.31.1; python_version != '3.2.*'
 wrapt==1.10.11
