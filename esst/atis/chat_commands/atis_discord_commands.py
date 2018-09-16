@@ -13,7 +13,7 @@ LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 @utils.arg('icao', nargs=1)
-def show(icao: list):
+def showfor(icao: list):
     """
     Show ATIS info for a specific airfield
     """
@@ -40,13 +40,13 @@ def status():
     LOGGER.info(f'UniversRadio voice service is {status_}')
 
 
-def frequencies():
+def show():
     """
     Shows frequencies for the ATIS in Georgia
     """
     output = ['List of ATIS frequencies in Georgia:']
     for airfield in ALL_AIRFIELDS:
-        output.append(f'{airfield.name}: {airfield.atis_freq.long_freq()}')
+        output.append(f'{airfield.icao} {airfield.name}: {airfield.atis_freq.long_freq()}')
     LOGGER.info('\n'.join(output))
 
 

@@ -51,7 +51,7 @@ class URCoord:
     """
     Coordinates for an airfield (includes elevation)
     """
-    ur_coord_re = re.compile(r'^\d{2}\.\d{6}$')
+    ur_coord_re = re.compile(r'^-?\d{2,3}\.\d{6}$')
     ur_elev_re = re.compile(r'^\d+$')
 
     def __init__(self, lat: str, long: str, elev: str) -> None:

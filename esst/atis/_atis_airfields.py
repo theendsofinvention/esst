@@ -109,6 +109,113 @@ XRMF = Airfield('XRMF', 'Mozdok',
                 URCoord('43.786201', '44.607201', '508'),
                 URFrequency('137.300;A'),
                 '08,26')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/INS/Creech-AFB-Airport
+KINS = Airfield('KINS', 'Creech Air Force Base',
+                URCoord('36.586300', '-115.677399', '3132'),
+                URFrequency('290.450;A'),
+                '08,26,13,31')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/LAS/Mc-Carran-International-Airport
+KLAS = Airfield('KLAS', 'Mac Carran International Airport',
+                URCoord('36.080101', '-115.152199', '2181'),
+                URFrequency('120.775;A'),
+                '01L,01R,07L,07R,19L,19R,25L,25R')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/LSV/Nellis-AFB-Airport
+KLSV = Airfield('KLSV', 'Nellis Air Force Base',
+                URCoord('36.236198', '-115.034302', '1869'),
+                URFrequency('270.100;A'),
+                '03L,03R,21L,21R')
+# noinspection SpellCheckingInspection
+KXTA = Airfield('KXTA', 'Groom Lake Air Force Base',
+                URCoord('37.233299', '-115.799400', '4493'),
+                URFrequency('123.500;A'),
+                '14L,32R')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/BTY/Beatty-Airport
+KBTY = Airfield('KBTY', 'Beatty Airport',
+                URCoord('36.866501', '-116.784698', '3168'),
+                URFrequency('290.450;A'),
+                '09,34')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/BVU/Boulder-City-Municipal-Airport
+KBVU = Airfield('KBVU', 'Boulder City Municipal Airport',
+                URCoord('35.947399', '-114.861397', '2200'),
+                URFrequency('120.775;A'),
+                '09,27,15,33')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/0L9/Echo-Bay-Airport
+K0L9 = Airfield('K0L9', 'Echo Bay Airport',
+                URCoord('36.311100', '-114.463799', '1531'),
+                URFrequency('270.100;A'),
+                '06,24')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/HND/Henderson-Executive-Airport
+KHND = Airfield('KHND', 'Henderson Executive Airport',
+                URCoord('35.972698', '-115.134399', '2492'),
+                URFrequency('120.775;A'),
+                '17L,17R,35L,35R')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/0L7/Jean-Airport
+K0L7 = Airfield('K0L7', 'Jean Airport',
+                URCoord('35.768299', '-115.329697', '2820'),
+                URFrequency('120.775;A'),
+                '02L,02R,20L,20R')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/IFP/Laughlin-Bullhead-International-Airport
+KIFP = Airfield('KIFP', 'Laughlin/Bullhead International Airport',
+                URCoord('35.156101', '-114.559402', '656'),
+                URFrequency('119.825;A'),
+                '16,34')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/VGT/North-Las-Vegas-Airport
+KVGT = Airfield('KVGT', 'North Las Vegas Airport',
+                URCoord('36.210499', '-115.194397', '2204'),
+                URFrequency('118.050;A'),
+                '07,25,30L,30R,12L,12R')
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/L23/Pahute-Mesa-Airstrip-Airport
+KL23 = Airfield('KL23', 'Pahute Mesa Airstrip Airport',
+                URCoord('37.102699', '-116.313301', '5054'),
+                URFrequency('290.450;A'),
+                '18,36')
+# KTPH has no ATIS, using ASOS frequency instead
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/TPH/Tonopah-Airport
+KTPH = Airfield('KTPH', 'To-no-pah Airport',
+                URCoord('38.060200', '-117.086601', '5392'),
+                URFrequency('118.875;A'),
+                '18,36')
+# KTNX has no ATIS, using ASOS frequency instead
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/TNX/Tonopah-Test-Range-Airport
+KTNX = Airfield('KTNX', 'To-no-pah Test Range Airport',
+                URCoord('37.794701', '-116.778603', '5546'),
+                URFrequency('118.875;A'),
+                '14,32')
+# K1L1 has no ATIS, using ASOS frequency instead
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/1L1/Lincoln-County-Airport
+K1L1 = Airfield('K1L1', 'Lincoln County Airport',
+                URCoord('37.787498', '-114.419998', '4811'),
+                URFrequency('119.025;A'),
+                '16,34')
+# K67L has no ATIS, using AWOS frequency instead
+# noinspection SpellCheckingInspection
+# https://skyvector.com/airport/67L/Mesquite-Airport
+K67L = Airfield('K67L', 'Mesquite Airport',
+                URCoord('36.833000', '-114.055801', '1856'),
+                URFrequency('119.425;A'),
+                '02,20')
+# K3Q0 has no ATIS, using ASOS frequency instead
+# https://skyvector.com/airport/3Q0/Mina-Airport
+K3Q0 = Airfield('K3Q0', 'Mina Airport',
+                URCoord('38.379700', '-118.096298', '4549'),
+                URFrequency('118.875;A'),
+                '13,31')
 
 ALL_AIRFIELDS = [UG23, UG24, UG27, UG5X, UGKO, UGKS, UGSB, UGSS, UGTB, URKG,
-                 URKH, URKK, URKL, URKN, URKW, URMM, URMN, URMO, URSS, XRMF]
+                 URKH, URKK, URKL, URKN, URKW, URMM, URMN, URMO, URSS, XRMF,
+                 KINS, KLAS, KLSV, KXTA, KBTY, KBVU, K0L9, KHND, K0L7, KIFP,
+                 KVGT, KL23, KTPH, KTNX, K1L1, K67L, K3Q0]

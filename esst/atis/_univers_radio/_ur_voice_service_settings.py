@@ -29,7 +29,7 @@ class URVoiceServiceSettings:
 
         """
         LOGGER.debug(f'adding {airfield.icao} to UR settings')
-        mp3_file = Path(f'./{airfield.icao}.mp3')
+        mp3_file = Path(f'./atis/{airfield.icao}.mp3')
         station_line = ';'.join([
             str(URLinkType.local_file),
             str(airfield.atis_freq),
