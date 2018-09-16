@@ -40,7 +40,7 @@ def _build_speech_for_airfield(
         atis_queue: queue.Queue,
 ):
     LOGGER.debug(f'{airfield.icao}: processing')
-    atis_file = Path(f'{airfield.icao}.mp3').absolute()
+    atis_file = Path(f'atis/{airfield.icao}.mp3').absolute()
     LOGGER.debug(f'{airfield.icao}: ATIS file path: {atis_file}')
     active_runway = airfield.get_active_runway(wind_dir)
     LOGGER.debug(f'{airfield.icao}: active runway: {active_runway.long_name()}')
@@ -55,7 +55,7 @@ def _build_speech_for_airfield(
     full_speech = _cleanup_full_speech(full_speech)
     LOGGER.debug(f'{airfield.icao}: full speech: {full_speech}')
     LOGGER.debug(f'{airfield.icao}: writing MP3 file for: {airfield.icao}')
-    elib.tts.text_to_speech(full_speech, Path(atis_file), True)
+    elib.tts.text_to_speech(full_speech, atis_file, True)
     ur_settings.add_station(airfield)
     atis_queue.put(ATISForAirfield(airfield.icao, active_runway, information_identifier, information_letter))
 
@@ -81,6 +81,10 @@ def generate_atis(
     if not core.CFG.atis_create:
         LOGGER.info('skipping ATIS creation as per config')
         return
+    atis_dir = Path('atis').absolute()
+    if not atis_dir.exists():
+        LOGGER.info('creating ATIS dir: %s', atis_dir)
+        atis_dir.mkdir()
     URVoiceService.kill()
     LOGGER.info(f'creating ATIS from METAR: {metar_str}')
     LOGGER.debug('parsing METAR string')
