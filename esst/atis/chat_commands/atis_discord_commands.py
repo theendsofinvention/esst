@@ -40,7 +40,7 @@ def status():
     LOGGER.info(f'UniversRadio voice service is {status_}')
 
 
-def frequencies():
+def list():
     """
     Shows frequencies for the ATIS in Georgia
     """
