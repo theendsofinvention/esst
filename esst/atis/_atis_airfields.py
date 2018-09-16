@@ -111,24 +111,24 @@ XRMF = Airfield('XRMF', 'Mozdok',
                 '08,26')
 # noinspection SpellCheckingInspection
 # https://skyvector.com/airport/INS/Creech-AFB-Airport
-KINS = Airfield('KINS', 'Creech AFB',
+KINS = Airfield('KINS', 'Creech Air Force Base',
                 URCoord('36.586300', '-115.677399', '3132'),
                 URFrequency('290.450;A'),
                 '08,26,13,31')
 # noinspection SpellCheckingInspection
 # https://skyvector.com/airport/LAS/Mc-Carran-International-Airport
-KLAS = Airfield('KLAS', 'Mc Carran International Airport',
+KLAS = Airfield('KLAS', 'Mac Carran International Airport',
                 URCoord('36.080101', '-115.152199', '2181'),
                 URFrequency('120.775;A'),
                 '01L,01R,07L,07R,19L,19R,25L,25R')
 # noinspection SpellCheckingInspection
 # https://skyvector.com/airport/LSV/Nellis-AFB-Airport
-KLSV = Airfield('KLSV', 'Nellis AFB Airport',
+KLSV = Airfield('KLSV', 'Nellis Air Force Base',
                 URCoord('36.236198', '-115.034302', '1869'),
                 URFrequency('270.100;A'),
                 '03L,03R,21L,21R')
 # noinspection SpellCheckingInspection
-KXTA = Airfield('KXTA', 'Groom Lake AFB',
+KXTA = Airfield('KXTA', 'Groom Lake Air Force Base',
                 URCoord('37.233299', '-115.799400', '4493'),
                 URFrequency('123.500;A'),
                 '14L,32R')
@@ -183,14 +183,14 @@ KL23 = Airfield('KL23', 'Pahute Mesa Airstrip Airport',
 # KTPH has no ATIS, using ASOS frequency instead
 # noinspection SpellCheckingInspection
 # https://skyvector.com/airport/TPH/Tonopah-Airport
-KTPH = Airfield('KTPH', 'Tonopah Airport',
+KTPH = Airfield('KTPH', 'To-no-pah Airport',
                 URCoord('38.060200', '-117.086601', '5392'),
                 URFrequency('118.875;A'),
                 '18,36')
 # KTNX has no ATIS, using ASOS frequency instead
 # noinspection SpellCheckingInspection
 # https://skyvector.com/airport/TNX/Tonopah-Test-Range-Airport
-KTNX = Airfield('KTNX', 'Tonopah Test Range Airport',
+KTNX = Airfield('KTNX', 'To-no-pah Test Range Airport',
                 URCoord('37.794701', '-116.778603', '5546'),
                 URFrequency('118.875;A'),
                 '14,32')
