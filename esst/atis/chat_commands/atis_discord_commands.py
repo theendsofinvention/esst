@@ -13,7 +13,7 @@ LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 @utils.arg('icao', nargs=1)
-def show(icao: list):
+def showfor(icao: list):
     """
     Show ATIS info for a specific airfield
     """
