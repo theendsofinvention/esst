@@ -82,4 +82,4 @@ watchdog==0.9.0
 webencodings==0.5.1
 wheel==0.31.1; python_version != '3.0.*'
 wrapt==1.10.11
-yarl==1.2.6; python_version >= '3.4'
+yarl==1.2.6; python_version >= '3.4.1'
