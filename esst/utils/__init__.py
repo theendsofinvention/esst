@@ -8,9 +8,9 @@ import shutil
 import typing
 from pathlib import Path
 
-import ipgetter
 import pefile
 import pkg_resources
+import requests
 
 from esst import LOGGER
 from esst.core import Status
@@ -25,7 +25,11 @@ def external_ip():
     """
     Returns: external IP of this machine
     """
-    return ipgetter.IPgetter().get_externalip()
+    try:
+        return requests.get('https://api.ipify.org').text
+    except requests.ConnectionError:
+        LOGGER.error('unable to obtain external IP')
+        return 'unknown'
 
 
 def sanitize_path(path: typing.Union[str, Path]) -> str:
