@@ -12,7 +12,7 @@ import raven.breadcrumbs
 import raven.conf
 import raven.handlers.logging
 
-from esst import __version__, LOGGER
+from esst import LOGGER, __version__
 
 
 class Sentry(raven.Client):

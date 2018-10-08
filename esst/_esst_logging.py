@@ -6,7 +6,6 @@ Main ESST logger is setup here, as well as the logging configuration of other li
 import logging
 import sys
 
-
 _ROOT_LOGGER = logging.getLogger('')
 LOGGER = logging.getLogger('ESST')
 _LOGGING_SPARSE_FORMAT = logging.Formatter(

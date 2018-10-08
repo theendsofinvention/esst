@@ -10,7 +10,7 @@ from pathlib import Path
 
 from jinja2 import Template
 
-from esst import DCSServerConfig, LOGGER, utils, FS
+from esst import DCSServerConfig, FS, LOGGER, utils
 
 _CURRENT_MIS_RE = re.compile(r'^.*\[1\] = "(?P<mission_path>.*)",$')
 

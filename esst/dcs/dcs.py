@@ -7,7 +7,7 @@ import time
 
 import psutil
 
-from esst import DCSConfig, LOGGER, commands, core, utils, FS
+from esst import DCSConfig, FS, LOGGER, commands, core, utils
 from esst.dcs import autoexec_cfg, mission_editor_lua, missions_manager, server_settings
 from .commands import DCS
 from .dedicated import setup_config_for_dedicated_run

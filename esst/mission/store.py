@@ -6,7 +6,7 @@ import typing
 import uuid
 from pathlib import Path
 
-from esst import LOGGER, FS
+from esst import FS, LOGGER
 
 
 def _get_mission_folder(*paths: typing.Union[str, Path]) -> Path:

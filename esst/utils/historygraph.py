@@ -4,9 +4,9 @@ Creates graphic of perfs
 """
 
 import datetime
-from concurrent import futures
 import typing
 from collections import namedtuple
+from concurrent import futures
 from tempfile import mktemp
 
 import humanize

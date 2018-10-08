@@ -2,8 +2,8 @@
 """
 Represents the global context
 """
-import typing
 import inspect
+import typing
 from asyncio import AbstractEventLoop
 from collections import deque
 from queue import Queue

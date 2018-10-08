@@ -6,7 +6,7 @@ from pathlib import Path
 
 import jinja2
 
-from esst import DCSConfig, DiscordBotConfig, LOGGER, FS
+from esst import DCSConfig, DiscordBotConfig, FS, LOGGER
 from esst.core import CTX
 from esst.utils import create_versioned_backup, read_template
 

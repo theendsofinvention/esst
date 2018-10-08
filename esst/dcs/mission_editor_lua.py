@@ -4,7 +4,7 @@ Inject more code into DCS 1.5.8 and 2.x (new login mechanism)
 """
 import re
 
-from esst import LOGGER, utils, FS
+from esst import FS, LOGGER, utils
 
 # noinspection SpellCheckingInspection
 INJECT_TEMPLATE = """function onShowMainInterface()

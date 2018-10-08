@@ -8,7 +8,7 @@ from pathlib import Path
 
 import psutil
 
-from esst import LOGGER, FS
+from esst import FS, LOGGER
 
 PROC_NAME = 'UR_VoiceServiceServer.exe'
 

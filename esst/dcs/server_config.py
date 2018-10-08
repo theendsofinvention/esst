@@ -5,7 +5,6 @@ Config module for the DCS server configuration
 
 import elib_config
 
-
 DCS_SERVER_NAME = elib_config.ConfigValueString(
     'dcs_server', 'server_name',
     description='DCS Server name as it will appear in the multiplayer lobby.'

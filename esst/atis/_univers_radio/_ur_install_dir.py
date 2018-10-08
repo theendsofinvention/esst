@@ -6,7 +6,7 @@ import sys
 import typing
 from pathlib import Path
 
-from esst import utils, LOGGER, ATISConfig
+from esst import ATISConfig, LOGGER, utils
 from ._ur_status import Status as URStatus
 
 try:

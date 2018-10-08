@@ -11,7 +11,7 @@ import humanize
 import requests
 
 import esst.atis.create
-from esst import DCSConfig, LOGGER, commands, core, utils, FS
+from esst import DCSConfig, FS, LOGGER, commands, core, utils
 from esst.dcs.server_settings import write_server_settings
 
 
