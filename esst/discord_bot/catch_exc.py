@@ -9,9 +9,8 @@ import aiohttp
 import websockets.exceptions
 from discord import HTTPException
 
-from esst.core import CTX, MAIN_LOGGER
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER
+from esst.core import CTX
 
 
 def _pass_exception(exc: Exception):

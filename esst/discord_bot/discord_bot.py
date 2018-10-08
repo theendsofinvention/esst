@@ -12,7 +12,8 @@ import aiohttp.errors
 import discord
 import websockets.exceptions
 
-from esst.core import CFG, CTX, MAIN_LOGGER
+from esst import DiscordBotConfig, LOGGER, __version__
+from esst.core import CTX
 from .abstract import AbstractDiscordBot, AbstractDiscordCommandParser
 from .catch_exc import catch_exc
 from .chat_commands.parser import make_root_parser
@@ -20,7 +21,12 @@ from .events import DiscordEvents
 from .logging_handler import register_logging_handler
 from .tasks import DiscordTasks
 
-LOGGER = MAIN_LOGGER.getChild(__name__)
+DEFAULT_MOTD = f"""
+Hello!
+
+This is ESST v{__version__}
+Type "!help" for a list of available commands
+"""
 
 
 class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes

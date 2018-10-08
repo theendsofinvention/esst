@@ -4,9 +4,8 @@ Inject more code into DCS 1.5.8 and 2.x (new login mechanism)
 """
 import re
 
-from esst import core, utils
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER, utils
+from esst.core.fs_paths import FS
 
 # noinspection SpellCheckingInspection
 INJECT_TEMPLATE = """function onShowMainInterface()

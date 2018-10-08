@@ -8,9 +8,8 @@ from pathlib import Path
 
 import psutil
 
-from esst.core import FS, MAIN_LOGGER
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER
+from esst.core.fs_paths import FS
 
 PROC_NAME = 'UR_VoiceServiceServer.exe'
 

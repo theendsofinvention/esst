@@ -9,9 +9,8 @@ from time import sleep
 import emiz.edit_miz
 import emiz.weather
 
-from esst import commands, core, dcs, utils
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER, commands, core, utils
+from esst.dcs import missions_manager
 
 
 def _mission_index_to_mission_name(mission_index):

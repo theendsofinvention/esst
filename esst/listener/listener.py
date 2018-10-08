@@ -11,10 +11,9 @@ import socket
 import sys
 import time
 
-from esst.core import CFG, CTX, MAIN_LOGGER, Status
+from esst import DCSConfig, LOGGER
+from esst.core import CTX, Status
 from esst.utils import now
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 KNOWN_COMMANDS = ['exit dcs']
 

@@ -7,9 +7,7 @@ import asyncio
 import requests
 import requests.exceptions
 
-from esst import commands, core
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER, commands, core
 
 
 async def wan_available(retry: int = 0):

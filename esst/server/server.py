@@ -8,11 +8,10 @@ import time
 
 import psutil
 
+from esst import LOGGER
 from esst.commands import DISCORD
-from esst.core import CTX, MAIN_LOGGER, ServerStatus
+from esst.core import CTX, ServerStatus
 from esst.utils import now
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 # pylint: disable=too-few-public-methods

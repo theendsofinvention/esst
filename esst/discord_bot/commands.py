@@ -3,9 +3,8 @@
 Manages Discord commands
 """
 
-from esst.core import CTX, MAIN_LOGGER
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER
+from esst.core import CTX
 
 
 class DISCORD:

@@ -2,6 +2,7 @@
 """
 Etcher's Server Startup Tool
 """
+
 from pkg_resources import DistributionNotFound, get_distribution
 
 try:
@@ -9,3 +10,5 @@ try:
 except DistributionNotFound:  # pragma: no cover
     # package is not installed
     __version__ = 'not installed'
+
+from ._esst_logging import LOGGER, LOGGING_CONSOLE_HANDLER

@@ -2,13 +2,12 @@
 """
 Manages Discord chat commands
 """
+
 import discord
 
-from esst.core import CFG, MAIN_LOGGER
+from esst import DiscordBotConfig, LOGGER
 from esst.dcs import missions_manager
 from esst.discord_bot import abstract
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 # noinspection PyAbstractClass

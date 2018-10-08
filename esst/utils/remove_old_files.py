@@ -5,9 +5,8 @@ Clean folders of old files
 # import datetime
 # import os
 
-from esst.core import MAIN_LOGGER
 
-LOGGER = MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER
 
 
 # FIXME

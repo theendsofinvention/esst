@@ -19,11 +19,9 @@ from argh.exceptions import CommandError
 from argh.utils import get_arg_spec
 
 import esst.atis.chat_commands.atis_discord_commands
-from esst import commands, core
+from esst import LOGGER, commands
 from esst.discord_bot import abstract
 from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 def _cancel_execution(*_):

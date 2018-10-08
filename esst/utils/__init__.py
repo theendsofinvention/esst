@@ -8,18 +8,17 @@ import shutil
 import typing
 from pathlib import Path
 
-import elib
 import ipgetter
 import pefile
 import pkg_resources
 
-from esst.core import FS, MAIN_LOGGER, Status
+from esst import LOGGER
+from esst.core import Status
+# from esst.core.fs_paths import FS
 from .arg import arg
 from .find_port import assign_ports
 from .github import get_latest_release
 from .remove_old_files import clean_all_folder
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 def external_ip():

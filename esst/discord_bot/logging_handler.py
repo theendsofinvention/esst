@@ -5,10 +5,8 @@ Install a handler to redirect all INFO messages (and higher) to the Discord Chan
 
 import logging
 
+from esst import LOGGER
 from esst.commands import DISCORD
-from esst.core import MAIN_LOGGER
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 class DiscordLoggingHandler(logging.Handler):

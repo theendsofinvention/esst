@@ -3,12 +3,11 @@
 Manages GameGUI hooks
 """
 
-import elib
+from pathlib import Path
 
-from esst.core import CTX, FS, MAIN_LOGGER
-from esst.utils import read_template
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER, utils
+from esst.core import CTX
+from esst.core.fs_paths import FS
 
 
 # noinspection SpellCheckingInspection

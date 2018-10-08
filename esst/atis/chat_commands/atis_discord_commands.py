@@ -3,15 +3,13 @@
 ATIS Discord commands group
 """
 
-from esst import core, utils
-
+from esst import LOGGER, core, utils
 from .._atis_airfields import ALL_AIRFIELDS
 from .._atis_get_info import get_info_for_icao
 from .._univers_radio import URVoiceService
 
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
-
+# noinspection SpellCheckingInspection
 @utils.arg('icao', nargs=1)
 def showfor(icao: list):
     """

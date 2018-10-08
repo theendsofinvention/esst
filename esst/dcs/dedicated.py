@@ -6,10 +6,10 @@ from pathlib import Path
 
 import jinja2
 
-from esst.core import CFG, CTX, FS, MAIN_LOGGER
+from esst import DCSConfig, DiscordBotConfig, LOGGER
+from esst.core import CTX
+from esst.core.fs_paths import FS
 from esst.utils import create_versioned_backup, read_template
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 DEDI_CFG = r"""dedicated =
 {

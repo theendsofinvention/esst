@@ -5,11 +5,10 @@ Server machine commands
 
 import os
 
+from esst import LOGGER
 from esst.commands import DCS, DISCORD
-from esst.core import CTX, MAIN_LOGGER
+from esst.core import CTX
 from esst.utils.historygraph import make_history_graph
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 class SERVER:

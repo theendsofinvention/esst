@@ -5,9 +5,7 @@ Commands related to managing the server computer
 
 import humanize
 
-from esst import commands, core, utils
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER, commands, core, utils
 
 
 def status():

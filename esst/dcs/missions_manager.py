@@ -10,10 +10,10 @@ import emiz.weather
 import humanize
 import requests
 
-from esst import atis, commands, core, utils
+import esst.atis.create
+from esst import DCSConfig, LOGGER, commands, core, utils
+from esst.core.fs_paths import FS
 from esst.dcs.server_settings import write_server_settings
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 def _get_mission_folder() -> Path:

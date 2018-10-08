@@ -3,9 +3,8 @@
 Manages DCS autoexec.cfg file
 """
 
-from esst import core, utils
-
-_LOGGER = core.MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER, utils
+from esst.core.fs_paths import FS
 
 _SILENT_CRASH_REPORT = '''\ncrash_report_mode = "silent"\n'''
 

@@ -5,7 +5,7 @@ Manages UR installation path
 import typing
 from pathlib import Path
 
-from esst import core, utils
+from esst import utils, LOGGER, ATISConfig
 from ._ur_status import Status as URStatus
 
 try:
@@ -16,8 +16,6 @@ except ImportError:
     winreg = MagicMock()
 
 A_REG = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 
 def _get_ur_install_path_from_registry() -> typing.Union[Path, None]:
