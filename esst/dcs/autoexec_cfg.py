@@ -12,30 +12,26 @@ def inject_silent_crash_report() -> bool:
     """
     Injects code needed for the new login method in MissionEditor.lua
 
-    Args:
-        dcs_path: path to the installation of DCS
-
-    Returns:
-        Bool indicating success of the operation
-
+    :return: success of the operation
+    :rtype: bool
     """
 
-    core.FS.ensure_path(core.FS.saved_games_path, 'saved games')
-    autoexec_path = core.FS.ensure_path(core.FS.dcs_autoexec_file, 'dcs autoexec file', must_exist=False)
+    FS.ensure_path(FS.saved_games_path, 'saved games')
+    autoexec_path = FS.ensure_path(FS.dcs_autoexec_file, 'dcs autoexec file', must_exist=False)
     utils.create_versioned_backup(autoexec_path, file_must_exist=False)
 
     if autoexec_path.exists():
-        _LOGGER.debug('autoexec.cfg already exists, reading')
+        LOGGER.debug('autoexec.cfg already exists, reading')
         content = autoexec_path.read_text(encoding='utf8')
     else:
-        _LOGGER.debug('autoexec.cfg does not exist, creating')
+        LOGGER.debug('autoexec.cfg does not exist, creating')
         content = ''
 
     if _SILENT_CRASH_REPORT in content:
-        _LOGGER.debug('silent crash report already enabled')
+        LOGGER.debug('silent crash report already enabled')
         return True
 
     content = f'{content}{_SILENT_CRASH_REPORT}'
-    _LOGGER.debug(f'writing new "autoexec.cfg" content: {content}')
+    LOGGER.debug(f'writing new "autoexec.cfg" content: {content}')
     autoexec_path.write_text(content)
     return True

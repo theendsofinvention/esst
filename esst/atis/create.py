@@ -12,14 +12,12 @@ from pathlib import Path
 import elib.tts
 import emiz.weather
 
-from esst import core
+from esst import ATISConfig, LOGGER, core
 from ._atis_airfields import ALL_AIRFIELDS
 from ._atis_identifier import get_random_identifier
 from ._atis_objects import ATISForAirfield
 from ._atis_status import Status
 from ._univers_radio import Airfield, URVoiceService, URVoiceServiceSettings
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 RE_CLOUD_COVER = re.compile(r'(SKC|FEW|BKN|OVC|NSC)[\d]{3}\. ')
 
@@ -90,7 +88,7 @@ def generate_atis(
     """
     Create MP3 from METAR
     """
-    if not core.CFG.atis_create:
+    if not ATISConfig.ATIS_CREATE():
         LOGGER.info('skipping ATIS creation as per config')
         return
     atis_dir = Path('atis').absolute()
@@ -123,10 +121,10 @@ def generate_atis(
         if core.CTX.exit:
             break
         if include_icao and airfield.icao.upper() not in include_icao:
-            LOGGER(f'{airfield.icao}: skipping (not included)')
+            LOGGER.debug(f'{airfield.icao}: skipping (not included)')
             continue
         if exclude_icao and airfield.icao.upper() in exclude_icao:
-            LOGGER(f'{airfield.icao}: skipping (excluded)')
+            LOGGER.debug(f'{airfield.icao}: skipping (excluded)')
             continue
 
         thread = threading.Thread(

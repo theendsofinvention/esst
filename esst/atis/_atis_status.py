@@ -2,10 +2,10 @@
 """
 ATIS status
 """
-import esst.utils.sentry_context
+from esst.sentry.sentry_context import SentryClassContext
 
 
-class Status(esst.utils.sentry_context.SentryClassContext):
+class Status(SentryClassContext):
     """
     ATIS status
     """
