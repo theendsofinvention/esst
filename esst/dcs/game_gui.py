@@ -5,7 +5,7 @@ Manages GameGUI hooks
 
 from pathlib import Path
 
-from esst import LOGGER, utils
+from esst import LOGGER, utils, FS
 from esst.core import CTX
 from esst.core.fs_paths import FS
 

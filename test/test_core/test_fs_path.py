@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from esst.core import FS
+from esst import FS
 
 
 @pytest.fixture(autouse=True)

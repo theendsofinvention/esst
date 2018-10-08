@@ -5,8 +5,7 @@ Manages UR settings
 
 from pathlib import Path
 
-from esst import LOGGER
-from esst.core.fs_paths import FS
+from esst import LOGGER, FS
 from ._ur_object import Airfield, URLinkType
 
 

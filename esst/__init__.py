@@ -12,3 +12,4 @@ except DistributionNotFound:  # pragma: no cover
     __version__ = 'not installed'
 
 from ._esst_logging import LOGGER, LOGGING_CONSOLE_HANDLER
+from esst.fs_paths import FS
