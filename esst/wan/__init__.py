@@ -23,7 +23,7 @@ async def wan_available(retry: int = 0):
         return bool(response.ok)
     except requests.exceptions.RequestException:
         if retry < 5:
-            LOGGER.debug(f'Internet connection loss detected, retry {retry}')
+            LOGGER.debug('Internet connection loss detected, retry %s', retry)
             await asyncio.sleep(2)
             result = await wan_available(retry + 1)
             return result

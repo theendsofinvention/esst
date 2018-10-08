@@ -52,9 +52,9 @@ class DCSListener:
             joined = players - old_players
             left = old_players - players
             if joined:
-                LOGGER.info(f'player(s) joined: {", ".join(joined)}')
+                LOGGER.info('player(s) joined: %s', ', '.join(joined))
             if left:
-                LOGGER.info(f'player(s) left: {", ".join(left)}')
+                LOGGER.info('player(s) left: %s', ', '.join(left))
         self.last_ping = time.time()
         Status.server_age = data.get('time', 'unknown')
         Status.mission_time = data.get('model_time', 'unknown')
@@ -66,7 +66,7 @@ class DCSListener:
         CTX.players_history.append((now(), len(Status.players)))
 
     def _parse_status(self, data: dict):
-        LOGGER.debug(f'DCS server says: {data["message"]}')
+        LOGGER.debug('DCS server says: %s', data["message"])
         if data['message'] in ['loaded mission']:
             LOGGER.debug('starting monitoring server pings')
             self.last_ping = time.time()
@@ -89,7 +89,7 @@ class DCSListener:
             else:
                 command = {'cmd': command}
                 command = json.dumps(command) + '\n'
-                LOGGER.debug(f'sending command via socket: {command}')
+                LOGGER.debug('sending command via socket: %s', command)
                 self.cmd_sock.sendto(command.encode(), self.cmd_address)
 
     async def _monitor_server(self):
@@ -108,9 +108,10 @@ class DCSListener:
             if self.startup_age is None:
                 self.startup_age = time.time()
             if time.time() - self.startup_age > DCSConfig.DCS_START_GRACE_PERIOD():
-                LOGGER.error(f'DCS is taking more than {DCSConfig.DCS_START_GRACE_PERIOD()} seconds to start a '
+                LOGGER.error(f'DCS is taking more than %s seconds to start a '
                              'multiplayer server.\n'
-                             'Something is wrong ...')
+                             'Something is wrong ...',
+                             DCSConfig.DCS_START_GRACE_PERIOD())
                 CTX.listener_monitor_server_startup = False
 
     async def _read_socket(self):

@@ -129,7 +129,7 @@ class DCS:
         """
         connected_players = bool(Status.players)
         if connected_players:
-            LOGGER.debug(f'there are {len(Status.players)} connected player(s)')
+            LOGGER.debug('there are %s connected player(s)', len(Status.players))
         else:
             LOGGER.debug('there is no connected players')
         return connected_players

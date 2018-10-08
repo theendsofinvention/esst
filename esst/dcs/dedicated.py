@@ -27,10 +27,10 @@ def _get_me_auth_path() -> Path:
 def _write_dedi_config():
     dedi_cfg_path = Path(FS.variant_saved_games_path, 'Config/dedicated.lua')
     if not dedi_cfg_path.exists():
-        LOGGER.info(f'writing {dedi_cfg_path}')
+        LOGGER.info('writing %s', dedi_cfg_path)
         dedi_cfg_path.write_text(DEDI_CFG)
     else:
-        LOGGER.debug(f'file already exists: {dedi_cfg_path}')
+        LOGGER.debug('file already exists: %s', dedi_cfg_path)
 
 
 def _write_auth_file():

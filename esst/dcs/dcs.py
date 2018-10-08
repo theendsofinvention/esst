@@ -76,9 +76,9 @@ class App:
     async def _get_dcs_version_from_executable(self):
         # noinspection PyBroadException
         core.Status.dcs_version = utils.get_product_version(str(FS.dcs_exe))
-        LOGGER.debug(f'DCS version: {core.Status.dcs_version}')
+        LOGGER.debug('DCS version: %s', core.Status.dcs_version)
         simplified_version = int(''.join(core.Status.dcs_version.split('.')[:3]))
-        LOGGER.debug(f'simplified version: {simplified_version}')
+        LOGGER.debug('simplified version: %s', simplified_version)
         if simplified_version <= 157:
             pass
         elif simplified_version >= 158:
@@ -135,7 +135,7 @@ class App:
 
         def _command():
             if list(self._app.cpu_affinity()) != list(DCSConfig.DCS_CPU_AFFINITY()):
-                LOGGER.debug(f'setting DCS process affinity to: {DCSConfig.DCS_CPU_AFFINITY()}')
+                LOGGER.debug('setting DCS process affinity to: %s', DCSConfig.DCS_CPU_AFFINITY())
                 self._app.cpu_affinity(list(DCSConfig.DCS_CPU_AFFINITY()))
 
         while True:
@@ -155,8 +155,9 @@ class App:
 
         def _command():
             if self.app.nice() != self.valid_priorities[DCSConfig.DCS_CPU_PRIORITY()]:
-                LOGGER.debug(
-                    f'setting DCS process priority to: {DCSConfig.DCS_CPU_PRIORITY()}')
+                LOGGER.debug('setting DCS process priority to: %s',
+                             DCSConfig.DCS_CPU_PRIORITY()
+                             )
                 self.app.nice(self.valid_priorities[DCSConfig.DCS_CPU_PRIORITY()])
 
         time.sleep(15)
@@ -165,8 +166,11 @@ class App:
                 if core.CTX.exit:
                     return
                 if DCSConfig.DCS_CPU_PRIORITY() not in self.valid_priorities.keys():
-                    LOGGER.error(f'invalid priority: {DCSConfig.DCS_CPU_PRIORITY()}\n'
-                                 f'Choose one of: {self.valid_priorities.keys()}')
+                    LOGGER.error(f'invalid priority: %s\n'
+                                 f'Choose one of: %s',
+                                 DCSConfig.DCS_CPU_PRIORITY(),
+                                 self.valid_priorities.keys(),
+                                 )
                     return
                 self._work_with_dcs_process(_command)
             else:
@@ -177,7 +181,7 @@ class App:
     async def _start_new_dcs_application_if_needed(self):
 
         async def _start_dcs_app():
-            LOGGER.debug(f'starting DCS application process: {FS.dcs_exe}')
+            LOGGER.debug('starting DCS application process: %s', FS.dcs_exe)
             self._app = psutil.Popen(str(FS.dcs_exe))
 
         if self.app and self.app.is_running():
@@ -195,7 +199,7 @@ class App:
     async def _update_application_status(self, status: str):
         if core.Status.dcs_application != status:
             core.Status.dcs_application = status
-            LOGGER.info(f'DCS application is {status}')
+            LOGGER.info('DCS application is %s', status)
             if status == 'starting':
                 commands.LISTENER.monitor_server_startup_start()
 
@@ -210,8 +214,9 @@ class App:
             LOGGER.debug('sending socket command to DCS for graceful exit')
             commands.LISTENER.exit_dcs()
             await asyncio.sleep(1)
-            LOGGER.debug(
-                f'waiting on DCS to close itself (grace period: {DCSConfig.DCS_CLOSE_GRACE_PERIOD()})')
+            LOGGER.debug('waiting on DCS to close itself (grace period: %s seconds)',
+                         DCSConfig.DCS_CLOSE_GRACE_PERIOD()
+                         )
             now_ = utils.now()
             while self.app.is_running():
                 await asyncio.sleep(1)
@@ -288,9 +293,10 @@ class App:
                         core.CTX.dcs_show_cpu_usage_once = False
                     if DCSConfig.DCS_HIGH_CPU_USAGE():
                         if cpu_usage > DCSConfig.DCS_HIGH_CPU_USAGE() and not core.Status.paused:
-                            LOGGER.warning(
-                                f'DCS cpu usage has been higher than {DCSConfig.DCS_HIGH_CPU_USAGE()}%'
-                                f' for {DCSConfig.DCS_HIGH_CPU_USAGE_INTERVAL()} seconds')
+                            LOGGER.warning('DCS cpu usage has been higher than %s%% for %s seconds',
+                                           DCSConfig.DCS_HIGH_CPU_USAGE(),
+                                           DCSConfig.DCS_HIGH_CPU_USAGE_INTERVAL(),
+                                           )
 
                     now_ = utils.now()
                     core.CTX.dcs_mem_history.append((now_, mem_usage))
@@ -324,7 +330,7 @@ class App:
             blockers = ", ".join(DCS.dcs_cannot_start())
             if blockers not in self._blockers_warned:
                 self._blockers_warned.add(blockers)
-                LOGGER.warning(f'DCS is prevented to start by: {", ".join(DCS.dcs_cannot_start())}')
+                LOGGER.warning('DCS is prevented to start by: %s', ', '.join(DCS.dcs_cannot_start()))
         else:
             if self._blockers_warned:
                 self._blockers_warned = set()
@@ -344,7 +350,7 @@ class App:
                 blockers = ", ".join(DCS.dcs_cannot_start())
                 if blockers not in self._blockers_warned:
                     self._blockers_warned.add(blockers)
-                    LOGGER.warning(f'DCS is prevented to start by: {", ".join(DCS.dcs_cannot_start())}')
+                    LOGGER.warning('DCS is prevented to start by: %s', ', '.join(DCS.dcs_cannot_start()))
             else:
                 if self._blockers_warned:
                     self._blockers_warned = set()

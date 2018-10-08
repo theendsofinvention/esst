@@ -57,11 +57,11 @@ def inject_mission_editor_code() -> bool:
 
     FS.ensure_path(FS.mission_editor_lua_file, 'mission editor lua file')
 
-    LOGGER.debug(f'injecting MissionEditor.lua code in DCS installation: {FS.dcs_path}')
+    LOGGER.debug('injecting MissionEditor.lua code in DCS installation: %s', FS.dcs_path)
     if not FS.dcs_path.exists():
         raise FileNotFoundError(FS.dcs_path)
 
-    LOGGER.debug(f'MissionEditor.lua path: {FS.mission_editor_lua_file}')
+    LOGGER.debug('MissionEditor.lua path: %s', FS.mission_editor_lua_file)
     if not FS.mission_editor_lua_file.exists():
         raise FileNotFoundError(FS.mission_editor_lua_file)
 

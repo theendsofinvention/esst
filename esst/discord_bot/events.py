@@ -57,7 +57,7 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
                     force = 'force' in message.content
                     missions_manager.download_mission_from_discord(attach, overwrite, load, force)
         if message.content.startswith('!'):
-            LOGGER.debug(f'received "{message.content}" command from: {message.author.display_name}'
-                         f'{" (admin)" if is_admin else ""}')
+            LOGGER.debug('received "%s" command from: %s%s',
+                         message.content, message.author.display_name, " (admin)" if is_admin else "")
 
             self.parser.parse_discord_message(message.content, is_admin)

@@ -14,10 +14,10 @@ from esst.dcs import missions_manager
 
 
 def _mission_index_to_mission_name(mission_index):
-    LOGGER.debug(f'converting mission index to mission name: {mission_index}')
+    LOGGER.debug('converting mission index to mission name: %s', mission_index)
     for index, mission_name in missions_manager.list_available_missions():
         if index == mission_index:
-            LOGGER.debug(f'mission found: {mission_name}')
+            LOGGER.debug('mission found: %s', mission_name)
             return missions_manager.MissionPath(mission_name)
     LOGGER.debug('no mission found')
     return None
@@ -32,38 +32,38 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
             return
     else:
         try:
-            LOGGER.debug(f'trying to cast mission name into an int: {name}')
+            LOGGER.debug('trying to cast mission name into an int: %s', name)
             mission_number = int(name)
         except ValueError:
-            LOGGER.debug(f'loading mission name: {name}')
+            LOGGER.debug('loading mission name: %s', name)
             mission = missions_manager.MissionPath(name)
             if not mission:
-                LOGGER.debug(f'mission path not found: {mission.path}')
-                LOGGER.error(f'mission file not found: {mission.name}')
+                LOGGER.debug('mission path not found: %s', mission.path)
+                LOGGER.error('mission file not found: %s', mission.name)
                 return
         else:
-            LOGGER.debug(f'loading mission number: {mission_number}')
+            LOGGER.debug('loading mission number: %s', mission_number)
             mission = _mission_index_to_mission_name(mission_number)
             if not mission:
-                LOGGER.error(f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
+                LOGGER.error('invalid mission index: %s; use "!mission  show" to see available indices', mission_number)
                 return
 
-    LOGGER.info(f'loading mission file: {mission.path}')
+    LOGGER.info('loading mission file: %s', mission.path)
     if metar:
         metar = ' '.join(metar)
-        LOGGER.info(f'analyzing METAR string: {metar}')
+        LOGGER.info('analyzing METAR string: %s', metar)
         error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar)
         if error:
             LOGGER.error(error)
             return
     if icao:
         icao = icao.upper()
-        LOGGER.info(f'obtaining METAR from: {icao}')
+        LOGGER.info('obtaining METAR from: %s', icao)
         error, metar_str = emiz.weather.noaa.retrieve_metar(icao)
         if error:
             LOGGER.error(error)
             return
-        LOGGER.info(f'analyzing METAR string: {metar_str}')
+        LOGGER.info('analyzing METAR string: %s', metar_str)
         error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar_str)
         if error:
             LOGGER.error(error)
@@ -71,7 +71,7 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
 
     if metar:
         info_metar = metar
-        LOGGER.info(f'METAR: {metar.string()}')
+        LOGGER.info('METAR: %s', metar.string())
     else:
         LOGGER.info('building METAR from mission file')
         # noinspection SpellCheckingInspection
@@ -80,9 +80,9 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
         if error:
             LOGGER.error(error)
             return
-        LOGGER.info(f'METAR: {info_metar.string()}')
+        LOGGER.info('METAR: %s', info_metar.string())
 
-    LOGGER.debug(f'editing "{mission.path}" to "{mission.auto.path}"')
+    LOGGER.debug('editing "%s" to "%s"', mission.path, mission.auto.path)
     commands.DCS.block_start('loading mission')
     commands.DCS.kill(force=force)
     LOGGER.debug('waiting on DCS application to close')
@@ -96,23 +96,22 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
         edit_str.append('weather')
     if edit_str:
         edit_str = ' and '.join(edit_str)
-        LOGGER.info(
-            f'loading {mission.name} with {edit_str} (this may take a few seconds)')
+        LOGGER.info('loading %s with %s (this may take a few seconds)', mission.name, edit_str)
     else:
-        LOGGER.info(f'loading {mission.name} as is (no edit)')
+        LOGGER.info('loading %s as is (no edit)', mission.name)
     try:
         miz_edit_options = dict(infile=str(mission.path), outfile=str(mission.auto.path), metar=metar, time=time,
                                 min_wind=min_wind, max_wind=max_wind)
-        LOGGER.debug(f'editing miz file with options:\n{pprint.pformat(miz_edit_options)}')
+        LOGGER.debug('editing miz file with options:\n%s', pprint.pformat(miz_edit_options))
         error = emiz.edit_miz.edit_miz(**miz_edit_options)
         if error:
             if error == 'nothing to do!':
-                LOGGER.debug(f'loading mission "as is": {mission.path}')
+                LOGGER.debug('loading mission "as is": %s', mission.path)
                 mission.set_as_active(info_metar.code)
             else:
                 LOGGER.error(error)
         else:
-            LOGGER.debug(f'mission has been successfully edited, setting as active: {mission.auto.path}')
+            LOGGER.debug('mission has been successfully edited, setting as active: %s', mission.auto.path)
             mission.auto.set_as_active(info_metar.code)
     finally:
         commands.DCS.unblock_start('loading mission')
@@ -128,13 +127,14 @@ def delete(name: str):
     except ValueError:
         mission = missions_manager.MissionPath(name)
         if not mission:
-            LOGGER.error(f'mission file does not exist: {mission.path}')
+            LOGGER.error('mission file does not exist: %s', mission.path)
             return
     else:
         mission = _mission_index_to_mission_name(mission_number)
         if not mission:
-            LOGGER.error(
-                f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
+            LOGGER.error('invalid mission index: %s; use "!mission show" to see available indices',
+                         mission_number
+                         )
             return
 
     missions_manager.delete(mission)

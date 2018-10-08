@@ -22,9 +22,9 @@ def _remove_old_file():
 
 def _install_hook():
     hook_folder = utils.check_dir(FS.variant_saved_games_path, 'Scripts/Hooks', must_exist=False, create=True)
-    LOGGER.debug(f'hooks folder: {hook_folder}')
+    LOGGER.debug('hooks folder: %s', hook_folder)
     esst_hook_path = utils.check_file(hook_folder, 'esst.lua', must_exist=False)
-    LOGGER.debug(f'ESST hook path: {esst_hook_path}')
+    LOGGER.debug('ESST hook path: %s', esst_hook_path)
     utils.check_dir(esst_hook_path.parent, must_exist=False, create=True)
     LOGGER.debug('writing ESST hook to file')
     template_text: str = utils.read_template('game_gui.lua')

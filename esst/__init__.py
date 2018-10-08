@@ -2,6 +2,7 @@
 """
 Etcher's Server Startup Tool
 """
+# pylint: disable=wrong-import-position
 
 from pkg_resources import DistributionNotFound, get_distribution
 

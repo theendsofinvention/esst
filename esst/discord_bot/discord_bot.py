@@ -165,7 +165,7 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         if not self.ready:
             self._user = self.client.user
             await self._update_profile()
-            LOGGER.debug(f'Logged in as: {self.client.user.name}')
+            LOGGER.debug('Logged in as: %s', self.client.user.name)
             try:
                 self._server = set(self.client.servers).pop()
             except KeyError:

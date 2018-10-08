@@ -86,7 +86,7 @@ class FS:
             variant = f'.{variant_path.read_text(encoding="utf8")}'
         else:
             variant = ''
-        return check_dir(FS.saved_games_path, f'DCS{variant}').absolute()
+        return check_dir(FS.saved_games_path, f'DCS{variant}')
 
     @staticmethod
     def _get_saved_games_from_registry() -> Path:
@@ -124,7 +124,7 @@ class FS:
         LOGGER.debug('Saved Games path found in Config')
         base_sg = Path(ESSTConfig.SAVED_GAMES_DIR())
         if not base_sg.is_dir():
-            LOGGER.error(f'Saved Games dir provided in config file is invalid: {base_sg}')
+            LOGGER.error('Saved Games dir provided in config file is invalid:  %s', base_sg)
             return FS._get_saved_games_from_registry()
 
         return base_sg
@@ -132,53 +132,53 @@ class FS:
     @staticmethod
     def _init_saved_games():
         FS.saved_games_path = FS.discover_saved_games_path()
-        LOGGER.debug(f'Saved Games path: {FS.saved_games_path}')
+        LOGGER.debug('Saved Games path:  %s', FS.saved_games_path)
 
     @staticmethod
     def _init_dcs_path():
         from esst import DCSConfig
         FS.dcs_path = check_dir(DCSConfig.DCS_PATH())
-        LOGGER.debug(f'DCS path: {FS.dcs_path}')
+        LOGGER.debug('DCS path:  %s', FS.dcs_path)
 
     @staticmethod
     def _init_dcs_exe():
         FS.dcs_exe = check_file(FS.dcs_path, 'bin/dcs.exe')
-        LOGGER.debug(f'DCS exe: {FS.dcs_exe}')
+        LOGGER.debug('DCS exe:  %s', FS.dcs_exe)
 
     @staticmethod
     def _init_saved_games_variant():
         FS.variant_saved_games_path = FS.get_saved_games_variant(FS.dcs_path)
-        LOGGER.debug(f'Saved Games variant: {FS.variant_saved_games_path}')
+        LOGGER.debug('Saved Games variant:  %s', FS.variant_saved_games_path)
 
     @staticmethod
     def _init_autoexec_cfg():
         FS.dcs_autoexec_file = Path(FS.variant_saved_games_path, 'Config/autoexec.cfg')
-        LOGGER.debug(f'DCS autoexec: {FS.dcs_autoexec_file}')
+        LOGGER.debug('DCS autoexec: %s', FS.dcs_autoexec_file)
 
     @staticmethod
     def _init_mission_editor_lua():
         FS.mission_editor_lua_file = check_file(FS.dcs_path, 'MissionEditor/MissionEditor.lua')
-        LOGGER.debug(f'Mission Editor lua file: {FS.mission_editor_lua_file}')
+        LOGGER.debug('Mission Editor lua file: %s', FS.mission_editor_lua_file)
 
     @staticmethod
     def _init_hooks():
         FS.dcs_hook_path = check_file(FS.variant_saved_games_path, 'Scripts/Hooks/esst.lua', must_exist=False)
-        LOGGER.debug(f'DCS hook: {FS.dcs_hook_path}')
+        LOGGER.debug('DCS hook: %s', FS.dcs_hook_path)
 
     @staticmethod
     def _init_mission_folder():
         FS.dcs_mission_folder = check_dir(FS.variant_saved_games_path, 'Missions/ESST', must_exist=False, create=True)
-        LOGGER.debug(f'DCS mission folder: {FS.dcs_mission_folder}')
+        LOGGER.debug('DCS mission folder: %s', FS.dcs_mission_folder)
 
     @staticmethod
     def _init_server_settings():
         FS.dcs_server_settings = check_file(FS.variant_saved_games_path, 'Config/serverSettings.lua', must_exist=False)
-        LOGGER.debug(f'DCS server settings: {FS.dcs_server_settings}')
+        LOGGER.debug('DCS server settings: %s', FS.dcs_server_settings)
 
     @staticmethod
     def _init_logs_folder():
         FS.dcs_logs_dir = check_path(FS.variant_saved_games_path, 'logs', must_exist=False)
-        LOGGER.debug(f'DCS log folder: {FS.dcs_logs_dir}')
+        LOGGER.debug('DCS log folder: %s', FS.dcs_logs_dir)
 
     @staticmethod
     def init():

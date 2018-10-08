@@ -51,7 +51,7 @@ class Sentry(raven.Client):
 
     def register_context(self, context_name: str, context_provider):
         """Registers a context to be read when a crash occurs; obj must implement get_context()"""
-        LOGGER.debug('registering context with Sentry: {}'.format(context_name))
+        LOGGER.debug('registering context with Sentry: %s', context_name)
         self.registered_contexts[context_name] = context_provider
 
     @staticmethod

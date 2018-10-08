@@ -45,10 +45,10 @@ def discover_ur_install_path():
         LOGGER.debug('UR install path found in Config')
         _ur_install_path = Path(ATISConfig.UR_PATH())
         if not _ur_install_path.is_dir():
-            LOGGER.error(f'UR install path provided in config file is not a directory: {_ur_install_path}')
+            LOGGER.error('UR install path provided in config file is not a directory: %s', _ur_install_path)
             sys.exit(1)
 
-    LOGGER.debug(f'using UR install path: {_ur_install_path}')
+    LOGGER.debug('using UR install path: %s', _ur_install_path)
     FS.ur_install_path = _ur_install_path
     URStatus.install_path = _ur_install_path
     FS.ur_settings_folder = Path(FS.saved_games_path, 'UniversRadio')

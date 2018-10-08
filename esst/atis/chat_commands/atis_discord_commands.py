@@ -19,7 +19,7 @@ def showfor(icao: list):
     try:
         info = get_info_for_icao(icao_str)
     except KeyError:
-        LOGGER.error(f'ICAO not found in the list of currently active ATIS: {icao_str}')
+        LOGGER.error('ICAO not found in the list of currently active ATIS:  %s', icao_str)
         return
     running = 'running' if URVoiceService.is_running() else 'not running'
     info_str = f'UR voice service is {running}\n\n' \
@@ -35,7 +35,7 @@ def status():
     Show UR voice service status
     """
     status_ = 'running' if URVoiceService.is_running() else 'not running'
-    LOGGER.info(f'UniversRadio voice service is {status_}')
+    LOGGER.info('UniversRadio voice service is  %s', status_)
 
 
 def show():

@@ -36,7 +36,7 @@ class URVoiceService:
         exe_path = Path(FS.ur_install_path, PROC_NAME)
         if not exe_path.exists():
             raise FileNotFoundError(exe_path)
-        LOGGER.info(f'starting UR voice service: {exe_path}')
+        LOGGER.info('starting UR voice service: %s', exe_path)
         os.startfile(str(exe_path))  # nosec
         URVoiceService.is_running()
 

@@ -32,6 +32,6 @@ def inject_silent_crash_report() -> bool:
         return True
 
     content = f'{content}{_SILENT_CRASH_REPORT}'
-    LOGGER.debug(f'writing new "autoexec.cfg" content: {content}')
+    LOGGER.debug('writing new "autoexec.cfg" content: %s', content)
     autoexec_path.write_text(content)
     return True

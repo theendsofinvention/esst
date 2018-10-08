@@ -62,7 +62,7 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
     by :func:`wrap_errors`.
     """
     if pre_call:
-        LOGGER.debug(f'running pre_call: {pre_call}')
+        LOGGER.debug('running pre_call: %s', pre_call)
         pre_call(namespace_obj)
 
     # namespace -> dictionary
@@ -119,7 +119,7 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
     wrappable_exceptions += getattr(func, ATTR_WRAPPED_EXCEPTIONS, [])
 
     try:
-        LOGGER.debug(f'running func {func}')
+        LOGGER.debug('running func: %s', func)
         result = _call()
         return '\n'.join(result)
     # pylint: disable=catching-non-exception
@@ -262,7 +262,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
                 if hasattr(func, 'protected_') and not is_admin:
                     LOGGER.error(f'only users with privileges have access to this command')
                     return None
-                LOGGER.debug(f'running func: {func}')
+                LOGGER.debug('running func: %s', func)
                 return _execute_command(func, namespace_obj, pre_call=pre_call)
 
             # no commands declared, can't dispatch; display help message

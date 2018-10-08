@@ -53,7 +53,7 @@ DCS_SERVER_REPORT_TAKEOFF = elib_config.ConfigValueString(
     default='false'
 )
 
-DCS_SERVER_REPORT_crash = elib_config.ConfigValueString(
+DCS_SERVER_REPORT_CRASH = elib_config.ConfigValueString(
     'dcs_server', 'report_crash',
     description='Displays notification when a client crashes their airplane (valid values: "true", "false")',
     default='false'

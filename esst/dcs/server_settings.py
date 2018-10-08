@@ -49,10 +49,10 @@ def write_server_settings(mission_file_path: typing.Optional[str] = None) -> Non
         allow_sensor_export=DCSServerConfig.DCS_SERVER_EXPORT_SENSOR(),
         is_public=DCSServerConfig.DCS_SERVER_IS_PUBLIC(),
     )
-    LOGGER.debug(f'rendering settings.lua template with options\n{pprint.pformat(template_option)}')
+    LOGGER.debug('rendering settings.lua template with options\n%s', pprint.pformat(template_option))
     content = Template(utils.read_template('settings.lua')).render(**template_option)
     settings_file_path = FS.dcs_server_settings
-    LOGGER.debug(f'settings file path: {settings_file_path}')
+    LOGGER.debug('settings file path: %s', settings_file_path)
     utils.create_versioned_backup(settings_file_path)
     settings_file_path.write_text(content)
 

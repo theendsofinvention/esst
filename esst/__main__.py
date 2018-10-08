@@ -21,6 +21,48 @@ async def watch_for_exceptions():
         await asyncio.sleep(0.1)
 
 
+def _check_wan_and_start_wan_monitor(loop, logger, context):
+    import esst.wan
+    context.wan = loop.run_until_complete(esst.wan.wan_available())
+    if not context.wan:
+        logger.error('there is no internet connection available')
+        sys.exit(1)
+    loop.create_task(esst.wan.monitor_connection())
+
+
+def _set_console_title(esst_version):
+    import ctypes
+    ctypes.windll.kernel32.SetConsoleTitleW('ESST v%s - Use CTRL+C to exit', esst_version)
+
+
+def _init_atis_module():
+    import esst.atis.init
+    esst.atis.init.init_atis_module()
+
+
+def _setup_logging_debug(version, logger, console_handler, debug, config_debug):
+    logger.debug('Starting ESST version %s', version)
+    if debug:
+        console_handler.setLevel(logging.DEBUG)
+        logger.warning('debug output is active: command line')
+    elif config_debug:
+        console_handler.setLevel(logging.DEBUG)
+        logger.warning('debug output is active: config file')
+
+
+def sigint_handler(*_):
+    """
+    Catches exit signal (triggered byu CTRL+C)
+
+    Args:
+        *_: frame
+
+    """
+    from esst import LOGGER, core
+    LOGGER.info('ESST has been interrupted by user request, shutting down')
+    core.CTX.exit = True
+
+
 # pylint: disable=too-many-locals,too-many-arguments
 @click.group(invoke_without_command=True)  # noqa: C901
 @click.option('--discord/--no-discord', default=True, help='Starts the Discord bot loop', show_default=True)
@@ -67,24 +109,13 @@ def main(
     CTX.sentry = SENTRY
     CTX.sentry.register_context('App context', CTX)
 
-    LOGGER.debug('Starting ESST version %s', __version__)
-    if debug:
-        LOGGING_CONSOLE_HANDLER.setLevel(logging.DEBUG)
-        LOGGER.warning('debug output is active: command line')
-    elif ESSTConfig.DEBUG():
-        LOGGING_CONSOLE_HANDLER.setLevel(logging.DEBUG)
-        LOGGER.warning('debug output is active: config file')
+    _setup_logging_debug(__version__, LOGGER, LOGGING_CONSOLE_HANDLER, debug, ESSTConfig.DEBUG())
 
     LOGGER.debug('instantiating main event loop')
     loop = asyncio.get_event_loop()
     CTX.loop = loop
 
-    import esst.wan
-    CTX.wan = loop.run_until_complete(esst.wan.wan_available())
-    if not CTX.wan:
-        LOGGER.error('there is no internet connection available')
-        sys.exit(1)
-    loop.create_task(esst.wan.monitor_connection())
+    _check_wan_and_start_wan_monitor(loop, LOGGER, CTX)
 
     CTX.start_discord_loop = discord and DiscordBotConfig.DISCORD_START_BOT()
     CTX.start_server_loop = server and ServerConfig.SERVER_START_LOOP()
@@ -104,9 +135,7 @@ def main(
     # loop.set_debug(True)
     CTX.discord_msg_queue = queue.Queue()
 
-    import ctypes
-    ctypes.windll.kernel32.SetConsoleTitleW('ESST v%s - Use CTRL+C to exit', __version__)
-    LOGGER.debug('starting ESST %s', __version__)
+    _set_console_title(__version__)
 
     from esst import FS
     FS.init()
@@ -115,8 +144,7 @@ def main(
     clean_all_folder()
     assign_ports()
 
-    import esst.atis.init
-    esst.atis.init.init_atis_module()
+    _init_atis_module()
 
     import esst.discord_bot.discord_bot
     discord_loop = esst.discord_bot.discord_bot.App()
@@ -137,18 +165,6 @@ def main(
         loop.create_task(server_loop.run()),
         loop.create_task(watch_for_exceptions()),
     )
-
-    def sigint_handler(*_):
-        """
-        Catches exit signal (triggered byu CTRL+C)
-
-        Args:
-            *_: frame
-
-        """
-        LOGGER.info(
-            'ESST has been interrupted by user request, shutting down')
-        CTX.exit = True
 
     import signal
     signal.signal(signal.SIGINT, sigint_handler)

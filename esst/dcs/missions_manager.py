@@ -22,7 +22,7 @@ def _get_mission_folder() -> Path:
 def _get_auto_mission_folder() -> Path:
     auto_mission_folder = Path(_get_mission_folder().joinpath('AUTO'))
     if not auto_mission_folder.exists():
-        LOGGER.debug(f'creating directory: {auto_mission_folder}')
+        LOGGER.debug('creating directory: %s', auto_mission_folder)
         auto_mission_folder.mkdir(parents=True)
     return auto_mission_folder
 
@@ -75,18 +75,18 @@ class MissionPath:
 
         """
 
-        LOGGER.info(f'setting active mission to: {self.name}')
+        LOGGER.info('setting active mission to: %s', self.name)
         if not self:
-            LOGGER.error(f'mission file not found: {self.path}')
+            LOGGER.error('mission file not found: %s', self.path)
             return
 
         write_server_settings(str(self.path).replace('\\', '/'))
 
         if metar is None:
-            LOGGER.debug(f'building metar from mission: {self.name}')
+            LOGGER.debug('building metar from mission: %s', self.name)
             # noinspection SpellCheckingInspection
             metar = emiz.weather.mizfile.get_metar_from_mission(str(self.path), icao='XXXX')
-            LOGGER.info(f'metar for {self.name}:\n{metar}')
+            LOGGER.info('metar for %s:\n%s', self.name, metar)
         else:
             esst.atis.create.generate_atis(metar)
             core.Status.metar = metar
@@ -114,9 +114,9 @@ def set_active_mission(mission_path_as_str: str, metar: str = None):
         mission_path_as_str: path or name of the MIZ file
         metar: METAR string for this mission
     """
-    LOGGER.debug(f'setting active mission: {mission_path_as_str}')
+    LOGGER.debug('setting active mission: %s', mission_path_as_str)
     if metar:
-        LOGGER.debug(f'using METAR: {metar}')
+        LOGGER.debug('using METAR: %s', metar)
     mission_path = MissionPath(mission_path_as_str)
     mission_path.set_as_active(metar)
 
@@ -132,10 +132,10 @@ def delete(mission: MissionPath):
 
     """
     if mission:
-        LOGGER.info(f'removing: {mission.path}')
+        LOGGER.info('removing: %s', mission.path)
         mission.path.unlink()
     if mission.auto:
-        LOGGER.info(f'removing: {mission.auto.path}')
+        LOGGER.info('removing: %s', mission.auto.path)
         mission.auto.path.unlink()
 
 
@@ -154,10 +154,10 @@ def get_latest_mission_from_github():
             latest_version, asset_name, download_url = utils.get_latest_release(
                 DCSConfig.DCS_AUTO_MISSION_GH_OWNER(), DCSConfig.DCS_AUTO_MISSION_GH_REPO()
             )
-            LOGGER.debug(f'latest release: {latest_version}')
-            local_file = MissionPath(Path(_get_mission_folder(), f'{asset_name}'))
+            LOGGER.debug('latest release: %s', latest_version)
+            local_file = MissionPath(Path(_get_mission_folder(), asset_name))
             if not local_file:
-                LOGGER.info(f'downloading new mission: {asset_name}')
+                LOGGER.info('downloading new mission: %s', asset_name)
                 req = requests.get(download_url)
                 if req.ok:
                     local_file.path.write_bytes(req.content)
@@ -194,12 +194,14 @@ def download_mission_from_discord(discord_attachment,
         if overwrite:
             overwriting = ' (replacing existing file)'
         else:
-            LOGGER.warning(f'this mission already exists: {local_file.path}\n'
-                           f'use "overwrite" to replace it')
+            LOGGER.warning('this mission already exists: %s\nuse "overwrite" to replace it', local_file.path)
             return
 
-    LOGGER.info(
-        f'downloading: {filename} ({humanize.naturalsize(size)}) {overwriting}')
+    LOGGER.info('downloading: %s (%s) %s',
+                filename,
+                humanize.naturalsize(size),
+                overwriting,
+                )
     with requests.get(url) as response:
         local_file.path.write_bytes(response.content)
 
@@ -207,11 +209,11 @@ def download_mission_from_discord(discord_attachment,
         if commands.DCS.there_are_connected_players() and not force:
             LOGGER.error('there are connected players; cannot restart the server now (use "force" to kill anyway)')
             return
-        LOGGER.info(f'restarting the server with this mission')
+        LOGGER.info('restarting the server with this mission')
         local_file.set_as_active()
         commands.DCS.restart(force=force)
     else:
-        LOGGER.info(f'download successful, mission is now available')
+        LOGGER.info('download successful, mission is now available')
 
 
 def list_available_missions():
@@ -250,10 +252,10 @@ def get_running_mission() -> typing.Union['MissionPath', str]:
                     break
 
     if mission:
-        LOGGER.debug(f'returning active mission: {mission.name}')
+        LOGGER.debug('returning active mission: %s', mission.name)
         return mission
 
-    LOGGER.error(f'current mission is "{mission}", but that file does not exist')
+    LOGGER.error('current mission is "%s", but that file does not exist', mission)
     return ''
 
 
@@ -264,7 +266,7 @@ def initial_setup():
     LOGGER.debug('initializing first mission')
     mission = get_running_mission()
     if isinstance(mission, MissionPath):
-        LOGGER.info(f'building METAR for initial mission: {mission.orig_name}')
+        LOGGER.info('building METAR for initial mission: %s', mission.orig_name)
         metar = emiz.weather.mizfile.get_metar_from_mission(str(mission.path))
         core.Status.metar = metar
         esst.atis.create.generate_atis(metar)

@@ -110,15 +110,15 @@ def check_dir(*dir_path: typing.Union[str, Path], must_exist: bool = True, creat
 
 
 def _do_backup(original: Path, backup: Path):
-    LOGGER.debug(f'checking for backup of {original.absolute()}')
+    LOGGER.debug('%s: checking for backup', original.absolute())
     if not original.exists():
-        LOGGER.debug(f'original does no exist, skipping backup: {original.absolute()}')
+        LOGGER.debug('%s: original does no exist, skipping backup', original.absolute())
         return
     if not backup.exists():
-        LOGGER.debug(f'creating backup of "{original.absolute()}" -> "{backup.absolute()}"')
+        LOGGER.debug('%s: creating backup: %s', original.absolute(), backup.absolute())
         shutil.copy2(str(original.absolute()), str(backup.absolute()))
     else:
-        LOGGER.debug(f'backup already exists: "{backup.absolute()}"')
+        LOGGER.debug('%s: backup already exists', backup.absolute())
 
 
 def create_versioned_backup(file_path: typing.Union[str, Path], file_must_exist: bool = True):
@@ -168,7 +168,7 @@ def read_template(template_name: str) -> str:
     Returns: template file content
 
     """
-    LOGGER.debug(f'reading template: {template_name}')
+    LOGGER.debug('reading template: %s', template_name)
     template_path = os.path.join(os.path.dirname(__file__), 'templates', template_name)
     if not os.path.exists(template_path):
         LOGGER.debug('template not found, trying from pkg_resource')

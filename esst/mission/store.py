@@ -23,7 +23,7 @@ def _get_mission_folder(*paths: typing.Union[str, Path]) -> Path:
     if path.exists() and path.is_file():
         raise RuntimeError(f'path already exists but is a file: "{path}"')
     if not path.exists():
-        LOGGER.debug(f'creating directory: {str(path)}')
+        LOGGER.debug('creating directory: %s', str(path))
         path.mkdir(parents=True)
     return path
 
