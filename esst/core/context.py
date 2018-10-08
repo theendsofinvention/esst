@@ -30,8 +30,8 @@ class Context:  # pylint: disable=too-many-instance-attributes,too-few-public-me
 
     exit = False
     restart = False
-    loop: AbstractEventLoop = None
-    sentry = None
+    loop: AbstractEventLoop
+    sentry: typing.Any
     wan: bool = False
 
     start_listener_loop: bool = True

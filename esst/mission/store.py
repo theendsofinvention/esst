@@ -2,6 +2,7 @@
 """
 Manages the local repositories and mission files
 """
+import sys
 import typing
 import uuid
 from pathlib import Path
@@ -35,7 +36,11 @@ def get_base_missions_folder() -> Path:
     Returns: Path object
 
     """
-    return FS.dcs_mission_folder
+    if FS.dcs_mission_folder:
+        return FS.dcs_mission_folder
+
+    LOGGER.error('FS.dcs_mission_folder undefined')
+    sys.exit(1)
 
 
 def get_auto_missions_folder() -> Path:

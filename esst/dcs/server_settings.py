@@ -15,6 +15,16 @@ from esst import DCSServerConfig, FS, LOGGER, utils
 _CURRENT_MIS_RE = re.compile(r'^.*\[1\] = "(?P<mission_path>.*)",$')
 
 
+def _get_server_settings_path() -> Path:
+    if not FS.dcs_server_settings:
+        LOGGER.error('FS.dcs_server_settings undefined')
+        sys.exit(1)
+    if not FS.dcs_server_settings.exists():
+        LOGGER.error('please start a DCS server at least once before using ESST')
+        sys.exit(1)
+    return FS.dcs_server_settings
+
+
 def write_server_settings(mission_file_path: typing.Optional[str] = None) -> None:
     """
     Write "serverSettings.lua"
@@ -51,10 +61,10 @@ def write_server_settings(mission_file_path: typing.Optional[str] = None) -> Non
     )
     LOGGER.debug('rendering settings.lua template with options\n%s', pprint.pformat(template_option))
     content = Template(utils.read_template('settings.lua')).render(**template_option)
-    settings_file_path = FS.dcs_server_settings
-    LOGGER.debug('settings file path: %s', settings_file_path)
-    utils.create_versioned_backup(settings_file_path)
-    settings_file_path.write_text(content)
+    server_settings = _get_server_settings_path()
+    LOGGER.debug('settings file path: %s', server_settings)
+    utils.create_versioned_backup(server_settings)
+    server_settings.write_text(content)
 
 
 def _get_current_mission_path() -> str:
@@ -64,16 +74,11 @@ def _get_current_mission_path() -> str:
     :return: path to the mission
     :rtype: str
     """
-    try:
-        text: str = Path(FS.dcs_server_settings).read_text()
-    except FileNotFoundError:
-        LOGGER.error('please start a DCS server at least once before using ESST')
-        sys.exit(1)
-    else:
-        for line in text.split('\n'):
-            match = _CURRENT_MIS_RE.match(line)
-            if match:
-                return match.group('mission_path')
-
-        LOGGER.error('please start a DCS server at least once before using ESST')
-        sys.exit(1)
+    server_settings = _get_server_settings_path()
+    text: str = Path(server_settings).read_text()
+    for line in text.split('\n'):
+        match = _CURRENT_MIS_RE.match(line)
+        if match:
+            return match.group('mission_path')
+    LOGGER.error('please start a DCS server at least once before using ESST')
+    sys.exit(1)

@@ -65,38 +65,12 @@ def sigint_handler(*_):
 
 # pylint: disable=too-many-locals,too-many-arguments
 @click.group(invoke_without_command=True)  # noqa: C901
-@click.option('--discord/--no-discord', default=True, help='Starts the Discord bot loop', show_default=True)
-@click.option('--server/--no-server', default=True, help='Starts the server monitoring loop', show_default=True)
-@click.option('--dcs/--no-dcs', default=True, help='Starts the DCS app loop', show_default=True)
-@click.option('--listener/--no-listener', default=True, help='Starts the socket loop', show_default=True)
-@click.option('--start-dcs/--no-start-dcs', help='Spawn DCS.exe process', default=True, show_default=True)
-@click.option('--install-hooks/--no-install-hooks', help='Install GameGUI hooks', default=True, show_default=True)
-@click.option('--install-dedi-config/--no-install-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
-              show_default=True)
-@click.option('--auto-mission/--no-auto-mission', help='Download latest mission', default=True, show_default=True)
 @click.option('--debug', '-d', help='More console output', is_flag=True)
-def main(
-        discord: bool,
-        server: bool,
-        dcs: bool,
-        listener: bool,
-        start_dcs: bool,
-        install_hooks: bool,
-        install_dedi_config: bool,
-        auto_mission: bool,
-        debug: bool):
+def main(debug: bool):
     """
     Main entry point
 
     Args:
-        install_dedi_config: setup DCS to run in dedicated mode
-        install_hooks: install GameGUI hooks
-        dcs: start dcs loop
-        discord: start Discord bot loop
-        server: start server loop
-        listener: start the listener loop
-        start_dcs: start the server thread, but not the actual DCS app
-        auto_mission: downloads the latest mission from Github
         debug: show more verbose console output
     """
     from esst import __version__, LOGGER, LOGGING_CONSOLE_HANDLER, config
@@ -106,8 +80,8 @@ def main(
     from esst import ESSTConfig, DiscordBotConfig, DCSConfig, ListenerConfig, ServerConfig
 
     from esst.sentry.sentry import SENTRY
+    SENTRY.register_context('App context', CTX)
     CTX.sentry = SENTRY
-    CTX.sentry.register_context('App context', CTX)
 
     _setup_logging_debug(__version__, LOGGER, LOGGING_CONSOLE_HANDLER, debug, ESSTConfig.DEBUG())
 
@@ -117,19 +91,17 @@ def main(
 
     _check_wan_and_start_wan_monitor(loop, LOGGER, CTX)
 
-    CTX.start_discord_loop = discord and DiscordBotConfig.DISCORD_START_BOT()
-    CTX.start_server_loop = server and ServerConfig.SERVER_START_LOOP()
-    CTX.start_dcs_loop = dcs and DCSConfig.DCS_START_LOOP()
-    CTX.start_listener_loop = listener and ListenerConfig.LISTENER_START_LOOP()
+    CTX.start_discord_loop = DiscordBotConfig.DISCORD_START_BOT()
+    CTX.start_server_loop = ServerConfig.SERVER_START_LOOP()
+    CTX.start_dcs_loop = DCSConfig.DCS_START_LOOP()
+    CTX.start_listener_loop = ListenerConfig.LISTENER_START_LOOP()
 
-    if not start_dcs:
-        CTX.dcs_blocker.append('command line')
     if not DCSConfig.DCS_CAN_START():
         CTX.dcs_blocker.append('config')
 
-    CTX.dcs_setup_dedi_config = install_dedi_config
-    CTX.dcs_install_hooks = install_hooks
-    CTX.dcs_auto_mission = auto_mission
+    CTX.dcs_setup_dedi_config = DCSConfig.DCS_INSTALL_DEDICATED_CONFIG()
+    CTX.dcs_install_hooks = DCSConfig.DCS_INSTALL_HOOKS()
+    CTX.dcs_auto_mission = DCSConfig.DCS_AUTO_MISSION_ENABLE()
 
     loop = asyncio.get_event_loop()
     # loop.set_debug(True)

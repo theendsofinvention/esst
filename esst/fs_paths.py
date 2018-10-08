@@ -48,7 +48,7 @@ class FS:
         FS.ur_install_path = None
 
     @staticmethod
-    def ensure_path(path: typing.Union[str, Path], path_name: str, must_exist=True) -> Path:
+    def ensure_path(path: typing.Optional[typing.Union[str, Path]], path_name: str, must_exist=True) -> Path:
         """
         Makes sure that "path" is a Path instance, and (optionally) exists
 
@@ -78,7 +78,7 @@ class FS:
         """
         if dcs_path is None:
             dcs_path = FS.ensure_path(FS.dcs_path, 'dcs path')
-        FS.ensure_path(FS.saved_games_path, 'saved games')
+        saved_games_path = FS.ensure_path(FS.saved_games_path, 'saved games')
 
         dcs_path_as_path = check_dir(dcs_path)
         variant_path = Path(dcs_path_as_path, 'dcs_variant.txt')
@@ -86,7 +86,7 @@ class FS:
             variant = f'.{variant_path.read_text(encoding="utf8")}'
         else:
             variant = ''
-        return check_dir(FS.saved_games_path, f'DCS{variant}')
+        return check_dir(saved_games_path, f'DCS{variant}')
 
     @staticmethod
     def _get_saved_games_from_registry() -> Path:

@@ -98,3 +98,21 @@ class DCSConfig(SentryConfigContext):
         description='Github repository to grab the latest MIZ file from',
         default=''
     )
+
+    DCS_AUTO_MISSION_ENABLE = elib_config.ConfigValueBool(
+        'dcs', 'enable_auto_mission',
+        description='Enable pulling latest version of a mission from Github',
+        default=False
+    )
+
+    DCS_INSTALL_HOOKS = elib_config.ConfigValueBool(
+        'dcs', 'install_hooks',
+        description='Install DCS API hook LUA script at startup',
+        default=True
+    )
+
+    DCS_INSTALL_DEDICATED_CONFIG = elib_config.ConfigValueBool(
+        'dcs', 'install_dedicated_config',
+        description='Install "dedicated.lua" config script at startup',
+        default=True
+    )

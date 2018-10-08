@@ -55,26 +55,22 @@ def inject_mission_editor_code() -> bool:
 
     """
 
-    FS.ensure_path(FS.mission_editor_lua_file, 'mission editor lua file')
+    mission_editor_lua_file = FS.ensure_path(FS.mission_editor_lua_file, 'mission editor lua file', must_exist=True)
+    dcs_path = FS.ensure_path(FS.dcs_path, 'dcs install path', must_exist=True)
 
-    LOGGER.debug('injecting MissionEditor.lua code in DCS installation: %s', FS.dcs_path)
-    if not FS.dcs_path.exists():
-        raise FileNotFoundError(FS.dcs_path)
-
-    LOGGER.debug('MissionEditor.lua path: %s', FS.mission_editor_lua_file)
-    if not FS.mission_editor_lua_file.exists():
-        raise FileNotFoundError(FS.mission_editor_lua_file)
+    LOGGER.debug('injecting MissionEditor.lua code in DCS installation: %s', dcs_path)
+    LOGGER.debug('MissionEditor.lua path: %s', mission_editor_lua_file)
 
     LOGGER.debug('backing up MissionEditor.lua')
-    utils.create_versioned_backup(FS.mission_editor_lua_file)
+    utils.create_versioned_backup(mission_editor_lua_file)
 
     LOGGER.debug('injecting code')
-    output, count = RE_INJECT.subn(INJECT_TEMPLATE, FS.mission_editor_lua_file.read_text(encoding='utf8'))
+    output, count = RE_INJECT.subn(INJECT_TEMPLATE, mission_editor_lua_file.read_text(encoding='utf8'))
 
     if count == 0:
         LOGGER.warning('no replacement made')
         return False
 
     LOGGER.debug('writing resulting file')
-    FS.mission_editor_lua_file.write_text(output, encoding='utf8')
+    mission_editor_lua_file.write_text(output, encoding='utf8')
     return True

@@ -16,7 +16,11 @@ from esst.dcs.server_settings import write_server_settings
 
 
 def _get_mission_folder() -> Path:
-    return FS.dcs_mission_folder
+    if FS.dcs_mission_folder:
+        return FS.dcs_mission_folder
+
+    LOGGER.error('FS.dcs_mission_folder undefined')
+    sys.exit(0)
 
 
 def _get_auto_mission_folder() -> Path:
@@ -102,7 +106,11 @@ class MissionPath:
 
 
 def _get_settings_file_path() -> Path:
-    return FS.dcs_server_settings
+    if FS.dcs_server_settings:
+        return FS.dcs_server_settings
+
+    LOGGER.error('FS.dcs_server_settings undefined')
+    sys.exit(1)
     # return Path(FS.saved_games_path, 'DCS/Config/serverSettings.lua')
 
 
@@ -241,7 +249,7 @@ def get_running_mission() -> typing.Union['MissionPath', str]:
 
     else:
         try:
-            dcs_settings = Path(FS.dcs_server_settings).read_text()
+            dcs_settings = _get_settings_file_path().read_text()
         except FileNotFoundError:
             LOGGER.error('please start a DCS server at least once before using ESST')
             sys.exit(1)
