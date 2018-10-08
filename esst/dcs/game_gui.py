@@ -21,13 +21,13 @@ def _remove_old_file():
 
 
 def _install_hook():
-    hook_folder = elib.path.ensure_dir(FS.variant_saved_games_path, 'Scripts/Hooks', must_exist=False, create=True)
+    hook_folder = utils.check_dir(FS.variant_saved_games_path, 'Scripts/Hooks', must_exist=False, create=True)
     LOGGER.debug(f'hooks folder: {hook_folder}')
-    esst_hook_path = elib.path.ensure_file(hook_folder, 'esst.lua', must_exist=False)
+    esst_hook_path = utils.check_file(hook_folder, 'esst.lua', must_exist=False)
     LOGGER.debug(f'ESST hook path: {esst_hook_path}')
-    elib.path.ensure_dir(esst_hook_path.parent, must_exist=False, create=True)
+    utils.check_dir(esst_hook_path.parent, must_exist=False, create=True)
     LOGGER.debug('writing ESST hook to file')
-    template_text: str = read_template('game_gui.lua')
+    template_text: str = utils.read_template('game_gui.lua')
     template_text = template_text.replace('{{ listener_server_port }}', str(CTX.listener_server_port))
     template_text = template_text.replace('{{ listener_cmd_port }}', str(CTX.listener_cmd_port))
     with open(str(esst_hook_path), 'w') as stream:

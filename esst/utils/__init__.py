@@ -45,6 +45,70 @@ def sanitize_path(path: typing.Union[str, Path]) -> str:
     return str(path).replace('\\', '/')
 
 
+def check_path(*path: typing.Union[str, Path], must_exist: bool = True) -> Path:
+    """
+    Verifies a Path object
+
+    :param path: path to check
+    :type path: Path
+    :param must_exist: set to True if Path must exist
+    :type must_exist: bool
+    :return: verified Path
+    :rtype: Path
+    :raises : FileNotFoundError if Path must exist but isn't found
+    """
+    _path = Path(*path).absolute()
+    if must_exist and not _path.exists():
+        raise FileNotFoundError(str(_path))
+    return _path.absolute()
+
+
+def check_file(*file_path: typing.Union[str, Path], must_exist: bool = True) -> Path:
+    """
+    Verifies a Path object as a file
+
+    :param file_path: path to check
+    :type file_path: Path
+    :param must_exist: set to True if Path must exist
+    :type must_exist: bool
+    :return: verified Path
+    :rtype: Path
+    :raises : FileNotFoundError if Path must exist but isn't found
+    :raises : TypeError if Path isn't a file
+    """
+    _file_path = check_path(*file_path, must_exist=must_exist)
+    if _file_path.exists():
+        if not _file_path.is_file():
+            raise TypeError(f'not a file: {str(_file_path.absolute())}')
+    return _file_path
+
+
+def check_dir(*dir_path: typing.Union[str, Path], must_exist: bool = True, create: bool = False) -> Path:
+    """
+    Verifies a Path object as a directory
+
+    :param dir_path: path to check
+    :type dir_path: Path
+    :param must_exist: set to True if Path must exist
+    :type must_exist: bool
+    :param create: set to True if the Path should be created
+    :type create: bool
+    :return: verified Path
+    :rtype: Path
+    :raises : FileNotFoundError if Path must exist but isn't found
+    :raises : TypeError if Path isn't a directory
+    """
+    must_exist = not create if create else must_exist
+    _dir_path = check_path(*dir_path, must_exist=must_exist)
+    if _dir_path.exists():
+        if not _dir_path.is_dir():
+            raise TypeError(f'not a directory: {str(_dir_path.absolute())}')
+    else:
+        if create:
+            _dir_path.mkdir(parents=True)
+    return _dir_path
+
+
 def _do_backup(original: Path, backup: Path):
     LOGGER.debug(f'checking for backup of {original.absolute()}')
     if not original.exists():
@@ -66,7 +130,7 @@ def create_versioned_backup(file_path: typing.Union[str, Path], file_must_exist:
         file_path: file to backup
 
     """
-    file_path_as_path = elib.path.ensure_file(file_path, must_exist=file_must_exist)
+    file_path_as_path = check_file(file_path, must_exist=file_must_exist)
     backup_file = Path(file_path_as_path.parent, f'{file_path_as_path.name}_backup_{Status.dcs_version}')
     _do_backup(file_path_as_path, backup_file)
 
@@ -80,7 +144,7 @@ def create_simple_backup(file_path: typing.Union[str, Path], file_must_exist: bo
         file_must_exist: fails if the file to be backed up does not exist
 
     """
-    file_path_as_path: Path = elib.path.ensure_file(file_path, must_exist=file_must_exist)
+    file_path_as_path = check_file(file_path, must_exist=file_must_exist)
     backup_file = Path(file_path_as_path.parent, f'{file_path_as_path.name}_backup')
     _do_backup(file_path_as_path, backup_file)
 
@@ -138,6 +202,7 @@ def get_dcs_log_file_path() -> str:
     """
     Returns: path to DCS log file
     """
+    from esst import FS
     return os.path.join(str(FS.dcs_logs_dir.absolute()), 'dcs.log')
 
 
@@ -145,7 +210,6 @@ def _parse_file_info(file_info_list) -> typing.Optional[str]:
     for _file_info in file_info_list:
         if _file_info.Key == b'StringFileInfo':  # pragma: no branch
             for string in _file_info.StringTable:  # pragma: no branch
-                print(string.entries.keys())
                 if b'FileVersion' in string.entries.keys():  # pragma: no branch
                     file_version = string.entries[b'FileVersion'].decode('utf8')
                     return file_version
