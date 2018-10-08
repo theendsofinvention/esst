@@ -6,7 +6,6 @@ Represents the global context
 import inspect
 from asyncio import AbstractEventLoop
 from collections import deque
-from concurrent.futures import ProcessPoolExecutor
 from queue import Queue
 
 
@@ -33,15 +32,14 @@ class Context:  # pylint: disable=too-many-instance-attributes,too-few-public-me
     restart = False
     loop: AbstractEventLoop = None  # type: ignore
     sentry = None
-    wan = False
-    process_pool = ProcessPoolExecutor(max_workers=1)
+    wan: bool = False
 
-    start_listener_loop = True
-    start_discord_loop = True
-    start_server_loop = True
-    start_dcs_loop = True
+    start_listener_loop: bool = True
+    start_discord_loop: bool = True
+    start_server_loop: bool = True
+    start_dcs_loop: bool = True
 
-    discord_can_start = False
+    discord_can_start: bool = False
     discord_msg_queue: Queue = Queue()
     discord_file_queue: Queue = Queue()
 

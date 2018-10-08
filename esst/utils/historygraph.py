@@ -4,6 +4,7 @@ Creates graphic of perfs
 """
 
 import datetime
+from concurrent import futures
 import typing
 from collections import namedtuple
 from tempfile import mktemp
@@ -292,7 +293,7 @@ def make_history_graph(callback=None, days=0, hours=0, minutes=0, show: bool = F
         save_path: specify path to save to (default to temp path)
 
     """
-
+    process_pool = futures.ProcessPoolExecutor(max_workers=1)
     values_to_process = GraphValues(
         dcs_cpu_history=CTX.dcs_cpu_history,
         dcs_mem_history=CTX.dcs_mem_history,
@@ -302,8 +303,9 @@ def make_history_graph(callback=None, days=0, hours=0, minutes=0, show: bool = F
         server_bytes_sent_history=CTX.server_bytes_sent_history,
         players_history=CTX.players_history,
     )
-    future = CTX.process_pool.submit(
-        _make_history_graph, values_to_process, days, hours, minutes, show, save_path)
+    future = process_pool.submit(
+        _make_history_graph, values_to_process, days, hours, minutes, show, save_path
+    )
     if callback:
         future.add_done_callback(callback)
 
