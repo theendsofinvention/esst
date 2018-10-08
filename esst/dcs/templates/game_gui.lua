@@ -62,6 +62,18 @@ end
 
 function esst.onMissionLoadEnd()
     esst.status_update('loaded mission')
+    local now = DCS.getRealTime()
+    local message = {
+        type = 'mission_load',
+        coalitions = DCS.getAvailableCoalitions(),
+        -- slots = {
+            -- 0 = DCS.getAvailableSlots(0),
+            -- 1 = DCS.getAvailableSlots(1),
+        -- },
+        -- current_mission = DCS.getCurrentMission(),
+        -- mission_options = DCS.getMissionOptions(),
+    }
+    esst.send(message)
 end
 
 function esst.onSimulationStart()
@@ -114,7 +126,7 @@ function esst.onSimulationFrame()
         local message = {
             type = 'ping',
             players = players,
-            model_time= DCS.getModelTime(),
+            model_time = DCS.getModelTime(),
             paused = DCS.getPause(),
             mission_name = DCS.getMissionName(),
             mission_filename = DCS.getMissionFilename(),

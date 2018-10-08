@@ -5,6 +5,7 @@ Etcher's Simple Server Tools
 
 from setuptools import find_packages, setup
 
+# noinspection SpellCheckingInspection
 requirements = [
     'attrs',
     'argh',
