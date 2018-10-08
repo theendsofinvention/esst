@@ -57,7 +57,6 @@ def main(
         auto_mission: downloads the latest mission from Github
         debug: show more verbose console output
     """
-
     from esst import __version__, LOGGER, LOGGING_CONSOLE_HANDLER, config
     config.init()
 
@@ -82,6 +81,9 @@ def main(
 
     import esst.wan
     CTX.wan = loop.run_until_complete(esst.wan.wan_available())
+    if not CTX.wan:
+        LOGGER.error('there is no internet connection available')
+        sys.exit(1)
     loop.create_task(esst.wan.monitor_connection())
 
     CTX.start_discord_loop = discord and DiscordBotConfig.DISCORD_START_BOT()
