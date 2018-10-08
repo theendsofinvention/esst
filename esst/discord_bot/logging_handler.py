@@ -33,4 +33,4 @@ def register_logging_handler():
     Installs the handler to the main logger
     """
     LOGGER.debug('registering Discord logging handler')
-    MAIN_LOGGER.addHandler(DiscordLoggingHandler())
+    LOGGER.addHandler(DiscordLoggingHandler())

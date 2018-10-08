@@ -14,6 +14,7 @@ from argh.constants import (
     ATTR_EXPECTS_NAMESPACE_OBJECT, ATTR_WRAPPED_EXCEPTIONS, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
     DEST_FUNCTION,
 )
+# noinspection PyProtectedMember
 from argh.dispatching import ArghNamespace
 from argh.exceptions import CommandError
 from argh.utils import get_arg_spec
@@ -259,8 +260,7 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
 
             if func:
                 if hasattr(func, 'protected_') and not is_admin:
-                    LOGGER.error(
-                        f'only users with role "{core.CFG.discord_admin_role}" have access to this command')
+                    LOGGER.error(f'only users with privileges have access to this command')
                     return None
                 LOGGER.debug(f'running func: {func}')
                 return _execute_command(func, namespace_obj, pre_call=pre_call)

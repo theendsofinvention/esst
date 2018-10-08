@@ -16,7 +16,7 @@ from esst.dcs.server_settings import write_server_settings
 
 
 def _get_mission_folder() -> Path:
-    return core.FS.dcs_mission_folder
+    return FS.dcs_mission_folder
 
 
 def _get_auto_mission_folder() -> Path:
@@ -88,7 +88,7 @@ class MissionPath:
             metar = emiz.weather.mizfile.get_metar_from_mission(str(self.path), icao='XXXX')
             LOGGER.info(f'metar for {self.name}:\n{metar}')
         else:
-            atis.generate_atis(metar)
+            esst.atis.create.generate_atis(metar)
             core.Status.metar = metar
 
     def __str__(self):
@@ -102,8 +102,8 @@ class MissionPath:
 
 
 def _get_settings_file_path() -> Path:
-    return core.FS.dcs_server_settings
-    # return Path(core.FS.saved_games_path, 'DCS/Config/serverSettings.lua')
+    return FS.dcs_server_settings
+    # return Path(FS.saved_games_path, 'DCS/Config/serverSettings.lua')
 
 
 def set_active_mission(mission_path_as_str: str, metar: str = None):
@@ -149,10 +149,10 @@ def get_latest_mission_from_github():
     if core.CTX.dcs_auto_mission:
         LOGGER.debug('getting latest mission from Github')
         commands.DCS.block_start('loading mission')
-        if core.CFG.auto_mission_github_repo and core.CFG.auto_mission_github_owner:
+        if DCSConfig.DCS_AUTO_MISSION_GH_OWNER() and DCSConfig.DCS_AUTO_MISSION_GH_REPO():
             LOGGER.debug('looking for newer mission file')
             latest_version, asset_name, download_url = utils.get_latest_release(
-                core.CFG.auto_mission_github_owner, core.CFG.auto_mission_github_repo
+                DCSConfig.DCS_AUTO_MISSION_GH_OWNER(), DCSConfig.DCS_AUTO_MISSION_GH_REPO()
             )
             LOGGER.debug(f'latest release: {latest_version}')
             local_file = MissionPath(Path(_get_mission_folder(), f'{asset_name}'))
@@ -165,7 +165,7 @@ def get_latest_mission_from_github():
                 else:
                     LOGGER.error('failed to download latest mission')
         else:
-            LOGGER.error('no config values given for [auto mission]')
+            LOGGER.warning('no config values given for [auto mission]')
         commands.DCS.unblock_start('loading mission')
     else:
         LOGGER.debug('skipping mission update')
@@ -239,7 +239,7 @@ def get_running_mission() -> typing.Union['MissionPath', str]:
 
     else:
         try:
-            dcs_settings = Path(core.FS.dcs_server_settings).read_text()
+            dcs_settings = Path(FS.dcs_server_settings).read_text()
         except FileNotFoundError:
             LOGGER.error('please start a DCS server at least once before using ESST')
             sys.exit(1)
@@ -267,6 +267,6 @@ def initial_setup():
         LOGGER.info(f'building METAR for initial mission: {mission.orig_name}')
         metar = emiz.weather.mizfile.get_metar_from_mission(str(mission.path))
         core.Status.metar = metar
-        atis.generate_atis(metar)
+        esst.atis.create.generate_atis(metar)
     else:
         LOGGER.error('no initial mission found')

@@ -7,14 +7,13 @@ from pathlib import Path
 
 from esst import LOGGER, utils, FS
 from esst.core import CTX
-from esst.core.fs_paths import FS
 
 
 # noinspection SpellCheckingInspection
 
 
 def _remove_old_file():
-    old_file_path = elib.path.ensure_file(FS.variant_saved_games_path, 'DCS/Scripts/ESSTGameGUI.lua', must_exist=False)
+    old_file_path = utils.check_file(Path(FS.variant_saved_games_path, 'DCS/Scripts/ESSTGameGUI.lua'), must_exist=False)
 
     if old_file_path.exists():
         LOGGER.debug('removing old GameGUI script')

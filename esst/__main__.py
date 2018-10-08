@@ -3,38 +3,22 @@
 Main entry point
 """
 import asyncio
+import logging
 import queue
+import sys
 
 import click
-import elib
-
-from esst import __version__
-from esst.core import CFG, CTX, MAIN_LOGGER, fs_paths
-
-MAIN_LOGGER.debug('Starting ESST version %s', __version__)
 
 
 async def watch_for_exceptions():
     """
     Dummy loop to wake up asyncio event loop from time to time
     """
+    from esst.core import CTX
     while True:
         if CTX.exit:
             break
         await asyncio.sleep(0.1)
-
-
-def _setup_logging():
-    if CFG.debug:
-        elib.custom_logging.set_handler_level('ESST', 'ch', 'debug')
-
-
-def _setup_sentry():
-    if CFG.sentry_dsn:
-        from esst.utils.sentry import Sentry
-        CTX.sentry = Sentry(CFG.sentry_dsn)
-        CTX.sentry.register_context('App context', CTX)
-        CTX.sentry.register_context('Config', CFG)
 
 
 # pylint: disable=too-many-locals,too-many-arguments
@@ -48,6 +32,7 @@ def _setup_sentry():
 @click.option('--install-dedi-config/--no-install-dedi-config', help='Setup DCS to run in dedicated mode', default=True,
               show_default=True)
 @click.option('--auto-mission/--no-auto-mission', help='Download latest mission', default=True, show_default=True)
+@click.option('--debug', '-d', help='More console output', is_flag=True)
 def main(
         discord: bool,
         server: bool,
@@ -56,7 +41,8 @@ def main(
         start_dcs: bool,
         install_hooks: bool,
         install_dedi_config: bool,
-        auto_mission: bool, ):
+        auto_mission: bool,
+        debug: bool):
     """
     Main entry point
 
@@ -69,11 +55,28 @@ def main(
         listener: start the listener loop
         start_dcs: start the server thread, but not the actual DCS app
         auto_mission: downloads the latest mission from Github
+        debug: show more verbose console output
     """
-    _setup_logging()
 
-    _setup_sentry()
+    from esst import __version__, LOGGER, LOGGING_CONSOLE_HANDLER, config
+    config.init()
 
+    from esst.core import CTX
+    from esst import ESSTConfig, DiscordBotConfig, DCSConfig, ListenerConfig, ServerConfig
+
+    from esst.sentry.sentry import SENTRY
+    CTX.sentry = SENTRY
+    CTX.sentry.register_context('App context', CTX)
+
+    LOGGER.debug('Starting ESST version %s', __version__)
+    if debug:
+        LOGGING_CONSOLE_HANDLER.setLevel(logging.DEBUG)
+        LOGGER.warning('debug output is active: command line')
+    elif ESSTConfig.DEBUG():
+        LOGGING_CONSOLE_HANDLER.setLevel(logging.DEBUG)
+        LOGGER.warning('debug output is active: config file')
+
+    LOGGER.debug('instantiating main event loop')
     loop = asyncio.get_event_loop()
     CTX.loop = loop
 
@@ -81,12 +84,14 @@ def main(
     CTX.wan = loop.run_until_complete(esst.wan.wan_available())
     loop.create_task(esst.wan.monitor_connection())
 
-    CTX.start_discord_loop = discord and CFG.start_discord_loop
-    CTX.start_server_loop = server and CFG.start_server_loop
-    CTX.start_dcs_loop = dcs and CFG.start_dcs_loop
-    CTX.start_listener_loop = listener and CFG.start_listener_loop
+    CTX.start_discord_loop = discord and DiscordBotConfig.DISCORD_START_BOT()
+    CTX.start_server_loop = server and ServerConfig.SERVER_START_LOOP()
+    CTX.start_dcs_loop = dcs and DCSConfig.DCS_START_LOOP()
+    CTX.start_listener_loop = listener and ListenerConfig.LISTENER_START_LOOP()
 
-    if not (start_dcs and CFG.dcs_can_start):
+    if not start_dcs:
+        CTX.dcs_blocker.append('command line')
+    if not DCSConfig.DCS_CAN_START():
         CTX.dcs_blocker.append('config')
 
     CTX.dcs_setup_dedi_config = install_dedi_config
@@ -99,28 +104,28 @@ def main(
 
     import ctypes
     ctypes.windll.kernel32.SetConsoleTitleW('ESST v%s - Use CTRL+C to exit', __version__)
-    MAIN_LOGGER.debug('starting ESST %s', __version__)
+    LOGGER.debug('starting ESST %s', __version__)
 
-    fs_paths.init_fs(CFG)
+    from esst import FS
+    FS.init()
 
     from esst.utils import clean_all_folder, assign_ports
     clean_all_folder()
     assign_ports()
 
-    from esst import atis
-    atis.init_module()
+    import esst.atis.init
+    esst.atis.init.init_atis_module()
 
     import esst.discord_bot.discord_bot
     discord_loop = esst.discord_bot.discord_bot.App()
 
-    import esst.dcs
+    from esst.dcs import dcs
+    dcs_loop = dcs.App()
 
-    dcs_loop = esst.dcs.dcs.App()
+    from esst.server import server
+    server_loop = server.App()
 
-    import esst.server.server
-    server_loop = esst.server.server.App()
-
-    from esst.listener import DCSListener
+    from esst.listener.listener import DCSListener
     listener_loop = DCSListener()
 
     futures = asyncio.gather(
@@ -139,14 +144,14 @@ def main(
             *_: frame
 
         """
-        MAIN_LOGGER.info(
+        LOGGER.info(
             'ESST has been interrupted by user request, shutting down')
         CTX.exit = True
 
     import signal
     signal.signal(signal.SIGINT, sigint_handler)
     loop.run_until_complete(futures)
-    MAIN_LOGGER.debug('main loop is done, killing DCS')
+    LOGGER.debug('main loop is done, killing DCS')
 
     futures = asyncio.gather(  # type: ignore
         loop.create_task(dcs_loop.kill_running_app()),
@@ -155,7 +160,7 @@ def main(
 
     loop.run_until_complete(futures)
 
-    MAIN_LOGGER.debug('all done !')
+    LOGGER.debug('all done !')
 
 
 if __name__ == '__main__':

@@ -2,16 +2,13 @@
 """
 UniversRadio status
 """
-import esst.utils.sentry_context
+from esst.sentry.sentry_context import SentryClassContext
 
 
-class Status(esst.utils.sentry_context.SentryClassContext):
+class Status(SentryClassContext):
     """
     UniversRadio status
     """
-
-    def __init__(self):
-        pass
 
     install_path = 'unknown'
     settings_folder = 'unknown'

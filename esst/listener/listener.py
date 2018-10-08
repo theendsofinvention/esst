@@ -77,6 +77,9 @@ class DCSListener:
             self.monitoring = False
         Status.server_status = data['message']
 
+    # def _parse_mission_load(self, data: dict):
+    #     print(data)
+
     async def _parse_commands(self):
         await asyncio.sleep(0.1)
         if not CTX.listener_cmd_queue.empty():
@@ -92,9 +95,10 @@ class DCSListener:
     async def _monitor_server(self):
         await asyncio.sleep(0.1)
         if self.monitoring:
-            if time.time() - self.last_ping > CFG.dcs_ping_interval:
-                LOGGER.error('It has been 30 seconds since I heard from DCS. '
-                             'It is likely that the server has crashed.')
+            if time.time() - self.last_ping > DCSConfig.DCS_PING_INTERVAL():
+                LOGGER.error('It has been %s seconds since I heard from DCS. '
+                             'It is likely that the server has crashed.',
+                             DCSConfig.DCS_PING_INTERVAL())
                 CTX.dcs_do_restart = True
                 self.monitoring = False
 
@@ -103,8 +107,9 @@ class DCSListener:
         if CTX.listener_monitor_server_startup:
             if self.startup_age is None:
                 self.startup_age = time.time()
-            if time.time() - self.startup_age > CFG.dcs_server_startup_time:
-                LOGGER.error('DCS is taking more than 2 minutes to start a multiplayer server.\n'
+            if time.time() - self.startup_age > DCSConfig.DCS_START_GRACE_PERIOD():
+                LOGGER.error(f'DCS is taking more than {DCSConfig.DCS_START_GRACE_PERIOD()} seconds to start a '
+                             'multiplayer server.\n'
                              'Something is wrong ...')
                 CTX.listener_monitor_server_startup = False
 
@@ -115,10 +120,12 @@ class DCSListener:
             data = json.loads(data.decode().strip())
             if data['type'] == 'ping':
                 self._parse_ping(data)
-            if data['type'] == 'status':
+            elif data['type'] == 'status':
                 self._parse_status(data)
+            # elif data['type'] == 'mission_load':
+            #     self._parse_mission_load(data)
             else:
-                pass
+                LOGGER.warning('unknown command received on DCS socket: "%s"', data['type'])
         except socket.timeout:
             pass
 
@@ -137,8 +144,7 @@ class DCSListener:
             self.sock.bind(self.server_address)
         except socket.error as exc:
             if exc.errno == 10048:
-                MAIN_LOGGER.error(
-                    'cannot bind socket, maybe another instance of ESST is already running?')
+                LOGGER.error('cannot bind socket, maybe another instance of ESST is already running?')
                 sys.exit(-1)
 
         self.sock.settimeout(1)

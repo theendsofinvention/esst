@@ -15,10 +15,10 @@ from esst.dcs import missions_manager
 
 def _mission_index_to_mission_name(mission_index):
     LOGGER.debug(f'converting mission index to mission name: {mission_index}')
-    for index, mission_name in dcs.missions_manager.list_available_missions():
+    for index, mission_name in missions_manager.list_available_missions():
         if index == mission_index:
             LOGGER.debug(f'mission found: {mission_name}')
-            return dcs.missions_manager.MissionPath(mission_name)
+            return missions_manager.MissionPath(mission_name)
     LOGGER.debug('no mission found')
     return None
 
@@ -26,7 +26,7 @@ def _mission_index_to_mission_name(mission_index):
 # pylint: disable=too-many-statements,too-many-branches,too-many-return-statements,too-many-arguments
 def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
     if name is None:
-        mission = dcs.missions_manager.get_running_mission()
+        mission = missions_manager.get_running_mission()
         if not mission:
             LOGGER.error('unable to retrieve current mission')
             return
@@ -36,7 +36,7 @@ def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
             mission_number = int(name)
         except ValueError:
             LOGGER.debug(f'loading mission name: {name}')
-            mission = dcs.missions_manager.MissionPath(name)
+            mission = missions_manager.MissionPath(name)
             if not mission:
                 LOGGER.debug(f'mission path not found: {mission.path}')
                 LOGGER.error(f'mission file not found: {mission.name}')
@@ -126,7 +126,7 @@ def delete(name: str):
     try:
         mission_number = int(name)
     except ValueError:
-        mission = dcs.missions_manager.MissionPath(name)
+        mission = missions_manager.MissionPath(name)
         if not mission:
             LOGGER.error(f'mission file does not exist: {mission.path}')
             return
@@ -137,7 +137,7 @@ def delete(name: str):
                 f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
             return
 
-    dcs.missions_manager.delete(mission)
+    missions_manager.delete(mission)
 
 
 # noinspection SpellCheckingInspection
@@ -182,7 +182,7 @@ def show():
     Show list of missions available on the server
     """
     available_mission = '\n\t'.join(
-        f'{n}. {m}' for n, m in dcs.missions_manager.list_available_missions())
+        f'{n}. {m}' for n, m in missions_manager.list_available_missions())
     # available_mission = '\n\t'.join(available_mission)
     commands.DISCORD.say(
         'Available missions:\n'
@@ -207,7 +207,7 @@ def download():
     """
     Sends the currently running mission on Discord
     """
-    mission = dcs.missions_manager.get_running_mission()
+    mission = missions_manager.get_running_mission()
     if mission:
         commands.DISCORD.send_file(str(mission.path))
 

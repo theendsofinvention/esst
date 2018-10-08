@@ -24,7 +24,7 @@ _LOGGING_VERBOSE_FORMAT = logging.Formatter(
     '%(message)s'
 )
 LOGGING_CONSOLE_HANDLER = logging.StreamHandler(stream=sys.stdout)
-LOGGING_CONSOLE_HANDLER.setLevel(logging.DEBUG)
+LOGGING_CONSOLE_HANDLER.setLevel(logging.INFO)
 if hasattr(sys, 'frozen'):
     LOGGING_CONSOLE_HANDLER.setFormatter(_LOGGING_SPARSE_FORMAT)
 else:

@@ -88,7 +88,10 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
             return
 
         LOGGER.debug('starting Discord bot')
-        CTX.discord_msg_queue.put(CFG.discord_motd)
+
+        CTX.discord_msg_queue.put(DEFAULT_MOTD)
+        if DiscordBotConfig.DISCORD_MOTD():
+            CTX.discord_msg_queue.put(DiscordBotConfig.DISCORD_MOTD())
         register_logging_handler()
 
     def _create_client(self):
@@ -104,19 +107,19 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         If the channel does not exist, it will be created on the server, provided the bot has the authorization.
         """
         for channel in self.server.channels:
-            if channel.name == CFG.discord_channel:
+            if channel.name == DiscordBotConfig.DISCORD_CHANNEL():
                 self._channel = channel
                 break
         else:
             # noinspection PyUnresolvedReferences
             self._channel = await self.client.create_channel(
                 server=self.server,
-                name=CFG.discord_channel,
+                name=DiscordBotConfig.DISCORD_CHANNEL(),
                 type=discord.ChannelType.text,
             )
 
     async def _update_profile(self, user_name: str = None):
-        user_name = user_name or CFG.discord_bot_name
+        user_name = user_name or DiscordBotConfig.DISCORD_BOT_NAME()
         profile_update = {}
         if self.user.name != user_name:
             profile_update['username'] = user_name
@@ -173,8 +176,8 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
                              'https://discordapp.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot')
             else:
                 self._member = self.server.get_member(self.user.id)
-                if self.user.display_name != CFG.discord_bot_name:
-                    await self.client.change_nickname(self.member, CFG.discord_bot_name)
+                if self.user.display_name != DiscordBotConfig.DISCORD_BOT_NAME():
+                    await self.client.change_nickname(self.member, DiscordBotConfig.DISCORD_BOT_NAME())
                 await self._update_presence()
 
             await self.get_channel()
@@ -217,7 +220,7 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         if CTX.discord_can_start:
             LOGGER.debug('starting Discord client')
             self._create_client()
-            await self.client.start(CFG.discord_token)
+            await self.client.start(DiscordBotConfig.DISCORD_TOKEN())
         else:
             await asyncio.sleep(1)
 
@@ -226,10 +229,6 @@ class App(DiscordTasks,  # pylint: disable=too-many-instance-attributes
         """
         Main loop
         """
-
-        if not CFG.discord_token:
-            LOGGER.error('missing Discord token in config, cannot start bot')
-            return
 
         if not CTX.start_discord_loop:
             LOGGER.debug('skipping Discord loop')

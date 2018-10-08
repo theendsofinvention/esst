@@ -41,7 +41,7 @@ class URVoiceServiceSettings:
         """
         Writes currently known station to UR settings file
         """
-        LOGGER.debug(f'writing UR settings to: {core.FS.ur_voice_settings_file}')
+        LOGGER.debug(f'writing UR settings to: {FS.ur_voice_settings_file}')
         stations = '\n'.join(self._stations)
         full_text = f'Start of VSS DB\n{stations}\nEnd of VSS DB'
-        core.FS.ur_voice_settings_file.write_text(full_text)
+        FS.ur_voice_settings_file.write_text(full_text)

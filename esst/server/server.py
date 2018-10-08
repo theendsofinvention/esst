@@ -34,7 +34,8 @@ class App:
         ServerStatus.total_memory = psutil.virtual_memory().total
         ServerStatus.swap_size = psutil.swap_memory().total
         ServerStatus.boot_time = datetime.datetime.fromtimestamp(
-            psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+            psutil.boot_time()
+        ).strftime("%Y-%m-%d %H:%M:%S")
 
     @staticmethod
     def _update_status():

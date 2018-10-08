@@ -19,34 +19,39 @@ def write_server_settings(mission_file_path: typing.Optional[str] = None) -> Non
     """
     Write "serverSettings.lua"
     :param mission_file_path: path to the mission file to set as active
-    :type mission_file_path: str
+    :type mission_file_path: str or None
     """
+    LOGGER.debug('writing server settings')
     if mission_file_path is None:
-        mission_file_path = _get_current_mission_path()
+        LOGGER.debug('no mission file given, using current mission')
+        _mission_file_path = _get_current_mission_path()
+    else:
+        _mission_file_path = mission_file_path
+    LOGGER.debug('mission file path: %s', _mission_file_path)
     template_option = dict(
-        mission_file_path=mission_file_path,
-        passwd=core.CFG.dcs_server_password,
-        name=core.CFG.dcs_server_name,
-        max_players=core.CFG.dcs_server_max_players,
-        pause_on_load=core.CFG.dcs_server_pause_on_load,
-        pause_without_clients=core.CFG.dcs_server_pause_without_clients,
-        event_role=core.CFG.dcs_server_event_role,
-        allow_ownship_export=core.CFG.dcs_server_allow_ownship_export,
-        allow_object_export=core.CFG.dcs_server_allow_object_export,
-        event_connect=core.CFG.dcs_server_event_connect,
-        event_ejecting=core.CFG.dcs_server_event_ejecting,
-        event_kill=core.CFG.dcs_server_event_kill,
-        event_takeoff=core.CFG.dcs_server_event_takeoff,
-        client_outbound_limit=core.CFG.dcs_server_client_outbound_limit,
-        client_inbound_limit=core.CFG.dcs_server_client_inbound_limit,
-        event_crash=core.CFG.dcs_server_event_crash,
-        resume_mode=core.CFG.dcs_server_resume_mode,
-        allow_sensor_export=core.CFG.dcs_server_allow_sensor_export,
-        is_public=core.CFG.dcs_server_is_public,
+        mission_file_path=_mission_file_path,
+        passwd=DCSServerConfig.DCS_SERVER_PASSWORD(),
+        name=DCSServerConfig.DCS_SERVER_NAME(),
+        max_players=DCSServerConfig.DCS_SERVER_MAX_PLAYERS(),
+        pause_on_load=DCSServerConfig.DCS_SERVER_PAUSE_ON_LOAD(),
+        pause_without_clients=DCSServerConfig.DCS_SERVER_PAUSE_WITHOUT_CLIENT(),
+        event_role=DCSServerConfig.DCS_SERVER_REPORT_ROLE_CHANGE(),
+        allow_ownship_export=DCSServerConfig.DCS_SERVER_EXPORT_OWN_SHIP(),
+        allow_object_export=DCSServerConfig.DCS_SERVER_EXPORT_ALL(),
+        event_connect=DCSServerConfig.DCS_SERVER_REPORT_CONNECT(),
+        event_ejecting=DCSServerConfig.DCS_SERVER_REPORT_EJECT(),
+        event_kill=DCSServerConfig.DCS_SERVER_REPORT_KILL(),
+        event_takeoff=DCSServerConfig.DCS_SERVER_REPORT_TAKEOFF(),
+        client_outbound_limit=DCSServerConfig.DCS_SERVER_CLIENT_OUTBOUND_LIMIT(),
+        client_inbound_limit=DCSServerConfig.DCS_SERVER_CLIENT_INBOUND_LIMIT(),
+        event_crash=DCSServerConfig.DCS_SERVER_REPORT_crash(),
+        resume_mode=1,
+        allow_sensor_export=DCSServerConfig.DCS_SERVER_EXPORT_SENSOR(),
+        is_public=DCSServerConfig.DCS_SERVER_IS_PUBLIC(),
     )
     LOGGER.debug(f'rendering settings.lua template with options\n{pprint.pformat(template_option)}')
     content = Template(utils.read_template('settings.lua')).render(**template_option)
-    settings_file_path = core.FS.dcs_server_settings
+    settings_file_path = FS.dcs_server_settings
     LOGGER.debug(f'settings file path: {settings_file_path}')
     utils.create_versioned_backup(settings_file_path)
     settings_file_path.write_text(content)
@@ -60,7 +65,7 @@ def _get_current_mission_path() -> str:
     :rtype: str
     """
     try:
-        text: str = Path(core.FS.dcs_server_settings).read_text()
+        text: str = Path(FS.dcs_server_settings).read_text()
     except FileNotFoundError:
         LOGGER.error('please start a DCS server at least once before using ESST')
         sys.exit(1)

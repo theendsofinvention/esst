@@ -41,8 +41,8 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
             return
         if message.channel != self.channel:
             return
-        if CFG.discord_admin_role:
-            is_admin = bool([role for role in CFG.discord_admin_role  # pylint: disable=not-an-iterable
+        if DiscordBotConfig.DISCORD_ADMIN_ROLES():
+            is_admin = bool([role for role in DiscordBotConfig.DISCORD_ADMIN_ROLES()  # pylint: disable=not-an-iterable
                              if role in [role.name for role in message.author.roles]])
         else:
             is_admin = True
@@ -50,8 +50,7 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
             for attach in message.attachments:
                 if attach['filename'].endswith('.miz'):
                     if not is_admin:
-                        LOGGER.error(
-                            f'only users with role "{CFG.discord_admin_role}" can load missions on the server')
+                        LOGGER.error(f'only users with privileges can load missions on the server')
                         return
                     overwrite = 'overwrite' in message.content
                     load = 'load' in message.content

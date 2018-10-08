@@ -50,34 +50,31 @@ def inject_mission_editor_code() -> bool:
     """
     Injects code needed for the new login method in MissionEditor.lua
 
-    Args:
-        dcs_path: path to the DCS installation
-
     Returns:
         Bool indicating success of the operation
 
     """
 
-    core.FS.ensure_path(core.FS.mission_editor_lua_file, 'mission editor lua file')
+    FS.ensure_path(FS.mission_editor_lua_file, 'mission editor lua file')
 
-    LOGGER.debug(f'injecting MissionEditor.lua code in DCS installation: {core.FS.dcs_path}')
-    if not core.FS.dcs_path.exists():
-        raise FileNotFoundError(core.FS.dcs_path)
+    LOGGER.debug(f'injecting MissionEditor.lua code in DCS installation: {FS.dcs_path}')
+    if not FS.dcs_path.exists():
+        raise FileNotFoundError(FS.dcs_path)
 
-    LOGGER.debug(f'MissionEditor.lua path: {core.FS.mission_editor_lua_file}')
-    if not core.FS.mission_editor_lua_file.exists():
-        raise FileNotFoundError(core.FS.mission_editor_lua_file)
+    LOGGER.debug(f'MissionEditor.lua path: {FS.mission_editor_lua_file}')
+    if not FS.mission_editor_lua_file.exists():
+        raise FileNotFoundError(FS.mission_editor_lua_file)
 
     LOGGER.debug('backing up MissionEditor.lua')
-    utils.create_versioned_backup(core.FS.mission_editor_lua_file)
+    utils.create_versioned_backup(FS.mission_editor_lua_file)
 
     LOGGER.debug('injecting code')
-    output, count = RE_INJECT.subn(INJECT_TEMPLATE, core.FS.mission_editor_lua_file.read_text(encoding='utf8'))
+    output, count = RE_INJECT.subn(INJECT_TEMPLATE, FS.mission_editor_lua_file.read_text(encoding='utf8'))
 
     if count == 0:
         LOGGER.warning('no replacement made')
         return False
 
     LOGGER.debug('writing resulting file')
-    core.FS.mission_editor_lua_file.write_text(output, encoding='utf8')
+    FS.mission_editor_lua_file.write_text(output, encoding='utf8')
     return True

@@ -2,6 +2,7 @@
 """
 Manages UR installation path
 """
+import sys
 import typing
 from pathlib import Path
 
@@ -34,20 +35,26 @@ def discover_ur_install_path():
 
     Returns: Saved Games dir
     """
+    from esst import FS
     LOGGER.debug('discovering UR install path')
-    if not core.CFG.ur_path:
-        LOGGER.debug('no UR install path in Config, looking it up')
+    if not ATISConfig.UR_PATH():
+        LOGGER.debug('no UR install path in Config, looking it up in the registry')
         _ur_install_path = _get_ur_install_path_from_registry()
 
     else:
         LOGGER.debug('UR install path found in Config')
-        _ur_install_path = Path(core.CFG.saved_games_dir)
+        _ur_install_path = Path(ATISConfig.UR_PATH())
         if not _ur_install_path.is_dir():
-            LOGGER.error(f'UR install path provided in config file is invalid: {_ur_install_path}')
-            _ur_install_path = _get_ur_install_path_from_registry()
+            LOGGER.error(f'UR install path provided in config file is not a directory: {_ur_install_path}')
+            sys.exit(1)
 
-    LOGGER.debug(f'using Saved Games path: {_ur_install_path}')
-    core.FS.ur_install_path = URStatus.install_path = _ur_install_path
-    core.FS.ur_settings_folder = URStatus.settings_folder = Path(core.FS.saved_games_path, 'UniversRadio')
-    core.FS.ur_voice_settings_file = URStatus.voice_settings_file = Path(core.FS.ur_settings_folder, 'VoiceService.dat')
-    utils.create_simple_backup(core.FS.ur_voice_settings_file, file_must_exist=False)
+    LOGGER.debug(f'using UR install path: {_ur_install_path}')
+    FS.ur_install_path = _ur_install_path
+    URStatus.install_path = _ur_install_path
+    FS.ur_settings_folder = Path(FS.saved_games_path, 'UniversRadio')
+    URStatus.settings_folder = Path(FS.saved_games_path, 'UniversRadio')
+    LOGGER.debug('UR settings folder: %s', FS.ur_settings_folder)
+    FS.ur_voice_settings_file = Path(FS.ur_settings_folder, 'VoiceService.dat')
+    URStatus.voice_settings_file = Path(FS.ur_settings_folder, 'VoiceService.dat')
+    LOGGER.debug('UR voice service data file: %s', FS.ur_voice_settings_file)
+    utils.create_simple_backup(FS.ur_voice_settings_file, file_must_exist=False)
