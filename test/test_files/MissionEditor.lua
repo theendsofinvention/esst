@@ -93,7 +93,6 @@ DEBUG = true
 
 local textutil = require('textutil')
 
--- FIXME: remove it
 local old_sort = table.sort
 table.sort = function(tbl, fun)
     if (type(tbl[1]) == 'string') and (fun == nil) then
@@ -383,7 +382,6 @@ panel_server_list = require('mul_server_list')
 
 StartProgressBar.setValue(12)
 
--- FIXME: это должно делаться при загрузке редактора
 local MissionData = require('Mission.Data')
 local TriggerZoneData = require('Mission.TriggerZoneData')
 local NavigationPointData = require('Mission.NavigationPointData')
