@@ -63,7 +63,7 @@ def sigint_handler(*_):
     core.CTX.exit = True
 
 
-# pylint: disable=too-many-locals,too-many-arguments
+# TODO: add command to get airports ICAO from name
 @click.group(invoke_without_command=True)  # noqa: C901
 @click.option('--debug', '-d', help='More console output', is_flag=True)
 def main(debug: bool):

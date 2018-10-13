@@ -194,6 +194,7 @@ def weather():
     """
     Displays the weather for the currently running mission
     """
+    # FIXME: the METAR should be stored as a string
     if core.Status.metar and core.Status.metar != 'unknown':
         error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(core.Status.metar)
         if error:
