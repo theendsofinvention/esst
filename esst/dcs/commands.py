@@ -102,7 +102,8 @@ class DCS:
             reason: reason for preventing DCS to start
         """
         with _DCS_LOCK:
-            CTX.dcs_blocker.append(reason)
+            if reason not in CTX.dcs_blocker:
+                CTX.dcs_blocker.append(reason)
 
     @staticmethod
     def unblock_start(reason: str):
