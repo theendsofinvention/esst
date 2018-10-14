@@ -24,8 +24,8 @@ class DiscordLoggingHandler(logging.Handler):
         Args:
             record: logging.record to emit
         """
-        if isinstance(record.msg, str):
-            DISCORD.say(record.msg)
+        message = self.format(record)
+        DISCORD.say(str(message))
 
 
 def register_logging_handler():
