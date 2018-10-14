@@ -22,7 +22,7 @@ from argh.utils import get_arg_spec
 import esst.atis.chat_commands.atis_discord_commands
 from esst import LOGGER, commands
 from esst.discord_bot import abstract
-from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server
+from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server, weather
 
 
 def _cancel_execution(*_):
@@ -360,7 +360,7 @@ def make_root_parser():
     """
     parser = DiscordCommandParser(
         description=DESCRIPTION, prog='', add_help=False, usage='', epilog=EPILOG)
-    for module_ in [esst_, mission, server, dcs, report, esst.atis.chat_commands.atis_discord_commands]:
+    for module_ in [esst_, mission, server, dcs, report, esst.atis.chat_commands.atis_discord_commands, weather]:
         funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction)
                  if o[1].__module__ == module_.__name__ and not o[1].__name__.startswith('_')]
         parser.add_commands(
