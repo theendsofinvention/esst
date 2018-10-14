@@ -2,12 +2,11 @@
 """
 Meh
 """
-import pprint
 import typing
 from time import sleep
 
-import elib_wx
 import elib_miz
+import elib_wx
 
 from esst import LOGGER, commands, core, utils
 from esst.dcs import missions_manager
@@ -166,18 +165,21 @@ def show():
     )
 
 
-def weather():
+@utils.arg('--dcs', help='shows the weather in raw DCS format')
+def weather(dcs: bool = False):
     """
     Displays the weather for the currently running mission
     """
     # FIXME: the METAR should be stored as a string
     if core.Status.metar and core.Status.metar != 'unknown':
-        error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(core.Status.metar)
-        if error:
-            LOGGER.error(error)
-            return
-
-        commands.DISCORD.say(f'{metar.string()}')
+        assert isinstance(core.Status.metar, elib_wx.Weather)
+        if dcs:
+            _weather = core.Status.metar.generate_dcs_weather().__repr__()
+        else:
+            _weather = core.Status.metar.as_str()
+        commands.DISCORD.say(_weather)
+    else:
+        commands.DISCORD.say('There is currently no METAR information')
 
 
 def download():
