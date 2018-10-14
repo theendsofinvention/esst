@@ -138,12 +138,18 @@
             "index": "pypi",
             "version": "==2018.9.16.1"
         },
+        "elib-miz": {
+            "hashes": [
+                "sha256:74d3a810e0d1d72b4d49f74ac3163ad3deee7d61118ce764938a506a837308db"
+            ],
+            "version": "==2018.10.13.1"
+        },
         "elib-wx": {
             "hashes": [
-                "sha256:b5be7ae9ade59c735898956f968bf6ce92a6930010a69a71b012010de25da802"
+                "sha256:d21aa9de5b020c98e8ec99fab600d02c8f43056237d1edfc35fb52cc135cc79c"
             ],
             "index": "pypi",
-            "version": "==2018.10.14.1"
+            "version": "==2018.10.14.2"
         },
         "emiz": {
             "hashes": [
