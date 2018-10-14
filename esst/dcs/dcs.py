@@ -144,7 +144,7 @@ class App:
                     return
                 self._work_with_dcs_process(_command)
             else:
-                LOGGER.warning('no affinity given in config file')
+                LOGGER.warning('no CPU affinity given in config file')
                 return
             time.sleep(30)
 
