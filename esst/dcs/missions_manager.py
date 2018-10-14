@@ -6,7 +6,7 @@ import sys
 import typing
 from pathlib import Path
 
-import emiz.weather
+import elib_wx
 import humanize
 import requests
 
@@ -71,12 +71,12 @@ class MissionPath:
         """
         return self._path
 
-    def set_as_active(self, metar: str = None):
+    def set_as_active(self, weather: elib_wx.Weather = None):
         """
         Write the settings file to set this mission as active
-        Args:
-            metar: metar string; if not provided,  will be inferred from MIZ file
 
+        :param weather: current weather; if not provided,  will be inferred from MIZ file
+        :type weather: elib_wx.Weather
         """
 
         LOGGER.info('setting active mission to: %s', self.name)
@@ -86,14 +86,14 @@ class MissionPath:
 
         write_server_settings(str(self.path).replace('\\', '/'))
 
-        if metar is None:
+        if weather is None:
             LOGGER.debug('building metar from mission: %s', self.name)
             # noinspection SpellCheckingInspection
-            metar = emiz.weather.mizfile.get_metar_from_mission(str(self.path), icao='XXXX')
-            LOGGER.info('metar for %s:\n%s', self.name, metar)
+            weather = elib_wx.Weather(str(self.path))
+            LOGGER.info('metar for %s:\n%s', self.name, weather)
         else:
-            esst.atis.create.generate_atis(metar)
-            core.Status.metar = metar
+            esst.atis.create.generate_atis(weather)
+        core.Status.metar = weather
 
     def __str__(self):
         return str(self.path)
@@ -275,8 +275,8 @@ def initial_setup():
     mission = get_running_mission()
     if isinstance(mission, MissionPath):
         LOGGER.info('building METAR for initial mission: %s', mission.orig_name)
-        metar = emiz.weather.mizfile.get_metar_from_mission(str(mission.path))
-        core.Status.metar = metar
-        esst.atis.create.generate_atis(metar)
+        weather = elib_wx.Weather(str(mission.path))
+        core.Status.metar = weather
+        esst.atis.create.generate_atis(weather)
     else:
         LOGGER.error('no initial mission found')

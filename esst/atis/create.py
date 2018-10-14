@@ -10,7 +10,7 @@ import typing
 from pathlib import Path
 
 import elib.tts
-import emiz.weather
+import elib_wx
 
 from esst import ATISConfig, LOGGER, core
 from ._atis_airfields import ALL_AIRFIELDS
@@ -68,20 +68,14 @@ def _update_status(atis_queue: queue.Queue):
         Status.active_atis[atis_for_airfield.icao] = atis_for_airfield
 
 
-def _parse_metar_string(metar_str: str) -> emiz.weather.custom_metar.CustomMetar:
+def _parse_metar_string(metar_str: str) -> typing.Optional[elib_wx.Weather]:
     LOGGER.debug('parsing METAR string')
     # noinspection SpellCheckingInspection
-    metar_str = metar_str.replace('XXXX', 'UGTB')
-    error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar_str)
-    if error:
-        LOGGER.error('failed to parse METAR')
-        raise RuntimeError(metar)
-
-    return metar
+    return elib_wx.Weather(metar_str)
 
 
 def generate_atis(
-        metar_str: str,
+        weather: elib_wx.Weather,
         include_icao: typing.List[str] = None,
         exclude_icao: typing.List[str] = None
 ):
@@ -97,13 +91,12 @@ def generate_atis(
         atis_dir.mkdir()
     URVoiceService.kill()
 
-    LOGGER.info('creating ATIS from METAR: %s', metar_str)
-    metar = _parse_metar_string(metar_str)
+    LOGGER.info('creating ATIS from METAR: %s', weather.raw_metar_str)
 
-    wind_dir = int(metar.wind_dir.value())
+    wind_dir = int(weather.wind_direction.value())
     LOGGER.debug('wind direction: %s', wind_dir)
 
-    speech_atis = emiz.weather.AVWX.metar_to_speech(metar_str)
+    speech_atis = weather.as_speech()
     core.CTX.atis_speech = speech_atis
     LOGGER.debug('ATIS speech: %s', speech_atis)
 

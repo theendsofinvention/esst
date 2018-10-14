@@ -32,6 +32,7 @@ requests = "*"
 "urllib3" = "*"
 inflect = "*"
 elib-config = "*"
+elib-wx = "*"
 
 [dev-packages]
 epab = ">=2018.09.09.2"
