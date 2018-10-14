@@ -66,7 +66,7 @@ def sigint_handler(*_):
 # TODO: add command to get airports ICAO from name
 @click.group(invoke_without_command=True)  # noqa: C901
 @click.option('--debug', '-d', help='More console output', is_flag=True)
-def main(debug: bool):
+def main(debug: bool):  # pylint: disable=too-many-locals
     """
     Main entry point
 

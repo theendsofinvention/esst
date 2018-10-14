@@ -24,6 +24,8 @@ def _mission_index_to_mission_name(mission_index):
 
 # pylint: disable=too-many-statements,too-many-branches,too-many-return-statements,too-many-arguments
 def _load(name, metar_or_icao, time, max_wind, min_wind, force):  # noqa: C901
+    if max_wind or min_wind:
+        LOGGER.warning('"min_wind" and "max_wind" have been disabled for the time being')
     if name is None:
         mission = missions_manager.get_running_mission()
         if not mission:
@@ -170,13 +172,11 @@ def weather(dcs: bool = False):
     """
     Displays the weather for the currently running mission
     """
-    # FIXME: the METAR should be stored as a string
     if core.Status.metar and core.Status.metar != 'unknown':
-        assert isinstance(core.Status.metar, elib_wx.Weather)
         if dcs:
-            _weather = core.Status.metar.generate_dcs_weather().__repr__()
+            _weather = core.Status.metar.generate_dcs_weather().__repr__()  # pylint: disable=no-member
         else:
-            _weather = core.Status.metar.as_str()
+            _weather = core.Status.metar.as_str()  # pylint: disable=no-member
         commands.DISCORD.say(_weather)
     else:
         commands.DISCORD.say('There is currently no METAR information')

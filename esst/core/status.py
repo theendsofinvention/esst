@@ -2,6 +2,7 @@
 """
 Dummy class to facilitate the passing of information between other classes
 """
+import elib_wx
 
 
 class Status:  # pylint: disable=too-few-public-methods
@@ -12,7 +13,7 @@ class Status:  # pylint: disable=too-few-public-methods
     dcs_version = 'unknown'
     dcs_cpu_usage = 'unknown'
     server_status = 'unknown'
-    metar = 'unknown'
+    metar: elib_wx.Weather = 'unknown'
     mission_file = 'unknown'
     server_age = 'unknown'
     mission_time = 'unknown'
