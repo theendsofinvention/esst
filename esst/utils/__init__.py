@@ -203,7 +203,8 @@ def get_dcs_log_file_path() -> str:
     Returns: path to DCS log file
     """
     from esst import FS
-    return os.path.join(str(FS.dcs_logs_dir.absolute()), 'dcs.log')
+    _log_dir_path = str(FS.dcs_logs_dir.absolute())  # type: ignore
+    return os.path.join(_log_dir_path, 'dcs.log')
 
 
 def _parse_file_info(file_info_list) -> typing.Optional[str]:
