@@ -21,9 +21,17 @@ def showfor(icao: list):
     except KeyError:
         LOGGER.error('ICAO not found in the list of currently active ATIS:  %s', icao_str)
         return
+    if core.Status.metar == 'unknown':
+        LOGGER.error('no weather information available at this time')
+        return
     running = 'running' if URVoiceService.is_running() else 'not running'
+    # type: ignore
+    _weather = core.Status.metar.as_str()  # pylint: disable=no-member
+    # type: ignore
+    _metar = core.Status.metar.raw_metar_str  # pylint: disable=no-member
     info_str = f'UR voice service is {running}\n\n' \
-               f'Metar: {core.Status.metar}\n' \
+               f'METAR:\n{_metar}\n\n' \
+               f'Weather:\n{_weather}\n\n' \
                f'Active runway: {info.active_runway}\n' \
                f'Information ID: {info.info_letter}\n' \
                f'ATIS speech: {core.CTX.atis_speech}'
