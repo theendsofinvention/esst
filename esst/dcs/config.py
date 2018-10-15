@@ -113,6 +113,6 @@ class DCSConfig(SentryConfigContext):
 
     DCS_INSTALL_DEDICATED_CONFIG = elib_config.ConfigValueBool(
         'dcs', 'install_dedicated_config',
-        description='Install "dedicated.lua" config script at startup',
+        description='Install dedicated.lua config script at startup',
         default=True
     )

@@ -10,7 +10,7 @@ from pathlib import Path
 
 from jinja2 import Template
 
-from esst import DCSServerConfig, FS, LOGGER, utils
+from esst import FS, LOGGER, utils, DCSServerConfig
 
 _CURRENT_MIS_RE = re.compile(r'^.*\[1\] = "(?P<mission_path>.*)",$')
 
@@ -40,24 +40,33 @@ def write_server_settings(mission_file_path: typing.Optional[str] = None) -> Non
     LOGGER.debug('mission file path: %s', _mission_file_path)
     template_option = dict(
         mission_file_path=_mission_file_path,
-        passwd=DCSServerConfig.DCS_SERVER_PASSWORD(),
-        name=DCSServerConfig.DCS_SERVER_NAME(),
-        max_players=DCSServerConfig.DCS_SERVER_MAX_PLAYERS(),
-        pause_on_load=DCSServerConfig.DCS_SERVER_PAUSE_ON_LOAD(),
-        pause_without_clients=DCSServerConfig.DCS_SERVER_PAUSE_WITHOUT_CLIENT(),
-        event_role=DCSServerConfig.DCS_SERVER_REPORT_ROLE_CHANGE(),
-        allow_ownship_export=DCSServerConfig.DCS_SERVER_EXPORT_OWN_SHIP(),
-        allow_object_export=DCSServerConfig.DCS_SERVER_EXPORT_ALL(),
-        event_connect=DCSServerConfig.DCS_SERVER_REPORT_CONNECT(),
-        event_ejecting=DCSServerConfig.DCS_SERVER_REPORT_EJECT(),
-        event_kill=DCSServerConfig.DCS_SERVER_REPORT_KILL(),
-        event_takeoff=DCSServerConfig.DCS_SERVER_REPORT_TAKEOFF(),
-        client_outbound_limit=DCSServerConfig.DCS_SERVER_CLIENT_OUTBOUND_LIMIT(),
-        client_inbound_limit=DCSServerConfig.DCS_SERVER_CLIENT_INBOUND_LIMIT(),
-        event_crash=DCSServerConfig.DCS_SERVER_REPORT_crash(),
-        resume_mode=1,
-        allow_sensor_export=DCSServerConfig.DCS_SERVER_EXPORT_SENSOR(),
-        is_public=DCSServerConfig.DCS_SERVER_IS_PUBLIC(),
+        is_public=str(DCSServerConfig.public()).lower(),
+        description=DCSServerConfig.description(),
+        require_pure_textures=str(DCSServerConfig.requires_pure_textures()).lower(),
+        allow_change_tailno=str(DCSServerConfig.allow_change_tail_number()).lower(),
+        allow_ownship_export=str(DCSServerConfig.allow_export_own_ship()).lower(),
+        allow_object_export=str(DCSServerConfig.allow_export_objects()).lower(),
+        pause_on_load=str(DCSServerConfig.pause_on_load()).lower(),
+        allow_sensor_export=str(DCSServerConfig.allow_export_sensors()).lower(),
+        event_Takeoff=str(DCSServerConfig.report_takeoff()).lower(),
+        pause_without_clients=str(DCSServerConfig.pause_without_client()).lower(),
+        client_outbound_limit=DCSServerConfig.outbound_limit(),
+        client_inbound_limit=DCSServerConfig.inbound_limit(),
+        event_Role=str(DCSServerConfig.report_role_change()).lower(),
+        allow_change_skin=str(DCSServerConfig.allow_change_skin()).lower(),
+        event_Connect=str(DCSServerConfig.report_connect()).lower(),
+        event_Ejecting=str(DCSServerConfig.report_eject()).lower(),
+        event_Kill=str(DCSServerConfig.report_kill()).lower(),
+        event_Crash=str(DCSServerConfig.report_crash()).lower(),
+        resume_mode=DCSServerConfig.pause_resume_mode(),
+        maxPing=DCSServerConfig.max_ping(),
+        require_pure_models=str(DCSServerConfig.requires_pure_models()).lower(),
+        require_pure_clients=str(DCSServerConfig.requires_pure_clients()).lower(),
+        name=DCSServerConfig.name(),
+        port=DCSServerConfig.port(),
+        password=DCSServerConfig.password(),
+        bind_address=DCSServerConfig.bind_address(),
+        maxPlayers=DCSServerConfig.max_players()
     )
     LOGGER.debug('rendering settings.lua template with options\n%s', pprint.pformat(template_option))
     content = Template(utils.read_template('settings.lua')).render(**template_option)

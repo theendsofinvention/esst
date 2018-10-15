@@ -12,123 +12,181 @@ class DCSServerConfig(SentryConfigContext):
     """
     DCS server config values
     """
-
-    DCS_SERVER_NAME = elib_config.ConfigValueString(
-        'dcs_server', 'name',
-        description='DCS Server name as it will appear in the multiplayer lobby.'
-    )
-
-    DCS_SERVER_MAX_PLAYERS = elib_config.ConfigValueInteger(
-        'dcs_server', 'max_players',
-        description='Maximum amount of connected players',
-        default=32
-    )
-
-    DCS_SERVER_STARTUP_TIME = elib_config.ConfigValueInteger(
-        'dcs_server', 'startup_time',
-        description='Period of time, in seconds, the server is allowed to spend starting the multiplayer server.'
-                    'Any longer and an alert will be thrown.',
-        default=120
-    )
-
-    DCS_SERVER_REPORT_ROLE_CHANGE = elib_config.ConfigValueString(
-        'dcs_server', 'report_role_change',
-        description='Displays notification when a client changes role (valid values: "true", "false")',
-        default='true'
-    )
-
-    DCS_SERVER_REPORT_CONNECT = elib_config.ConfigValueString(
-        'dcs_server', 'report_connect',
-        description='Displays notification when a client connects to the server (valid values: "true", "false")',
-        default='true'
-    )
-
-    DCS_SERVER_REPORT_EJECT = elib_config.ConfigValueString(
-        'dcs_server', 'report_eject',
-        description='Displays notification when a client ejects (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_REPORT_KILL = elib_config.ConfigValueString(
-        'dcs_server', 'report_kill',
-        description='Displays notification when a client kills an object (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_REPORT_TAKEOFF = elib_config.ConfigValueString(
-        'dcs_server', 'report_takeoff',
-        description='Displays notification when a client takes off (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_REPORT_crash = elib_config.ConfigValueString(
-        'dcs_server', 'report_crash',
-        description='Displays notification when a client crashes their airplane (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_REQUIRE_PURE_CLIENTS = elib_config.ConfigValueString(
-        'dcs_server', 'require_pure_clients',
-        description='Prevents modded clients from joining the server (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_EXPORT_OWN_SHIP = elib_config.ConfigValueString(
-        'dcs_server', 'allow_export_own_ship',
-        description='Allow export of client\'s own ship data (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_EXPORT_ALL = elib_config.ConfigValueString(
-        'dcs_server', 'allow_export_all',
-        description='Allow export of all objects data (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_EXPORT_SENSOR = elib_config.ConfigValueString(
-        'dcs_server', 'allow_export_sensor',
-        description='Allow export of sensor data (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_PASSWORD = elib_config.ConfigValueString(
-        'dcs_server', 'password',
-        description='DCS server password',
-    )
-
-    DCS_SERVER_PAUSE_ON_LOAD = elib_config.ConfigValueString(
-        'dcs_server', 'pause_on_load',
-        description='Start the server paused (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_PAUSE_WITHOUT_CLIENT = elib_config.ConfigValueString(
-        'dcs_server', 'pause_without_client',
-        description='Pause the server when the last client disconnects (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_RESTART_WITHOUT_CLIENT = elib_config.ConfigValueString(
-        'dcs_server', 'restart_without_client',
-        description='Restart DCS when the last client disconnects (valid values: "true", "false")',
-        default='false'
-    )
-
-    DCS_SERVER_IS_PUBLIC = elib_config.ConfigValueString(
+    public = elib_config.ConfigValueBool(
         'dcs_server', 'public',
         description='Whether the server will be shown in the public multiplayer lobby or not '
-                    '(valid values: "true", "false")',
-        default='true'
+                    '(valid values: true, false)',
+        default=True
     )
 
-    DCS_SERVER_CLIENT_OUTBOUND_LIMIT = elib_config.ConfigValueInteger(
-        'dcs_server', 'client_outbound_limit',
-        description='Limit, in bytes, for client outbound rate',
+    requires_pure_clients = elib_config.ConfigValueBool(
+        'dcs_server', 'integrity_check', 'requires_pure_client',
+        description='Integrity check that prevents player from joining the server if they have modded scripts '
+                    'in the units database. '
+                    'Please see https://forums.eagle.ru/showthread.php?p=3387574 for more info about the '
+                    'integrity check',
+        default=False
+    )
+
+    requires_pure_textures = elib_config.ConfigValueBool(
+        'dcs_server', 'integrity_check', 'requires_pure_textures',
+        description='Integrity check that prevents player from joining the server if they have modded textures. '
+                    'Please see https://forums.eagle.ru/showthread.php?p=3387574 for more info about the '
+                    'integrity check',
+        default=False
+    )
+
+    requires_pure_models = elib_config.ConfigValueBool(
+        'dcs_server', 'integrity_check', 'requires_pure_models',
+        description='Integrity check that prevents player from joining the server if they have modded models. '
+                    'Please see https://forums.eagle.ru/showthread.php?p=3387574 for more info about the '
+                    'integrity check',
+        default=False
+    )
+
+    # SHUFFLE_MISSION_LIST = elib_config.ConfigValueBool(
+    #     'dcs_server', 'shuffle_mission_list',
+    #     description='Shuffles the list of missions on the server',
+    #     default=False
+    # )
+
+    description = elib_config.ConfigValueString(
+        'dcs_server', 'description',
+        description='DCS server description (WARNING: this seems to be an undocumented DCS feature; use at your '
+                    'own risk)',
+        default=''
+    )
+
+    allow_change_tail_number = elib_config.ConfigValueBool(
+        'dcs_server', 'allow', 'change_tail_number',
+        description='Allow players to change their own tail number.',
+        default=True
+    )
+
+    allow_change_skin = elib_config.ConfigValueBool(
+        'dcs_server', 'allow', 'change_skin',
+        description='Allow players to change their own skin.',
+        default=True
+    )
+
+    allow_export_own_ship = elib_config.ConfigValueBool(
+        'dcs_server', 'export', 'own_ship',
+        description='Allow export of data about players own aircraft.',
+        default=True
+    )
+
+    allow_export_objects = elib_config.ConfigValueBool(
+        'dcs_server', 'export', 'objects',
+        description='Allow export of data about objects in DCS World.',
+        default=True
+    )
+
+    allow_export_sensors = elib_config.ConfigValueBool(
+        'dcs_server', 'export', 'sensors',
+        description='Allow export of data from onboard sensors.',
+        default=True
+    )
+
+    pause_on_load = elib_config.ConfigValueBool(
+        'dcs_server', 'pause', 'on_load',
+        description='Start the server in a paused state.',
+        default=False
+    )
+
+    pause_without_client = elib_config.ConfigValueBool(
+        'dcs_server', 'pause', 'without_client',
+        description='Automatically pause the server when the last client disconnects.',
+        default=False
+    )
+
+    pause_resume_mode = elib_config.ConfigValueInteger(
+        'dcs_server', 'pause', 'resume_mode',
+        description='Select the "resume" (i.e. un-pause) behaviour for the server. '
+                    '0: manually pause/un-pause, '
+                    '1: un-pause on server start, '
+                    '2: un-pause when a player connects to the server',
+        default=1
+    )
+
+    report_takeoff = elib_config.ConfigValueBool(
+        'dcs_server', 'report', 'takeoff',
+        description='Display a server-wide message when a player takes off.',
+        default=False
+    )
+
+    report_role_change = elib_config.ConfigValueBool(
+        'dcs_server', 'report', 'role_change',
+        description='Display a server-wide message when a player changes role.',
+        default=False
+    )
+
+    report_connect = elib_config.ConfigValueBool(
+        'dcs_server', 'report', 'connection',
+        description='Display a server-wide message when a player connects to the server.',
+        default=True
+    )
+
+    report_eject = elib_config.ConfigValueBool(
+        'dcs_server', 'report', 'ejection',
+        description='Display a server-wide message when a player ejects.',
+        default=False
+    )
+
+    report_kill = elib_config.ConfigValueBool(
+        'dcs_server', 'report', 'kill',
+        description='Display a server-wide message when a player destroys another object.',
+        default=False
+    )
+
+    report_crash = elib_config.ConfigValueBool(
+        'dcs_server', 'report', 'crash',
+        description='Display a server-wide message when a player crashes their own aircraft.',
+        default=False
+    )
+
+    outbound_limit = elib_config.ConfigValueInteger(
+        'dcs_server', 'connection', 'outbound_rate_limit',
+        description='Limit, in bytes, for client outbound rate (0 means deactivated).',
         default=0
     )
 
-    DCS_SERVER_CLIENT_INBOUND_LIMIT = elib_config.ConfigValueInteger(
-        'dcs_server', 'client_inbound_limit',
-        description='Limit, in bytes, for client inbound rate',
+    inbound_limit = elib_config.ConfigValueInteger(
+        'dcs_server', 'connection', 'inbound_rate_limit',
+        description='Limit, in bytes, for client inbound rate (0 means deactivated).',
         default=0
+    )
+
+    max_ping = elib_config.ConfigValueInteger(
+        'dcs_server', 'connection', 'max_ping',
+        description='Maximum allowed client ping in milliseconds (0 to disable).',
+        default=0
+    )
+
+    port = elib_config.ConfigValueString(
+        'dcs_server', 'connection', 'port',
+        description='Port the DCS server will be listening to.',
+        default='10308'
+    )
+
+    bind_address = elib_config.ConfigValueString(
+        'dcs_server', 'connection', 'bind_address',
+        description='Binds the DCS server to a specific network interface (leave empty to allow all interfaces).',
+        default=''
+    )
+
+    name = elib_config.ConfigValueString(
+        'dcs_server', 'name',
+        description='Public name of the DCS server.'
+    )
+
+    password = elib_config.ConfigValueString(
+        'dcs_server', 'password',
+        description='Prevent players without password from connecting to the server.',
+        default=''
+    )
+
+    max_players = elib_config.ConfigValueInteger(
+        'dcs_server', 'max_player_count',
+        description='Maximum amount of players allowed on the server at the same time.',
+        default=16
     )
