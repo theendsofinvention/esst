@@ -5,11 +5,10 @@ Server machine commands
 
 import os
 
+from esst import LOGGER
 from esst.commands import DCS, DISCORD
-from esst.core import CTX, MAIN_LOGGER
+from esst.core import CTX
 from esst.utils.historygraph import make_history_graph
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 class SERVER:
@@ -56,11 +55,19 @@ class SERVER:
     def show_graph(days, hours, minutes):
         """Show resources usage graph"""
 
-        def _callback(future):
-            if future.result():
-                DISCORD.send_file(future.result())
+        def _show_graph(graph):
+            if graph:
+                DISCORD.send_file(graph)
             else:
                 LOGGER.warning('failed to create the graph')
 
-        LOGGER.debug('show cpu usage: graph')
-        make_history_graph(_callback, days, hours, minutes)
+        make_history_graph(callback=_show_graph, days=days, hours=hours, minutes=minutes)
+
+        # def _callback(future):
+        #     if future.result():
+        #         DISCORD.send_file(future.result())
+        #     else:
+        #         LOGGER.warning('failed to create the graph')
+        #
+        # LOGGER.debug('show cpu usage: graph')
+        # make_history_graph(_callback, days, hours, minutes)

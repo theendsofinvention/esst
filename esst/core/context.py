@@ -2,11 +2,10 @@
 """
 Represents the global context
 """
-
 import inspect
+import typing
 from asyncio import AbstractEventLoop
 from collections import deque
-from concurrent.futures import ProcessPoolExecutor
 from queue import Queue
 
 
@@ -31,41 +30,40 @@ class Context:  # pylint: disable=too-many-instance-attributes,too-few-public-me
 
     exit = False
     restart = False
-    loop: AbstractEventLoop = None  # type: ignore
-    sentry = None
-    wan = False
-    process_pool = ProcessPoolExecutor(max_workers=1)
+    loop: AbstractEventLoop
+    sentry: typing.Any
+    wan: bool = False
 
-    start_listener_loop = True
-    start_discord_loop = True
-    start_server_loop = True
-    start_dcs_loop = True
+    start_listener_loop: bool = True
+    start_discord_loop: bool = True
+    start_server_loop: bool = True
+    start_dcs_loop: bool = True
 
-    discord_can_start = False
+    discord_can_start: bool = False
     discord_msg_queue: Queue = Queue()
     discord_file_queue: Queue = Queue()
 
-    dcs_install_hooks = True
-    dcs_setup_dedi_config = True
-    dcs_auto_mission = True
+    dcs_install_hooks: bool = True
+    dcs_setup_dedi_config: bool = True
+    dcs_auto_mission: bool = True
 
-    dcs_can_start = False
-    dcs_blocker: list = []
-    dcs_show_cpu_usage = False
-    dcs_show_cpu_usage_once = False
-    dcs_do_kill = False
-    dcs_do_queued_kill = False
-    dcs_do_restart = False
+    dcs_can_start: bool = False
+    dcs_blocker: typing.List[str] = []
+    dcs_show_cpu_usage: bool = False
+    dcs_show_cpu_usage_once: bool = False
+    dcs_do_kill: bool = False
+    dcs_do_queued_kill: bool = False
+    dcs_do_restart: bool = False
     dcs_cpu_history: deque = deque(maxlen=17280)
     dcs_mem_history: deque = deque(maxlen=17280)
 
     listener_cmd_queue: Queue = Queue()
-    listener_monitor_server_startup = False
-    listener_server_port = -1
-    listener_cmd_port = -1
+    listener_monitor_server_startup: bool = False
+    listener_server_port: int = -1
+    listener_cmd_port: int = -1
 
-    server_show_cpu_usage = False
-    server_show_cpu_usage_once = False
+    server_show_cpu_usage: bool = False
+    server_show_cpu_usage_once: bool = False
     server_cpu_history: deque = deque(maxlen=17280)
     server_mem_history: deque = deque(maxlen=17280)
     server_bytes_sent_history: deque = deque(maxlen=17280)
@@ -73,4 +71,4 @@ class Context:  # pylint: disable=too-many-instance-attributes,too-few-public-me
 
     players_history: deque = deque(maxlen=17280)
 
-    atis_speech = ''
+    atis_speech: str = ''

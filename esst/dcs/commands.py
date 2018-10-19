@@ -6,9 +6,9 @@ import threading
 import time
 from queue import Queue
 
-from esst.core import CTX, MAIN_LOGGER, Status
+from esst import LOGGER
+from esst.core import CTX, Status
 
-LOGGER = MAIN_LOGGER.getChild(__name__)
 CANCEL_QUEUED_KILL: Queue = Queue()
 
 _DCS_LOCK = threading.Lock()
@@ -102,7 +102,8 @@ class DCS:
             reason: reason for preventing DCS to start
         """
         with _DCS_LOCK:
-            CTX.dcs_blocker.append(reason)
+            if reason not in CTX.dcs_blocker:
+                CTX.dcs_blocker.append(reason)
 
     @staticmethod
     def unblock_start(reason: str):
@@ -129,7 +130,7 @@ class DCS:
         """
         connected_players = bool(Status.players)
         if connected_players:
-            LOGGER.debug(f'there are {len(Status.players)} connected player(s)')
+            LOGGER.debug('there are %s connected player(s)', len(Status.players))
         else:
             LOGGER.debug('there is no connected players')
         return connected_players

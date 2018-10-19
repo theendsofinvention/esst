@@ -6,10 +6,9 @@ from pathlib import Path
 
 import jinja2
 
-from esst.core import CFG, CTX, FS, MAIN_LOGGER
+from esst import DCSConfig, DiscordBotConfig, FS, LOGGER
+from esst.core import CTX
 from esst.utils import create_versioned_backup, read_template
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 DEDI_CFG = r"""dedicated =
 {
@@ -19,7 +18,7 @@ DEDI_CFG = r"""dedicated =
 
 
 def _get_me_auth_path() -> Path:
-    me_auth_path = Path(CFG.dcs_path, 'MissionEditor/modules/me_authorization.lua')
+    me_auth_path = Path(DCSConfig.DCS_PATH(), 'MissionEditor/modules/me_authorization.lua')
     if not me_auth_path.exists():
         raise FileNotFoundError(str(me_auth_path))
     return me_auth_path
@@ -28,16 +27,16 @@ def _get_me_auth_path() -> Path:
 def _write_dedi_config():
     dedi_cfg_path = Path(FS.variant_saved_games_path, 'Config/dedicated.lua')
     if not dedi_cfg_path.exists():
-        LOGGER.info(f'writing {dedi_cfg_path}')
+        LOGGER.info('writing %s', dedi_cfg_path)
         dedi_cfg_path.write_text(DEDI_CFG)
     else:
-        LOGGER.debug(f'file already exists: {dedi_cfg_path}')
+        LOGGER.debug('file already exists: %s', dedi_cfg_path)
 
 
 def _write_auth_file():
     content = read_template('me_authorization.lua')
     LOGGER.debug('writing me_authorization.lua')
-    _get_me_auth_path().write_text(jinja2.Template(content).render(server_name=CFG.discord_bot_name))
+    _get_me_auth_path().write_text(jinja2.Template(content).render(server_name=DiscordBotConfig.DISCORD_BOT_NAME()))
 
 
 def setup_config_for_dedicated_run():

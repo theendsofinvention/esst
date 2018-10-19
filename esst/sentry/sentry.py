@@ -12,10 +12,7 @@ import raven.breadcrumbs
 import raven.conf
 import raven.handlers.logging
 
-from esst import __version__
-from esst.core import MAIN_LOGGER
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER, __version__
 
 
 class Sentry(raven.Client):
@@ -23,8 +20,10 @@ class Sentry(raven.Client):
     Connection with sentry.io
     """
 
-    def __init__(self, dsn):
+    def __init__(self):
         LOGGER.info('initializing Sentry')
+        # noinspection SpellCheckingInspection
+        dsn = 'https://85518bcfd75a400eaf3821830ec1c4b2:a622d4e7a4ab4ec9ade873ad96b8d4aa@sentry.io/206995'
         self.registered_contexts = {}
         raven.Client.__init__(
             self,
@@ -52,8 +51,7 @@ class Sentry(raven.Client):
 
     def register_context(self, context_name: str, context_provider):
         """Registers a context to be read when a crash occurs; obj must implement get_context()"""
-        LOGGER.debug(
-            'registering context with Sentry: {}'.format(context_name))
+        LOGGER.debug('registering context with Sentry: %s', context_name)
         self.registered_contexts[context_name] = context_provider
 
     @staticmethod
@@ -123,3 +121,4 @@ def filter_breadcrumbs(_logger, level, msg, *args, **kwargs):  # pylint: disable
 
 
 raven.breadcrumbs.register_special_log_handler('ESST', filter_breadcrumbs)
+SENTRY = Sentry()

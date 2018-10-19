@@ -2,119 +2,96 @@
 """
 Meh
 """
-import pprint
 import typing
 from time import sleep
 
-import emiz.edit_miz
-import emiz.weather
+import elib_miz
+import elib_wx
 
-from esst import commands, core, dcs, utils
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER, commands, core, utils
+from esst.dcs import missions_manager
 
 
 def _mission_index_to_mission_name(mission_index):
-    LOGGER.debug(f'converting mission index to mission name: {mission_index}')
-    for index, mission_name in dcs.missions_manager.list_available_missions():
+    LOGGER.debug('converting mission index to mission name: %s', mission_index)
+    for index, mission_name in missions_manager.list_available_missions():
         if index == mission_index:
-            LOGGER.debug(f'mission found: {mission_name}')
-            return dcs.missions_manager.MissionPath(mission_name)
+            LOGGER.debug('mission found: %s', mission_name)
+            return missions_manager.MissionPath(mission_name)
     LOGGER.debug('no mission found')
     return None
 
 
 # pylint: disable=too-many-statements,too-many-branches,too-many-return-statements,too-many-arguments
-def _load(name, icao, metar, time, max_wind, min_wind, force):  # noqa: C901
+def _load(name, metar_or_icao, time, max_wind, min_wind, force):  # noqa: C901
+    if max_wind or min_wind:
+        LOGGER.warning('"min_wind" and "max_wind" have been disabled for the time being')
     if name is None:
-        mission = dcs.missions_manager.get_running_mission()
+        mission = missions_manager.get_running_mission()
         if not mission:
             LOGGER.error('unable to retrieve current mission')
             return
     else:
         try:
-            LOGGER.debug(f'trying to cast mission name into an int: {name}')
+            LOGGER.debug('trying to cast mission name into an int: %s', name)
             mission_number = int(name)
         except ValueError:
-            LOGGER.debug(f'loading mission name: {name}')
-            mission = dcs.missions_manager.MissionPath(name)
+            LOGGER.debug('loading mission name: %s', name)
+            mission = missions_manager.MissionPath(name)
             if not mission:
-                LOGGER.debug(f'mission path not found: {mission.path}')
-                LOGGER.error(f'mission file not found: {mission.name}')
+                LOGGER.debug('mission path not found: %s', mission.path)
+                LOGGER.error('mission file not found: %s', mission.name)
                 return
         else:
-            LOGGER.debug(f'loading mission number: {mission_number}')
+            LOGGER.debug('loading mission number: %s', mission_number)
             mission = _mission_index_to_mission_name(mission_number)
             if not mission:
-                LOGGER.error(f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
+                LOGGER.error('invalid mission index: %s; use "!mission  show" to see available indices', mission_number)
                 return
 
-    LOGGER.info(f'loading mission file: {mission.path}')
-    if metar:
-        metar = ' '.join(metar)
-        LOGGER.info(f'analyzing METAR string: {metar}')
-        error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar)
-        if error:
-            LOGGER.error(error)
+    LOGGER.info('loading mission file: %s', mission.path)
+    if time:
+        try:
+            mission_time = elib_miz.MissionTime.from_string(time)
+            LOGGER.info('setting mission time: %s', mission_time.iso_format)
+        except elib_miz.exc.InvalidDateTimeString:
+            LOGGER.error('invalid date-time string: %s', time)
             return
-    if icao:
-        icao = icao.upper()
-        LOGGER.info(f'obtaining METAR from: {icao}')
-        error, metar_str = emiz.weather.noaa.retrieve_metar(icao)
-        if error:
-            LOGGER.error(error)
+        except ValueError as err:
+            LOGGER.error(err)
             return
-        LOGGER.info(f'analyzing METAR string: {metar_str}')
-        error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar_str)
-        if error:
-            LOGGER.error(error)
+    else:
+        mission_time = None
+    if metar_or_icao:
+        LOGGER.info('analyzing METAR string: %s', metar_or_icao)
+        try:
+            weather_ = elib_wx.Weather(metar_or_icao)
+            LOGGER.info('setting mission weather: %s', weather_.as_str())
+        except elib_wx.BadStationError:
+            LOGGER.error('wrong ICAO code: %s', metar_or_icao)
             return
-
-    if metar:
-        info_metar = metar
-        LOGGER.info(f'METAR: {metar.string()}')
+        LOGGER.info('METAR: %s', weather_.raw_metar_str)
     else:
         LOGGER.info('building METAR from mission file')
         # noinspection SpellCheckingInspection
-        metar_str = emiz.weather.mizfile.get_metar_from_mission(str(mission.path), 'XXXX')
-        error, info_metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar_str)
-        if error:
-            LOGGER.error(error)
-            return
-        LOGGER.info(f'METAR: {info_metar.string()}')
+        weather_ = elib_wx.Weather(str(mission.path))
+        LOGGER.info('METAR: %s', weather_.as_str())
 
-    LOGGER.debug(f'editing "{mission.path}" to "{mission.auto.path}"')
     commands.DCS.block_start('loading mission')
     commands.DCS.kill(force=force)
-    LOGGER.debug('waiting on DCS application to close')
-    while core.Status.dcs_application != 'not running':
-        sleep(1)
-    LOGGER.debug('DCS has closed, carrying on')
-    edit_str = []
-    if time:
-        edit_str.append('time')
-    if metar:
-        edit_str.append('weather')
-    if edit_str:
-        edit_str = ' and '.join(edit_str)
-        LOGGER.info(
-            f'loading {mission.name} with {edit_str} (this may take a few seconds)')
-    else:
-        LOGGER.info(f'loading {mission.name} as is (no edit)')
     try:
-        miz_edit_options = dict(infile=str(mission.path), outfile=str(mission.auto.path), metar=metar, time=time,
-                                min_wind=min_wind, max_wind=max_wind)
-        LOGGER.debug(f'editing miz file with options:\n{pprint.pformat(miz_edit_options)}')
-        error = emiz.edit_miz.edit_miz(**miz_edit_options)
-        if error:
-            if error == 'nothing to do!':
-                LOGGER.debug(f'loading mission "as is": {mission.path}')
-                mission.set_as_active(info_metar.code)
-            else:
-                LOGGER.error(error)
-        else:
-            LOGGER.debug(f'mission has been successfully edited, setting as active: {mission.auto.path}')
-            mission.auto.set_as_active(info_metar.code)
+        LOGGER.debug('waiting on DCS application to close')
+        while core.Status.dcs_application != 'not running':
+            sleep(1)
+        LOGGER.debug('DCS has closed, carrying on')
+        active_mission = mission
+        if time:
+            mission_time.apply_to_miz(str(mission.path), str(mission.auto.path), overwrite=True)
+            active_mission = mission.auto
+        if metar_or_icao:
+            weather_.apply_to_miz(str(mission.path), str(mission.auto.path), overwrite=True)
+            active_mission = mission.auto
+        active_mission.set_as_active(weather_)
     finally:
         commands.DCS.unblock_start('loading mission')
 
@@ -127,37 +104,37 @@ def delete(name: str):
     try:
         mission_number = int(name)
     except ValueError:
-        mission = dcs.missions_manager.MissionPath(name)
+        mission = missions_manager.MissionPath(name)
         if not mission:
-            LOGGER.error(f'mission file does not exist: {mission.path}')
+            LOGGER.error('mission file does not exist: %s', mission.path)
             return
     else:
         mission = _mission_index_to_mission_name(mission_number)
         if not mission:
-            LOGGER.error(
-                f'invalid mission index: {mission_number}; use "!mission  show" to see available indices')
+            LOGGER.error('invalid mission index: %s; use "!mission show" to see available indices',
+                         mission_number
+                         )
             return
 
-    dcs.missions_manager.delete(mission)
+    missions_manager.delete(mission)
 
 
 # noinspection SpellCheckingInspection
 @utils.arg('--force', help='force server restart even with connected players')
-@utils.arg('--min-wind', help='minimum speed of the wind in MPS')
-@utils.arg('--max-wind', help='maximum speed of the wind in MPS')
+@utils.arg('--min-wind', help='minimum speed of the wind in KTS')
+@utils.arg('--max-wind', help='maximum speed of the wind in KTS')
 @utils.arg('-t', '--time',
            help='set the mission time (syntax: YYYYMMDDHHMMSS)\nExample: 2017/08/22 at 12:30:00 -> 20170822123000')
-@utils.arg('-m', '--metar', nargs='+', metavar='METAR',
-           help='update the weather from METAR string\nWARNING: METAR string may NOT contain dashes ("-")')
-@utils.arg('-i', '--icao', help='update the weather from a given (real life) ICAO')
+@utils.arg('-wx', '--metar-or-icao', help='update the weather from a given (real life) ICAO or a plain (valid) '
+                                          'METAR string\n'
+                                          'WARNING: loading from a METAR string does not currently work')
 @utils.arg('-n', '--name',
            help='name or index of the mission to load (if not provided, will re-use the current mission)')
 @utils.arg(protected=True)
 # pylint: disable=too-many-arguments
 def load(
         name: typing.Union[str, int] = None,
-        icao: str = None,
-        metar: str = None,
+        metar_or_icao: str = None,
         time: str = None,
         max_wind: int = 40,
         min_wind: int = 0,
@@ -171,11 +148,10 @@ def load(
     """
     if not (force or commands.DCS.check_for_connected_players()):
         return
-    if not any((name, icao, metar, time)):
+    if not any((name, metar_or_icao, time)):
         commands.DISCORD.say('Type "!mission load --help" to see available options')
         return
-    core.CTX.loop.run_in_executor(None, _load, name, icao,
-                                  metar, time, max_wind, min_wind, force)
+    core.CTX.loop.run_in_executor(None, _load, name, metar_or_icao, time, max_wind, min_wind, force)
 
 
 def show():
@@ -183,7 +159,7 @@ def show():
     Show list of missions available on the server
     """
     available_mission = '\n\t'.join(
-        f'{n}. {m}' for n, m in dcs.missions_manager.list_available_missions())
+        f'{n}. {m}' for n, m in missions_manager.list_available_missions())
     # available_mission = '\n\t'.join(available_mission)
     commands.DISCORD.say(
         'Available missions:\n'
@@ -191,24 +167,26 @@ def show():
     )
 
 
-def weather():
+@utils.arg('--dcs', help='shows the weather in raw DCS format')
+def weather(dcs: bool = False):
     """
     Displays the weather for the currently running mission
     """
     if core.Status.metar and core.Status.metar != 'unknown':
-        error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(core.Status.metar)
-        if error:
-            LOGGER.error(error)
-            return
-
-        commands.DISCORD.say(f'{metar.string()}')
+        if dcs:
+            _weather = core.Status.metar.generate_dcs_weather().__repr__()  # pylint: disable=no-member
+        else:
+            _weather = core.Status.metar.as_str()  # pylint: disable=no-member
+        commands.DISCORD.say(_weather)
+    else:
+        commands.DISCORD.say('There is currently no METAR information')
 
 
 def download():
     """
     Sends the currently running mission on Discord
     """
-    mission = dcs.missions_manager.get_running_mission()
+    mission = missions_manager.get_running_mission()
     if mission:
         commands.DISCORD.send_file(str(mission.path))
 

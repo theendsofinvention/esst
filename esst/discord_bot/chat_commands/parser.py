@@ -14,16 +14,15 @@ from argh.constants import (
     ATTR_EXPECTS_NAMESPACE_OBJECT, ATTR_WRAPPED_EXCEPTIONS, ATTR_WRAPPED_EXCEPTIONS_PROCESSOR,
     DEST_FUNCTION,
 )
+# noinspection PyProtectedMember
 from argh.dispatching import ArghNamespace
 from argh.exceptions import CommandError
 from argh.utils import get_arg_spec
 
 import esst.atis.chat_commands.atis_discord_commands
-from esst import commands, core
+from esst import LOGGER, commands
 from esst.discord_bot import abstract
-from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
+from esst.discord_bot.chat_commands import dcs, esst_, mission, report, server, weather
 
 
 def _cancel_execution(*_):
@@ -63,7 +62,7 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
     by :func:`wrap_errors`.
     """
     if pre_call:
-        LOGGER.debug(f'running pre_call: {pre_call}')
+        LOGGER.debug('running pre_call: %s', pre_call)
         pre_call(namespace_obj)
 
     # namespace -> dictionary
@@ -120,7 +119,7 @@ def _execute_command(func, namespace_obj, pre_call=None):  # noqa: C901
     wrappable_exceptions += getattr(func, ATTR_WRAPPED_EXCEPTIONS, [])
 
     try:
-        LOGGER.debug(f'running func {func}')
+        LOGGER.debug('running func: %s', func)
         result = _call()
         return '\n'.join(result)
     # pylint: disable=catching-non-exception
@@ -261,10 +260,9 @@ class DiscordCommandParser(argh.ArghParser, abstract.AbstractDiscordCommandParse
 
             if func:
                 if hasattr(func, 'protected_') and not is_admin:
-                    LOGGER.error(
-                        f'only users with role "{core.CFG.discord_admin_role}" have access to this command')
+                    LOGGER.error(f'only users with privileges have access to this command')
                     return None
-                LOGGER.debug(f'running func: {func}')
+                LOGGER.debug('running func: %s', func)
                 return _execute_command(func, namespace_obj, pre_call=pre_call)
 
             # no commands declared, can't dispatch; display help message
@@ -362,7 +360,7 @@ def make_root_parser():
     """
     parser = DiscordCommandParser(
         description=DESCRIPTION, prog='', add_help=False, usage='', epilog=EPILOG)
-    for module_ in [esst_, mission, server, dcs, report, esst.atis.chat_commands.atis_discord_commands]:
+    for module_ in [esst_, mission, server, dcs, report, esst.atis.chat_commands.atis_discord_commands, weather]:
         funcs = [o[1] for o in inspect.getmembers(module_, inspect.isfunction)
                  if o[1].__module__ == module_.__name__ and not o[1].__name__.startswith('_')]
         parser.add_commands(

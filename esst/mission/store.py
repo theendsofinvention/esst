@@ -2,13 +2,12 @@
 """
 Manages the local repositories and mission files
 """
+import sys
 import typing
 import uuid
 from pathlib import Path
 
-from esst.core import FS, MAIN_LOGGER
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
+from esst import FS, LOGGER
 
 
 def _get_mission_folder(*paths: typing.Union[str, Path]) -> Path:
@@ -25,7 +24,7 @@ def _get_mission_folder(*paths: typing.Union[str, Path]) -> Path:
     if path.exists() and path.is_file():
         raise RuntimeError(f'path already exists but is a file: "{path}"')
     if not path.exists():
-        LOGGER.debug(f'creating directory: {str(path)}')
+        LOGGER.debug('creating directory: %s', str(path))
         path.mkdir(parents=True)
     return path
 
@@ -37,7 +36,11 @@ def get_base_missions_folder() -> Path:
     Returns: Path object
 
     """
-    return FS.dcs_mission_folder
+    if FS.dcs_mission_folder:
+        return FS.dcs_mission_folder
+
+    LOGGER.error('FS.dcs_mission_folder undefined')
+    sys.exit(1)
 
 
 def get_auto_missions_folder() -> Path:

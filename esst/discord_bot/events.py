@@ -2,13 +2,12 @@
 """
 Manages Discord chat commands
 """
+
 import discord
 
-from esst.core import CFG, MAIN_LOGGER
+from esst import DiscordBotConfig, LOGGER
 from esst.dcs import missions_manager
 from esst.discord_bot import abstract
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 # noinspection PyAbstractClass
@@ -42,8 +41,8 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
             return
         if message.channel != self.channel:
             return
-        if CFG.discord_admin_role:
-            is_admin = bool([role for role in CFG.discord_admin_role  # pylint: disable=not-an-iterable
+        if DiscordBotConfig.DISCORD_ADMIN_ROLES():
+            is_admin = bool([role for role in DiscordBotConfig.DISCORD_ADMIN_ROLES()  # pylint: disable=not-an-iterable
                              if role in [role.name for role in message.author.roles]])
         else:
             is_admin = True
@@ -51,15 +50,14 @@ class DiscordEvents(abstract.AbstractDiscordBot):  # pylint: disable=abstract-me
             for attach in message.attachments:
                 if attach['filename'].endswith('.miz'):
                     if not is_admin:
-                        LOGGER.error(
-                            f'only users with role "{CFG.discord_admin_role}" can load missions on the server')
+                        LOGGER.error(f'only users with privileges can load missions on the server')
                         return
                     overwrite = 'overwrite' in message.content
                     load = 'load' in message.content
                     force = 'force' in message.content
                     missions_manager.download_mission_from_discord(attach, overwrite, load, force)
         if message.content.startswith('!'):
-            LOGGER.debug(f'received "{message.content}" command from: {message.author.display_name}'
-                         f'{" (admin)" if is_admin else ""}')
+            LOGGER.debug('received "%s" command from: %s%s',
+                         message.content, message.author.display_name, " (admin)" if is_admin else "")
 
             self.parser.parse_discord_message(message.content, is_admin)

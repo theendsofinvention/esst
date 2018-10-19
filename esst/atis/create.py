@@ -10,16 +10,14 @@ import typing
 from pathlib import Path
 
 import elib.tts
-import emiz.weather
+import elib_wx
 
-from esst import core
+from esst import ATISConfig, LOGGER, core
 from ._atis_airfields import ALL_AIRFIELDS
 from ._atis_identifier import get_random_identifier
 from ._atis_objects import ATISForAirfield
 from ._atis_status import Status
 from ._univers_radio import Airfield, URVoiceService, URVoiceServiceSettings
-
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
 
 RE_CLOUD_COVER = re.compile(r'(SKC|FEW|BKN|OVC|NSC)[\d]{3}\. ')
 
@@ -39,22 +37,22 @@ def _build_speech_for_airfield(
         ur_settings: URVoiceServiceSettings,
         atis_queue: queue.Queue,
 ):
-    LOGGER.debug(f'{airfield.icao}: processing')
+    LOGGER.debug('%s: processing', airfield.icao)
     atis_file = Path(f'atis/{airfield.icao}.mp3').absolute()
-    LOGGER.debug(f'{airfield.icao}: ATIS file path: {atis_file}')
+    LOGGER.debug('%s: ATIS file path: %s', airfield.icao, atis_file)
     active_runway = airfield.get_active_runway(wind_dir)
-    LOGGER.debug(f'{airfield.icao}: active runway: {active_runway.long_name()}')
+    LOGGER.debug('%s: active runway: %s', airfield.icao, active_runway.long_name())
     speech_intro = f'ATIS for {airfield.name}'
-    LOGGER.debug(f'{airfield.icao}: ATIS intro: {speech_intro}')
+    LOGGER.debug('%s: ATIS intro: %s', airfield.icao, speech_intro)
     speech_active_runway = f'Active runway {active_runway.long_name()}'
-    LOGGER.debug(f'{airfield.icao}: active runway speech: {speech_active_runway}')
+    LOGGER.debug('%s: active runway speech: %s', airfield.icao, speech_active_runway)
     information_identifier, information_letter = get_random_identifier()
     speech_information = f'Advise you have information, {information_identifier}, on first contact.'
-    LOGGER.debug(f'{airfield.icao}: speech information: {speech_information}')
+    LOGGER.debug('%s: speech information: %s', airfield.icao, speech_information)
     full_speech = '. '.join([speech_intro, speech_atis, speech_active_runway, speech_information])
     full_speech = _cleanup_full_speech(full_speech)
-    LOGGER.debug(f'{airfield.icao}: full speech: {full_speech}')
-    LOGGER.debug(f'{airfield.icao}: writing MP3 file for: {airfield.icao}')
+    LOGGER.debug('%s: full speech: %s', airfield.icao, full_speech)
+    LOGGER.debug('%s: writing MP3 file for: %s', airfield.icao, airfield.icao)
     elib.tts.text_to_speech(full_speech, atis_file, True)
     ur_settings.add_station(airfield)
     atis_queue.put(ATISForAirfield(airfield.icao, active_runway, information_identifier, information_letter))
@@ -70,27 +68,21 @@ def _update_status(atis_queue: queue.Queue):
         Status.active_atis[atis_for_airfield.icao] = atis_for_airfield
 
 
-def _parse_metar_string(metar_str: str) -> emiz.weather.custom_metar.CustomMetar:
+def _parse_metar_string(metar_str: str) -> typing.Optional[elib_wx.Weather]:
     LOGGER.debug('parsing METAR string')
     # noinspection SpellCheckingInspection
-    metar_str = metar_str.replace('XXXX', 'UGTB')
-    error, metar = emiz.weather.custom_metar.CustomMetar.get_metar(metar_str)
-    if error:
-        LOGGER.error('failed to parse METAR')
-        raise RuntimeError(metar)
-
-    return metar
+    return elib_wx.Weather(metar_str)
 
 
 def generate_atis(
-        metar_str: str,
+        weather: elib_wx.Weather,
         include_icao: typing.List[str] = None,
         exclude_icao: typing.List[str] = None
 ):
     """
     Create MP3 from METAR
     """
-    if not core.CFG.atis_create:
+    if not ATISConfig.ATIS_CREATE():
         LOGGER.info('skipping ATIS creation as per config')
         return
     atis_dir = Path('atis').absolute()
@@ -99,15 +91,14 @@ def generate_atis(
         atis_dir.mkdir()
     URVoiceService.kill()
 
-    LOGGER.info(f'creating ATIS from METAR: {metar_str}')
-    metar = _parse_metar_string(metar_str)
+    LOGGER.info('creating ATIS from METAR: %s', weather.raw_metar_str)
 
-    wind_dir = int(metar.wind_dir.value())
-    LOGGER.debug(f'wind direction: {wind_dir}')
+    wind_dir = int(weather.wind_direction.value())
+    LOGGER.debug('wind direction: %s', wind_dir)
 
-    speech_atis = emiz.weather.AVWX.metar_to_speech(metar_str)
+    speech_atis = weather.as_speech()
     core.CTX.atis_speech = speech_atis
-    LOGGER.debug(f'ATIS speech: {speech_atis}')
+    LOGGER.debug('ATIS speech: %s', speech_atis)
 
     ur_settings = URVoiceServiceSettings()
 
@@ -123,10 +114,10 @@ def generate_atis(
         if core.CTX.exit:
             break
         if include_icao and airfield.icao.upper() not in include_icao:
-            LOGGER(f'{airfield.icao}: skipping (not included)')
+            LOGGER.debug('%s: skipping (not included)', airfield.icao)
             continue
         if exclude_icao and airfield.icao.upper() in exclude_icao:
-            LOGGER(f'{airfield.icao}: skipping (excluded)')
+            LOGGER.debug('%s: skipping (excluded)', airfield.icao)
             continue
 
         thread = threading.Thread(
@@ -141,7 +132,7 @@ def generate_atis(
     _update_status(atis_queue)
 
     list_of_active_icao = ', '.join(list(Status.active_atis.keys()))
-    LOGGER.debug(f'generated {len(Status.active_atis)} ATIS for: {list_of_active_icao})')
+    LOGGER.debug('generated %s ATIS for: %s)', len(Status.active_atis), list_of_active_icao)
 
     LOGGER.debug('writing UR settings')
     ur_settings.write_settings_file()

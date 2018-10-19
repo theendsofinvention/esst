@@ -8,11 +8,10 @@ import time
 
 import psutil
 
+from esst import LOGGER
 from esst.commands import DISCORD
-from esst.core import CTX, MAIN_LOGGER, ServerStatus
+from esst.core import CTX, ServerStatus
 from esst.utils import now
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 # pylint: disable=too-few-public-methods
@@ -35,7 +34,8 @@ class App:
         ServerStatus.total_memory = psutil.virtual_memory().total
         ServerStatus.swap_size = psutil.swap_memory().total
         ServerStatus.boot_time = datetime.datetime.fromtimestamp(
-            psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+            psutil.boot_time()
+        ).strftime("%Y-%m-%d %H:%M:%S")
 
     @staticmethod
     def _update_status():

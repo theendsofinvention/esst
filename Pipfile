@@ -30,8 +30,9 @@ pyyaml = "*"
 raven = "*"
 requests = "*"
 "urllib3" = "*"
-ipgetter = "*"
 inflect = "*"
+elib-config = "*"
+elib-wx = "*"
 
 [dev-packages]
 epab = ">=2018.09.09.2"

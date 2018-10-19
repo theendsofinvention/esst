@@ -6,11 +6,9 @@ Manages background tasks for Discord bot
 import asyncio
 import time
 
-from esst.core import CTX, MAIN_LOGGER
+from esst.core import CTX
 from .abstract import AbstractDiscordBot
 from .catch_exc import catch_exc
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
 
 
 # noinspection PyAbstractClass

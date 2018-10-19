@@ -8,9 +8,7 @@ import typing
 
 import requests
 
-from esst.core import MAIN_LOGGER
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER
 
 BASE_URL = 'https://api.github.com/'
 

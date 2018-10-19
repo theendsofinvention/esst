@@ -1,85 +1,83 @@
-apipkg==1.5; python_version != '3.0.*'
+apipkg==1.5
 argh==0.26.2
 astroid==2.0.4
-atomicwrites==1.2.1; python_version != '3.0.*'
+atomicwrites==1.2.1
 attrs==18.2.0
-autopep8==1.4
 bandit==1.5.1
-bleach==2.1.4
-certifi==2018.8.24
-cffi==1.11.5; python_version != '3.3.*'
+bleach==3.0.2
+certifi==2018.10.15
+cffi==1.11.5
 chardet==3.0.4
-click==6.7
-cmarkgfm==0.4.2; python_version != '3.3.*'
-colorama==0.3.9; sys_platform == 'win32'
-coverage==4.5.1; python_version < '4'
+click==7.0
+cmarkgfm==0.4.2
+colorama==0.4.0 ; sys_platform == 'win32'
+coverage==4.5.1
 dataclasses==0.6
 docopt==0.6.2
 docutils==0.14
-dparse==0.4.1; python_version != '3.2.*'
-elib-config==2018.9.16.1; python_version != '3.0.*'
+dparse==0.4.1
+elib-config==2018.10.15.1
 elib-run==2018.9.9.1
-epab==2018.9.16.2
-execnet==1.5.0; python_version != '3.0.*'
-faker==0.9.1
+epab==2018.10.17.1
+execnet==1.5.0
+faker==0.9.2
 flake8==3.5.0
 future==0.16.0
 gitchangelog==3.0.3
-gitdb2==2.0.4
+gitdb2==2.0.5
 gitpython==2.1.11
-html5lib==1.0.1
-hypothesis==3.73.1
+hypothesis==3.79.0
 idna==2.7
-isort==4.3.4; python_version != '3.0.*'
+isort==4.3.4
 lazy-object-proxy==1.3.1
 mccabe==0.6.1
 mockito==1.1.1
 more-itertools==4.3.0
-multidict==4.4.2; python_version >= '3.4.1'
+multidict==4.4.2
 mypy-extensions==0.4.1
-mypy==0.630
-packaging==17.1
+mypy==0.641
+packaging==18.0
 pathtools==0.1.2
-pbr==4.2.0
+pbr==5.0.0
 pefile==2018.8.8
 pkginfo==1.4.2
-pluggy==0.7.1; python_version != '3.0.*'
-py==1.6.0; python_version != '3.0.*'
+pluggy==0.8.0
+py==1.7.0
 pycodestyle==2.3.1
-pycparser==2.19; python_version != '3.3.*'
+pycparser==2.19
 pyflakes==1.6.0
 pygments==2.2.0
 pylint==2.1.1
-pyparsing==2.2.1; python_version != '3.2.*'
-pytest-cache==1.0; python_version != '3.0.*'
+pyparsing==2.2.2
+pytest-cache==1.0
 pytest-cov==2.6.0
 pytest-deadfixtures==2.0.1
 pytest-faker==2.0.0
 pytest-pycharm==0.5.0
 pytest-repeat==0.7.0
-pytest-vcr==0.3.0; python_version >= '3.4.1'
+pytest-vcr==0.3.0
 pytest-watch==4.2.0
-pytest==3.8.1; python_version >= '2.7'
+pytest==3.9.1
 python-dateutil==2.7.3
 pyyaml==3.13
-readme-renderer==22.0; python_version != '3.3.*'
-requests-toolbelt==0.8.0; python_version < '4'
-requests==2.19.1
-safety==1.8.4; python_version != '3.2.*'
+readme-renderer==22.0
+requests-toolbelt==0.8.0
+requests==2.20.0
+safety==1.8.4
 sarge==0.1.5.post0
-setuptools-scm==3.1.0; python_version != '3.0.*'
+setuptools-scm==3.1.0
 six==1.11.0
-smmap2==2.0.4
+smmap2==2.0.5
 stevedore==1.29.0
 text-unidecode==1.2
-toml==0.9.6
-tqdm==4.26.0; python_version != '3.1.*'
-twine==1.12.1; python_version != '3.3.*'
-typed-ast==1.1.0; python_version < '3.7' and implementation_name == 'cpython'
-urllib3==1.23
-vcrpy==2.0.1; python_version >= '3.4.1'
+toml==0.10.0
+tqdm==4.27.0
+twine==1.12.1
+typed-ast==1.1.0 ; python_version < '3.7' and implementation_name == 'cpython'
+urllib3==1.24
+vcrpy==2.0.1
 watchdog==0.9.0
 webencodings==0.5.1
-wheel==0.31.1; python_version != '3.0.*'
+wheel==0.32.1
 wrapt==1.10.11
-yarl==1.2.6; python_version >= '3.4.1'
+yarl==1.2.6 ; python_version >= '3.4'

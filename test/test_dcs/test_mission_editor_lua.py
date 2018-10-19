@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from hypothesis import given, settings, strategies as st
 
-from esst import core
+from esst import FS
 from esst.dcs import mission_editor_lua
 
 TEMPLATE = Path('./test/test_files/MissionEditor.lua').read_text(encoding='utf8')
@@ -16,9 +16,9 @@ TEMPLATE = Path('./test/test_files/MissionEditor.lua').read_text(encoding='utf8'
 
 @pytest.fixture(autouse=True)
 def _setup():
-    core.FS.dcs_path = Path('./DCS')
-    core.FS.variant_saved_games_path = Path('./Saved Games')
-    core.FS.mission_editor_lua_file = Path('./MissionEditor/MissionEditor.lua')
+    FS.dcs_path = Path('./DCS')
+    FS.variant_saved_games_path = Path('./Saved Games')
+    FS.mission_editor_lua_file = Path('./MissionEditor/MissionEditor.lua')
     Path('./DCS').mkdir()
     Path('./Saved Games').mkdir()
 

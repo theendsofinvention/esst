@@ -6,8 +6,6 @@ import uuid
 
 from esst import commands, core, utils
 
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
-
 
 def _send(msg, ctx):
     if msg and core.CTX.sentry:

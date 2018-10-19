@@ -17,6 +17,43 @@ esst.send = function(message)
     socket.try(esst.sock:sendto(esst.json:encode(message) .. '\n', '127.0.0.1', esst.port))
 end
 
+--mostly straight out of Programming in Lua
+function serialize_wcycles(name, value, saved)
+	local basicSerialize = function (o)
+		if type(o) == "number" then
+			return tostring(o)
+		elseif type(o) == "boolean" then
+			return tostring(o)
+		elseif type(o) == "string" then
+			return string.format("%q", o)
+		end
+	end
+
+	local t_str = {}
+	saved = saved or {}       -- initial value
+	if ((type(value) == 'string') or (type(value) == 'number') or (type(value) == 'table') or (type(value) == 'boolean')) then
+		table.insert(t_str, name .. " = ")
+		if type(value) == "number" or type(value) == "string" or type(value) == "boolean" then
+			table.insert(t_str, basicSerialize(value) ..  "\n")
+		else
+
+			if saved[value] then    -- value already saved?
+				table.insert(t_str, saved[value] .. "\n")
+			else
+				saved[value] = name   -- save name for next time
+				table.insert(t_str, "{}\n")
+				for k,v in pairs(value) do      -- save its fields
+					local fieldname = string.format("%s[%s]", name, basicSerialize(k))
+					table.insert(t_str, serialize_wcycles(fieldname, v, saved))
+				end
+			end
+		end
+		return table.concat(t_str)
+	else
+		return ""
+	end
+end
+
 esst.log_file = 'esst-gamegui'
 esst.log_subsystem = 'esst'
 
@@ -62,6 +99,18 @@ end
 
 function esst.onMissionLoadEnd()
     esst.status_update('loaded mission')
+    local now = DCS.getRealTime()
+    local message = {
+        type = 'mission_load',
+        coalitions = DCS.getAvailableCoalitions(),
+        -- slots = {
+            -- 0 = DCS.getAvailableSlots(0),
+            -- 1 = DCS.getAvailableSlots(1),
+        -- },
+        -- current_mission = DCS.getCurrentMission(),
+        -- mission_options = DCS.getMissionOptions(),
+    }
+    --esst.send(message)
 end
 
 function esst.onSimulationStart()
@@ -114,7 +163,7 @@ function esst.onSimulationFrame()
         local message = {
             type = 'ping',
             players = players,
-            model_time= DCS.getModelTime(),
+            model_time = DCS.getModelTime(),
             paused = DCS.getPause(),
             mission_name = DCS.getMissionName(),
             mission_filename = DCS.getMissionFilename(),

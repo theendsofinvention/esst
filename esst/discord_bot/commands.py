@@ -3,9 +3,8 @@
 Manages Discord commands
 """
 
-from esst.core import CTX, MAIN_LOGGER
-
-LOGGER = MAIN_LOGGER.getChild(__name__)
+from esst import LOGGER
+from esst.core import CTX
 
 
 class DISCORD:
@@ -33,7 +32,7 @@ class DISCORD:
             file_path: path to the file to send
 
         """
-        LOGGER.debug(f'sending file to Discord: {file_path}')
+        LOGGER.debug('sending file to Discord: %s', file_path)
         CTX.discord_file_queue.put(file_path)
 
     @staticmethod

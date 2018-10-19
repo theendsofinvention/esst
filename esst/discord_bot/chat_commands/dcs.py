@@ -7,8 +7,6 @@ import humanize
 
 from esst import commands, core, utils
 
-LOGGER = core.MAIN_LOGGER.getChild(__name__)
-
 
 def status():
     """

@@ -1,35 +1,41 @@
 cfg =
 {
+    ["listShuffle"] = false,
     ["isPublic"] = {{ is_public }},
+    ["description"] = "{{ description }}",
+    ["require_pure_textures"] = {{ require_pure_textures }},
+    ["version"] = 1,
     ["missionList"] =
     {
         [1] = "{{ mission_file_path }}",
     }, -- end of ["missionList"]
-    ["bind_address"] = "",
-    ["port"] = "10308",
     ["advanced"] =
     {
-        ["event_Role"] = {{ event_role }},
+        ["allow_change_tailno"] = {{ allow_change_tailno }},
         ["allow_ownship_export"] = {{ allow_ownship_export }},
         ["allow_object_export"] = {{ allow_object_export }},
         ["pause_on_load"] = {{ pause_on_load }},
-        ["event_Connect"] = {{ event_connect }},
-        ["event_Ejecting"] = {{ event_ejecting }},
-        ["event_Kill"] = {{ event_kill }},
-        ["event_Takeoff"] = {{ event_takeoff }},
+        ["allow_sensor_export"] = {{ allow_sensor_export }},
+        ["event_Takeoff"] = {{ event_Takeoff }},
         ["pause_without_clients"] = {{ pause_without_clients }},
         ["client_outbound_limit"] = {{ client_outbound_limit }},
-        ["event_Crash"] = {{ event_crash }},
         ["client_inbound_limit"] = {{ client_inbound_limit }},
+        ["event_Role"] = {{ event_Role }},
+        ["allow_change_skin"] = {{ allow_change_skin }},
+        ["event_Connect"] = {{ event_Connect }},
+        ["event_Ejecting"] = {{ event_Ejecting }},
+        ["event_Kill"] = {{ event_Kill }},
+        ["event_Crash"] = {{ event_Crash }},
         ["resume_mode"] = {{ resume_mode }},
-        ["allow_sensor_export"] = {{ allow_sensor_export }},
+        ["maxPing"] = {{ maxPing }},
     }, -- end of ["advanced"]
-    ["password"] = "{{ passwd }}",
-    ["require_pure_clients"] = false,
-    ["version"] = 1,
-    ["description"] = "",
+    ["require_pure_models"] = {{ require_pure_models }},
+    ["require_pure_clients"] = {{ require_pure_clients }},
     ["name"] = "{{ name }}",
+    ["port"] = "{{ port }}",
+    ["password"] = "{{ password }}",
     ["listLoop"] = false,
-    ["listShuffle"] = false,
-    ["maxPlayers"] = {{ max_players }},
+    ["bind_address"] = "{{ bind_address }}",
+    ["maxPlayers"] = {{ maxPlayers }},
 } -- end of cfg
+
