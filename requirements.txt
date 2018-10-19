@@ -4,7 +4,7 @@ async-timeout==3.0.1
 attrs==18.2.0
 beautifulsoup4==4.6.3
 bs4==0.0.1
-certifi==2018.8.24
+certifi==2018.10.15
 chardet==3.0.4
 click==7.0
 configobj==5.0.6
@@ -12,8 +12,8 @@ cycler==0.10.0
 dataclasses==0.6
 delegator.py==0.1.1
 discord.py==0.16.12
-elib-config==2018.9.16.1
-elib-miz==2018.10.13.1
+elib-config==2018.10.15.1
+elib-miz==2018.10.15.1
 elib-wx==2018.10.14.2
 elib==2018.10.1.1
 emiz==2018.9.16.4
@@ -46,13 +46,13 @@ python-dateutil==2.7.3
 pytz==2018.5
 pyyaml==3.13
 raven==6.9.0
-requests==2.19.1
+requests==2.20.0
 setuptools-scm==3.1.0
 six==1.11.0
 smmap2==2.0.5
 toml==0.10.0
-tqdm==4.26.0
+tqdm==4.27.0
 ujson==1.35
-urllib3==1.23
+urllib3==1.24
 websockets==3.4
 xmltodict==0.11.0
