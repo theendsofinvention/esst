@@ -274,6 +274,7 @@ def _make_history_graph(  # pylint: disable=too-many-arguments
     if not save_path:
         save_path = mktemp('.png')  # nosec
     PLT.savefig(save_path)  # type: ignore
+    PLT.close()  # type: ignore
     return save_path
 
 
