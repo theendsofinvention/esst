@@ -55,11 +55,13 @@ class SERVER:
     def show_graph(days, hours, minutes):
         """Show resources usage graph"""
 
-        graph = make_history_graph(days=days, hours=hours, minutes=minutes)
-        if graph:
-            DISCORD.send_file(graph)
-        else:
-            LOGGER.warning('failed to create the graph')
+        def _show_graph(graph):
+            if graph:
+                DISCORD.send_file(graph)
+            else:
+                LOGGER.warning('failed to create the graph')
+
+        make_history_graph(callback=_show_graph, days=days, hours=hours, minutes=minutes)
 
         # def _callback(future):
         #     if future.result():

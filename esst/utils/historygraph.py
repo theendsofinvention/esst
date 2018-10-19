@@ -6,7 +6,6 @@ Creates graphic of perfs
 import datetime
 import typing
 from collections import namedtuple
-from concurrent import futures
 from tempfile import mktemp
 
 import humanize
@@ -301,7 +300,9 @@ def make_history_graph(callback=None, days=0, hours=0, minutes=0, show: bool = F
         server_bytes_sent_history=CTX.server_bytes_sent_history,
         players_history=CTX.players_history,
     )
-    _make_history_graph(values_to_process, days, hours, minutes, show, save_path)
+    graph = _make_history_graph(values_to_process, days, hours, minutes, show, save_path)
+    if callback:
+        callback(graph)
     # process_pool = futures.ProcessPoolExecutor(max_workers=1)
     # values_to_process = GraphValues(
     #     dcs_cpu_history=CTX.dcs_cpu_history,
