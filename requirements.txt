@@ -1,3 +1,4 @@
+-i https://pypi.python.org/simple/
 aiohttp==1.0.5
 argh==0.26.2
 async-timeout==3.0.1
@@ -51,7 +52,7 @@ setuptools-scm==3.1.0
 six==1.11.0
 smmap2==2.0.5
 toml==0.10.0
-tqdm==4.27.0
+tqdm==4.28.0
 ujson==1.35
 urllib3==1.24
 websockets==3.4
