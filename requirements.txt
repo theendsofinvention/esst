@@ -14,8 +14,8 @@ dataclasses==0.6
 delegator.py==0.1.1
 discord.py==0.16.12
 elib-config==2018.10.15.1
-elib-miz==2018.10.15.1
-elib-wx==2018.10.14.2
+elib-miz==2018.10.21.1
+elib-wx==2018.10.21.1
 elib==2018.10.1.1
 emiz==2018.9.16.4
 everett==0.9
@@ -52,7 +52,7 @@ setuptools-scm==3.1.0
 six==1.11.0
 smmap2==2.0.5
 toml==0.10.0
-tqdm==4.28.0
+tqdm==4.28.1
 ujson==1.35
 urllib3==1.24
 websockets==3.4
