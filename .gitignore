@@ -94,3 +94,4 @@ classes_esst.png
 logs/
 /esst_test.yml
 esst.toml
+/esst.toml.backup
