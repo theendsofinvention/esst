@@ -54,16 +54,17 @@ class DCSConfig(SentryConfigContext):
     )
 
     DCS_CLOSE_GRACE_PERIOD = elib_config.ConfigValueInteger(
-        'dcs', 'start_grace_period',
+        'dcs', 'close_grace_period',
         description='Amount of time, in seconds, given for DCS to close itself gracefully. '
                     'Passed that delay, the dcs.exe process will be forcefully killed.',
         default=30
     )
 
     DCS_START_GRACE_PERIOD = elib_config.ConfigValueInteger(
-        'dcs', 'close_grace_period',
-        description='Amount of time, in seconds, given for DCS to start. Passed that delay, an alert will be shown',
-        default=120
+        'dcs', 'start_grace_period',
+        description='Amount of time, in seconds, given for DCS to start. Passed that delay, the DCS.exe will be'
+                    'considered "hung" and restarted.',
+        default=150
     )
 
     DCS_CPU_AFFINITY = elib_config.ConfigValueList(
