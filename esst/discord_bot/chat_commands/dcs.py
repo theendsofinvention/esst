@@ -22,7 +22,10 @@ def status():
             output.append(f'{attr_nice_name}: '
                           f'{humanize.naturaltime(getattr(core.Status, attr_name))}')
         else:
-            output.append(f'{attr_nice_name}: {getattr(core.Status, attr_name)}')
+            try:
+                output.append(f'{attr_nice_name}: {getattr(core.Status, attr_name)}')
+            except AttributeError:
+                output.append(f'{attr_nice_name}: unknown')
     commands.DISCORD.say('\n'.join(output))
 
 
