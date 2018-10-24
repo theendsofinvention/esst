@@ -4,19 +4,240 @@ Changelog
 ------------
 Fix
 ~~~
+- Fix "!dcs status" command error. [etcher]
+  The command will show "unknown" instead of crashing in case a given
+  value is missing.
+2018.10.23.2 (2018-10-23)
+-------------------------
+Fix
+~~~
+- Fix typo in config (#42) [etcher]
+  * fix: fix config value for DCS grace period.
+  DCS 'start_grace_period' and 'close_grace_period' were swapped in the
+  config.
+2018.10.23.1 (2018-10-23)
+-------------------------
+- Build(deps): bump numpy from 1.15.2 to 1.15.3. [dependabot[bot]]
+  Bumps [numpy](http://www.numpy.org) from 1.15.2 to 1.15.3.
+- Build(deps): bump elib-wx from 2018.10.14.2 to 2018.10.22.2.
+  [dependabot[bot]]
+  Bumps [elib-wx](https://github.com/etcher-be/elib_wx) from 2018.10.14.2 to 2018.10.22.2.
+  - [Release notes](https://github.com/etcher-be/elib_wx/releases)
+  - [Commits](https://github.com/etcher-be/elib_wx/compare/2018.10.14.2...2018.10.22.2)
+2018.10.21.1 (2018-10-21)
+-------------------------
+- Build(deps-dev): bump epab from 2018.10.17.1 to 2018.10.21.1.
+  [dependabot[bot]]
+  Bumps [epab](https://github.com/132nd-etcher/EPAB) from 2018.10.17.1 to 2018.10.21.1.
+  - [Release notes](https://github.com/132nd-etcher/EPAB/releases)
+  - [Changelog](https://github.com/etcher-be/epab/blob/master/CHANGELOG.rst)
+  - [Commits](https://github.com/132nd-etcher/EPAB/compare/2018.10.19.1a2+dependabot/pip/elib-run-2018.10.17.1...2018.10.21.1)
+2018.10.19.1 (2018-10-19)
+-------------------------
+New
+~~~
+- Elib_config, elib_wx, elib_miz (#26) [etcher]
+  * chg: dev: use single LOGGER object
+  * chg: dev: move FS to root package
+  * chg: dev: sanitize ATIS package
+  * fix: fix bug in history graph
+  Sometimes the processes pool from concurrent.futures would break.
+  The fix is to simply re-instantiate it each time.
+  * chg: dev: sanitize Sentry package
+  * chg: switch to TOML config
+  fixes #19
+  * fix: fix deleted 3rd party library ipgetter
+  The library was used to obtain the external IP. Switched to simple
+  requests + https://www.ipify.org/.
+  * chg: dev: update reqs
+  * chg: dev: move basic FS utils funcs
+  * fix: prevent start when WAN unavailable
+  Simply adds a check at ESST startup.
+  If no WAN connection is available, ESST will simply not start.
+  * chg: dev: trivia
+  * chg: dev: linting
+  * fix: dev: pylint fix
+  * fix: dev: fix mypy
+  * chg: dev: add comments for later
+  * chg: dev: remove irrelevant comments
+  * chg: dev: sanitize elib_config_import
+  * fix: dev: format Discord logger records
+  * fix: fix CPU affinity warning message
+  * fix: fix repeated message when DCS is blocked
+  When starting DCS is block for any reason (no WAN connection, mission
+  currently loading, ...), a message is shown on the Discord channel).
+  Due to a bug, that message might have been repeated multiple times.
+  fixes #23
+  * chg: switch to elib_wx (and elib_miz)
+  This allows ESST to understand North American weather, and work
+  with pretty much all the different METARs formats out there.
+  WARNING: this feature has been tested in and out programatically
+  and to the best of my ability, but real-world testing is sorely needed.
+  Tread with care.
+  fixes #17
+  * new: add a command to preview the weather
+  The new "!weather show" command allows for sneak-peak into real-life
+  weather without applying them to MIZ files.
+  Example: "!weather show KLAS"
+  This commands output the METAR string, a textual description of the
+  real-life weather (as described by the METAR string), and an example
+  of a DCS weather as it would be generated from that METAR.
+  fixes #18
+  * new: add "--dcs" switch to "!mission weather"
+  In regular mode, "!mission weather" will print a textual description
+  of the weather in the running mission.
+  With the "--dcs" switch, ESST will print the weather as it actually is
+  in DCS, outputting the raw values for all managed weather parameters
+  (such as wind direction at 2000m in DCS format, fog visibility, etc.).
+  * chg: dev: add LUA code for later
+  #20
+  * fix: dev: linting
+  * fix: dev: remove unused file
+  * chg: dev: update reqs
+  * fix: dev: update reqs
+  * fix: fix error in "!atis showfor" command
+  If no weather information is available, ESST will say so instead of
+  throwing an error.
+  * fix: dev: linting
+  * fix: fix DCS server config
+  Please have a look at the [dcs_server] section (and its subsections)
+  in your "esst.toml" file. Updated values will be shown in
+  "esst.toml.example" after the first run of ESST.
+  * fix: fix historygraph
+  Made the function synchronous for the time being.
+  * chg: dev: update reqs
+  * fix: dev: close historygraph plot
+2018.10.01.1 (2018-10-01)
+-------------------------
+Fix
+~~~
+- Monkeypatch gtts (#22) [etcher]
+  * update reqs (elib->gtts)
+2018.09.22.1 (2018-09-22)
+-------------------------
+Changes
+~~~~~~~
+- Vendor avwx (#16) [etcher]
+  * fix: fix "!atis show" note
+  * update reqs
+  * chg: dev: update reqs
+  * chg: dev: update reqs again
+2018.09.16.2 (2018-09-16)
+-------------------------
+New
+~~~
+- Add NTTR airports (#14) [etcher]
+  * new: dev: add NTTR airports to db
+  * chg: move ATIS file in "atis" folder
+  * chg: rename "!atis frequencies" to "!atis show"
+  * chg: rename "!atis show" to "!atis showfor"
+  * chg: add ICAO prefix to '!atis show'
+2018.09.16.1 (2018-09-16)
+-------------------------
+Changes
+~~~~~~~
+- Update emiz (#13) [etcher]
+  * fix: dev: fix tests nuking my config all the time
+  * chg: dev: update reqs
+2018.09.15.2 (2018-09-15)
+-------------------------
+Changes
+~~~~~~~
+- Randomize socket port (#9) [etcher]
+  * chg: dev: update reqs
+  * fix: dev: fix tests nuking my config all the time
+  * chg: randomly assign socket ports
+  This should allow for multiple instances of ESST to coexist on the same
+  system for the time being.
+  * chg: dev: linting
+  * fix: dev: sanitize ports range
+2018.09.15.1 (2018-09-15)
+-------------------------
+Changes
+~~~~~~~
+- Add dcs server options (#8) [etcher]
+  * chg: added a bunch of DCS server options
+  Here's the list with given defaults:
+  (example config file section)
+  dcs_server:
+      name = ''
+      max_players = '30'
+      startup_time = '120'
+      event_role = 'true'
+      require_pure_clients = 'false'
+      allow_ownship_export = 'true'
+      allow_object_export = 'true'
+      password = ''
+      pause_on_load = 'false'
+      pause_without_clients = 'false'
+      event_connect = 'true'
+      allow_sensor_export = 'true'
+      is_public = 'true'
+      event_ejecting = 'false'
+      event_kill = 'false'
+      event_takeoff = 'false'
+      client_outbound_limit = '0'
+      event_crash = 'false'
+      client_inbound_limit = '0'
+      resume_mode = '1'
+2018.09.09.2 (2018-09-09)
+-------------------------
+Fix
+~~~
+- Fix pyinstaller data files. [etcher]
+2018.09.09.1 (2018-09-09)
+-------------------------
+Fix
+~~~
+- Get DCS version (#6) [etcher]
+  * update gitignore
+  * fix the issue with getting the DCS version
+  * disable "remov old files" functionality
+  There's an issue with parsedatetime & pyinstaller, and I needed to
+  freeze. I'll re-implement without parsedatetime.
+  * add pyproject.toml (newer EPAB)
+  * update reqs
+  * linting
+  * update .gitignore
+  * update reqs
+2018.06.15.2 (2018-06-15)
+-------------------------
+Fix
+~~~
+- Fix auto start (#115) [132nd-etcher]
+  * update me_auth template
+  * update .gitignore
+  * update reqs
+  * mypy fixes
+  * update reqs
+  * linting
+  * update reqs
+  * fix missing dependency
+2018.06.15.1 (2018-06-15)
+-------------------------
+- Feature/fix auto start (#114) [132nd-etcher]
+  * update me_auth template
+  * update .gitignore
+  * update reqs
+  * mypy fixes
+  * update reqs
+  * linting
+  * update reqs
+2018.05.13.1 (2018-05-13)
+-------------------------
+Changes
+~~~~~~~
+- Change Kutaisi runway heading from 25 to 26 (#113) [132nd-etcher]
+2018.04.28.1 (2018-04-28)
+-------------------------
+Fix
+~~~
 - Fix pagefile issue when probing for dcs.exe (#111) [132nd-etcher]
   * ignore log files
   * fix pagefile saturation issue
   * linting
   * unignore pipfile.lock
   * fix setup.py fir pip 10.0.0
-2018.04.28.1a1+feature/110 (2018-04-28)
----------------------------------------
-- Fix setup.py fir pip 10.0.0. [132nd-etcher]
-- Unignore pipfile.lock. [132nd-etcher]
-- Linting. [132nd-etcher]
-- Fix pagefile saturation issue. [132nd-etcher]
-- Ignore log files. [132nd-etcher]
 2018.4.5.1 (2018-04-05)
 -----------------------
 Changes
@@ -25,432 +246,35 @@ Changes
   * ignore main.html
   * change all ATIS frequencies from .400 to .300
   * fix Maykop location
-2018.4.3.1a1+feature/atis_freqs (2018-04-03)
---------------------------------------------
-- Fix Maykop location. [132nd-etcher]
-- Change all ATIS frequencies from .400 to .300. [132nd-etcher]
-- Ignore main.html. [132nd-etcher]
 2018.4.2.1 (2018-04-02)
 -----------------------
-Fix
-~~~
-- Emiz error (#107) [132nd-etcher]
-  * ignore pytest cache
-  * update reqs
-  * fix error in fs_paths
-2018.4.2.1a1+feature/106-emiz_error (2018-04-02)
-------------------------------------------------
-- Fix error in fs_paths. [132nd-etcher]
-- Update reqs. [132nd-etcher]
-- Ignore pytest cache. [132nd-etcher]
-0.1.91 (2018-02-26)
--------------------
-Fix
-~~~
-- Atis speech (#99) [132nd-etcher]
-  * fix ICAO included in the start of the ATIS speech
-  * fix ATIS speech
-  * remove debug code
-  * add current version as Sentry release
-  * fix "!atis show" command
-  fix #97
-  * update reqs
-  fix #98
-  fix #100
-  * simplify generate_atis
-  * linting
-0.1.91a+ATIS-speech11 (2018-02-26)
-----------------------------------
-- Linting. [132nd-etcher]
-- Simplify generate_atis. [132nd-etcher]
-- Update reqs. [132nd-etcher]
-  fix #98
-  fix #100
-- Fix "!atis show" command. [132nd-etcher]
-  fix #97
-- Add current version as Sentry release. [132nd-etcher]
-0.1.91a+ATIS-speech6 (2018-02-25)
----------------------------------
-- Remove debug code. [132nd-etcher]
-- Fix ATIS speech. [132nd-etcher]
-- Fix ICAO included in the start of the ATIS speech. [132nd-etcher]
-0.1.90a+update-logger9 (2018-02-23)
------------------------------------
-- Update reqs. [132nd-etcher]
-0.1.90a+update-logger8 (2018-02-23)
------------------------------------
-- Update reqs. [132nd-etcher]
-- Update reqs. [132nd-etcher]
-- Linting. [132nd-etcher]
-- Simplify main entry point. [132nd-etcher]
-0.1.90a+update-logger4 (2018-02-23)
------------------------------------
-- Update logging to latest elib version. [132nd-etcher]
-- Update reqs. [132nd-etcher]
-- Update logging for latest version of ELIB. [132nd-etcher]
-0.1.89a+update-config12 (2018-02-23)
-------------------------------------
-- Update reqs. [132nd-etcher]
-0.1.89a+update-config11 (2018-02-23)
-------------------------------------
-- Linting. [132nd-etcher]
-- Linting. [132nd-etcher]
-- Update reqs. [132nd-etcher]
-- Remove debug line. [132nd-etcher]
-- Update config for latest version of ELIB. [132nd-etcher]
-0.1.89a+readme-derps5 (2018-02-18)
-----------------------------------
-- Update README.rst. [132nd-etcher]
-0.1.89a+readme-derps4 (2018-02-18)
-----------------------------------
-- Update README.rst. [132nd-etcher]
-0.1.89a+readme-derps3 (2018-02-18)
-----------------------------------
-- Update readme. [132nd-etcher]
-0.1.87 (2018-02-18)
--------------------
-Changes
-~~~~~~~
-- Atis multiprocessing (#93) [132nd-etcher]
-  * reduce ATIS generation time
-  Down from ~40 seconds to ~3 seconds
-  * update reqs
-  * update reqs
-0.1.87a+atis-multiprocessing3 (2018-02-18)
-------------------------------------------
-- Update reqs. [132nd-etcher]
-- Update reqs. [132nd-etcher]
-- Reduce ATIS generation time. [132nd-etcher]
-  Down from ~40 seconds to ~3 seconds
-0.1.86 (2018-02-11)
--------------------
-Fix
-~~~
-- Fix saved games folder (#91) [132nd-etcher]
-  * major refactor
-  * linting
-  * variant should return absolute path
-  * remove unnecessary else clauses
-  * fix tests
-  * linting
-  * fix a few issues with the historygraph
-  * ignore test files
-  * simplify historygraph
-  * linting
-  * remove useless try block
-  * slight refac of fs_paths init
-  * fix tests
-  * reduce complexity
-  * linting
-  fix #89
-0.1.86a+89-saved-games-folder16 (2018-02-11)
---------------------------------------------
-- Linting. [132nd-etcher]
-- Reduce complexity. [132nd-etcher]
-0.1.86a+89-saved-games-folder14 (2018-02-11)
---------------------------------------------
-- Fix tests. [132nd-etcher]
-- Slight refac of fs_paths init. [132nd-etcher]
-- Remove useless try block. [132nd-etcher]
-- Linting. [132nd-etcher]
-- Simplify historygraph. [132nd-etcher]
-- Ignore test files. [132nd-etcher]
-- Fix a few issues with the historygraph. [132nd-etcher]
-- Linting. [132nd-etcher]
-- Fix tests. [132nd-etcher]
-- Remove unnecessary else clauses. [132nd-etcher]
-- Variant should return absolute path. [132nd-etcher]
-- Linting. [132nd-etcher]
-- Major refactor. [132nd-etcher]
-0.1.85a+clean-dupes4 (2018-02-11)
----------------------------------
-- Clean duplicate code. [132nd-etcher]
-0.1.84a+setuptools-scm3 (2018-02-03)
-------------------------------------
-- Linting. [132nd-etcher]
-- Remove versioneer. [132nd-etcher]
-0.1.83 (2018-01-23)
--------------------
-Fix
-~~~
-- Show correct ATIS identification letter with "!atis show <ICAO>"
-  [132nd-etcher]
-  fix #76
-0.1.80 (2018-01-23)
--------------------
 New
 ~~~
 - Add full ATIS speech to "!atis show" command. [132nd-etcher]
   fix #77
-Fix
-~~~
-- Fix wrong ATIS for UGKS. [132nd-etcher]
-  fix #72
-0.1.79 (2018-01-15)
--------------------
-Fix
-~~~
-- Fix DCS API hook for 1.5.8. [132nd-etcher]
-  "!dcs status" command will work again, as will the "soft kill" command used to restart DCS
-0.1.76 (2017-12-28)
--------------------
-New
-~~~
 - Implemented !esst restart command. [132nd-etcher]
-Fix
-~~~
-- Fix affinity & priority setting bug when DCS does not exist. [132nd-
-  etcher]
-- Fix bound socket issue at start. [132nd-etcher]
-- Auto-mission name. [132nd-etcher]
-0.1.75 (2017-12-28)
--------------------
-Fix
-~~~
-- Fix crash when URVoiceService was already running. [132nd-etcher]
-  fix #71
-0.1.74 (2017-12-28)
--------------------
-New
-~~~
 - Add config option to control ATIS creation. [132nd-etcher]
-Changes
-~~~~~~~
-- Dev add base classes to export Sentry context. [132nd-etcher]
-- Update example config file. [132nd-etcher]
-- "dcs_path" config value now points to the root of the DCS
-  installation. [132nd-etcher]
-Fix
-~~~
-- Fix a very, very unlikely bug in the DCS loop. [132nd-etcher]
-  fix #59
-- Rotate logs before the start of DCS. [132nd-etcher]
-  fix #62
-- Ensure MissionEditor.lua content doesn't change at each run. [132nd-
-  etcher]
-- Fix erroneous message on server reboot without connect players.
-  [132nd-etcher]
-- Read "dcs_can_start" value from config at startup. [132nd-etcher]
-0.1.73 (2017-12-26)
--------------------
-Fix
-~~~
-- Fix bug when using the "!mission load" command without a mission
-  name/number. [132nd-etcher]
-0.1.71 (2017-12-26)
--------------------
-Fix
-~~~
-- Infer METAR and ATIS at DCS startup (default mission) [132nd-etcher]
-0.1.69 (2017-12-26)
--------------------
-Fix
-~~~
-- Fix issue when setting CPU priority for a closed DCS process. [132nd-
-  etcher]
-  fix #70
-0.1.68 (2017-12-26)
--------------------
-Fix
-~~~
-- Make information identifiers more clear to the ear. [132nd-etcher]
-0.1.67 (2017-12-25)
--------------------
-New
-~~~
 - Add "!atis" command for Discord. [132nd-etcher]
 - Manage ATIS for all airfields in Caucasus. [132nd-etcher]
-0.1.63 (2017-12-20)
--------------------
-Fix
-~~~
-- Fix !server graph returning "None" [132nd-etcher]
-  fix #65
-0.1.61 (2017-12-20)
--------------------
-Fix
-~~~
-- Fix auto-mission being downloaded in ESST dir (thus not being
-  available for loading) [132nd-etcher]
-  fix #66
-0.1.60 (2017-12-20)
--------------------
-Fix
-~~~
-- Add a catch in the DCS affinity setter for when the DCS process does
-  not exist. [132nd-etcher]
-  fix #67
-0.1.59 (2017-12-20)
--------------------
-Changes
-~~~~~~~
-- Allow for disabling high CPU usage output. [132nd-etcher]
-0.1.58 (2017-12-17)
--------------------
-Changes
-~~~~~~~
-- Add an example config file. [132nd-etcher]
-- Esst log files are now saved in ESST folder. [132nd-etcher]
-Fix
-~~~
-- Fix loading of wrong mission. [132nd-etcher]
-0.1.57 (2017-12-17)
--------------------
-Changes
-~~~~~~~
-- Linting. [132nd-etcher]
-0.1.56 (2017-12-04)
--------------------
-Fix
-~~~
-- Fix server graph reporting DCS CPU usage on all cores. [132nd-etcher]
-  Since DCS is single-threaded, that was basically useless info. ESST now reports usage from a single core.
-- Server graph reporting free memory instead of used memory. [132nd-
-  etcher]
-- Fix server lag due to socket timeout. [132nd-etcher]
-Other
-~~~~~
-- Add: DCS log rotation. [132nd-etcher]
-  fix #52
-0.1.54 (2017-11-26)
--------------------
-New
-~~~
 - Add CPU priority and affinity management for DCS process. [132nd-
   etcher]
 - Added support for multiple admin roles. [132nd-etcher]
-0.1.53 (2017-11-26)
--------------------
-Fix
-~~~
-- Ignore HTTPException from Discord client (just restart it) [132nd-
-  etcher]
-0.1.52 (2017-10-17)
--------------------
-New
-~~~
 - Add "!dcs log" command to retrieve DCS log file from Discord. [132nd-
   etcher]
-0.1.51 (2017-10-17)
--------------------
-Changes
-~~~~~~~
-- Deactivate DCS version check at startup. [132nd-etcher]
-  Allow DCS update on the server while I'm away
-0.1.50 (2017-10-17)
--------------------
-Fix
-~~~
-- Download auto mission to a separate file. [132nd-etcher]
-  Auto mission should not overwrite a mission with the same name already present on the server; that way, weather and other edits are kept separate
-  closes #49
-- Fix process polling. [132nd-etcher]
-  ESST would crash while iterating over process when stumbling upon a recently closed process
-  closes #48
-0.1.49 (2017-10-15)
--------------------
-New
-~~~
 - Added "!mission delete" and "!mission load" by index. [132nd-etcher]
-0.1.47 (2017-09-30)
--------------------
-Changes
-~~~~~~~
-- Manage DCS version 1.5.7.10175. [132nd-etcher]
-0.1.46 (2017-09-14)
--------------------
-Changes
-~~~~~~~
-- Add support for DCS 1.5.7.9459. [132nd-etcher]
-- Add feedback when trying to start unmanaged DCS version. [132nd-
-  etcher]
-  closes #46
-Fix
-~~~
-- Fix loading of unchanged missions. [132nd-etcher]
-  closes #42
-- Accept lower case ICAO codes. [132nd-etcher]
-  closes #43
-0.1.45 (2017-09-06)
--------------------
-Fix
-~~~
-- "!report" command help text. [132nd-etcher]
-  closes #38
-- Fixed invalid commands still being executed. [132nd-etcher]
-  closes #39
-- Fix remove_files config default value. [132nd-etcher]
-0.1.43 (2017-09-04)
--------------------
-New
-~~~
 - Add a routine to clean folders of old files. [132nd-etcher]
   closes #23
-0.1.42 (2017-09-04)
--------------------
-New
-~~~
 - Add options to "!server graph" commands. [132nd-etcher]
   It's now possible to specify the time delta
 - Collect network stats (all NICs combined) [132nd-etcher]
   closes #36
-Changes
-~~~~~~~
-- Remove "!server show-cpu --graph" command. [132nd-etcher]
-Other
-~~~~~
-- Fix fix "!server status" showing weird values for mem perc. [132nd-
-  etcher]
-0.1.41 (2017-09-03)
--------------------
-Fix
-~~~
-- Don't reload the same mission without change. [132nd-etcher]
-0.1.40 (2017-09-03)
--------------------
-Fix
-~~~
-- Fixed protected modules method registering as available chat commands.
-  [132nd-etcher]
-- Fix "-h" command not registering correctly. [132nd-etcher]
-0.1.39 (2017-09-03)
--------------------
-New
-~~~
 - Add "!server graph" command. [132nd-etcher]
   closes #8
-0.1.37 (2017-09-03)
--------------------
-New
-~~~
 - Add !report command. [132nd-etcher]
   closes #35
-0.1.36 (2017-09-03)
--------------------
-Fix
-~~~
-- Fix regular member having access to the upload mission function.
-  [132nd-etcher]
-0.1.34 (2017-09-03)
--------------------
-New
-~~~
 - Add "!esst changelog" command. [132nd-etcher]
-Fix
-~~~
-- Fixed Internet connection check being a bit of an arse. [132nd-etcher]
-- Fix ESST not sending the exit to DCS via socket (thus killing the
-  process for no reason) [132nd-etcher]
-0.1.33 (2017-09-03)
--------------------
-New
-~~~
 - Implement roles and permissions. [132nd-etcher]
   closes #33
-0.1.32 (2017-09-03)
--------------------
-New
-~~~
 - Add timestamp to discord messages. [132nd-etcher]
   closes #27
 - Add "!server ip" command. [132nd-etcher]
@@ -459,32 +283,7 @@ New
   closes #26
 - Add a YAML dict config to Config() [132nd-etcher]
   closes #25
-Fix
-~~~
-- Do not spam sockets when DCS isn't running in dedicated mode. [132nd-
-  etcher]
-  closes #19
-0.1.29 (2017-08-27)
--------------------
-Fix
-~~~
-- Fix downloading mission from Discord. [132nd-etcher]
-- Fix downloading latest mission from Github. [132nd-etcher]
-- Fix Discord bot reacting on its own message. [132nd-etcher]
-0.1.28 (2017-08-27)
--------------------
-New
-~~~
 - Add support for DCS 1.5.7.8899. [132nd-etcher]
-Fix
-~~~
-- Fix mission switching while DCS is running. [132nd-etcher]
-- Add connected player check on "!server reboot" command. [132nd-etcher]
-- Dev fix strip_suffix in MissionPath. [132nd-etcher]
-0.1.26 (2017-08-27)
--------------------
-New
-~~~
 - Add DCS version to backup files (so updating DCS will generate a new
   backup) [132nd-etcher]
   closes #22
@@ -509,6 +308,27 @@ New
   etcher]
 Changes
 ~~~~~~~
+- Atis multiprocessing (#93) [132nd-etcher]
+  * reduce ATIS generation time
+  Down from ~40 seconds to ~3 seconds
+  * update reqs
+  * update reqs
+- Dev add base classes to export Sentry context. [132nd-etcher]
+- Update example config file. [132nd-etcher]
+- "dcs_path" config value now points to the root of the DCS
+  installation. [132nd-etcher]
+- Allow for disabling high CPU usage output. [132nd-etcher]
+- Add an example config file. [132nd-etcher]
+- Esst log files are now saved in ESST folder. [132nd-etcher]
+- Linting. [132nd-etcher]
+- Deactivate DCS version check at startup. [132nd-etcher]
+  Allow DCS update on the server while I'm away
+- Manage DCS version 1.5.7.10175. [132nd-etcher]
+- Add support for DCS 1.5.7.9459. [132nd-etcher]
+- Add feedback when trying to start unmanaged DCS version. [132nd-
+  etcher]
+  closes #46
+- Remove "!server show-cpu --graph" command. [132nd-etcher]
 - Allow to set both time and weather via the "!mission load" command.
   [132nd-etcher]
   closes #17
@@ -522,17 +342,132 @@ Changes
 - Global CTX object. [132nd-etcher]
 Fix
 ~~~
+- Emiz error (#107) [132nd-etcher]
+  * ignore pytest cache
+  * update reqs
+  * fix error in fs_paths
+- Atis speech (#99) [132nd-etcher]
+  * fix ICAO included in the start of the ATIS speech
+  * fix ATIS speech
+  * remove debug code
+  * add current version as Sentry release
+  * fix "!atis show" command
+  fix #97
+  * update reqs
+  fix #98
+  fix #100
+  * simplify generate_atis
+  * linting
+- Fix saved games folder (#91) [132nd-etcher]
+  * major refactor
+  * linting
+  * variant should return absolute path
+  * remove unnecessary else clauses
+  * fix tests
+  * linting
+  * fix a few issues with the historygraph
+  * ignore test files
+  * simplify historygraph
+  * linting
+  * remove useless try block
+  * slight refac of fs_paths init
+  * fix tests
+  * reduce complexity
+  * linting
+  fix #89
+- Show correct ATIS identification letter with "!atis show <ICAO>"
+  [132nd-etcher]
+  fix #76
+- Fix wrong ATIS for UGKS. [132nd-etcher]
+  fix #72
+- Fix DCS API hook for 1.5.8. [132nd-etcher]
+  "!dcs status" command will work again, as will the "soft kill" command used to restart DCS
+- Fix affinity & priority setting bug when DCS does not exist. [132nd-
+  etcher]
+- Fix bound socket issue at start. [132nd-etcher]
+- Auto-mission name. [132nd-etcher]
+- Fix crash when URVoiceService was already running. [132nd-etcher]
+  fix #71
+- Fix a very, very unlikely bug in the DCS loop. [132nd-etcher]
+  fix #59
+- Rotate logs before the start of DCS. [132nd-etcher]
+  fix #62
+- Ensure MissionEditor.lua content doesn't change at each run. [132nd-
+  etcher]
+- Fix erroneous message on server reboot without connect players.
+  [132nd-etcher]
+- Read "dcs_can_start" value from config at startup. [132nd-etcher]
+- Fix bug when using the "!mission load" command without a mission
+  name/number. [132nd-etcher]
+- Infer METAR and ATIS at DCS startup (default mission) [132nd-etcher]
+- Fix issue when setting CPU priority for a closed DCS process. [132nd-
+  etcher]
+  fix #70
+- Make information identifiers more clear to the ear. [132nd-etcher]
+- Fix !server graph returning "None" [132nd-etcher]
+  fix #65
+- Fix auto-mission being downloaded in ESST dir (thus not being
+  available for loading) [132nd-etcher]
+  fix #66
+- Add a catch in the DCS affinity setter for when the DCS process does
+  not exist. [132nd-etcher]
+  fix #67
+- Fix loading of wrong mission. [132nd-etcher]
+- Fix server graph reporting DCS CPU usage on all cores. [132nd-etcher]
+  Since DCS is single-threaded, that was basically useless info. ESST now reports usage from a single core.
+- Server graph reporting free memory instead of used memory. [132nd-
+  etcher]
+- Fix server lag due to socket timeout. [132nd-etcher]
+- Ignore HTTPException from Discord client (just restart it) [132nd-
+  etcher]
+- Download auto mission to a separate file. [132nd-etcher]
+  Auto mission should not overwrite a mission with the same name already present on the server; that way, weather and other edits are kept separate
+  closes #49
+- Fix process polling. [132nd-etcher]
+  ESST would crash while iterating over process when stumbling upon a recently closed process
+  closes #48
+- Fix loading of unchanged missions. [132nd-etcher]
+  closes #42
+- Accept lower case ICAO codes. [132nd-etcher]
+  closes #43
+- "!report" command help text. [132nd-etcher]
+  closes #38
+- Fixed invalid commands still being executed. [132nd-etcher]
+  closes #39
+- Fix remove_files config default value. [132nd-etcher]
+- Don't reload the same mission without change. [132nd-etcher]
+- Fixed protected modules method registering as available chat commands.
+  [132nd-etcher]
+- Fix "-h" command not registering correctly. [132nd-etcher]
+- Fix regular member having access to the upload mission function.
+  [132nd-etcher]
+- Fixed Internet connection check being a bit of an arse. [132nd-etcher]
+- Fix ESST not sending the exit to DCS via socket (thus killing the
+  process for no reason) [132nd-etcher]
+- Do not spam sockets when DCS isn't running in dedicated mode. [132nd-
+  etcher]
+  closes #19
+- Fix downloading mission from Discord. [132nd-etcher]
+- Fix downloading latest mission from Github. [132nd-etcher]
+- Fix Discord bot reacting on its own message. [132nd-etcher]
+- Fix mission switching while DCS is running. [132nd-etcher]
+- Add connected player check on "!server reboot" command. [132nd-etcher]
+- Dev fix strip_suffix in MissionPath. [132nd-etcher]
 - Fix capitalization of messages sent to Discord. [132nd-etcher]
 - Fix fallback of Discord message queue watcher. [132nd-etcher]
 - Fix exit mechanism. [132nd-etcher]
 Other
 ~~~~~
+- Linting. [132nd-etcher]
+- Remove versioneer. [132nd-etcher]
+- Add: DCS log rotation. [132nd-etcher]
+  fix #52
+- Fix fix "!server status" showing weird values for mem perc. [132nd-
+  etcher]
 - Add two exception catch in discord_bot. [132nd-etcher]
 - Wip. [132nd-etcher]
 - This is getting solid. [132nd-etcher]
 - Working on it. [132nd-etcher]
-0.1.25 (2017-08-22)
--------------------
 - Update changelog. [132nd-etcher]
 - Update requirements. [132nd-etcher]
 - Fix initialization of Discord, DCS and socket when deactivated.
@@ -548,8 +483,6 @@ Other
 - Update README. [132nd-etcher]
 - Update readme. [132nd-etcher]
 - Published with https://stackedit.io/ [132nd-etcher]
-0.1.22 (2017-08-20)
--------------------
 - Update changelog. [132nd-etcher]
 - Noqa. [132nd-etcher]
 - Remove trailing white space. [132nd-etcher]
@@ -567,15 +500,11 @@ Other
   Fixes #12
 - No more threads, only asyncio (sic) [132nd-etcher]
   Closes #10
-0.1.21 (2017-08-19)
--------------------
 - Fix server not restarting when not responding. [132nd-etcher]
 - Add requirements. [132nd-etcher]
 - Add wheel tag. [132nd-etcher]
 - Remove print statement. [132nd-etcher]
 - Add epab config. [132nd-etcher]
-0.1.20 (2017-08-15)
--------------------
 - Removed duplicate output. [132nd-etcher]
 - Increase timeout to 30sec when closing DCS. [132nd-etcher]
 - Added auto building of metar at mission load. [132nd-etcher]
@@ -594,23 +523,11 @@ Other
 - Added click ctx object as abstract prop of Discord bot. [132nd-etcher]
 - Removed Discord messages aggregation as it was causing bugs. [132nd-
   etcher]
-0.1.19 (2017-08-14)
--------------------
 - Reduced the amount of spam. [132nd-etcher]
-0.1.18 (2017-08-14)
--------------------
 - Added version in default MOTD. [132nd-etcher]
-0.1.17 (2017-08-14)
--------------------
 - Fixed DCS resetting the metar upon restart. [132nd-etcher]
-0.1.16 (2017-08-14)
--------------------
 - I'm tired. [132nd-etcher]
-0.1.15 (2017-08-14)
--------------------
 - Added dependency to EMFT. [132nd-etcher]
-0.1.14 (2017-08-14)
--------------------
 - Added help for the METAR command. [132nd-etcher]
 - Removed useless CPU usage check at process startup. [132nd-etcher]
 - Trivial fixes. [132nd-etcher]
@@ -623,8 +540,6 @@ Other
 - Added util class to run external processes. [132nd-etcher]
 - Added missing vars in Status. [132nd-etcher]
 - Fixed server startup monitoring. [132nd-etcher]
-0.1.13 (2017-08-14)
--------------------
 - Published with https://stackedit.io/ [132nd-etcher]
 - Added monitoring of multiplayer startup and made timeout configurable.
   [132nd-etcher]
@@ -636,9 +551,8 @@ Other
 - Moved installation steps outside of DCS threads and made them
   optional. [132nd-etcher]
 - Pass context to all threads. [132nd-etcher]
+- Fix player name for the server. [132nd-etcher]
 - Published with https://stackedit.io/ [132nd-etcher]
-0.1.12 (2017-08-14)
--------------------
 - Cleaned up Discord help text. [132nd-etcher]
 - Added a delay during execution of commands in dcs module. [132nd-
   etcher]
@@ -648,15 +562,8 @@ Other
   etcher]
 - Fix player name for the server. [132nd-etcher]
 - Published with https://stackedit.io/ [132nd-etcher]
-0.1.11 (2017-08-13)
--------------------
-- Fix player name for the server. [132nd-etcher]
-0.1.10 (2017-08-13)
--------------------
 - Published with https://stackedit.io/ [132nd-etcher]
 - Published with https://stackedit.io/ [132nd-etcher]
-0.1.9 (2017-08-13)
-------------------
 - Switched to a way more sensible way to start the dedi remotely.
   [132nd-etcher]
 - Fixed call to main classes (minor) [132nd-etcher]
@@ -665,39 +572,20 @@ Other
 - Fixed socket thread starting up bonkers. [132nd-etcher]
 - Auto_mission is now optional. [132nd-etcher]
 - Made MOTD for Discord a config value. [132nd-etcher]
-0.1.8 (2017-08-13)
-------------------
 - Fix wrong variable name in server status. [132nd-etcher]
-0.1.7 (2017-08-13)
-------------------
 - Fix time display in status command. [132nd-etcher]
   fixes #1
 - Fixed __main__ not catching KeyboardInterrupt. [132nd-etcher]
 - Published with https://stackedit.io/ [132nd-etcher]
-0.1.6 (2017-08-13)
-------------------
 - Removed not so useful call to an error prone function. [132nd-etcher]
   This would crash ESST if the server is killed during startup
 - Fixed mouse offset for multiplayer button again, this one should be
   safe enough. [132nd-etcher]
-0.1.5 (2017-08-13)
-------------------
 - Fixed height of "Multi player" button being a tight off. [132nd-
   etcher]
-0.1.4 (2017-08-13)
-------------------
 - Fixed yet another dependency. [132nd-etcher]
-0.1.3 (2017-08-13)
-------------------
-- Forgot yet another dependency. [132nd-etcher]
-0.1.2 (2017-08-13)
-------------------
 - Fixed packaging (dummy me) [132nd-etcher]
-0.1.1 (2017-08-13)
-------------------
 - Fixed missing dependency to click. [132nd-etcher]
 - Fixed Discord gateway error while sending message. [132nd-etcher]
-0.1.0 (2017-08-13)
-------------------
 - Initial commit. [132nd-etcher]
 - Initial commit. [132nd-etcher]
