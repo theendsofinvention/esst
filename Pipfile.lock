@@ -436,11 +436,11 @@
         },
         "python-dateutil": {
             "hashes": [
-                "sha256:1adb80e7a782c12e52ef9a8182bebeb73f1d7e24e374397af06fb4956c8dc5c0",
-                "sha256:e27001de32f627c22380a688bcc43ce83504a7bc5da472209b4c70f02829f0b8"
+                "sha256:2f13d3ea236aeb237e7258d5729c46eafe1506fd7f8507f34730734ed8b37454",
+                "sha256:f7cde3aecf8a797553d6ec49b65f0fbcffe7ffb971ccac452d181c28fd279936"
             ],
             "index": "pypi",
-            "version": "==2.7.3"
+            "version": "==2.7.4"
         },
         "pytz": {
             "hashes": [
@@ -645,7 +645,6 @@
                 "sha256:a3d89af5db9e9806a779a50296b5fdb466e281147c2c235e8225ecc6dbf7bbf3",
                 "sha256:c9b54bebe91a6a803e0772c8561d53f2926bfeb17cd141fbabcb08424086595c"
             ],
-            "markers": "sys_platform == 'win32'",
             "version": "==0.4.0"
         },
         "coverage": {
@@ -784,11 +783,11 @@
         },
         "hypothesis": {
             "hashes": [
-                "sha256:041814f8acd4f803544e238903aeef4e64c2036c7a33cb3d78563729a4ca2dec",
-                "sha256:27751b0eadc4e59a44843a9b9bd0b4040c5771ebb7da87e79b81a977be7b2f0f",
-                "sha256:3406a8b5f7b88de9923b4e1af9e7a0676dccac5a0ff8c72f683376b41749ac36"
+                "sha256:4923718d973120c9e67a43a587f340ef58a0be35d4f557f77a846de4bb9d58db",
+                "sha256:6c1bfe0d44b23e8cc87896cea76dd3646e00ad61f3d64cdb71f2461cf3620fe2",
+                "sha256:9ebe5056b7f8512f98d1029c8c949f69bf98e8f962456b954902afc32888c18d"
             ],
-            "version": "==3.79.3"
+            "version": "==3.80.0"
         },
         "idna": {
             "hashes": [
@@ -1054,11 +1053,11 @@
         },
         "python-dateutil": {
             "hashes": [
-                "sha256:1adb80e7a782c12e52ef9a8182bebeb73f1d7e24e374397af06fb4956c8dc5c0",
-                "sha256:e27001de32f627c22380a688bcc43ce83504a7bc5da472209b4c70f02829f0b8"
+                "sha256:2f13d3ea236aeb237e7258d5729c46eafe1506fd7f8507f34730734ed8b37454",
+                "sha256:f7cde3aecf8a797553d6ec49b65f0fbcffe7ffb971ccac452d181c28fd279936"
             ],
             "index": "pypi",
-            "version": "==2.7.3"
+            "version": "==2.7.4"
         },
         "pyyaml": {
             "hashes": [
