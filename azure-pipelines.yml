@@ -1,0 +1,34 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.6'
+    architecture: 'x64'
+
+- script: choco install md5 upx graphviz.portable
+  displayName: 'Install Chocolatey dependencies'
+
+- script: python -m pip install --upgrade pip setuptools wheel
+  displayName: 'Update Python tools'
+
+- script: pipenv install --dev --deploy
+  displayName: 'Pipenv deploy'
+
+- script: pipenv run python -m epab -v
+  displayName: 'EPAB version'
+
+- script: pipenv run python -m epab release
+  displayName: 'EPAB release'
+
+- script: pipenv run python -m epab freeze %EPAB_VERSION%
+  displayName: 'EPAB freeze'
+
+- powershell: Get-ChildItem | ForEach-Object { md5 -n $_.FullName > "$($_.FullName).md5" }
+  displayName: 'Generate MD5 checksums'
