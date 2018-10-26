@@ -8,6 +8,12 @@ import logging
 from esst import LOGGER
 from esst.commands import DISCORD
 
+_SKIP_LOGGERS = (
+    'asyncio',
+    'discord.http',
+    'discord.gateway',
+)
+
 
 class DiscordLoggingHandler(logging.Handler):
     """
@@ -24,6 +30,9 @@ class DiscordLoggingHandler(logging.Handler):
         Args:
             record: logging.record to emit
         """
+        if record.name in _SKIP_LOGGERS:
+            return
+
         message = self.format(record)
         DISCORD.say(str(message))
 
