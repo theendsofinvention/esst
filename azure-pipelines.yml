@@ -15,6 +15,9 @@ steps:
 - script: choco install md5 upx graphviz.portable
   displayName: 'Install Chocolatey dependencies'
 
+- script: git checkout $(Build.SourceBranchName)
+  displayName: 'Checkout active branch'
+
 - script: python -m pip install --upgrade pip setuptools wheel pipenv
   displayName: 'Update Python tools'
 
