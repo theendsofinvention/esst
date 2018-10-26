@@ -15,7 +15,7 @@ steps:
 - script: choco install md5 upx graphviz.portable
   displayName: 'Install Chocolatey dependencies'
 
-- script: python -m pip install --upgrade pip setuptools wheel
+- script: python -m pip install --upgrade pip setuptools wheel pipenv
   displayName: 'Update Python tools'
 
 - script: pipenv install --dev --deploy
