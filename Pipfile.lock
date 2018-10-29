@@ -146,10 +146,10 @@
         },
         "elib-wx": {
             "hashes": [
-                "sha256:152ea42d8f1516930d099d25eabafe66b3ce925ca3f09ac5fcfb3fc4314267ce"
+                "sha256:e43b2338973759da1738541e65b2ae5911d21318511dacc81d464bc3288aa798"
             ],
             "index": "pypi",
-            "version": "==2018.10.22.2"
+            "version": "==2018.10.29.1"
         },
         "emiz": {
             "hashes": [
