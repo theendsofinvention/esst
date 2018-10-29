@@ -146,10 +146,10 @@
         },
         "elib-wx": {
             "hashes": [
-                "sha256:152ea42d8f1516930d099d25eabafe66b3ce925ca3f09ac5fcfb3fc4314267ce"
+                "sha256:04609125da332898c9aea7eb8ba03de5bacf96e7033eb8e35a3b8c828b8db728"
             ],
             "index": "pypi",
-            "version": "==2018.10.22.2"
+            "version": "==2018.10.26.1"
         },
         "emiz": {
             "hashes": [
@@ -722,9 +722,9 @@
         },
         "elib-run": {
             "hashes": [
-                "sha256:5ff498ad7d20c144525dec9622934726c8af672fe219609500a7aae19100831f"
+                "sha256:3256412f8d77f259ad367dc0481e83bbf75c0840dfd167b641801539a46904ee"
             ],
-            "version": "==2018.10.21.1"
+            "version": "==2018.10.26.1"
         },
         "epab": {
             "hashes": [
@@ -783,11 +783,11 @@
         },
         "hypothesis": {
             "hashes": [
-                "sha256:4923718d973120c9e67a43a587f340ef58a0be35d4f557f77a846de4bb9d58db",
-                "sha256:6c1bfe0d44b23e8cc87896cea76dd3646e00ad61f3d64cdb71f2461cf3620fe2",
-                "sha256:9ebe5056b7f8512f98d1029c8c949f69bf98e8f962456b954902afc32888c18d"
+                "sha256:b1f0d6f9a18e827ac7a8e9bcc74d6f412ec0d5e8b628909a49e6de76b3aaf018",
+                "sha256:ee62108792c928187ba52a962215e65d4852025b190015940b006a02e26de17c",
+                "sha256:ee62b786cbcabec4b666754c706b6b7c993dfe20b4d4e1e82ebb11271cef7ec7"
             ],
-            "version": "==3.80.0"
+            "version": "==3.81.0"
         },
         "idna": {
             "hashes": [
@@ -992,10 +992,10 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:212be78a6fa5352c392738a49b18f74ae9aeec1040f47c81cadbfd8d1233c310",
-                "sha256:6f6c1efc8d0ccc21f8f6c34d8330baca883cf109b66b3df954b0a117e5528fb4"
+                "sha256:a9e5e8d7ab9d5b0747f37740276eb362e6a76275d76cebbb52c6049d93b475db",
+                "sha256:bf47e8ed20d03764f963f0070ff1c8fda6e2671fc5dd562a4d3b7148ad60f5ca"
             ],
-            "version": "==3.9.2"
+            "version": "==3.9.3"
         },
         "pytest-cache": {
             "hashes": [
@@ -1078,10 +1078,10 @@
         },
         "readme-renderer": {
             "hashes": [
-                "sha256:219a02f5359b6631f5ab952f6906c6c105bdd8bc4bf19c1ec5ee8bd9ea2dc1eb",
-                "sha256:f8f122ad9fd6d138337531379575a01a0b6ca70aedca78f094cb833da38c8c0c"
+                "sha256:bb16f55b259f27f75f640acf5e00cf897845a8b3e4731b5c1a436e4b8529202f",
+                "sha256:c8532b79afc0375a85f10433eca157d6b50f7d6990f337fa498c96cd4bfc203d"
             ],
-            "version": "==23.0"
+            "version": "==24.0"
         },
         "requests": {
             "hashes": [
