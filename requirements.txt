@@ -44,7 +44,7 @@ psutil==5.4.7
 ptyprocess==0.6.0
 pyparsing==2.2.2
 python-dateutil==2.7.5
-pytz==2018.6
+pytz==2018.7
 pyyaml==3.13
 raven==6.9.0
 requests==2.20.0
