@@ -55,7 +55,7 @@ pytest-pycharm==0.5.0
 pytest-repeat==0.7.0
 pytest-vcr==0.3.0
 pytest-watch==4.2.0
-pytest==3.9.3
+pytest==3.10.0
 python-dateutil==2.7.5
 pyyaml==3.13
 readme-renderer==24.0
@@ -73,7 +73,7 @@ tomlkit==0.4.6
 tqdm==4.28.1
 twine==1.12.1
 typed-ast==1.1.0 ; python_version < '3.7' and implementation_name == 'cpython'
-urllib3==1.24
+urllib3==1.24.1
 vcrpy==2.0.1
 watchdog==0.9.0
 webencodings==0.5.1
