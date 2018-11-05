@@ -55,7 +55,7 @@ pytest-pycharm==0.5.0
 pytest-repeat==0.7.0
 pytest-vcr==0.3.0
 pytest-watch==4.2.0
-pytest==3.9.3
+pytest==3.10.0
 python-dateutil==2.7.5
 pyyaml==3.13
 readme-renderer==24.0
