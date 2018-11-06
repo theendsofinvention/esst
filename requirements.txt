@@ -13,7 +13,7 @@ cycler==0.10.0
 dataclasses==0.6
 delegator.py==0.1.1
 discord.py==0.16.12
-elib-config==2018.11.2.1
+elib-config==2018.11.5.1
 elib-miz==2018.10.21.1
 elib-wx==2018.10.29.2
 elib==2018.10.1.1
@@ -29,7 +29,7 @@ idna==2.7
 inflect==1.0.1
 jinja2==2.10
 kiwisolver==1.0.1
-markupsafe==1.0
+markupsafe==1.1.0
 matplotlib==3.0.1
 metar==1.6.0
 mpmath==1.0.0
