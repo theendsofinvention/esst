@@ -133,10 +133,10 @@
         },
         "elib-config": {
             "hashes": [
-                "sha256:7f882a9fee0464ec66b1a938615190940a6f813e9aa7586889fb25b4a844f661"
+                "sha256:37be770207552d361895177c4d8b5e27d5764de3526039e1092229472a4ab5f8"
             ],
             "index": "pypi",
-            "version": "==2018.11.5.1"
+            "version": "==2018.11.6.1"
         },
         "elib-miz": {
             "hashes": [
@@ -533,10 +533,10 @@
         },
         "tomlkit": {
             "hashes": [
-                "sha256:27ddd2796855428a0316057884ec081a1c967c8d29c3d489fcfccd1bb2976ede",
-                "sha256:8f857398aefa2c6a488c824f1e7f757e73a4f68246f1874f9df5eb53903231de"
+                "sha256:2b76a69633abca5be534afc69c2ba657db55e17646b2fbd22fc08e509dbfc90f",
+                "sha256:94533d0c5314419ab0cddb8d5ee9180c4aa4d9c716efb9bf85dc3fe13c34cd5c"
             ],
-            "version": "==0.4.6"
+            "version": "==0.5.0"
         },
         "tqdm": {
             "hashes": [
@@ -742,10 +742,10 @@
         },
         "elib-config": {
             "hashes": [
-                "sha256:7f882a9fee0464ec66b1a938615190940a6f813e9aa7586889fb25b4a844f661"
+                "sha256:37be770207552d361895177c4d8b5e27d5764de3526039e1092229472a4ab5f8"
             ],
             "index": "pypi",
-            "version": "==2018.11.5.1"
+            "version": "==2018.11.6.1"
         },
         "elib-run": {
             "hashes": [
@@ -1182,10 +1182,10 @@
         },
         "tomlkit": {
             "hashes": [
-                "sha256:27ddd2796855428a0316057884ec081a1c967c8d29c3d489fcfccd1bb2976ede",
-                "sha256:8f857398aefa2c6a488c824f1e7f757e73a4f68246f1874f9df5eb53903231de"
+                "sha256:2b76a69633abca5be534afc69c2ba657db55e17646b2fbd22fc08e509dbfc90f",
+                "sha256:94533d0c5314419ab0cddb8d5ee9180c4aa4d9c716efb9bf85dc3fe13c34cd5c"
             ],
-            "version": "==0.4.6"
+            "version": "==0.5.0"
         },
         "tqdm": {
             "hashes": [
