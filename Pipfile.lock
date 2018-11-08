@@ -133,10 +133,10 @@
         },
         "elib-config": {
             "hashes": [
-                "sha256:37be770207552d361895177c4d8b5e27d5764de3526039e1092229472a4ab5f8"
+                "sha256:c34bbf30d803d2432b1c9dc149c8c36bef485102436d28220d1c4b692aaa2229"
             ],
             "index": "pypi",
-            "version": "==2018.11.6.1"
+            "version": "==2018.11.7.1"
         },
         "elib-miz": {
             "hashes": [
@@ -742,10 +742,10 @@
         },
         "elib-config": {
             "hashes": [
-                "sha256:37be770207552d361895177c4d8b5e27d5764de3526039e1092229472a4ab5f8"
+                "sha256:c34bbf30d803d2432b1c9dc149c8c36bef485102436d28220d1c4b692aaa2229"
             ],
             "index": "pypi",
-            "version": "==2018.11.6.1"
+            "version": "==2018.11.7.1"
         },
         "elib-run": {
             "hashes": [
