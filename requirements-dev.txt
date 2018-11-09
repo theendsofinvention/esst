@@ -60,7 +60,7 @@ python-dateutil==2.7.5
 pyyaml==3.13
 readme-renderer==24.0
 requests-toolbelt==0.8.0
-requests==2.20.0
+requests==2.20.1
 safety==1.8.4
 sarge==0.1.5.post0
 setuptools-scm==3.1.0
@@ -69,7 +69,7 @@ smmap2==2.0.5
 stevedore==1.30.0
 text-unidecode==1.2
 toml==0.10.0
-tomlkit==0.5.0
+tomlkit==0.5.1
 tqdm==4.28.1
 twine==1.12.1
 typed-ast==1.1.0 ; python_version < '3.7' and implementation_name == 'cpython'
