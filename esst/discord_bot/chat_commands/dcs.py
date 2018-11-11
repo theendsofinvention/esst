@@ -25,8 +25,8 @@ def status():
             try:
                 attr = getattr(core.Status, attr_name)
                 if hasattr(attr, 'as_str'):
-                    output = attr.as_str()
-                    output.append(f'{attr_nice_name}: {output}')
+                    metar_as_string = attr.as_str()
+                    output.append(f'{attr_nice_name}: {metar_as_string}')
                 else:
                     output.append(f'{attr_nice_name}: {attr}')
             except AttributeError:
