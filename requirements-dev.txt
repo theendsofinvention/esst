@@ -15,7 +15,7 @@ dataclasses==0.6
 docopt==0.6.2
 docutils==0.14
 dparse==0.4.1
-elib-config==2018.11.8.2
+elib-config==2018.11.9.2
 elib-run==2018.10.26.1
 epab==2018.10.25.1
 execnet==1.5.0
@@ -55,7 +55,7 @@ pytest-pycharm==0.5.0
 pytest-repeat==0.7.0
 pytest-vcr==0.3.0
 pytest-watch==4.2.0
-pytest==3.10.0
+pytest==3.10.1
 python-dateutil==2.7.5
 pyyaml==3.13
 readme-renderer==24.0
@@ -69,7 +69,7 @@ smmap2==2.0.5
 stevedore==1.30.0
 text-unidecode==1.2
 toml==0.10.0
-tomlkit==0.5.1
+tomlkit==0.5.2
 tqdm==4.28.1
 twine==1.12.1
 typed-ast==1.1.0 ; python_version < '3.7' and implementation_name == 'cpython'
