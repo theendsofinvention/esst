@@ -133,10 +133,10 @@
         },
         "elib-config": {
             "hashes": [
-                "sha256:f05c3bf4f1972a9538a06ce301c7091c30fe23ede37fba75dc18ef1e160618d5"
+                "sha256:04dfb4ed9e9395ec65929b149941d0ee73755a19fab5e83d0ec0c2b0d561deff"
             ],
             "index": "pypi",
-            "version": "==2018.11.8.2"
+            "version": "==2018.11.9.2"
         },
         "elib-miz": {
             "hashes": [
@@ -533,10 +533,10 @@
         },
         "tomlkit": {
             "hashes": [
-                "sha256:2f46c1551180bb0aa33e7ee2ed939c6f8da04bd8acbee4ebd5ce564e85f2a19d",
-                "sha256:ccd5bc26d816e8be75c31c7c2da70c4f4b3131248a47ad1ffc82f48764d1883c"
+                "sha256:82a8fbb8d8c6af72e96ba00b9db3e20ef61be6c79082552c9363f4559702258b",
+                "sha256:a43e0195edc9b3c198cd4b5f0f3d427a395d47c4a76ceba7cc875ed030756c39"
             ],
-            "version": "==0.5.1"
+            "version": "==0.5.2"
         },
         "tqdm": {
             "hashes": [
@@ -742,10 +742,10 @@
         },
         "elib-config": {
             "hashes": [
-                "sha256:f05c3bf4f1972a9538a06ce301c7091c30fe23ede37fba75dc18ef1e160618d5"
+                "sha256:04dfb4ed9e9395ec65929b149941d0ee73755a19fab5e83d0ec0c2b0d561deff"
             ],
             "index": "pypi",
-            "version": "==2018.11.8.2"
+            "version": "==2018.11.9.2"
         },
         "elib-run": {
             "hashes": [
@@ -1019,10 +1019,10 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:630ff1dbe04f469ee78faa5660f712e58b953da7df22ea5d828c9012e134da43",
-                "sha256:a2b5232735dd0b736cbea9c0f09e5070d78fcaba2823a4f6f09d9a81bd19415c"
+                "sha256:3f193df1cfe1d1609d4c583838bea3d532b18d6160fd3f55c9447fdca30848ec",
+                "sha256:e246cf173c01169b9617fc07264b7b1316e78d7a650055235d6d897bc80d9660"
             ],
-            "version": "==3.10.0"
+            "version": "==3.10.1"
         },
         "pytest-cache": {
             "hashes": [
@@ -1182,10 +1182,10 @@
         },
         "tomlkit": {
             "hashes": [
-                "sha256:2f46c1551180bb0aa33e7ee2ed939c6f8da04bd8acbee4ebd5ce564e85f2a19d",
-                "sha256:ccd5bc26d816e8be75c31c7c2da70c4f4b3131248a47ad1ffc82f48764d1883c"
+                "sha256:82a8fbb8d8c6af72e96ba00b9db3e20ef61be6c79082552c9363f4559702258b",
+                "sha256:a43e0195edc9b3c198cd4b5f0f3d427a395d47c4a76ceba7cc875ed030756c39"
             ],
-            "version": "==0.5.1"
+            "version": "==0.5.2"
         },
         "tqdm": {
             "hashes": [
