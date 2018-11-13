@@ -26,7 +26,7 @@ gtts-token==1.1.2
 gtts==2.0.1
 humanize==0.5.1
 idna==2.7
-inflect==1.0.1
+inflect==2.1.0
 jinja2==2.10
 kiwisolver==1.0.1
 markupsafe==1.1.0
