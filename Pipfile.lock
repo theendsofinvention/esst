@@ -215,11 +215,11 @@
         },
         "inflect": {
             "hashes": [
-                "sha256:b8cb61f83a71c2aff4fe7f6b5b8967416e85c449bcad55693ebeceb8d97e5a21",
-                "sha256:ec42f5d5d2baa54ba6e3fa23698554c09362dd478cc66b3c28c5d0b76d7d0581"
+                "sha256:4ded1b2a6fcf0fc0397419c7727f131a93b67b80d899f2973be7758628e12b73",
+                "sha256:a82b671b043ddba98ea8b2cf000b31e8b41e9197b3151567239f3bbe215dab7e"
             ],
             "index": "pypi",
-            "version": "==1.0.1"
+            "version": "==2.1.0"
         },
         "jinja2": {
             "hashes": [
