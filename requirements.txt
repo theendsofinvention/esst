@@ -34,7 +34,7 @@ matplotlib==3.0.2
 metar==1.6.0
 mpmath==1.0.0
 multidict==4.4.2
-natsort==5.4.1
+natsort==5.5.0
 numpy==1.15.4
 packaging==18.0
 pathvalidate==0.21.3
