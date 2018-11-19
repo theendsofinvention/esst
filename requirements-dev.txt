@@ -15,7 +15,7 @@ dataclasses==0.6
 docopt==0.6.2
 docutils==0.14
 dparse==0.4.1
-elib-config==2018.11.13.1
+elib-config==2018.11.16.2
 elib-run==2018.10.26.1
 epab==2018.10.25.1
 execnet==1.5.0
@@ -53,9 +53,9 @@ pytest-deadfixtures==2.1.0
 pytest-faker==2.0.0
 pytest-pycharm==0.5.0
 pytest-repeat==0.7.0
-pytest-vcr==1.0.0
+pytest-vcr==1.0.1
 pytest-watch==4.2.0
-pytest==3.10.1
+pytest==4.0.0
 python-dateutil==2.7.5
 pyyaml==3.13
 readme-renderer==24.0
@@ -77,6 +77,6 @@ urllib3==1.24.1
 vcrpy==2.0.1
 watchdog==0.9.0
 webencodings==0.5.1
-wheel==0.32.2
+wheel==0.32.3
 wrapt==1.10.11
 yarl==1.2.6 ; python_version >= '3.4'
