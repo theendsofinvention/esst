@@ -13,10 +13,10 @@ cycler==0.10.0
 dataclasses==0.6
 delegator.py==0.1.1
 discord.py==0.16.12
-elib-config==2018.11.13.1
+elib-config==2018.11.23.1
 elib-miz==2018.10.21.1
 elib-wx==2018.10.29.2
-elib==2018.10.1.1
+elib==2018.11.22.1
 emiz==2018.9.16.4
 everett==0.9
 future==0.17.1
@@ -33,11 +33,11 @@ markupsafe==1.1.0
 matplotlib==3.0.2
 metar==1.6.0
 mpmath==1.0.0
-multidict==4.4.2
+multidict==4.5.1
 natsort==5.4.1
 numpy==1.15.4
 packaging==18.0
-pathvalidate==0.21.3
+pathvalidate==0.21.4
 pefile==2018.8.8
 pexpect==4.6.0
 psutil==5.4.8
@@ -51,7 +51,7 @@ requests==2.20.1
 setuptools-scm==3.1.0
 six==1.11.0
 smmap2==2.0.5
-tomlkit==0.5.2
+tomlkit==0.5.3
 tqdm==4.28.1
 ujson==1.35
 urllib3==1.24.1
