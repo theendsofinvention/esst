@@ -753,10 +753,10 @@
         },
         "epab": {
             "hashes": [
-                "sha256:128c5f969dd4a9e62984147c58d77afc0214914413cd8636f4e92f46752c44df"
+                "sha256:e2eb7888cf0a8a86cf9240bc85b500ce14657830d8d80777ae1c31fa53acf29d"
             ],
             "index": "pypi",
-            "version": "==2018.12.4.1"
+            "version": "==2018.12.6.1"
         },
         "execnet": {
             "hashes": [
