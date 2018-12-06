@@ -14,7 +14,7 @@ from esst.core import CTX
 
 
 def _pass_exception(exc: Exception):
-    LOGGER.debug(exc)
+    LOGGER.error(exc)
     # LOGGER.exception('Discord bot error')
     # if CTX.sentry:
     #     CTX.sentry.captureException(exc)
