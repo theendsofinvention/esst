@@ -747,9 +747,9 @@
         },
         "elib-run": {
             "hashes": [
-                "sha256:3256412f8d77f259ad367dc0481e83bbf75c0840dfd167b641801539a46904ee"
+                "sha256:4090098e7faf8c5c1aaaa4a04f77bf51551e876b713152450c448ee46b291bf2"
             ],
-            "version": "==2018.10.26.1"
+            "version": "==2018.12.6.1"
         },
         "epab": {
             "hashes": [
