@@ -9,7 +9,6 @@ import threading
 import typing
 from pathlib import Path
 
-import elib.tts
 import elib_wx
 
 from esst import ATISConfig, LOGGER, core
@@ -18,6 +17,7 @@ from ._atis_identifier import get_random_identifier
 from ._atis_objects import ATISForAirfield
 from ._atis_status import Status
 from ._univers_radio import Airfield, URVoiceService, URVoiceServiceSettings
+from . import tts
 
 RE_CLOUD_COVER = re.compile(r'(SKC|FEW|BKN|OVC|NSC)[\d]{3}\. ')
 
@@ -53,7 +53,7 @@ def _build_speech_for_airfield(
     full_speech = _cleanup_full_speech(full_speech)
     LOGGER.debug('%s: full speech: %s', airfield.icao, full_speech)
     LOGGER.debug('%s: writing MP3 file for: %s', airfield.icao, airfield.icao)
-    elib.tts.text_to_speech(full_speech, atis_file, True)
+    tts.text_to_speech(full_speech, atis_file, True)
     ur_settings.add_station(airfield)
     atis_queue.put(ATISForAirfield(airfield.icao, active_runway, information_identifier, information_letter))
 

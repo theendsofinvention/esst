@@ -4,20 +4,22 @@ Catches connection error in Discord bot
 """
 
 import asyncio
+import logging
 
 import aiohttp
 import websockets.exceptions
 from discord import HTTPException
 
-from esst import LOGGER
 from esst.core import CTX
+
+LOGGER = logging.getLogger('discord')
+LOGGER.setLevel(logging.DEBUG)
+_FH = logging.FileHandler('discord.log', mode='w', encoding='utf8')
+LOGGER.addHandler(_FH)
 
 
 def _pass_exception(exc: Exception):
     LOGGER.error(exc)
-    # LOGGER.exception('Discord bot error')
-    # if CTX.sentry:
-    #     CTX.sentry.captureException(exc)
 
 
 def catch_exc(func):
