@@ -33,6 +33,7 @@ requests = "*"
 inflect = "*"
 elib-config = "*"
 elib-wx = "*"
+gtts = "*"
 
 [dev-packages]
 epab = ">=2018.09.09.2"
