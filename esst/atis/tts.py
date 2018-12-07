@@ -2,13 +2,12 @@
 """
 Manages TTS utilities
 """
-import logging
 import typing
 from pathlib import Path
 
 import gtts
 
-LOGGER = logging.getLogger('elib')
+from esst import LOGGER
 
 
 def text_to_speech(text: str, file_path: typing.Union[str, Path], overwrite: bool = False) -> Path:
