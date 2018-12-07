@@ -38,7 +38,6 @@ class AbstractDiscordCommandParser:
             namespace: command namespace
             skip_unknown_args: ignore unknown args
         """
-        pass
 
     @abc.abstractmethod
     def parse_args(self, args=None, namespace=None):
@@ -49,7 +48,6 @@ class AbstractDiscordCommandParser:
             args: arg list
             namespace: command namespace
         """
-        pass
 
     @abc.abstractmethod
     def format_help(self):
@@ -57,7 +55,6 @@ class AbstractDiscordCommandParser:
         Format and return help text
 
         """
-        pass
 
     @abc.abstractmethod
     def parse_discord_message(self, message: str, is_admin: bool):
@@ -69,7 +66,6 @@ class AbstractDiscordCommandParser:
             is_admin: is sender an admin?
 
         """
-        pass
 
 
 class AbstractDiscordBot:
@@ -83,7 +79,6 @@ class AbstractDiscordBot:
         """
         Command parser
         """
-        pass
 
     @property
     @abc.abstractmethod
@@ -93,7 +88,6 @@ class AbstractDiscordBot:
 
         Returns: readiness as a boolean
         """
-        pass
 
     @property
     @abc.abstractmethod
@@ -101,7 +95,6 @@ class AbstractDiscordBot:
         """
         Represents the bot :py:class:`discord.Client` object
         """
-        pass
 
     @property
     @abc.abstractmethod
@@ -109,7 +102,6 @@ class AbstractDiscordBot:
         """
         Represents the bot :py:class:`discord.Server` object
         """
-        pass
 
     @property
     @abc.abstractmethod
@@ -117,7 +109,6 @@ class AbstractDiscordBot:
         """
         Represents the bot :py:class:`discord.User` object
         """
-        pass
 
     @property
     @abc.abstractmethod
@@ -125,7 +116,6 @@ class AbstractDiscordBot:
         """
         Represents the bot :py:class:`discord.Member` object
         """
-        pass
 
     @property
     @abc.abstractmethod
@@ -135,7 +125,6 @@ class AbstractDiscordBot:
 
         This is the channel the bot will listen for commands in
         """
-        pass
 
     @abc.abstractmethod
     def say(self, message: str):
@@ -145,7 +134,6 @@ class AbstractDiscordBot:
         Args:
             message: message to send as string
         """
-        pass
 
     @abc.abstractmethod
     def send(self, file_path: str):
@@ -155,4 +143,3 @@ class AbstractDiscordBot:
         Args:
             file_path: path to file to send
         """
-        pass

@@ -23,7 +23,12 @@ def status():
                           f'{humanize.naturaltime(getattr(core.Status, attr_name))}')
         else:
             try:
-                output.append(f'{attr_nice_name}: {getattr(core.Status, attr_name)}')
+                attr = getattr(core.Status, attr_name)
+                if hasattr(attr, 'as_str'):
+                    metar_as_string = attr.as_str()
+                    output.append(f'{attr_nice_name}: {metar_as_string}')
+                else:
+                    output.append(f'{attr_nice_name}: {attr}')
             except AttributeError:
                 output.append(f'{attr_nice_name}: unknown')
     commands.DISCORD.say('\n'.join(output))
