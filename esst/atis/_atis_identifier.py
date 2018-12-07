@@ -3,9 +3,8 @@
 Provides random phonetic letter for ATIS identifier
 """
 
+import random
 import string
-
-from elib.custom_random import random_string
 
 # noinspection SpellCheckingInspection
 PHONETIC = {
@@ -22,5 +21,5 @@ def get_random_identifier():
     Returns: random identifier for ATIS
 
     """
-    letter = random_string(1, string.ascii_uppercase)
+    letter = random.choice(string.ascii_uppercase)
     return PHONETIC[letter], letter
