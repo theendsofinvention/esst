@@ -16,7 +16,7 @@ docutils==0.14
 dparse==0.4.1
 elib-config==2018.12.3.1
 elib-run==2018.12.6.1
-epab==2018.12.6.1
+epab==2018.12.7.1
 execnet==1.5.0
 faker==1.0.0
 flake8==3.6.0
