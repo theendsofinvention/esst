@@ -13,7 +13,6 @@ requirements = [
     'click',
     'configobj',
     'discord.py',
-    'emiz',
     'everett',
     'humanize',
     'jinja2',
@@ -30,8 +29,10 @@ requirements = [
     'raven',
     'requests',
     'urllib3',
-    'ipgetter',
     'inflect',
+    'elib-config',
+    'elib-wx',
+    'gtts',
 ]
 test_requirements = [
     'epab',
