@@ -1,3 +1,4 @@
+-i https://pypi.python.org/simple/
 aiohttp==1.0.5
 argh==0.26.2
 async-timeout==3.0.1
