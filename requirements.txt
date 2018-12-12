@@ -1,3 +1,4 @@
+-i https://pypi.python.org/simple/
 aiohttp==1.0.5
 argh==0.26.2
 async-timeout==3.0.1
@@ -26,7 +27,7 @@ kiwisolver==1.0.1
 markupsafe==1.1.0
 matplotlib==3.0.2
 metar==1.6.0
-mpmath==1.0.0
+mpmath==1.1.0
 multidict==4.5.2
 natsort==5.5.0
 numpy==1.15.4
@@ -39,7 +40,7 @@ pyyaml==3.13
 raven==6.9.0
 requests==2.20.1
 setuptools-scm==3.1.0
-six==1.11.0
+six==1.12.0
 tomlkit==0.5.3
 urllib3==1.24.1
 websockets==3.4
