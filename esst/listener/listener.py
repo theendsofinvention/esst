@@ -44,6 +44,8 @@ class DCSListener:
         self.cmd_address = ('localhost', CTX.listener_cmd_port)
 
     def _parse_ping(self, data: dict):
+        LOGGER.debug('parsing PING message:')
+        LOGGER.debug(data)
         if Status.paused != data.get('paused'):
             if not data.get('paused'):
                 LOGGER.info('DCS server is ready!')
@@ -61,7 +63,6 @@ class DCSListener:
         Status.mission_time = 'unknown'
         model_time = data.get('model_time', None)
         if model_time is not None:
-            # noinspection PyProtectedMember
             if isinstance(Status.mission_dict, elib_miz.Mission):
                 start_time = Status.mission_dict.mission_start_time
                 model_time = time.gmtime(model_time + start_time)
