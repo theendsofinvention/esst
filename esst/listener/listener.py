@@ -44,8 +44,8 @@ class DCSListener:
         self.cmd_address = ('localhost', CTX.listener_cmd_port)
 
     def _parse_ping(self, data: dict):
-        LOGGER.debug('parsing PING message:')
-        LOGGER.debug(data)
+        # LOGGER.debug('parsing PING message:')
+        # LOGGER.debug(data)
         if Status.paused != data.get('paused'):
             if not data.get('paused'):
                 LOGGER.info('DCS server is ready!')
