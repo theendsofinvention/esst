@@ -60,14 +60,15 @@ class DCSListener:
                 LOGGER.info('player(s) left: %s', ', '.join(left))
         self.last_ping = time.time()
         Status.server_age = data.get('time', 'unknown')
-        Status.mission_time = 'unknown'
+        Status.mission_elapsed_time = data.get('model_time', 'unknown')
+        Status.mission_local_time = 'unknown'
         model_time = data.get('model_time', None)
         if model_time is not None:
             if isinstance(Status.mission_dict, elib_miz.Mission):
                 start_time = Status.mission_dict.mission_start_time
                 model_time = time.gmtime(model_time + start_time)
                 model_time_as_str = time.strftime('%H:%M:%S', model_time)
-                Status.mission_time = model_time_as_str
+                Status.mission_local_time = model_time_as_str
 
         Status.paused = data.get('paused', 'unknown')
         Status.mission_file = data.get('mission_filename', 'unknown')
