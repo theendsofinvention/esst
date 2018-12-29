@@ -7,6 +7,7 @@ import typing
 from pathlib import Path
 
 import elib_wx
+import elib_miz
 import humanize
 import requests
 
@@ -94,6 +95,10 @@ class MissionPath:
         else:
             esst.atis.create.generate_atis(weather)
         core.Status.metar = weather
+
+        LOGGER.info('reading mission information')
+        with elib_miz.Miz(self.path) as miz:
+            core.Status.mission_dict = miz.mission
 
     def __str__(self):
         return str(self.path)
@@ -278,5 +283,9 @@ def initial_setup():
         weather = elib_wx.Weather(str(mission.path))
         core.Status.metar = weather
         esst.atis.create.generate_atis(weather)
+
+        LOGGER.info('reading mission information')
+        with elib_miz.Miz(mission.path) as miz:
+            core.Status.mission_dict = miz.mission
     else:
         LOGGER.error('no initial mission found')

@@ -18,7 +18,9 @@ def status():
             continue
         attr_nice_name = attr_name[:1].upper() + attr_name[1:]
         attr_nice_name = attr_nice_name.replace("_", " ")
-        if attr_name in ['mission_time', 'server_age']:
+        if attr_name in ['mission_dict']:
+            continue
+        if attr_name in ['server_age']:
             output.append(f'{attr_nice_name}: '
                           f'{humanize.naturaltime(getattr(core.Status, attr_name))}')
         else:

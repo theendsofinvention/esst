@@ -19,6 +19,7 @@ class Status:  # pylint: disable=too-few-public-methods
     mission_time = 'unknown'
     paused = 'unknown'
     mission_name = 'unknown'
+    mission_dict = None
     players: set = set()
 
 

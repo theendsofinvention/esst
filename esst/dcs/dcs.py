@@ -269,6 +269,7 @@ class App:
         core.Status.paused = 'unknown'
         core.Status.mission_name = 'unknown'
         core.Status.players = []
+        core.Status.mission_dict = None
         self._app = None
         self.process_pid = None
         cmd_chain = [
