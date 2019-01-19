@@ -15,11 +15,10 @@ def _add_regular_attr_to_output(attr_name: str,
         if hasattr(attr, 'as_str'):
             attr_as_str = attr.as_str()
             return f'{attr_nice_name}: {attr_as_str}'
-        else:
-            return f'{attr_nice_name}: {attr}'
+
+        return f'{attr_nice_name}: {attr}'
     except AttributeError:
         return f'{attr_nice_name}: unknown'
-
 
 
 def status():

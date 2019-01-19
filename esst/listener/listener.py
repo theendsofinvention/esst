@@ -46,19 +46,20 @@ class DCSListener:
 
     @staticmethod
     def _update_players_count(new_players_list: typing.Set[str]):
-            players, old_players = set(new_players_list), set(Status.players)
-            joined = players - old_players
-            left = old_players - players
-            if joined:
-                LOGGER.info('player(s) joined: %s', ', '.join(joined))
-            if left:
-                LOGGER.info('player(s) left: %s', ', '.join(left))
+        players, old_players = set(new_players_list), set(Status.players)
+        joined = players - old_players
+        left = old_players - players
+        if joined:
+            LOGGER.info('player(s) joined: %s', ', '.join(joined))
+        if left:
+            LOGGER.info('player(s) left: %s', ', '.join(left))
 
-    def _update_mission_local_time(self, model_time: int):
+    @staticmethod
+    def _update_mission_local_time(model_time: int):
         if isinstance(Status.mission_dict, elib_miz.Mission):
             start_time = Status.mission_dict.mission_start_time
-            model_time = time.gmtime(model_time + start_time)
-            model_time_as_str = time.strftime('%H:%M:%S', model_time)
+            struct_model_time = time.gmtime(model_time + start_time)
+            model_time_as_str = time.strftime('%H:%M:%S', struct_model_time)
             Status.mission_local_time = model_time_as_str
 
     def _parse_ping(self, data: dict):
