@@ -5,6 +5,7 @@ Manages a UDP socket and does two things:
 1. Retrieve incoming messages from DCS and update :py:class:`esst.core.status.status`
 2. Sends command to the DCS application via the socket
 """
+import typing
 import asyncio
 import json
 import socket
@@ -43,32 +44,39 @@ class DCSListener:
         self.cmd_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.cmd_address = ('localhost', CTX.listener_cmd_port)
 
-    def _parse_ping(self, data: dict):
-        # LOGGER.debug('parsing PING message:')
-        # LOGGER.debug(data)
-        if Status.paused != data.get('paused'):
-            if not data.get('paused'):
-                LOGGER.info('DCS server is ready!')
-        players = data.get('players', set())
-        if players != Status.players:
-            players, old_players = set(players), set(Status.players)
+    @staticmethod
+    def _update_players_count(new_players_list: typing.Set[str]):
+            players, old_players = set(new_players_list), set(Status.players)
             joined = players - old_players
             left = old_players - players
             if joined:
                 LOGGER.info('player(s) joined: %s', ', '.join(joined))
             if left:
                 LOGGER.info('player(s) left: %s', ', '.join(left))
+
+    def _update_mission_local_time(self, model_time: int):
+        if isinstance(Status.mission_dict, elib_miz.Mission):
+            start_time = Status.mission_dict.mission_start_time
+            model_time = time.gmtime(model_time + start_time)
+            model_time_as_str = time.strftime('%H:%M:%S', model_time)
+            Status.mission_local_time = model_time_as_str
+
+    def _parse_ping(self, data: dict):
+        if Status.paused != data.get('paused'):
+            if not data.get('paused'):
+                LOGGER.info('DCS server is ready!')
+
+        players = data.get('players', set())
+        if players != Status.players:
+            self._update_players_count(players)
+
         self.last_ping = time.time()
         Status.server_age = data.get('time', 'unknown')
         Status.mission_elapsed_time = data.get('model_time', 'unknown')
         Status.mission_local_time = 'unknown'
         model_time = data.get('model_time', None)
         if model_time is not None:
-            if isinstance(Status.mission_dict, elib_miz.Mission):
-                start_time = Status.mission_dict.mission_start_time
-                model_time = time.gmtime(model_time + start_time)
-                model_time_as_str = time.strftime('%H:%M:%S', model_time)
-                Status.mission_local_time = model_time_as_str
+            self._update_mission_local_time(model_time)
 
         Status.paused = data.get('paused', 'unknown')
         Status.mission_file = data.get('mission_filename', 'unknown')
