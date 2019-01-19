@@ -89,6 +89,6 @@ def pytest_runtest_setup(item):
     """Test suite setup"""
 
     # Skip tests that are marked with the "long" marker
-    long_marker = item.get_marker("long")
+    long_marker = item.get_closest_marker("long")
     if long_marker is not None and not item.config.getoption('long'):
         pytest.skip('skipping long tests')
