@@ -8,18 +8,18 @@ import humanize
 from esst import commands, core, utils
 
 
-def _add_regular_attr_to_output(output_so_far: list, attr_name: str, attr_nice_name: str):
-    new_output = output_so_far[:]
+def _add_regular_attr_to_output(attr_name: str,
+                                attr_nice_name: str) -> str:
     try:
         attr = getattr(core.Status, attr_name)
         if hasattr(attr, 'as_str'):
             attr_as_str = attr.as_str()
-            new_output.append(f'{attr_nice_name}: {attr_as_str}')
+            return f'{attr_nice_name}: {attr_as_str}'
         else:
-            new_output.append(f'{attr_nice_name}: {attr}')
+            return f'{attr_nice_name}: {attr}'
     except AttributeError:
-        new_output.append(f'{attr_nice_name}: unknown')
-    return new_output
+        return f'{attr_nice_name}: unknown'
+
 
 
 def status():
@@ -38,7 +38,7 @@ def status():
             output.append(f'{attr_nice_name}: '
                           f'{humanize.naturaltime(getattr(core.Status, attr_name))}')
         else:
-            output = _add_regular_attr_to_output(output, attr_name, attr_nice_name)
+            output.append(_add_regular_attr_to_output(attr_name, attr_nice_name))
     commands.DISCORD.say('\n'.join(output))
 
 
