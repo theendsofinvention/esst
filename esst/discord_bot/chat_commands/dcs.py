@@ -8,6 +8,19 @@ import humanize
 from esst import commands, core, utils
 
 
+def _add_regular_attr_to_output(attr_name: str,
+                                attr_nice_name: str) -> str:
+    try:
+        attr = getattr(core.Status, attr_name)
+        if hasattr(attr, 'as_str'):
+            attr_as_str = attr.as_str()
+            return f'{attr_nice_name}: {attr_as_str}'
+
+        return f'{attr_nice_name}: {attr}'
+    except AttributeError:
+        return f'{attr_nice_name}: unknown'
+
+
 def status():
     """
     Show current DCS status
@@ -18,19 +31,13 @@ def status():
             continue
         attr_nice_name = attr_name[:1].upper() + attr_name[1:]
         attr_nice_name = attr_nice_name.replace("_", " ")
-        if attr_name in ['mission_time', 'server_age']:
+        if attr_name in ['mission_dict']:
+            continue
+        if attr_name in ['server_age']:
             output.append(f'{attr_nice_name}: '
                           f'{humanize.naturaltime(getattr(core.Status, attr_name))}')
         else:
-            try:
-                attr = getattr(core.Status, attr_name)
-                if hasattr(attr, 'as_str'):
-                    metar_as_string = attr.as_str()
-                    output.append(f'{attr_nice_name}: {metar_as_string}')
-                else:
-                    output.append(f'{attr_nice_name}: {attr}')
-            except AttributeError:
-                output.append(f'{attr_nice_name}: unknown')
+            output.append(_add_regular_attr_to_output(attr_name, attr_nice_name))
     commands.DISCORD.say('\n'.join(output))
 
 

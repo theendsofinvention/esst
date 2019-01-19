@@ -44,4 +44,7 @@ class URVoiceServiceSettings:
         LOGGER.debug('writing UR settings to: %s', FS.ur_voice_settings_file)
         stations = '\n'.join(self._stations)
         full_text = f'Start of VSS DB\n{stations}\nEnd of VSS DB'
-        FS.ur_voice_settings_file.write_text(full_text)
+        try:
+            FS.ur_voice_settings_file.write_text(full_text)
+        except FileNotFoundError:
+            LOGGER.error('UniversRadio appears not to be installed')

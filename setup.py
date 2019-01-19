@@ -32,6 +32,7 @@ requirements = [
     'inflect',
     'elib-config',
     'elib-wx',
+    'elib-miz',
     'gtts',
 ]
 test_requirements = [

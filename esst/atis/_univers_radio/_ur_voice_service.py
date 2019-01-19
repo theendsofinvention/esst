@@ -33,6 +33,8 @@ class URVoiceService:
         """
         Starts UR voice service
         """
+        if FS.ur_install_path is None:
+            return
         exe_path = Path(FS.ur_install_path, PROC_NAME)
         if not exe_path.exists():
             raise FileNotFoundError(exe_path)

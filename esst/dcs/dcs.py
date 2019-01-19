@@ -265,7 +265,7 @@ class App:
         await self.kill_running_app()
         core.Status.mission_file = 'unknown'
         core.Status.server_age = 'unknown'
-        core.Status.mission_time = 'unknown'
+        core.Status.mission_local_time = 'unknown'
         core.Status.paused = 'unknown'
         core.Status.mission_name = 'unknown'
         core.Status.players = []
