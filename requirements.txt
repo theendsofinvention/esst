@@ -36,7 +36,7 @@ psutil==5.4.8
 pyparsing==2.3.0
 python-dateutil==2.7.5
 pytz==2018.7
-pyyaml==3.13
+pyyaml==5.3.1
 raven==6.10.0
 requests==2.20.1
 setuptools-scm==3.1.0
