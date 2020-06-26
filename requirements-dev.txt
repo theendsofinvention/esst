@@ -20,7 +20,7 @@ elib-run==2018.12.6.1
 epab==2018.12.18.1
 execnet==1.7.1
 faker==4.1.1
-flake8==3.6.0
+flake8==3.8.3
 future==0.17.1
 gitchangelog==3.0.3
 gitdb2==2.0.5
