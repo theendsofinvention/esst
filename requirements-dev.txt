@@ -22,7 +22,7 @@ execnet==1.7.1
 faker==4.1.1
 flake8==3.8.3
 future==0.18.2
-gitchangelog==3.0.3
+gitchangelog==3.0.4
 gitdb2==2.0.5
 gitpython==2.1.11
 hypothesis==3.84.1
