@@ -26,7 +26,7 @@ jinja2==2.11.2
 kiwisolver==1.2.0
 markupsafe==1.1.1
 matplotlib==3.2.2
-metar==1.6.0
+metar==1.7.0
 mpmath==1.0.0
 multidict==4.7.6
 natsort==5.5.0
