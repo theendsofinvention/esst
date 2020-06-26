@@ -20,7 +20,7 @@ future==0.18.2
 gtts-token==1.1.3
 gtts==2.0.1
 humanize==0.5.1
-idna==2.7
+idna==2.9
 inflect==2.1.0
 jinja2==2.10.1
 kiwisolver==1.0.1
