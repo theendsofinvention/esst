@@ -28,7 +28,7 @@ markupsafe==1.1.0
 matplotlib==3.0.2
 metar==1.6.0
 mpmath==1.0.0
-multidict==4.5.2
+multidict==4.7.6
 natsort==5.5.0
 numpy==1.16.3
 pefile==2018.8.8
