@@ -31,7 +31,7 @@ isort==4.3.21
 lazy-object-proxy==1.5.0
 mccabe==0.6.1
 mockito==1.2.1
-more-itertools==4.3.0
+more-itertools==8.4.0
 multidict==4.5.2
 mypy-extensions==0.4.1
 mypy==0.650
