@@ -41,7 +41,7 @@ raven==6.10.0
 requests==2.24.0
 setuptools-scm==4.1.2
 six==1.15.0
-tomlkit==0.5.3
+tomlkit==0.6.0
 urllib3==1.24.3
 websockets==5.0
 xmltodict==0.11.0
