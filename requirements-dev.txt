@@ -67,7 +67,7 @@ sarge==0.1.5.post0
 setuptools-scm==4.1.2
 six==1.15.0
 smmap2==3.0.0
-stevedore==1.30.0
+stevedore==2.0.1
 text-unidecode==1.2
 toml==0.10.0
 tomlkit==0.5.3
