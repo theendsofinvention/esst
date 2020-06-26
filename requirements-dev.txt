@@ -35,7 +35,7 @@ more-itertools==8.4.0
 multidict==4.7.6
 mypy-extensions==0.4.3
 mypy==0.782
-packaging==18.0
+packaging==20.4
 pathtools==0.1.2
 pbr==5.1.1
 pefile==2018.8.8
