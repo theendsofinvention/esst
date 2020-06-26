@@ -5,7 +5,7 @@ astroid==2.4.2
 atomicwrites==1.4.0
 attrs==19.3.0
 bandit==1.6.2
-bleach==3.0.2
+bleach==3.1.5
 certifi==2018.11.29
 chardet==3.0.4
 click==7.0
