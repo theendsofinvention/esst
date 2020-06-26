@@ -22,7 +22,7 @@ gtts==2.1.1
 humanize==2.4.0
 idna==2.9
 inflect==4.1.0
-jinja2==2.10.1
+jinja2==2.11.2
 kiwisolver==1.0.1
 markupsafe==1.1.0
 matplotlib==3.0.2
