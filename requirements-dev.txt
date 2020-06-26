@@ -54,7 +54,7 @@ pytest-deadfixtures==2.2.0
 pytest-faker==2.0.0
 pytest-pycharm==0.6.0
 pytest-repeat==0.8.0
-pytest-vcr==1.0.1
+pytest-vcr==1.0.2
 pytest-watch==4.2.0
 pytest==4.0.2
 python-dateutil==2.7.5
