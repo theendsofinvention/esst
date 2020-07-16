@@ -1,7 +1,7 @@
 -i https://pypi.python.org/simple/
 apipkg==1.5
 astroid==2.4.2
-attrs==18.2.0
+attrs==19.3.0
 bandit==1.6.2
 bleach==3.1.5
 certifi==2018.11.29
@@ -62,7 +62,7 @@ pytest-vcr==1.0.2
 pytest-watch==4.2.0
 pytest==5.4.3
 python-dateutil==2.7.5
-pyyaml==4.2b1
+pyyaml==3.13
 readme-renderer==26.0
 requests-toolbelt==0.9.1
 requests==2.20.1
@@ -82,7 +82,7 @@ tqdm==4.47.0
 twine==3.2.0
 typed-ast==1.4.1 ; implementation_name == 'cpython' and python_version < '3.8'
 typing-extensions==3.7.4.2 ; python_version < '3.7'
-urllib3==1.24.3
+urllib3==1.24.1
 vcrpy==4.0.2
 watchdog==0.10.3
 wcwidth==0.2.5
