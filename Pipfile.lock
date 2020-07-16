@@ -144,11 +144,11 @@
         },
         "everett": {
             "hashes": [
-                "sha256:02a43a2b4194e6ed40757851b37f5acf3c086f37e7e8109a385a7198cfbbc51b",
-                "sha256:05b0d0bae138a3b1a7c365bdd991c0a5b06f20c2e01d6721896098ac93cf7ee9"
+                "sha256:66c7991c056fd9b1de54c29e2b5004a30209530faef698d6ecfbf24bfbbdd1fb",
+                "sha256:8a5ee8cdde0ed6b3bbb63249e0e0703d4ad91921107ff198e0868ffce5f7b6bc"
             ],
             "index": "pypi",
-            "version": "==0.9"
+            "version": "==1.0.2"
         },
         "future": {
             "hashes": [

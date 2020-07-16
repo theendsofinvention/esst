@@ -15,7 +15,7 @@ discord.py==1.3.4
 elib-config==2018.12.18.1
 elib-miz==2018.10.21.1
 elib-wx==2018.12.15.2
-everett==0.9
+everett==1.0.2
 future==0.18.2
 gtts-token==1.1.3
 gtts==2.0.1
