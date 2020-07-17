@@ -304,10 +304,10 @@
         },
         "mpmath": {
             "hashes": [
-                "sha256:04d14803b6875fe6d69e6dccea87d5ae5599802e4b1df7997bddd2024001050c"
+                "sha256:fc17abe05fbab3382b61a123c398508183406fa132e0223874578e20946499f6"
             ],
             "index": "pypi",
-            "version": "==1.0.0"
+            "version": "==1.1.0"
         },
         "multidict": {
             "hashes": [
@@ -820,10 +820,10 @@
         },
         "hypothesis": {
             "hashes": [
-                "sha256:b58b40984915fbea34db942f58faac78f3db66e379b5394cad0d0ef60b7d98be",
-                "sha256:f078ab6d0a151395e9f9df0bd6bd5e8f2f17a81cc0e9cbb53758b5aee1ce6085"
+                "sha256:22a3d4388046a02e132fa6889be2a25db70567a218cb73091689a4788c7c9acf",
+                "sha256:ee9eac5dd988cb438aa1aeb03b62ee5374160ee4e2b24a7d4a141cc188361979"
             ],
-            "version": "==5.19.3"
+            "version": "==5.20.1"
         },
         "idna": {
             "hashes": [
@@ -1217,10 +1217,10 @@
         },
         "stevedore": {
             "hashes": [
-                "sha256:79270bd5fb4a052e76932e9fef6e19afa77090c4000f2680eb8c2e887d2e6e36",
-                "sha256:9fb12884b510fdc25f8a883bb390b8ff82f67863fb360891a33135bcb2ce8c54"
+                "sha256:38791aa5bed922b0a844513c5f9ed37774b68edc609e5ab8ab8d8fe0ce4315e5",
+                "sha256:c8f4f0ebbc394e52ddf49de8bcc3cf8ad2b4425ebac494106bbc5e3661ac7633"
             ],
-            "version": "==3.1.0"
+            "version": "==3.2.0"
         },
         "text-unidecode": {
             "hashes": [
@@ -1245,10 +1245,10 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:63ef7a6d3eb39f80d6b36e4867566b3d8e5f1fe3d6cb50c5e9ede2b3198ba7b7",
-                "sha256:7810e627bcf9d983a99d9ff8a0c09674400fd2927eddabeadf153c14a2ec8656"
+                "sha256:6baa75a88582b1db6d34ce4690da5501d2a1cb65c34664840a456b2c9f794d29",
+                "sha256:fcb7cb5b729b60a27f300b15c1ffd4744f080fb483b88f31dc8654b082cc8ea5"
             ],
-            "version": "==4.47.0"
+            "version": "==4.48.0"
         },
         "twine": {
             "hashes": [
