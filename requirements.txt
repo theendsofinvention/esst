@@ -24,7 +24,7 @@ idna-ssl==1.1.0 ; python_version < '3.7'
 idna==2.7
 importlib-metadata==1.7.0 ; python_version < '3.8'
 inflect==4.1.0
-jinja2==2.10.1
+jinja2==2.11.3
 kiwisolver==1.2.0
 markupsafe==1.1.1
 matplotlib==3.0.2
