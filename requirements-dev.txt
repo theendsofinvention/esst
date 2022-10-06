@@ -14,7 +14,7 @@ cryptography==2.9.2
 dataclasses==0.7
 docopt==0.6.2
 docutils==0.16
-dparse==0.5.1
+dparse==0.5.2
 elib-config==2018.12.18.1
 elib-run==2018.12.6.1
 epab==2018.12.18.1
